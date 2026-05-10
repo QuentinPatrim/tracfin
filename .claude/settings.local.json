@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(psql --version)",
+      "Bash(docker --version)",
+      "Bash(npm --version)",
+      "Bash(node _migration/inspect.mjs \"postgresql://neondb_owner:npg_1hcLuqx0mwbJ@ep-falling-mouse-ab7gfp6j-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require\")",
+      "Bash(node _migration/inspect.mjs \"postgresql://neondb_owner:npg_tXfkE1ZTnHV5@ep-delicate-river-al9pzstp-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\")",
+      "Bash(node _migration/migrate.mjs \"postgresql://neondb_owner:npg_1hcLuqx0mwbJ@ep-falling-mouse-ab7gfp6j-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require\" \"postgresql://neondb_owner:npg_tXfkE1ZTnHV5@ep-delicate-river-al9pzstp-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(node --env-file=.env.local _migration/test-s3.mjs)",
+      "Bash(node --env-file=.env.local _migration/scoring-v2.mjs)",
+      "Bash(node --experimental-strip-types _migration/test-scoring.mjs)",
+      "Bash(node --env-file=.env.local _migration/inspect-kyc.mjs)",
+      "Bash(node --env-file=.env.local _migration/kyc-v2.mjs)",
+      "Bash(node --env-file=.env.local _migration/fix-sanctions-liste.mjs)",
+      "Bash(node --env-file=.env.local _migration/fix-ppe-proche-detecte.mjs)",
+      "Bash(node --env-file=.env.local _migration/add-attestation-hash.mjs)",
+      "Bash(node --experimental-strip-types _migration/test-pdf.mjs)"
+    ]
+  }
+}
