@@ -53,29 +53,25 @@ export async function launchBrowser(): Promise<Browser> {
 }
 
 /**
- * Rend une page Next interne en PDF.
- * @param renderUrl URL de la page interne (ex. http://localhost:3000/pdf-render/attestation/abc?token=xxx)
- * @param options Options @react-pdf passées à page.pdf()
+ * Rend un HTML brut en PDF via Chromium headless.
+ * Pas de HTTP roundtrip : le HTML est passé directement via page.setContent().
+ * Avantages : aucun problème d'auth/protection Vercel, plus rapide, secret PDF inutile.
  */
-export async function renderPagePdf(
-  renderUrl: string,
+export async function renderHtmlPdf(
+  html: string,
   options: PDFOptions = {}
 ): Promise<Buffer> {
   const browser = await launchBrowser();
   try {
     const page = await browser.newPage();
-    // Force le pixel ratio à 2 pour un rendu net (rétina)
     await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 2 });
 
-    const res = await page.goto(renderUrl, {
-      waitUntil: "networkidle0",
+    await page.setContent(html, {
+      waitUntil: "load",
       timeout: 25_000,
     });
-    if (!res || !res.ok()) {
-      throw new Error(`page.goto failed: ${res?.status()} ${res?.statusText()}`);
-    }
 
-    // Attend que les fonts Google soient chargées
+    // Garantit que les fonts custom (Google Fonts via @import) sont prêtes avant impression
     await page.evaluateHandle("document.fonts.ready");
 
     const buffer = await page.pdf({
@@ -89,17 +85,4 @@ export async function renderPagePdf(
   } finally {
     await browser.close();
   }
-}
-
-/** Token interne signé par PDF_RENDER_SECRET (envoyé en query string à la page de rendu) */
-export function pdfRenderToken(): string {
-  const s = process.env.PDF_RENDER_SECRET;
-  if (!s) throw new Error("PDF_RENDER_SECRET not set");
-  return s;
-}
-
-/** URL de base interne (le serveur fetch lui-même pour le rendu) */
-export function internalBaseUrl(): string {
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 }

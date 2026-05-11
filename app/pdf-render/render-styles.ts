@@ -1,13 +1,7 @@
 // app/pdf-render/render-styles.ts — CSS partagé entre Attestation + KYC (extrait du HTML maquette)
 
 export const PDF_RENDER_CSS = `
-@font-face { font-family: 'Inter'; src: url('/fonts/Inter-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
-@font-face { font-family: 'Inter'; src: url('/fonts/Inter-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
-@font-face { font-family: 'Inter'; src: url('/fonts/Inter-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
-@font-face { font-family: 'Inter'; src: url('/fonts/Inter-ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: block; }
-@font-face { font-family: 'JetBrains Mono'; src: url('/fonts/JetBrainsMono-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: block; }
-@font-face { font-family: 'JetBrains Mono'; src: url('/fonts/JetBrainsMono-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: block; }
-@font-face { font-family: 'JetBrains Mono'; src: url('/fonts/JetBrainsMono-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: block; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=block');
 
 :root{
   --ink:#0B0822;

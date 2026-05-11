@@ -1,15 +1,20 @@
-// app/api/dossiers/[id]/pdf/route.ts — Attestation LCB-FT générée via Puppeteer
+// app/api/dossiers/[id]/pdf/route.ts — Attestation LCB-FT générée via Puppeteer (HTML direct, sans HTTP)
 
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
-import { renderPagePdf, pdfRenderToken, internalBaseUrl } from "@/lib/pdf-renderer";
+import { computeScore } from "@/lib/tracfin";
+import { rowToForm } from "@/lib/dossier";
+import { computeContentHash } from "@/lib/pdf-helpers";
+import { renderHtmlPdf } from "@/lib/pdf-renderer";
+import { buildAttestationHtml } from "@/app/pdf-render/attestation-template";
+import type { Dossier } from "@/types/dossier";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -18,20 +23,21 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: "Bad id" }, { status: 400 });
   }
 
-  // Vérifie ownership
-  const owns = (await sql`
-    SELECT 1 FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
-  `) as unknown as Array<{ "?column?": number }>;
-  if (owns.length === 0) {
+  const rows = (await sql`
+    SELECT * FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
+  `) as unknown as Dossier[];
+  if (rows.length === 0) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
   try {
-    const base = internalBaseUrl();
-    const at = new Date().toISOString();
-    const renderUrl = `${base}/pdf-render/attestation/${id}?token=${encodeURIComponent(pdfRenderToken())}&at=${encodeURIComponent(at)}`;
+    const form = rowToForm(rows[0]);
+    const score = computeScore(form);
+    const generatedAt = new Date().toISOString();
+    const hash = computeContentHash(form, score, id, generatedAt);
 
-    const buffer = await renderPagePdf(renderUrl);
+    const html = buildAttestationHtml({ form, score, dossierId: id, hash, generatedAt });
+    const buffer = await renderHtmlPdf(html);
 
     return new NextResponse(buffer as unknown as BodyInit, {
       headers: {

@@ -1,9 +1,13 @@
-// app/api/dossiers/[id]/kyc-pdf/route.ts — Fiche KYC générée via Puppeteer
+// app/api/dossiers/[id]/kyc-pdf/route.ts — Fiche KYC générée via Puppeteer (HTML direct, sans HTTP)
 
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { createHash } from "crypto";
 import { sql } from "@/lib/db";
-import { renderPagePdf, pdfRenderToken, internalBaseUrl } from "@/lib/pdf-renderer";
+import { rowToForm } from "@/lib/dossier";
+import { renderHtmlPdf } from "@/lib/pdf-renderer";
+import { buildKycHtml } from "@/app/pdf-render/kyc-template";
+import type { Dossier } from "@/types/dossier";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -18,19 +22,39 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Bad id" }, { status: 400 });
   }
 
-  const owns = (await sql`
-    SELECT 1 FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
-  `) as unknown as Array<{ "?column?": number }>;
-  if (owns.length === 0) {
+  const rows = (await sql`
+    SELECT * FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
+  `) as unknown as Dossier[];
+  if (rows.length === 0) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  try {
-    const base = internalBaseUrl();
-    const at = new Date().toISOString();
-    const renderUrl = `${base}/pdf-render/kyc/${id}?token=${encodeURIComponent(pdfRenderToken())}&at=${encodeURIComponent(at)}`;
+  // Date de signature = soumission KYC du client (preuve légale, pas date de génération)
+  const sigRows = (await sql`
+    SELECT consentement_rgpd_at, submitted_at
+    FROM kyc_responses
+    WHERE dossier_id = ${id}
+    ORDER BY submitted_at DESC
+    LIMIT 1
+  `) as unknown as Array<{ consentement_rgpd_at: string | null; submitted_at: string | null }>;
 
-    const buffer = await renderPagePdf(renderUrl);
+  try {
+    const form = rowToForm(rows[0]);
+    const generatedAt = new Date().toISOString();
+    const signedAt =
+      sigRows[0]?.consentement_rgpd_at ||
+      sigRows[0]?.submitted_at ||
+      generatedAt;
+
+    const hash = createHash("sha256")
+      .update(JSON.stringify({
+        id, signedAt, nom: form.nomPrenom, type: form.typeClient,
+        naissance: form.dateNaissance, adresse: form.adresse,
+      }))
+      .digest("hex");
+
+    const html = buildKycHtml({ form, dossierId: id, hash, generatedAt, signedAt });
+    const buffer = await renderHtmlPdf(html);
 
     return new NextResponse(buffer as unknown as BodyInit, {
       headers: {
