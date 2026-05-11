@@ -17,7 +17,14 @@
       "Bash(node --env-file=.env.local _migration/fix-sanctions-liste.mjs)",
       "Bash(node --env-file=.env.local _migration/fix-ppe-proche-detecte.mjs)",
       "Bash(node --env-file=.env.local _migration/add-attestation-hash.mjs)",
-      "Bash(node --experimental-strip-types _migration/test-pdf.mjs)"
+      "Bash(node --experimental-strip-types _migration/test-pdf.mjs)",
+      "Bash(ls -la \"C:/Users/quent/Downloads/pdf Klaris/\" 2>&1)",
+      "Bash(node -e \"console.log\\(require\\('@sparticuz/chromium-min/package.json'\\).version, require\\('puppeteer-core/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(32\\).toString\\('hex'\\)\\)\")",
+      "Bash(rm -f C:/Users/quent/Desktop/tracfin/components/pdf/AttestationPDF.tsx C:/Users/quent/Desktop/tracfin/components/pdf/KycPDF.tsx C:/Users/quent/Desktop/tracfin/lib/pdf-fonts.ts)",
+      "Bash(npm uninstall *)",
+      "Bash(node -e \"import\\('@sparticuz/chromium-min'\\).then\\(m => console.log\\(Object.keys\\(m.default || m\\)\\)\\)\")",
+      "Bash(node -e \"import\\('@sparticuz/chromium-min'\\).then\\(m => { const c = m.default || m; console.log\\('args length:', c.args?.length, 'execPath fn:', typeof c.executablePath\\); }\\)\")"
     ]
   }
 }

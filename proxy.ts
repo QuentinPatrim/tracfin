@@ -13,6 +13,8 @@ const isPublicRoute = createRouteMatcher([
   // Upload / download de pièces : auth gérée dans la route (Clerk OU token KYC)
   "/api/upload",
   "/api/files/(.*)",
+  // Rendu HTML interne pour Puppeteer (protégé par PDF_RENDER_SECRET dans la route)
+  "/pdf-render/(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
