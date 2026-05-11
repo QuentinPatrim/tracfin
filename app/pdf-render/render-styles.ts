@@ -34,18 +34,22 @@ export const PDF_RENDER_CSS = `
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#fff;font-family:'Inter',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
 
-/* A4 page */
+/* A4 page — chaque article occupe pile une feuille A4 */
 .page{
   width: 210mm;
-  min-height: 297mm;
+  height: 297mm;
   margin: 0 auto;
   background:#fff;
   position:relative;
   overflow:hidden;
-  padding: 18mm 16mm 16mm;
+  padding: 18mm 16mm 22mm;     /* bottom padding plus large : laisse la place au footer absolu */
   page-break-after: always;
+  break-after: page;
 }
-.page:last-of-type{page-break-after:auto}
+.page:last-of-type{page-break-after:auto; break-after:auto}
+
+/* Empêche les éléments d'être coupés entre 2 pages */
+.crit, .tx-card, .doc, .validation, .decl, .field, .verdict, .reco { page-break-inside: avoid; break-inside: avoid; }
 .page::before{
   content:""; position:absolute; top:0; left:0; right:0; height:6px;
   background: var(--grad);
@@ -187,7 +191,7 @@ h1.doc-title{
 .verdict.warn .glow{background:radial-gradient(closest-side, rgba(245,158,11,.22), transparent 70%)}
 
 /* SECTION HEADER */
-.section{margin-top:28px}
+.section{margin-top:20px}
 .section-head{
   display:flex; align-items:center; gap:10px; padding-bottom:10px; border-bottom:1px solid var(--line);
 }
@@ -210,10 +214,10 @@ h1.doc-title{
 .field .v.mono{font-family:'JetBrains Mono'; font-weight:500}
 
 /* CRITERIA LIST */
-.criteria{margin-top:14px; display:flex; flex-direction:column}
+.criteria{margin-top:10px; display:flex; flex-direction:column}
 .crit{
   display:flex; align-items:center; justify-content:space-between;
-  padding: 14px 0;
+  padding: 10px 0;
   border-bottom: 1px solid var(--line);
 }
 .crit:last-child{border-bottom:0}
@@ -245,7 +249,7 @@ h1.doc-title{
 /* TRANSACTION CARDS */
 .tx-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
 .tx-card{
-  border:1px solid var(--line); border-radius:14px; padding:14px 16px;
+  border:1px solid var(--line); border-radius:14px; padding:11px 14px;
   background: linear-gradient(180deg,#fff 0%, #FAF8FE 100%);
   position:relative; overflow:hidden;
 }
@@ -258,17 +262,17 @@ h1.doc-title{
 
 /* RECO BOX */
 .reco{
-  margin-top:14px; padding:18px 20px; border-radius:14px;
+  margin-top:12px; padding:14px 18px; border-radius:14px;
   background:var(--grad-soft); border:1px solid #E5DBFB;
 }
 .reco .label{font:700 11px/1 'Inter'; letter-spacing:.2em; text-transform:uppercase; color:var(--violet)}
 .reco p{margin:8px 0 0; font-size:13.5px; color:var(--ink-2); line-height:1.55}
 
 /* VALIDATION */
-.validations{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px}
+.validations{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
 .validation{
   border:1px solid var(--line); border-radius:14px;
-  padding: 16px 18px;
+  padding: 12px 16px;
   background: linear-gradient(180deg,#fff,#FAF8FE);
 }
 .validation .k{font:600 9.5px/1 'Inter'; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:8px}
@@ -320,9 +324,9 @@ h1.doc-title{
 
 /* FOOTER */
 footer.doc-foot{
-  position:absolute; left:16mm; right:16mm; bottom:12mm;
+  position:absolute; left:16mm; right:16mm; bottom:8mm;
   display:flex; align-items:center; justify-content:space-between;
-  padding-top: 12px; border-top: 1px solid var(--line);
+  padding-top: 10px; border-top: 1px solid var(--line);
   font:500 10px/1.4 'Inter'; letter-spacing:.04em; color:var(--muted);
 }
 .conf-tag{

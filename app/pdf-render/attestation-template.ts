@@ -111,22 +111,13 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     ? `R-${String(score.niveau === "interdiction" ? 4 : score.niveau === "examen_renforce" ? 3 : 2).padStart(2, "0")} / ${topCritique.name.split(" ").map(w => w[0]).join("").toUpperCase()}`
     : `R-${String(niveauNum).padStart(2, "0")}`;
 
-  return `<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8" />
-<title>Klaris — Attestation ${dossierShort}</title>
-<style>${PDF_RENDER_CSS}</style>
-</head>
-<body>
-
-<!-- =================== PAGE 1 — ATTESTATION =================== -->
-<article class="page">
+  // Header réutilisable (3 pages = 3 headers)
+  const headerHtml = (tag: string) => `
   <header class="doc-head">
     <div class="brand">
       <div class="logo"></div>
       <div class="name">Klaris</div>
-      <div class="tag">Attestation</div>
+      <div class="tag">${escapeHtml(tag)}</div>
     </div>
     <div class="meta">
       <div class="col">
@@ -138,7 +129,26 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
         <div class="val regular">${today}</div>
       </div>
     </div>
-  </header>
+  </header>`;
+
+  const footerHtml = (pageNum: number, totalPages: number, withHash = false) => `
+  <footer class="doc-foot">
+    <span class="conf-tag"><span class="d"></span>Document confidentiel · LCB-FT</span>
+    <span class="gen-tag">${withHash ? `SHA-256 · ${shortHash(hash)}  ·  ` : ""}Généré par <span class="lk">Klaris</span> · Page ${pageNum} / ${totalPages}</span>
+  </footer>`;
+
+  return `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Klaris — Attestation ${dossierShort}</title>
+<style>${PDF_RENDER_CSS}</style>
+</head>
+<body>
+
+<!-- =================== PAGE 1 — VERDICT + IDENTIFICATION =================== -->
+<article class="page">
+  ${headerHtml("Attestation")}
 
   <div class="title-row">
     <div>
@@ -181,7 +191,14 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     </div>
   </section>
 
-  <section class="section">
+  ${footerHtml(1, 3)}
+</article>
+
+<!-- =================== PAGE 2 — DÉTAIL DES CRITÈRES =================== -->
+<article class="page">
+  ${headerHtml("Attestation · suite")}
+
+  <section class="section" style="margin-top:14px">
     <div class="section-head">
       <span class="num">02</span>
       <span class="ttl">Détail des critères de risque</span>
@@ -203,33 +220,14 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     </div>
   </section>
 
-  <footer class="doc-foot">
-    <span class="conf-tag"><span class="d"></span>Document confidentiel · LCB-FT</span>
-    <span class="gen-tag">Généré par <span class="lk">Klaris</span> · Page 1 / 2</span>
-  </footer>
+  ${footerHtml(2, 3)}
 </article>
 
-<!-- =================== PAGE 2 — TRANSACTION + VALIDATION =================== -->
+<!-- =================== PAGE 3 — TRANSACTION + RECO + VALIDATION =================== -->
 <article class="page">
-  <header class="doc-head">
-    <div class="brand">
-      <div class="logo"></div>
-      <div class="name">Klaris</div>
-      <div class="tag">Attestation · suite</div>
-    </div>
-    <div class="meta">
-      <div class="col">
-        <div class="label">Dossier</div>
-        <div class="val">${dossierShort}</div>
-      </div>
-      <div class="col">
-        <div class="label">Émis le</div>
-        <div class="val regular">${today}</div>
-      </div>
-    </div>
-  </header>
+  ${headerHtml("Attestation · suite")}
 
-  <section class="section" style="margin-top:18px">
+  <section class="section" style="margin-top:14px">
     <div class="section-head">
       <span class="num">03</span>
       <span class="ttl">Analyse de la transaction</span>
@@ -262,7 +260,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
       </div>
       <div class="tx-card">
         <div class="k">Lieu du bien</div>
-        <div class="v"><span class="dim">${escapeHtml(form.lieuBien || "—")}</span></div>
+        <div class="v">${escapeHtml(labelOf("lieuBien", form.lieuBien))}</div>
       </div>
       <div class="tx-card">
         <div class="k">Bénéficiaires effectifs</div>
@@ -326,10 +324,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     </div>
   </section>
 
-  <footer class="doc-foot">
-    <span class="conf-tag"><span class="d"></span>Document confidentiel · LCB-FT</span>
-    <span class="gen-tag">SHA-256 · ${shortHash(hash)}  ·  Généré par <span class="lk">Klaris</span> · Page 2 / 2</span>
-  </footer>
+  ${footerHtml(3, 3, true)}
 </article>
 
 </body>

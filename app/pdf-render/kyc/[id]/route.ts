@@ -27,13 +27,31 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   `) as unknown as Dossier[];
   if (rows.length === 0) return new Response("Not found", { status: 404 });
 
+  // Date de signature électronique = quand le client a soumis le KYC (preuve légale)
+  // Source : kyc_responses.consentement_rgpd_at (v2) ou submitted_at (v1, fallback)
+  const sigRows = (await sql`
+    SELECT consentement_rgpd_at, submitted_at
+    FROM kyc_responses
+    WHERE dossier_id = ${id}
+    ORDER BY submitted_at DESC
+    LIMIT 1
+  `) as unknown as Array<{ consentement_rgpd_at: string | null; submitted_at: string | null }>;
+
   const form = rowToForm(rows[0]);
   const generatedAt = url.searchParams.get("at") || new Date().toISOString();
+  const signedAt =
+    sigRows[0]?.consentement_rgpd_at ||
+    sigRows[0]?.submitted_at ||
+    generatedAt;   // dernier recours si dossier sans soumission KYC
+
   const hash = createHash("sha256")
-    .update(JSON.stringify({ id, generatedAt, nom: form.nomPrenom, type: form.typeClient, naissance: form.dateNaissance, adresse: form.adresse }))
+    .update(JSON.stringify({
+      id, signedAt, nom: form.nomPrenom, type: form.typeClient,
+      naissance: form.dateNaissance, adresse: form.adresse,
+    }))
     .digest("hex");
 
-  const html = buildKycHtml({ form, dossierId: id, hash, generatedAt });
+  const html = buildKycHtml({ form, dossierId: id, hash, generatedAt, signedAt });
 
   return new Response(html, {
     headers: {

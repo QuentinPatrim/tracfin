@@ -82,7 +82,7 @@ export default function FloatingNav() {
               >
                 Mon dashboard
               </Link>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton />
             </>
           )}
         </div>

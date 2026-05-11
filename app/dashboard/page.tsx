@@ -54,7 +54,7 @@ export default async function DashboardPage() {
             <Link href="/tarifs" className="text-sm text-indigo-400 hover:text-indigo-300 font-medium transition">
               Gérer mon abonnement
             </Link>
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </div>
         </div>
       </header>

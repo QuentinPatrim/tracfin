@@ -24,7 +24,8 @@ interface BuildKycOpts {
   form: DossierForm;
   dossierId: string;
   hash: string;
-  generatedAt: string;
+  generatedAt: string;     // date d'émission du PDF (footer)
+  signedAt: string;        // date de soumission KYC par le client (signature électronique)
 }
 
 const DOC_ID_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2.5"/><path d="M14 10h5"/><path d="M14 14h4"/></svg>`;
@@ -33,12 +34,13 @@ const DOC_BIZ_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 const DOC_FILE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>`;
 
 export function buildKycHtml(opts: BuildKycOpts): string {
-  const { form, dossierId, hash, generatedAt } = opts;
+  const { form, dossierId, hash, generatedAt, signedAt } = opts;
   const isMorale = form.typeClient === "morale";
   const dossierShort = `#${dossierId.slice(0, 8).toUpperCase()}`;
   const today = formatDateLong(generatedAt);
-  const sigDate = new Date(generatedAt).toLocaleDateString("fr-FR");
-  const sigTime = fmtTime(generatedAt);
+  // Signature = horodatage de la soumission par le client (preuve légale)
+  const sigDate = new Date(signedAt).toLocaleDateString("fr-FR");
+  const sigTime = fmtTime(signedAt);
 
   // Inventaire des pièces fournies
   const pieces: Array<{ icon: string; key: string; label: string; provided: boolean }> = isMorale
@@ -69,21 +71,13 @@ export function buildKycHtml(opts: BuildKycOpts): string {
 
   const piecesPct = pieces.length ? Math.round((piecesProvided / pieces.length) * 100) : 0;
 
-  return `<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8" />
-<title>Klaris — Fiche KYC ${dossierShort}</title>
-<style>${PDF_RENDER_CSS}</style>
-</head>
-<body>
-
-<article class="page">
+  // Header réutilisable
+  const headerHtml = (tag: string) => `
   <header class="doc-head">
     <div class="brand">
       <div class="logo"></div>
       <div class="name">Klaris</div>
-      <div class="tag">KYC</div>
+      <div class="tag">${escapeHtml(tag)}</div>
     </div>
     <div class="meta">
       <div class="col">
@@ -95,7 +89,26 @@ export function buildKycHtml(opts: BuildKycOpts): string {
         <div class="val regular">${today}</div>
       </div>
     </div>
-  </header>
+  </header>`;
+
+  const footerHtml = (pageNum: number, totalPages: number, withHash = false) => `
+  <footer class="doc-foot">
+    <span class="conf-tag"><span class="d"></span>Document confidentiel · Données client</span>
+    <span class="gen-tag">${withHash ? `SHA-256 · ${shortHash(hash)}  ·  ` : ""}Généré par <span class="lk">Klaris</span> · Page ${pageNum} / ${totalPages}</span>
+  </footer>`;
+
+  return `<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Klaris — Fiche KYC ${dossierShort}</title>
+<style>${PDF_RENDER_CSS}</style>
+</head>
+<body>
+
+<!-- =================== PAGE 1 — STATUT + IDENTITÉ + OPÉRATION =================== -->
+<article class="page">
+  ${headerHtml("KYC")}
 
   <div class="title-row">
     <div>
@@ -137,7 +150,14 @@ export function buildKycHtml(opts: BuildKycOpts): string {
     </div>
   </section>
 
-  <section class="section">
+  ${footerHtml(1, 2)}
+</article>
+
+<!-- =================== PAGE 2 — OPÉRATION + PIÈCES + DÉCLARATION =================== -->
+<article class="page">
+  ${headerHtml("KYC · suite")}
+
+  <section class="section" style="margin-top:14px">
     <div class="section-head">
       <span class="num">02</span>
       <span class="ttl">Informations sur l'opération</span>
@@ -205,10 +225,7 @@ export function buildKycHtml(opts: BuildKycOpts): string {
     </div>
   </section>
 
-  <footer class="doc-foot">
-    <span class="conf-tag"><span class="d"></span>Document confidentiel · Données client</span>
-    <span class="gen-tag">Généré par <span class="lk">Klaris</span> · Page 1 / 1</span>
-  </footer>
+  ${footerHtml(2, 2, true)}
 </article>
 
 </body>
