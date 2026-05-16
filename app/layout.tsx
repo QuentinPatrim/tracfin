@@ -2,6 +2,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import type { Metadata } from 'next'
+import CookieNotice from '@/components/legal/CookieNotice'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -28,7 +29,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="fr" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-        <body>{children}</body>
+        <body>
+          {children}
+          <CookieNotice />
+        </body>
       </html>
     </ClerkProvider>
   )

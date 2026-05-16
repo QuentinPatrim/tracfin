@@ -1,7 +1,15 @@
-// app/pdf-render/kyc-template.ts — Fiche KYC (1 page, design maquette Klaris)
+// app/pdf-render/kyc-template.ts — Fiche KYC EXHAUSTIVE (3 pages A4)
+// Toutes les déclarations du client visibles, y compris commentaires, précisions PPE,
+// BE structurés, justifs d'origine spécifiques.
 
-import { OPTIONS, type DossierForm } from "@/lib/tracfin";
-import { formatDateLong, shortHash, formatMontant } from "@/lib/pdf-helpers";
+import {
+  ORIGINE_FONDS_OPTIONS, MODE_FINANCEMENT_OPTIONS, MODE_PAIEMENT_OPTIONS,
+  TYPE_BIEN_OPTIONS, SECTEUR_ACTIVITE_OPTIONS, PAYS_OPTIONS,
+  FORME_JURIDIQUE_OPTIONS, PIECE_IDENTITE_TYPES, TYPE_CONTROLE_BE_OPTIONS,
+  MENTION_CNIL_VERSION,
+  type KycForm,
+} from "@/lib/kyc";
+import { formatDateLong, shortHash, formatMontant, klarisLogoSvg } from "@/lib/pdf-helpers";
 import { PDF_RENDER_CSS } from "./render-styles";
 
 const escapeHtml = (s: string): string =>
@@ -17,65 +25,102 @@ const fmtDateShort = (iso: string): string => {
 const fmtTime = (iso: string): string =>
   new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
-const labelOf = (key: keyof typeof OPTIONS, value: string): string =>
-  OPTIONS[key]?.find((o) => o.value === value)?.label ?? "—";
+const optLabel = <T extends { value: string; label: string }>(
+  options: readonly T[],
+  value: string,
+): string => options.find((o) => o.value === value)?.label ?? (value || "—");
+
+const has = (s: string | null | undefined): s is string => !!(s && s.trim());
 
 interface BuildKycOpts {
-  form: DossierForm;
+  form: KycForm;
   dossierId: string;
   hash: string;
-  generatedAt: string;     // date d'émission du PDF (footer)
-  signedAt: string;        // date de soumission KYC par le client (signature électronique)
+  generatedAt: string;
+  signedAt: string;
 }
 
 const DOC_ID_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2.5"/><path d="M14 10h5"/><path d="M14 14h4"/></svg>`;
 const DOC_HOME_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><path d="M5 10v9h14v-9"/><path d="M9 19v-5h6v5"/></svg>`;
 const DOC_BIZ_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>`;
 const DOC_FILE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>`;
+const DOC_RECEIPT_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14v18l-3-2-3 2-3-2-3 2-2-2V3z"/><path d="M9 9h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>`;
 
 export function buildKycHtml(opts: BuildKycOpts): string {
   const { form, dossierId, hash, generatedAt, signedAt } = opts;
   const isMorale = form.typeClient === "morale";
   const dossierShort = `#${dossierId.slice(0, 8).toUpperCase()}`;
   const today = formatDateLong(generatedAt);
-  // Signature = horodatage de la soumission par le client (preuve légale)
   const sigDate = new Date(signedAt).toLocaleDateString("fr-FR");
   const sigTime = fmtTime(signedAt);
 
-  // Inventaire des pièces fournies
-  const pieces: Array<{ icon: string; key: string; label: string; provided: boolean }> = isMorale
+  // ─── Inventaire des pièces ──────────────────────────────────────────
+  type PieceDef = { icon: string; key: string; provided: boolean; required: boolean };
+  const pieces: PieceDef[] = isMorale
     ? [
-        { icon: DOC_BIZ_SVG, key: "Extrait Kbis", label: form.kbis ? "Document fourni (-3 mois)" : "Manquant", provided: form.kbis },
-        { icon: DOC_FILE_SVG, key: "Statuts", label: form.statuts ? "Document à jour fourni" : "Manquant", provided: form.statuts },
-        { icon: DOC_ID_SVG, key: "CNI du gérant", label: form.cniGerant ? "Carte nationale d'identité" : "Manquant", provided: form.cniGerant },
-        { icon: DOC_HOME_SVG, key: "Justificatif de domicile", label: form.justifDomicile ? "Facture < 3 mois" : "Manquant", provided: form.justifDomicile },
+        { icon: DOC_BIZ_SVG,    key: "Extrait Kbis (-3 mois)",       provided: !!form.urlKbis,           required: true  },
+        { icon: DOC_FILE_SVG,   key: "Statuts à jour",               provided: !!form.urlStatuts,        required: false },
+        { icon: DOC_ID_SVG,     key: "CNI du gérant",                provided: !!form.urlCniGerant,      required: true  },
+        { icon: DOC_ID_SVG,     key: "Pièce d'identité",             provided: !!form.urlPieceIdentite,  required: true  },
+        { icon: DOC_HOME_SVG,   key: "Justificatif de domicile",     provided: !!form.urlJustifDomicile, required: true  },
+        { icon: DOC_RECEIPT_SVG,key: "Bilans / liasses fiscales",    provided: !!form.urlBilans,         required: false },
+        { icon: DOC_FILE_SVG,   key: "Registre bénéf. effectifs",    provided: !!form.urlRbe,            required: false },
+        { icon: DOC_RECEIPT_SVG,key: "Justificatif d'origine fonds", provided: !!form.urlJustifOrigineFonds, required: false },
       ]
     : [
-        { icon: DOC_ID_SVG, key: "Pièce d'identité", label: form.pieceIdentite ? "Carte nationale d'identité" : "Manquant", provided: form.pieceIdentite },
-        { icon: DOC_HOME_SVG, key: "Justificatif de domicile", label: form.justifDomicile ? "Facture < 3 mois" : "Manquant", provided: form.justifDomicile },
+        { icon: DOC_ID_SVG,     key: "Pièce d'identité",             provided: !!form.urlPieceIdentite,  required: true  },
+        { icon: DOC_HOME_SVG,   key: "Justificatif de domicile",     provided: !!form.urlJustifDomicile, required: true  },
+        { icon: DOC_RECEIPT_SVG,key: "Avis d'imposition",            provided: !!form.urlAvisImposition, required: false },
+        { icon: DOC_RECEIPT_SVG,key: "Justificatifs de revenus",     provided: !!form.urlJustifRevenus,  required: false },
+        { icon: DOC_RECEIPT_SVG,key: "Justificatif d'origine fonds", provided: !!form.urlJustifOrigineFonds, required: false },
       ];
   const piecesProvided = pieces.filter((p) => p.provided).length;
+  const piecesRequired = pieces.filter((p) => p.required).length;
+  const piecesRequiredOk = pieces.filter((p) => p.required && p.provided).length;
+  const allRequiredOk = piecesRequiredOk === piecesRequired;
 
-  // Champs identitaires
+  // ─── Champs identité ──────────────────────────────────────────────────
   const idFields: Array<{ k: string; v: string; mono?: boolean; full?: boolean }> = [
-    { k: "Type", v: isMorale ? "Personne Morale" : "Personne Physique" },
-    { k: isMorale ? "Dénomination" : "Nom et prénom", v: form.nomPrenom || "—" },
-    ...(form.dateNaissance ? [{ k: isMorale ? "Date de constitution" : "Date de naissance", v: fmtDateShort(form.dateNaissance), mono: true }] : []),
-    ...(form.lieuNaissance ? [{ k: isMorale ? "Lieu d'immatriculation" : "Lieu de naissance", v: form.lieuNaissance }] : []),
-    ...(form.nationalite ? [{ k: isMorale ? "Pays" : "Nationalité", v: form.nationalite }] : []),
-    ...(form.profession ? [{ k: "Profession / Activité", v: form.profession }] : []),
-    ...(form.residenceFiscale ? [{ k: "Résidence fiscale", v: labelOf("residenceFiscale", form.residenceFiscale) }] : []),
-    ...(form.adresse ? [{ k: "Adresse complète", v: form.adresse, full: true }] : []),
+    { k: "Type", v: isMorale ? "Personne morale (société)" : "Personne physique" },
+    { k: isMorale ? "Dénomination sociale" : "Nom et prénom", v: form.nomPrenom || "—" },
+    ...(has(form.emailContact) ? [{ k: "Email", v: form.emailContact, mono: true }] : []),
+    ...(has(form.telephone) ? [{ k: "Téléphone", v: form.telephone, mono: true }] : []),
+    ...(has(form.dateNaissance) ? [{ k: isMorale ? "Date de constitution" : "Date de naissance", v: fmtDateShort(form.dateNaissance), mono: true }] : []),
+    ...(has(form.lieuNaissance) ? [{ k: "Lieu de naissance", v: form.lieuNaissance }] : []),
+    ...(has(form.nationalite) ? [{ k: "Nationalité", v: form.nationalite }] : []),
+    ...(has(form.paysNationalite) ? [{ k: isMorale ? "Pays d'immatriculation" : "Pays d'origine (cat.)", v: optLabel(PAYS_OPTIONS, form.paysNationalite) }] : []),
+    ...(has(form.profession) ? [{ k: "Profession", v: form.profession }] : []),
+    ...(has(form.secteurActivite) ? [{ k: "Secteur d'activité", v: optLabel(SECTEUR_ACTIVITE_OPTIONS, form.secteurActivite) }] : []),
+    ...(has(form.paysResidenceFiscale) ? [{ k: "Résidence fiscale (cat.)", v: optLabel(PAYS_OPTIONS, form.paysResidenceFiscale) }] : []),
+    ...(has(form.adresse) ? [{ k: isMorale ? "Adresse du siège" : "Adresse complète", v: form.adresse, full: true }] : []),
   ];
-  const fieldsFilled = idFields.length;
 
-  const piecesPct = pieces.length ? Math.round((piecesProvided / pieces.length) * 100) : 0;
+  // ─── Champs personne morale (forme, SIREN, etc.) ─────────────────────
+  const moraleFields: Array<{ k: string; v: string; mono?: boolean; full?: boolean }> = isMorale ? [
+    ...(has(form.formeJuridique) ? [{ k: "Forme juridique", v: optLabel(FORME_JURIDIQUE_OPTIONS, form.formeJuridique) }] : []),
+    ...(has(form.siren) ? [{ k: "SIREN", v: form.siren, mono: true }] : []),
+    ...(has(form.dateConstitution) ? [{ k: "Date de constitution", v: fmtDateShort(form.dateConstitution), mono: true }] : []),
+    ...(has(form.activitePrincipale) ? [{ k: "Activité principale", v: form.activitePrincipale, full: true }] : []),
+    ...(has(form.nomGerant) ? [{ k: "Gérant / représentant légal", v: form.nomGerant, full: true }] : []),
+  ] : [];
 
-  // Header réutilisable
+  // ─── Pièce d'identité (détaillée) ───────────────────────────────────
+  const pieceIdFields: Array<{ k: string; v: string; mono?: boolean }> = [
+    ...(has(form.pieceIdentiteType) ? [{ k: "Type de pièce", v: optLabel(PIECE_IDENTITE_TYPES, form.pieceIdentiteType) }] : []),
+    ...(has(form.pieceIdentiteNumero) ? [{ k: "Numéro", v: form.pieceIdentiteNumero, mono: true }] : []),
+    ...(has(form.pieceIdentiteExpiration) ? [{ k: "Date d'expiration", v: fmtDateShort(form.pieceIdentiteExpiration), mono: true }] : []),
+    ...(has(form.pieceIdentiteAutorite) ? [{ k: "Autorité de délivrance", v: form.pieceIdentiteAutorite }] : []),
+  ];
+
+  // ─── PPE détail ──────────────────────────────────────────────────────
+  const ppeClient = form.ppe === true;
+  const ppeProche = form.ppeProcheDetecte === true;
+
+  // Header / footer réutilisables
   const headerHtml = (tag: string) => `
   <header class="doc-head">
     <div class="brand">
-      <div class="logo"></div>
+      <div class="logo">${klarisLogoSvg(36)}</div>
       <div class="name">Klaris</div>
       <div class="tag">${escapeHtml(tag)}</div>
     </div>
@@ -97,6 +142,17 @@ export function buildKycHtml(opts: BuildKycOpts): string {
     <span class="gen-tag">${withHash ? `SHA-256 · ${shortHash(hash)}  ·  ` : ""}Généré par <span class="lk">Klaris</span> · Page ${pageNum} / ${totalPages}</span>
   </footer>`;
 
+  // Render commun pour une grille de champs
+  const renderGrid = (fields: Array<{ k: string; v: string; mono?: boolean; full?: boolean }>) => `
+    <div class="grid">
+      ${fields.map((f) => `
+        <div class="field"${f.full ? ' style="grid-column:1 / -1"' : ''}>
+          <span class="k">${escapeHtml(f.k)}</span>
+          <span class="v${f.mono ? " mono" : ""}">${escapeHtml(f.v)}</span>
+        </div>
+      `).join("")}
+    </div>`;
+
   return `<!doctype html>
 <html lang="fr">
 <head>
@@ -106,30 +162,40 @@ export function buildKycHtml(opts: BuildKycOpts): string {
 </head>
 <body>
 
-<!-- =================== PAGE 1 — STATUT + IDENTITÉ + OPÉRATION =================== -->
+<!-- =================== PAGE 1 — STATUT + IDENTITÉ =================== -->
 <article class="page">
   ${headerHtml("KYC")}
 
   <div class="title-row">
     <div>
       <h1 class="doc-title">Fiche Know Your<br/>Customer (KYC)</h1>
-      <div class="doc-sub">Déclarations et informations recueillies auprès du client lors de l'entrée en relation. Données vérifiées et chiffrées (TLS 1.3 + AES-256).</div>
+      <div class="doc-sub">Déclarations et informations recueillies auprès du client lors de l'entrée en relation. Données chiffrées (TLS 1.3 + AES-256), hébergées en France.</div>
     </div>
     <div class="stamp"><span class="pulse"></span>Vérifié par Klaris</div>
   </div>
 
-  <section class="verdict ok">
+  <section class="verdict ${allRequiredOk ? "ok" : "warn"}">
     <div class="glow"></div>
     <div class="vlabel"><span class="ic"></span>Statut du dossier</div>
-    <h2>${piecesProvided === pieces.length ? "Dossier complet" : "Dossier en cours"}</h2>
-    <p class="lead">${piecesProvided === pieces.length ? "Toutes les pièces requises ont été collectées et vérifiées. Le dossier est prêt pour évaluation Tracfin." : "Certaines pièces sont en attente. Le dossier sera prêt pour évaluation une fois complété."}</p>
-    <div class="progress-row">
-      <div class="progress"><span style="width:${piecesPct}%"></span></div>
-      <div class="pct">${piecesPct}%</div>
+    <h2>${allRequiredOk ? "Dossier complet" : "Pièces obligatoires en attente"}</h2>
+    <p class="lead">${allRequiredOk
+      ? "Toutes les pièces obligatoires ont été collectées. Le dossier est prêt pour évaluation LCB-FT."
+      : `Il manque ${piecesRequired - piecesRequiredOk} pièce(s) obligatoire(s) pour finaliser ce dossier.`}</p>
+
+    <!-- Compteurs factuels (remplace l'ancienne progress bar arbitraire) -->
+    <div class="signal-row">
+      <div class="signal ${allRequiredOk ? "ok" : "warn"}">
+        <span class="d"></span>
+        <b>${piecesRequiredOk} / ${piecesRequired}</b> pièce${piecesRequired > 1 ? "s" : ""} obligatoire${piecesRequired > 1 ? "s" : ""}
+      </div>
+      <div class="signal ${form.consentementRgpd ? "ok" : "crit"}">
+        <span class="d"></span>
+        Consentement RGPD ${form.consentementRgpd ? "donné" : "manquant"}
+      </div>
     </div>
+
     <div class="stat-row">
-      <div class="stat">Pièces · <b>${piecesProvided} / ${pieces.length}</b></div>
-      <div class="stat">Champs remplis · <b>${fieldsFilled} / ${fieldsFilled}</b></div>
+      <div class="stat">Pièces totales · <b>${piecesProvided} / ${pieces.length}</b></div>
       <div class="stat">Source · <b>Lien client sécurisé</b></div>
     </div>
   </section>
@@ -140,55 +206,125 @@ export function buildKycHtml(opts: BuildKycOpts): string {
       <span class="ttl">Identité du client</span>
       <span class="accent"></span>
     </div>
+    ${renderGrid(idFields)}
+  </section>
+
+  ${isMorale && moraleFields.length > 0 ? `
+  <section class="section">
+    <div class="section-head">
+      <span class="num">02</span>
+      <span class="ttl">Informations société</span>
+      <span class="accent"></span>
+    </div>
+    ${renderGrid(moraleFields)}
+  </section>` : ""}
+
+  ${footerHtml(1, 3)}
+</article>
+
+<!-- =================== PAGE 2 — PIÈCE D'IDENTITÉ + PPE + BE + OPÉRATION =================== -->
+<article class="page">
+  ${headerHtml("KYC · suite")}
+
+  ${pieceIdFields.length > 0 ? `
+  <section class="section" style="margin-top:14px">
+    <div class="section-head">
+      <span class="num">${isMorale ? "03" : "02"}</span>
+      <span class="ttl">Pièce d'identité (Arrêté 6 janvier 2021)</span>
+      <span class="accent"></span>
+    </div>
+    ${renderGrid(pieceIdFields)}
+  </section>` : ""}
+
+  <section class="section">
+    <div class="section-head">
+      <span class="num">${isMorale ? "04" : "03"}</span>
+      <span class="ttl">Personne politiquement exposée (PPE)</span>
+      <span class="accent"></span>
+    </div>
     <div class="grid">
-      ${idFields.map((f) => `
-        <div class="field"${f.full ? ' style="grid-column:1 / -1"' : ''}>
-          <span class="k">${escapeHtml(f.k)}</span>
-          <span class="v${f.mono ? " mono" : ""}">${escapeHtml(f.v)}</span>
-        </div>
-      `).join("")}
+      <div class="field">
+        <span class="k">${isMorale ? "Représentant PPE ?" : "Client PPE ?"}</span>
+        <span class="v">${form.ppe === null ? "Non renseigné" : ppeClient ? "Oui — vigilance renforcée" : "Non"}</span>
+      </div>
+      <div class="field">
+        <span class="k">Proche d'une PPE ?</span>
+        <span class="v">${form.ppeProcheDetecte === null ? "Non renseigné" : ppeProche ? "Oui — vigilance renforcée" : "Non"}</span>
+      </div>
+      ${ppeClient && has(form.ppePrecisions) ? `
+      <div class="field" style="grid-column:1 / -1">
+        <span class="k">Précisions sur la fonction</span>
+        <span class="v">${escapeHtml(form.ppePrecisions)}</span>
+      </div>` : ""}
+      ${ppeProche && has(form.ppeProchePrecisions) ? `
+      <div class="field" style="grid-column:1 / -1">
+        <span class="k">Précisions sur le proche</span>
+        <span class="v">${escapeHtml(form.ppeProchePrecisions)}</span>
+      </div>` : ""}
     </div>
   </section>
 
-  ${footerHtml(1, 2)}
+  ${isMorale && form.beneficiairesEffectifsJson.length > 0 ? `
+  <section class="section">
+    <div class="section-head">
+      <span class="num">05</span>
+      <span class="ttl">Bénéficiaires effectifs (art. R.561-1 CMF)</span>
+      <span class="accent"></span>
+    </div>
+    <div class="criteria">
+      ${form.beneficiairesEffectifsJson.map((be, i) => `
+        <div class="crit">
+          <div class="lbl">
+            <div class="ix">${String(i + 1).padStart(2, "0")}</div>
+            <div>
+              <div class="name">${escapeHtml(be.nom || "—")}</div>
+              <div class="meta-line">${has(be.pctDetention) ? `${escapeHtml(be.pctDetention)}% du capital` : ""} ${has(be.typeControle) ? ` · ${escapeHtml(optLabel(TYPE_CONTROLE_BE_OPTIONS, be.typeControle))}` : ""}</div>
+            </div>
+          </div>
+          <span class="badge violet"><span class="d"></span>BE déclaré</span>
+        </div>
+      `).join("")}
+    </div>
+  </section>` : ""}
+
+  <section class="section">
+    <div class="section-head">
+      <span class="num">${isMorale ? "06" : "04"}</span>
+      <span class="ttl">L'opération immobilière</span>
+      <span class="accent"></span>
+    </div>
+    <div class="tx-grid">
+      ${has(form.typeBien) ? `<div class="tx-card"><div class="k">Type de bien</div><div class="v">${escapeHtml(optLabel(TYPE_BIEN_OPTIONS, form.typeBien))}</div></div>` : ""}
+      ${has(form.lieuBien) ? `<div class="tx-card"><div class="k">Adresse du bien</div><div class="v">${escapeHtml(form.lieuBien)}</div></div>` : ""}
+      ${has(form.montantOperation) ? `<div class="tx-card"><div class="k">Montant</div><div class="v">${formatMontant(form.montantOperation)} €</div></div>` : ""}
+      ${has(form.modeFinancement) ? `<div class="tx-card"><div class="k">Mode de financement</div><div class="v">${escapeHtml(optLabel(MODE_FINANCEMENT_OPTIONS, form.modeFinancement))}</div></div>` : ""}
+      ${has(form.modePaiement) ? `<div class="tx-card"><div class="k">Mode de paiement</div><div class="v">${escapeHtml(optLabel(MODE_PAIEMENT_OPTIONS, form.modePaiement))}</div></div>` : ""}
+      ${has(form.origineFonds) ? `<div class="tx-card"><div class="k">Origine principale des fonds</div><div class="v">${escapeHtml(optLabel(ORIGINE_FONDS_OPTIONS, form.origineFonds))}</div></div>` : ""}
+    </div>
+
+    ${(has(form.origineFondsVenteAdresse) || has(form.origineFondsDonateur) || has(form.origineFondsLienDefunt) || has(form.origineFondsPrecisions)) ? `
+    <div class="reco" style="margin-top:14px">
+      <div class="label">Détails sur l'origine des fonds</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;font-size:13px;color:var(--ink-2);line-height:1.55">
+        ${has(form.origineFondsVenteAdresse) ? `<div><b>Bien vendu :</b> ${escapeHtml(form.origineFondsVenteAdresse)}</div>` : ""}
+        ${has(form.origineFondsDonateur) ? `<div><b>Donateur :</b> ${escapeHtml(form.origineFondsDonateur)}</div>` : ""}
+        ${has(form.origineFondsLienDefunt) ? `<div><b>Défunt :</b> ${escapeHtml(form.origineFondsLienDefunt)}</div>` : ""}
+        ${has(form.origineFondsPrecisions) ? `<div><b>Commentaires :</b> ${escapeHtml(form.origineFondsPrecisions)}</div>` : ""}
+      </div>
+    </div>` : ""}
+  </section>
+
+  ${footerHtml(2, 3)}
 </article>
 
-<!-- =================== PAGE 2 — OPÉRATION + PIÈCES + DÉCLARATION =================== -->
+<!-- =================== PAGE 3 — PIÈCES + DÉCLARATION + CONSENTEMENT =================== -->
 <article class="page">
   ${headerHtml("KYC · suite")}
 
   <section class="section" style="margin-top:14px">
     <div class="section-head">
-      <span class="num">02</span>
-      <span class="ttl">Informations sur l'opération</span>
-      <span class="accent"></span>
-    </div>
-    <div class="tx-grid">
-      <div class="tx-card">
-        <div class="k">Origine des fonds</div>
-        <div class="v">${escapeHtml(labelOf("origineFonds", form.origineFonds))}</div>
-      </div>
-      <div class="tx-card">
-        <div class="k">Montage financier</div>
-        <div class="v">${escapeHtml(labelOf("montageFinancier", form.montageFinancier))}</div>
-      </div>
-      ${form.typeBien ? `
-      <div class="tx-card">
-        <div class="k">Type de bien</div>
-        <div class="v">${escapeHtml(labelOf("typeBien", form.typeBien))}</div>
-      </div>` : ""}
-      ${form.montantTransaction ? `
-      <div class="tx-card">
-        <div class="k">Montant</div>
-        <div class="v">${formatMontant(form.montantTransaction)} €</div>
-      </div>` : ""}
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="section-head">
-      <span class="num">03</span>
-      <span class="ttl">Pièces justificatives fournies</span>
+      <span class="num">${isMorale ? "07" : "05"}</span>
+      <span class="ttl">Pièces justificatives</span>
       <span class="accent"></span>
     </div>
     <div class="docs-grid">
@@ -197,11 +333,11 @@ export function buildKycHtml(opts: BuildKycOpts): string {
           <div class="left">
             <div class="icn">${p.icon}</div>
             <div>
-              <div class="k">${escapeHtml(p.key)}</div>
-              <div class="v">${escapeHtml(p.label)}</div>
+              <div class="k">${escapeHtml(p.key)}${p.required ? " *" : ""}</div>
+              <div class="v">${p.provided ? "Document fourni" : p.required ? "Manquante (obligatoire)" : "Non fournie"}</div>
             </div>
           </div>
-          <span class="badge ${p.provided ? "ok" : "crit"}"><span class="d"></span>${p.provided ? "Fournie" : "Manquante"}</span>
+          <span class="badge ${p.provided ? "ok" : p.required ? "crit" : "warn"}"><span class="d"></span>${p.provided ? "Fournie" : p.required ? "Manquante" : "Optionnelle"}</span>
         </div>
       `).join("")}
     </div>
@@ -209,15 +345,33 @@ export function buildKycHtml(opts: BuildKycOpts): string {
 
   <section class="section">
     <div class="section-head">
-      <span class="num">04</span>
+      <span class="num">${isMorale ? "08" : "06"}</span>
+      <span class="ttl">Consentement RGPD</span>
+      <span class="accent"></span>
+    </div>
+    <div class="decl">
+      <p><b>Information sur le traitement des données personnelles</b> — Le client a pris connaissance de la finalité du traitement (obligations LCB-FT, art. L.561-1 et s. CMF), de la base légale (obligation légale), de la durée de conservation (5 ans, art. L.561-12-1 CMF), de l'hébergement en France et en Union Européenne, et de ses droits d'accès, rectification, opposition (limitée par l'obligation légale) et réclamation auprès de la CNIL.</p>
+      <div class="sig">
+        <div>
+          <div class="k">Consentement</div>
+          <div class="name">${form.consentementRgpd ? "✓ Donné" : "✗ Manquant"} · mention version ${MENTION_CNIL_VERSION}</div>
+        </div>
+        <div class="hash">${sigDate} · ${sigTime}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="num">${isMorale ? "09" : "07"}</span>
       <span class="ttl">Déclaration sur l'honneur</span>
       <span class="accent"></span>
     </div>
     <div class="decl">
-      <p>Je, soussigné <b>${escapeHtml(form.nomPrenom || "—")}</b>, certifie l'exactitude des informations renseignées et m'engage à signaler à Klaris tout changement substantiel dans ma situation, conformément aux obligations LCB-FT (art. L.561-1 et suivants du Code monétaire et financier).</p>
+      <p>Je, soussigné <b>${escapeHtml(form.nomPrenom || "—")}</b>, certifie l'exactitude des informations et pièces renseignées dans la présente fiche, et m'engage à signaler à mon conseiller tout changement substantiel dans ma situation, conformément aux obligations LCB-FT (art. L.561-5-1 du Code monétaire et financier).</p>
       <div class="sig">
         <div>
-          <div class="k">Signé électroniquement</div>
+          <div class="k">Signé électroniquement par</div>
           <div class="name">${escapeHtml(form.nomPrenom || "—")} · ${sigDate} · ${sigTime}</div>
         </div>
         <div class="hash">SHA-256 · ${shortHash(hash)}</div>
@@ -225,7 +379,7 @@ export function buildKycHtml(opts: BuildKycOpts): string {
     </div>
   </section>
 
-  ${footerHtml(2, 2, true)}
+  ${footerHtml(3, 3, true)}
 </article>
 
 </body>

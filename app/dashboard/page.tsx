@@ -5,8 +5,7 @@ import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
 import type { Niveau } from "@/lib/tracfin";
 import { V1_TO_NIVEAU } from "@/lib/tracfin";
-import { getSubscriptionStatus } from "@/lib/subscription";
-import Sidebar from "@/components/dashboard/Sidebar";
+import { getSubscriptionStatus, getSeenGuideAt } from "@/lib/subscription";
 import DashboardClient, { type DossierItem } from "@/components/dashboard/DashboardClient";
 import { listDossierFiles, type DossierFile, type KycFilesRow } from "@/lib/dossier-files";
 import "./dashboard.css";
@@ -19,6 +18,10 @@ export default async function DashboardPage() {
 
   // Lazy-init essai 14j au 1er accès
   const sub = await getSubscriptionStatus(userId);
+
+  // Guide pédagogique LCB-FT : vu ou pas
+  const seenGuideAt = await getSeenGuideAt(userId);
+  const showGuide = seenGuideAt === null;
 
   // Dossiers
   const rows = (await sql`
@@ -66,23 +69,19 @@ export default async function DashboardPage() {
   return (
     <div className="dashboard-root">
       <div className="app">
-        <Sidebar
-          counts={counts}
-          subscription={{
-            isActive: sub.isActive,
-            isTrialing: sub.isTrialing,
-            state: sub.state,
-            daysLeft: sub.daysLeft,
-          }}
-          currentScreen="dossiers"
-        />
-
         <main className="main">
           <DashboardClient
             dossiers={rows}
             counts={counts}
             canCreate={sub.isActive}
             filesByDossier={filesByDossier}
+            showGuide={showGuide}
+            subscription={{
+              isActive: sub.isActive,
+              isTrialing: sub.isTrialing,
+              state: sub.state,
+              daysLeft: sub.daysLeft,
+            }}
           />
         </main>
       </div>

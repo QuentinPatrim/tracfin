@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { Mail, Send, ChevronRight, Play } from "lucide-react";
+import KlarisLogo from "@/components/ui/KlarisLogo";
 
 type Slide = "dashboard" | "form" | "report";
 
@@ -11,13 +12,18 @@ export default function HeroCarousel() {
   const [active, setActive] = useState<Slide>("dashboard");
   const [hover, setHover] = useState(false);
 
+  // Rotation manuelle uniquement : on retire l'auto-play qui distrayait au-dessus
+  // de la ligne de flottaison. L'utilisateur reprend le contrôle via les dots.
   useEffect(() => {
+    // Rotation lente et discrète (10s) pour montrer qu'il y a plusieurs slides,
+    // sans agresser le visiteur. Mise en pause au hover.
+    if (hover) return;
     const order: Slide[] = ["dashboard", "form", "report"];
     const id = setInterval(() => {
       setActive((s) => order[(order.indexOf(s) + 1) % order.length]);
-    }, 4500);
+    }, 10000);
     return () => clearInterval(id);
-  }, []);
+  }, [hover]);
 
   const openDemo = () => window.dispatchEvent(new Event("klaris:open-demo"));
 
@@ -28,7 +34,7 @@ export default function HeroCarousel() {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       aria-label="Voir la démo guidée"
-      className="relative w-full h-[580px] flex items-center justify-center cursor-pointer group bg-transparent border-0 p-0 text-left"
+      className="relative w-full h-[440px] sm:h-[500px] md:h-[560px] flex items-center justify-center cursor-pointer group bg-transparent border-0 p-0 text-left"
     >
       {/* Hover overlay : Play badge centré */}
       <div
@@ -383,16 +389,7 @@ function ReportMockup() {
         {/* Header brand + meta */}
         <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#EDE9F4]">
           <div className="flex items-center gap-2.5">
-            {/* Logo conique façon maquette */}
-            <div className="relative w-7 h-7 rounded-full"
-              style={{
-                background: "conic-gradient(from 220deg, #7C3AED, #A855F7 30%, #EC4899 60%, #7C3AED)",
-                boxShadow: "0 4px 12px rgba(124,58,237,0.30)",
-              }}
-            >
-              <div className="absolute inset-[6px] rounded-full bg-white" />
-              <div className="absolute inset-[9px] rounded-full" style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)" }} />
-            </div>
+            <KlarisLogo size={28} />
             <div className="text-[15px] font-extrabold tracking-tight">Klaris</div>
             <div
               className="ml-1 px-2 py-0.5 rounded-full text-[8px] font-bold tracking-[0.16em] uppercase"

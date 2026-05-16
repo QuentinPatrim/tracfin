@@ -93,9 +93,10 @@
 .num   { font-variant-numeric: tabular-nums; }
 
 /* ───────────────────────── LAYOUT ───────────────────────── */
+/* Layout v2 : full-width, plus de sidebar */
 .app {
-  display: grid;
-  grid-template-columns: 248px 1fr;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   position: relative;
   z-index: 1;
@@ -104,6 +105,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  flex: 1;
 }
 .screen {
   padding: 0 32px 80px 32px;
@@ -295,6 +297,132 @@
 }
 .topbar-l { min-width: 0; }
 .topbar-r { display: flex; align-items: center; gap: 10px; }
+
+/* ───────────────────── TOPBAR V2 (full-width, absorbe sidebar) ───────────────────── */
+.topbar-v2 {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: linear-gradient(to bottom, rgba(250,250,255,0.92) 70%, rgba(250,250,255,0.0));
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  border-bottom: 1px solid rgba(124,58,237,0.06);
+}
+
+.topbar-v2-row1 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 32px 12px 32px;
+  border-bottom: 1px solid rgba(124,58,237,0.05);
+}
+
+.topbar-v2-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--k-fg);
+  margin-right: 8px;
+}
+.topbar-v2-brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--k-fg);
+}
+
+.topbar-v2-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+.topbar-v2-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--k-muted);
+  text-decoration: none;
+  transition: background .15s, color .15s;
+}
+.topbar-v2-nav-link:hover {
+  background: rgba(124,58,237,0.05);
+  color: var(--k-fg);
+}
+.topbar-v2-nav-link.active {
+  background: rgba(124,58,237,0.10);
+  color: #6d28d9;
+  font-weight: 600;
+}
+
+.topbar-v2-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-v2-sub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  border: 1px solid;
+  font-size: 12px;
+  text-decoration: none;
+  transition: transform .15s, background .15s;
+}
+.topbar-v2-sub-badge:hover {
+  transform: translateY(-1px);
+}
+
+.topbar-v2-icon-btn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  border: 1px solid var(--k-line);
+  background: rgba(255,255,255,0.6);
+  color: var(--k-muted);
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.topbar-v2-icon-btn:hover {
+  background: rgba(124,58,237,0.06);
+  color: #6d28d9;
+  border-color: rgba(124,58,237,0.25);
+}
+
+.topbar-v2-row2 {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 32px 16px 32px;
+}
+.topbar-v2-title-block {
+  min-width: 0;
+  flex: 1;
+}
+.topbar-v2-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Responsive très basique — version mobile détaillée à venir au chantier suivant */
+@media (max-width: 800px) {
+  .topbar-v2-row1 { padding: 12px 16px; flex-wrap: wrap; }
+  .topbar-v2-row2 { padding: 14px 16px; flex-direction: column; align-items: stretch; }
+  .topbar-v2-nav { flex: 0 1 auto; }
+  .topbar-v2-sub-badge span { display: none; }
+}
 .page-title {
   font-size: 22px; font-weight: 700; margin: 0; letter-spacing: -0.025em;
   background: linear-gradient(90deg, #0F172A 0%, #4C1D95 60%, #7C3AED 100%);
@@ -425,6 +553,32 @@
 }
 .ghost-btn.small { padding: 7px 11px; font-size: 12px; }
 .ghost-btn.block { width: 100%; justify-content: center; }
+
+/* Bouton "Guide LCB-FT" en bas de sidebar */
+.side-guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 8px 11px;
+  border-radius: 9px;
+  border: 1px dashed rgba(124,58,237,0.22);
+  background: rgba(124,58,237,0.04);
+  color: #6d28d9;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  justify-content: center;
+  transition: border-color .15s, background .15s, color .15s, transform .15s;
+}
+.side-guide-btn:hover {
+  border-color: rgba(124,58,237,0.45);
+  background: rgba(124,58,237,0.08);
+  color: #5b21b6;
+  transform: translateY(-1px);
+}
+.side-guide-btn:active { transform: translateY(0); }
 
 /* ───────────────────────── CARDS (glass) ───────────────────────── */
 .card {
@@ -712,13 +866,96 @@
 .preview-tx-amt { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--k-fg-2); }
 .preview-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 
-/* responsive */
-@media (max-width: 1280px) {
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE — refonte complète après suppression de la sidebar
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Tablette : passage du split en stack vertical */
+@media (max-width: 1100px) {
   .split { grid-template-columns: 1fr; }
   .preview { position: static; max-height: none; }
 }
-@media (max-width: 980px) {
-  .app { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
-  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+
+/* Tablette / mobile large : KPI en 2x2, padding réduit */
+@media (max-width: 900px) {
+  .screen { padding: 0 18px 60px 18px; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kpi { padding: 14px 16px 16px 16px; }
+
+  /* Topbar v2 : row 1 wrap, brand-name reste, nav cachée → menu compact */
+  .topbar-v2-row1 { padding: 10px 16px; }
+  .topbar-v2-row2 { padding: 12px 16px 16px 16px; flex-direction: column; align-items: stretch; gap: 12px; }
+  .topbar-v2-tools { width: 100%; }
+  .topbar-v2-tools .search { flex: 1; }
+
+  /* Alertes : padding réduit */
+  .alerts { padding: 12px 14px; }
+}
+
+/* Mobile : KPI en 2 colonnes mais cartes plus serrées, filtres scroll horizontal */
+@media (max-width: 640px) {
+  .screen { padding: 0 14px 60px 14px; gap: 16px; }
+
+  /* Topbar : brand + actions seulement, nav rangée sur ligne dédiée scrollable */
+  .topbar-v2-row1 { padding: 10px 14px; gap: 10px; flex-wrap: wrap; }
+  .topbar-v2-brand-name { font-size: 14px; }
+  .topbar-v2-nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .topbar-v2-nav::-webkit-scrollbar { display: none; }
+  .topbar-v2-nav-link { flex-shrink: 0; padding: 6px 10px; font-size: 12.5px; }
+  .topbar-v2-actions { margin-left: auto; gap: 8px; }
+  .topbar-v2-sub-badge { padding: 5px 8px; font-size: 11px; }
+
+  /* Row 2 : titre + tools en stack */
+  .topbar-v2-row2 { padding: 12px 14px 14px 14px; gap: 12px; }
+  .page-title { font-size: 20px; }
+  .page-sub { font-size: 12.5px; }
+
+  /* KPI : labels plus petits */
+  .kpi { padding: 12px 14px; }
+  .kpi-label { font-size: 10px; }
+  .kpi-value { font-size: 22px; }
+
+  /* Filtres : scroll horizontal sans wrap (plus de risque d'overflow) */
+  .seg { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .seg::-webkit-scrollbar { display: none; }
+  .seg-btn { flex-shrink: 0; }
+
+  /* Rows liste : padding/gap réduits, badge plus compact */
+  .row.card-row { padding: 11px 12px; gap: 10px; }
+  .row-l { gap: 10px; }
+  .row-avatar { width: 32px; height: 32px; font-size: 12px; }
+  .row-title { font-size: 13px; }
+  .row-sub { font-size: 11px; }
+  .row-r { gap: 8px; }
+  .badge { padding: 4px 9px; font-size: 10px; }
+
+  /* Alertes : empilent verticalement, pills plus compactes */
+  .alerts { padding: 11px 12px; }
+  .alerts-list { gap: 6px; }
+  .alert-pill { padding: 6px 9px; font-size: 12px; }
+
+  /* Preview : padding réduit, actions en colonne pleine largeur */
+  .preview { padding: 14px; }
+  .preview-h { gap: 10px; }
+  .preview-name { font-size: 15px; }
+  .preview-actions { gap: 8px; }
+  .preview-tx { font-size: 12px; }
+
+  /* Boutons : tailles tactiles min 40px de haut */
+  .btn-grad, .ghost-btn { min-height: 40px; }
+  .btn-grad.small, .ghost-btn.small { min-height: 36px; }
+
+  /* Modale suppression : déjà responsive (max-width 480px + padding 16px) */
+}
+
+/* Très petit mobile (≤380px) : KPI sur 1 seule colonne */
+@media (max-width: 380px) {
+  .kpi-row { grid-template-columns: 1fr; }
 }

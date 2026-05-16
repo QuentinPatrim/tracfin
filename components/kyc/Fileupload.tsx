@@ -1,43 +1,52 @@
-// components/kyc/FileUpload.tsx — Upload via /api/upload (Scaleway Object Storage Paris)
+// components/kyc/Fileupload.tsx — Upload mobile-first (caméra native + galerie)
+// Pour le KYC public : appel à /api/upload qui pousse vers Scaleway Paris.
 
 "use client";
 
 import { useState, useRef } from "react";
-import { Upload, FileText, Image as ImageIcon, X, Check, Loader2 } from "lucide-react";
+import { Camera, FolderOpen, FileText, Image as ImageIcon, X, Check, Loader2, RefreshCw } from "lucide-react";
 
 interface Props {
   label: string;
   required?: boolean;
-  value: string; // storage_key Scaleway, OU ancienne URL https:// (rétro-compat)
+  hint?: string;
+  value: string;
   onChange: (value: string) => void;
   dossierId: string;
-  kycToken?: string; // si présent → mode public (KYC client), sinon Clerk
+  kycToken?: string;
   accept?: string;
+  /** Active le bouton "Prendre une photo" (caméra native sur mobile) */
+  enableCamera?: boolean;
 }
 
 const ACCEPT_DEFAULT = "image/jpeg,image/png,image/webp,image/heic,application/pdf";
+const ACCEPT_IMAGE_ONLY = "image/jpeg,image/png,image/webp,image/heic";
 
 export default function FileUpload({
   label,
   required = false,
+  hint,
   value,
   onChange,
   dossierId,
   kycToken,
   accept = ACCEPT_DEFAULT,
+  enableCamera = true,
 }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [dragOver, setDragOver] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const upload = async (file: File) => {
     if (file.size > 10 * 1024 * 1024) {
-      setError("Fichier trop lourd (max 10 Mo)");
+      setError("Fichier trop lourd (max 10 Mo). Compressez l'image ou choisissez un PDF.");
       return;
     }
     setError(null);
     setUploading(true);
+    setProgress(0);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -45,14 +54,24 @@ export default function FileUpload({
     if (kycToken) formData.append("kycToken", kycToken);
 
     try {
+      // Progress simulé (fetch ne donne pas d'avancement upload)
+      let p = 0;
+      const interval = window.setInterval(() => {
+        p = Math.min(p + Math.random() * 18, 92);
+        setProgress(p);
+      }, 200);
+
       const res = await fetch("/api/upload", { method: "POST", body: formData });
+      window.clearInterval(interval);
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload échoué");
+      if (!res.ok) throw new Error(data.error || "Envoi échoué");
+      setProgress(100);
       onChange(data.key);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur d'envoi");
     } finally {
-      setUploading(false);
+      setTimeout(() => { setUploading(false); setProgress(0); }, 400);
     }
   };
 
@@ -60,7 +79,7 @@ export default function FileUpload({
     if (file) upload(file);
   };
 
-  // ─── Aperçu : URL legacy (https://...) OU /api/files/<key> ────────────────
+  // ─── État affiché ─────────────────────────────────────────────────────
   const isLegacyUrl = value.startsWith("http://") || value.startsWith("https://");
   const previewUrl = !value
     ? ""
@@ -75,78 +94,156 @@ export default function FileUpload({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-[11px] font-semibold text-white/50 uppercase tracking-[0.12em]">
-        {label} {required && <span className="text-red-400">*</span>}
+      <label className="text-[11.5px] font-semibold text-white/65 uppercase tracking-[0.10em]">
+        {label} {required && <span className="text-pink-300">*</span>}
       </label>
 
-      {!value ? (
-        <div
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDragOver(false);
-            handleFile(e.dataTransfer.files[0]);
-          }}
-          className={`relative cursor-pointer rounded-xl border-2 border-dashed transition-all px-6 py-8 flex flex-col items-center gap-3 backdrop-blur-md ${
-            dragOver
-              ? "border-indigo-400/60 bg-indigo-500/10"
-              : "border-white/[0.12] bg-white/[0.03] hover:bg-white/[0.05] hover:border-white/[0.20]"
-          }`}
-        >
-          {uploading ? (
-            <>
-              <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
-              <div className="text-sm text-white/60">Envoi sécurisé en cours...</div>
-            </>
-          ) : (
-            <>
-              <Upload className="w-6 h-6 text-white/40" />
-              <div className="text-sm text-white/60 text-center">
-                <span className="text-indigo-400 font-medium">Cliquez pour choisir</span> ou glissez-déposez
-              </div>
-              <div className="text-[10px] text-white/30 uppercase tracking-widest">PDF, JPG, PNG — max 10 Mo</div>
-            </>
+      {!value && !uploading && (
+        <div className="grid grid-cols-2 gap-2">
+          {enableCamera && (
+            <button
+              type="button"
+              onClick={() => cameraInputRef.current?.click()}
+              className="flex flex-col items-center gap-1.5 px-3 py-4 rounded-xl border transition-all"
+              style={{
+                background: "linear-gradient(180deg, rgba(124,58,237,0.10), rgba(236,72,153,0.04))",
+                borderColor: "rgba(124,58,237,0.28)",
+              }}
+            >
+              <Camera className="w-5 h-5 text-violet-200" />
+              <span className="text-[12.5px] font-semibold text-white">Prendre une photo</span>
+              <span className="text-[10px] text-white/45">Avec votre appareil</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => galleryInputRef.current?.click()}
+            className="flex flex-col items-center gap-1.5 px-3 py-4 rounded-xl border transition-all"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              borderColor: "rgba(255,255,255,0.12)",
+            }}
+          >
+            <FolderOpen className="w-5 h-5 text-white/70" />
+            <span className="text-[12.5px] font-semibold text-white">Choisir un fichier</span>
+            <span className="text-[10px] text-white/45">PDF, JPG, PNG · 10 Mo</span>
+          </button>
+
+          {/* Inputs cachés */}
+          {enableCamera && (
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept={ACCEPT_IMAGE_ONLY}
+              capture="environment"
+              className="hidden"
+              onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+            />
           )}
           <input
-            ref={inputRef}
+            ref={galleryInputRef}
             type="file"
             accept={accept}
             className="hidden"
             onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
           />
         </div>
-      ) : (
-        <div className="relative rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 backdrop-blur-md flex items-center gap-3">
-          {isImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={previewUrl} alt={label} className="w-14 h-14 rounded-lg object-cover border border-white/10" />
-          ) : (
-            <div className="w-14 h-14 rounded-lg bg-white/[0.05] border border-white/10 flex items-center justify-center">
-              {isPdf ? <FileText className="w-6 h-6 text-emerald-400" /> : <ImageIcon className="w-6 h-6 text-emerald-400" />}
-            </div>
-          )}
+      )}
+
+      {/* ─── Upload en cours ──────────────────────────────────── */}
+      {uploading && (
+        <div
+          className="rounded-xl p-4 border flex items-center gap-3"
+          style={{
+            background: "linear-gradient(180deg, rgba(124,58,237,0.08), rgba(236,72,153,0.03))",
+            borderColor: "rgba(124,58,237,0.30)",
+          }}
+        >
+          <Loader2 className="w-5 h-5 text-violet-200 animate-spin shrink-0" />
           <div className="flex-1 min-w-0">
-            <div className="text-sm text-white truncate">{fileName || "Fichier envoyé"}</div>
-            <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 mt-0.5">
-              <Check className="w-3 h-3" />
-              <span>Reçu (chiffré, hébergement Paris)</span>
-              <span className="text-white/30 mx-1">•</span>
-              <a href={previewUrl} target="_blank" rel="noreferrer" className="hover:underline">Voir</a>
+            <div className="text-[12.5px] text-white font-semibold mb-1">Envoi sécurisé…</div>
+            <div className="h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+              <div
+                className="h-full transition-all duration-200"
+                style={{
+                  width: `${Math.round(progress)}%`,
+                  background: "linear-gradient(90deg, #7c3aed, #ec4899)",
+                  boxShadow: "0 0 8px rgba(124,58,237,0.50)",
+                }}
+              />
             </div>
+            <div className="text-[10px] text-white/45 mt-1">{Math.round(progress)} % · chiffré TLS 1.3</div>
           </div>
-          <button
-            type="button"
-            onClick={() => onChange("")}
-            className="w-8 h-8 rounded-lg bg-white/[0.05] hover:bg-red-500/20 hover:text-red-400 text-white/40 flex items-center justify-center transition"
-          >
-            <X className="w-4 h-4" />
-          </button>
         </div>
       )}
 
-      {error && <div className="text-xs text-red-400">{error}</div>}
+      {/* ─── Fichier reçu ─────────────────────────────────────── */}
+      {value && !uploading && (
+        <div
+          className="rounded-xl p-3 border flex items-center gap-3"
+          style={{
+            background: "rgba(16,185,129,0.06)",
+            borderColor: "rgba(16,185,129,0.30)",
+          }}
+        >
+          {isImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={previewUrl}
+              alt={label}
+              className="w-12 h-12 rounded-lg object-cover border border-white/10 shrink-0"
+            />
+          ) : (
+            <div className="w-12 h-12 rounded-lg bg-white/[0.05] border border-white/10 flex items-center justify-center shrink-0">
+              {isPdf ? (
+                <FileText className="w-5 h-5 text-emerald-300" />
+              ) : (
+                <ImageIcon className="w-5 h-5 text-emerald-300" />
+              )}
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <div className="text-[13px] text-white font-medium truncate">
+              {fileName || "Fichier envoyé"}
+            </div>
+            <div className="flex items-center gap-1.5 text-[10.5px] text-emerald-300 mt-0.5">
+              <Check className="w-3 h-3" strokeWidth={3} />
+              <span>Reçu · chiffré · Paris</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                onChange("");
+                // Petit délai puis on relance la prise de photo si c'était par caméra
+                setTimeout(() => cameraInputRef.current?.click(), 50);
+              }}
+              className="w-9 h-9 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white flex items-center justify-center transition border border-white/[0.08]"
+              aria-label="Reprendre"
+              title="Reprendre"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="w-9 h-9 rounded-lg bg-white/[0.04] hover:bg-red-500/20 hover:text-red-300 text-white/60 flex items-center justify-center transition border border-white/[0.08]"
+              aria-label="Supprimer"
+              title="Supprimer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {hint && !error && (
+        <p className="text-[11px] text-white/40 leading-relaxed">{hint}</p>
+      )}
+      {error && (
+        <p className="text-[11.5px] text-pink-300">{error}</p>
+      )}
     </div>
   );
 }

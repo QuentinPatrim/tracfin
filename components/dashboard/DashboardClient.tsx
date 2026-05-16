@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -14,6 +14,11 @@ import {
 import Topbar from "./Topbar";
 import KpiRow from "./KpiRow";
 import DocumentsList from "./DocumentsList";
+import OnboardingGuide from "./OnboardingGuide";
+import DashboardFooter from "./DashboardFooter";
+import { EmptyState } from "./primitives";
+import { FolderPlus, BookOpen } from "lucide-react";
+import MarcheASuivre from "./MarcheASuivre";
 import { NIVEAU_CFG, type Niveau, type StatutKey, V1_TO_NIVEAU } from "@/lib/tracfin";
 import type { DossierFile } from "@/lib/dossier-files";
 
@@ -35,6 +40,13 @@ interface Props {
   counts: { total: number; conformes: number; vigilance: number; critique: number };
   canCreate: boolean;
   filesByDossier: Record<string, DossierFile[]>;
+  showGuide: boolean;
+  subscription: {
+    isActive: boolean;
+    isTrialing: boolean;
+    state: string;
+    daysLeft: number | null;
+  };
 }
 
 type FilterKey = "all" | "attente" | "vigilance" | "critique" | "conforme";
@@ -68,10 +80,18 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export default function DashboardClient({ dossiers, counts, canCreate, filesByDossier }: Props) {
+export default function DashboardClient({ dossiers, counts, canCreate, filesByDossier, showGuide, subscription }: Props) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterKey>("all");
+
+  // ─── Guide pédagogique LCB-FT ────────────────────────────────────────
+  const [guideOpen, setGuideOpen] = useState(showGuide);
+  useEffect(() => {
+    const onOpen = () => setGuideOpen(true);
+    window.addEventListener("klaris:open-guide", onOpen);
+    return () => window.removeEventListener("klaris:open-guide", onOpen);
+  }, []);
 
   // Sélection initiale : 1er dossier (priorité aux KYC reçus, puis critiques)
   const defaultSelected = useMemo(() => {
@@ -145,9 +165,45 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
         onQueryChange={setQuery}
         newHref={newHref}
         canCreate={canCreate}
+        subscription={subscription}
+        currentScreen="dossiers"
       />
 
       <div className="screen dossiers-screen">
+        {counts.total === 0 ? (
+          <div style={{ paddingTop: 24, paddingBottom: 24 }}>
+            <EmptyState
+              icon={FolderPlus}
+              eyebrow="Premier pas"
+              title="Créez votre premier dossier KYC"
+              description={
+                <>
+                  Klaris vous accompagne pas à pas dans la conformité LCB-FT. Créez un dossier
+                  pour un client, envoyez-lui le lien sécurisé, recevez son KYC et obtenez votre
+                  attestation signée — en moins de 10 minutes.
+                </>
+              }
+              primaryAction={
+                <Link href={newHref} className="btn-grad small">
+                  <FolderPlus width={14} height={14} />
+                  {canCreate ? "Créer un dossier" : "Voir les tarifs"}
+                </Link>
+              }
+              secondaryAction={
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("klaris:open-guide"))}
+                  className="ghost-btn small"
+                  style={{ justifyContent: "center" }}
+                >
+                  <BookOpen width={13} height={13} />
+                  Ouvrir le guide LCB-FT
+                </button>
+              }
+            />
+          </div>
+        ) : (
+        <>
         <KpiRow {...counts} />
 
         {alerts.length > 0 && (
@@ -212,22 +268,6 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
                       </div>
                     </div>
                     <div className="row-r">
-                      {d.kyc_status === "received" && d.score_pct > 0 && (
-                        <span className="risk-meter">
-                          <span className="risk-dot" style={{
-                            background: b.tone === "success" ? "#10b981"
-                              : b.tone === "warn" ? "#f59e0b"
-                              : b.tone === "danger" ? "#ef4444" : "#7c3aed"
-                          }} />
-                          <span style={{
-                            color: b.tone === "success" ? "#059669"
-                              : b.tone === "warn" ? "#d97706"
-                              : b.tone === "danger" ? "#dc2626" : "#7c3aed",
-                            fontWeight: 600,
-                          }}>{d.score_pct}</span>
-                          <span className="muted small">/100</span>
-                        </span>
-                      )}
                       <span className={`badge tone-${b.tone}`}>{b.label}</span>
                     </div>
                   </button>
@@ -257,7 +297,12 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
             )}
           </aside>
         </div>
+        </>
+        )}
       </div>
+
+      {/* Footer cohérent (light) */}
+      <DashboardFooter />
 
       {/* ─── Confirmation suppression ─── */}
       {confirmDelete && (
@@ -268,6 +313,13 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
           loading={deleting}
         />
       )}
+
+      {/* ─── Guide pédagogique LCB-FT (1ère visite ou bouton "?" sidebar) ─── */}
+      <OnboardingGuide
+        open={guideOpen}
+        onClose={() => setGuideOpen(false)}
+        onComplete={() => setGuideOpen(false)}
+      />
     </>
   );
 }
@@ -394,7 +446,6 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
   const b = niveauBadge(d);
   const niveau = resolveNiveau(d);
   const cfg = niveau ? NIVEAU_CFG[niveau] : null;
-  const score = d.score_pct;
   const isCritical = niveau === "examen_renforce" || niveau === "interdiction";
 
   return (
@@ -411,21 +462,32 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
         </div>
       </div>
 
-      {/* Score / niveau */}
-      {d.kyc_status === "received" && cfg && (
+      {/* Niveau de vigilance (verdict qualitatif) */}
+      {d.kyc_status === "received" && cfg && niveau && (
         <div>
           <div className="preview-risk-label" style={{ color: b.tone === "success" ? "#059669" : b.tone === "warn" ? "#d97706" : "#dc2626" }}>
             {cfg.label}
           </div>
-          <div className="muted small" style={{ marginBottom: 12 }}>{cfg.ref}</div>
-          <div className="preview-score">
-            <ScoreRing score={score} tone={b.tone} />
-            <div>
-              <div style={{ fontSize: 11, color: "var(--k-muted)", marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>Score de conformité</div>
-              <div style={{ fontSize: 24, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: "var(--k-fg)" }}>{score}<span className="muted small" style={{ fontWeight: 400 }}>/100</span></div>
+          <div className="muted small" style={{ marginBottom: 14 }}>{cfg.ref}</div>
+
+          {/* Disque coloré plein (vert/orange/rouge selon niveau) + action recommandée */}
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+            <NiveauDisc tone={b.tone} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 11, color: "var(--k-muted)", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
+                Verdict
+              </div>
+              <p style={{ margin: 0, fontSize: 13, color: "var(--k-fg-2)", lineHeight: 1.5 }}>{cfg.action}</p>
             </div>
           </div>
-          <p style={{ marginTop: 8, fontSize: 13, color: "var(--k-fg-2)", lineHeight: 1.5 }}>{cfg.action}</p>
+
+          {/* Guide d'actions concret par niveau (compact dans le preview) */}
+          <MarcheASuivre
+            niveau={niveau}
+            dossierId={d.id}
+            clientName={d.nom_prenom}
+            mode="compact"
+          />
         </div>
       )}
 
@@ -443,7 +505,7 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
           lineHeight: 1.5,
         }}>
           <Mail width={14} height={14} style={{ marginTop: 2, flexShrink: 0 }} />
-          <span>Le client n'a pas encore complété sa fiche KYC. Le score sera disponible dès réception.</span>
+          <span>Le client n'a pas encore complété sa fiche KYC. L'analyse sera disponible dès réception.</span>
         </div>
       )}
 
@@ -545,37 +607,38 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
   );
 }
 
-function ScoreRing({ score, tone }: { score: number; tone: "success" | "warn" | "danger" | "pending" }) {
-  const grad =
-    tone === "success" ? { from: "#10b981", to: "#34d399", glow: "rgba(16,185,129,0.45)" }
-    : tone === "warn"  ? { from: "#f59e0b", to: "#fbbf24", glow: "rgba(245,158,11,0.45)" }
-    : tone === "danger"? { from: "#dc2626", to: "#f43f5e", glow: "rgba(220,38,38,0.45)" }
-    : { from: "#7c3aed", to: "#ec4899", glow: "rgba(124,58,237,0.45)" };
-  const R = 26;
-  const C = 2 * Math.PI * R;
-  const offset = C * (1 - score / 100);
-  const gradId = `ring-grad-${tone}`;
+/* Disque coloré plein qui matérialise visuellement le NIVEAU de vigilance.
+   Pas de pourcentage, pas de score — juste la couleur du verdict. */
+function NiveauDisc({ tone }: { tone: "success" | "warn" | "danger" | "pending" }) {
+  const cfg =
+    tone === "success" ? { from: "#10b981", to: "#34d399", glow: "rgba(16,185,129,0.40)" }
+    : tone === "warn"  ? { from: "#f59e0b", to: "#fbbf24", glow: "rgba(245,158,11,0.40)" }
+    : tone === "danger"? { from: "#dc2626", to: "#f43f5e", glow: "rgba(220,38,38,0.40)" }
+    : { from: "#7c3aed", to: "#ec4899", glow: "rgba(124,58,237,0.40)" };
+
   return (
-    <svg width={64} height={64} viewBox="0 0 64 64" className="score-ring" style={{ filter: `drop-shadow(0 0 12px ${grad.glow})` }}>
-      <defs>
-        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={grad.from} />
-          <stop offset="100%" stopColor={grad.to} />
-        </linearGradient>
-      </defs>
-      <circle cx={32} cy={32} r={R} fill="none" stroke="#ebebf2" strokeWidth={5} />
-      <circle
-        cx={32}
-        cy={32}
-        r={R}
-        fill="none"
-        stroke={`url(#${gradId})`}
-        strokeWidth={5}
-        strokeLinecap="round"
-        strokeDasharray={C}
-        strokeDashoffset={offset}
-        style={{ transform: "rotate(-90deg)", transformOrigin: "32px 32px", transition: "stroke-dashoffset 700ms cubic-bezier(.4,0,.2,1)" }}
+    <div
+      style={{
+        width: 56,
+        height: 56,
+        borderRadius: "50%",
+        background: `linear-gradient(135deg, ${cfg.from} 0%, ${cfg.to} 100%)`,
+        boxShadow: `0 0 0 4px ${cfg.glow}, 0 6px 18px ${cfg.glow}, 0 1px 0 rgba(255,255,255,0.40) inset`,
+        flexShrink: 0,
+        position: "relative",
+      }}
+      aria-hidden="true"
+    >
+      {/* Highlight haut pour donner du relief */}
+      <div
+        style={{
+          position: "absolute",
+          top: 6, left: 8, right: 8, height: 18,
+          borderRadius: "50%",
+          background: "linear-gradient(180deg, rgba(255,255,255,0.45), transparent)",
+          opacity: 0.7,
+        }}
       />
-    </svg>
+    </div>
   );
 }

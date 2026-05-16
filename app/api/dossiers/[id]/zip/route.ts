@@ -8,7 +8,7 @@ import JSZip from "jszip";
 
 import { sql } from "@/lib/db";
 import { computeScore } from "@/lib/tracfin";
-import { rowToForm, kycRowToForm } from "@/lib/dossier";
+import { rowToForm, kycRowToKycForm, type KycResponseRowFull } from "@/lib/dossier";
 import { computeContentHash } from "@/lib/pdf-helpers";
 import { renderHtmlPdf } from "@/lib/pdf-renderer";
 import { buildAttestationHtml } from "@/app/pdf-render/attestation-template";
@@ -32,29 +32,8 @@ function slugify(name: string): string {
     .slice(0, 50) || "client";
 }
 
-interface KycRow extends KycFilesRow {
-  type_client: string | null;
-  nom_prenom: string | null;
-  date_naissance: string | null;
-  lieu_naissance: string | null;
-  nationalite: string | null;
-  pays_nationalite: string | null;
-  adresse: string | null;
-  profession: string | null;
-  secteur_activite: string | null;
-  ppe: boolean | null;
-  ppe_proche_detecte: boolean | null;
-  pays_residence_fiscale: string | null;
-  origine_fonds: string | null;
-  origine_fonds_precisions: string | null;
-  mode_financement: string | null;
-  mode_paiement: string | null;
-  montant_operation: string | null;
-  type_bien: string | null;
-  lieu_bien: string | null;
-  consentement_rgpd_at: string | null;
-  submitted_at: string | null;
-}
+// Row du ZIP : tous les champs KYC complets + pièces (URLs)
+type KycRow = KycResponseRowFull & KycFilesRow;
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { userId } = await auth();
@@ -74,17 +53,26 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   }
   const dossier = dossierRows[0];
 
-  // Dernière réponse KYC (données + pièces + horodatage signature)
+  // Dernière réponse KYC (données complètes + pièces + horodatage signature)
   const kycRows = (await sql`
-    SELECT type_client, nom_prenom, date_naissance, lieu_naissance, nationalite,
-           pays_nationalite, adresse, profession, secteur_activite,
-           ppe, ppe_proche_detecte, pays_residence_fiscale,
-           origine_fonds, origine_fonds_precisions, mode_financement, mode_paiement,
-           montant_operation, type_bien, lieu_bien,
-           url_piece_identite, url_justif_domicile, url_avis_imposition,
-           url_justif_revenus, url_justif_origine_fonds,
-           url_kbis, url_statuts, url_cni_gerant, url_bilans, url_rbe,
-           consentement_rgpd_at, submitted_at
+    SELECT
+      type_client, nom_prenom, date_naissance, lieu_naissance, nationalite,
+      pays_nationalite, adresse, profession, secteur_activite,
+      email_contact, telephone,
+      ppe, ppe_precisions, ppe_proche_detecte, ppe_proche_precisions,
+      piece_identite_type, piece_identite_numero, piece_identite_expiration,
+      piece_identite_autorite,
+      forme_juridique, siren, date_constitution, activite_principale, nom_gerant,
+      beneficiaires_effectifs_json,
+      pays_residence_fiscale,
+      origine_fonds, origine_fonds_precisions,
+      origine_fonds_vente_adresse, origine_fonds_donateur, origine_fonds_lien_defunt,
+      mode_financement, mode_paiement, montant_operation,
+      type_bien, lieu_bien,
+      url_piece_identite, url_justif_domicile, url_avis_imposition,
+      url_justif_revenus, url_justif_origine_fonds,
+      url_kbis, url_statuts, url_cni_gerant, url_bilans, url_rbe,
+      consentement_rgpd, consentement_rgpd_at, submitted_at
     FROM kyc_responses
     WHERE dossier_id = ${id}
     ORDER BY submitted_at DESC
@@ -106,12 +94,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     const attHtml = buildAttestationHtml({ form: formForAtt, score, dossierId: id, hash: attHash, generatedAt });
 
     // ─── 2) Fiche KYC PDF (depuis kyc_responses, source de vérité client) ────
-    const formForKyc = kycRowToForm(kyc);
+    const formForKyc = kycRowToKycForm(kyc);
     const signedAt = kyc.consentement_rgpd_at ?? kyc.submitted_at ?? generatedAt;
     const kycHash = createHash("sha256")
       .update(JSON.stringify({
         id, signedAt, nom: formForKyc.nomPrenom, type: formForKyc.typeClient,
         naissance: formForKyc.dateNaissance, adresse: formForKyc.adresse,
+        piece: formForKyc.pieceIdentiteNumero,
       }))
       .digest("hex");
     const kycHtml = buildKycHtml({ form: formForKyc, dossierId: id, hash: kycHash, generatedAt, signedAt });

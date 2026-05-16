@@ -1,20 +1,29 @@
-// app/page.tsx — Landing Klaris
+// app/page.tsx — Landing Klaris (refonte fintech sérieuse · mobile-first)
+// Direction : sécurité juridique au cœur, palette unifiée violet/magenta,
+// pédagogie LCB-FT intégrée, autorités et conformité mises en avant.
 
 "use client";
 
 import Link from "next/link";
 import { useClerk, useAuth } from "@clerk/nextjs";
 import {
-  FileSearch, Lock, Send, Mail, FileDown,
-  Sparkles, ArrowRight, Check, Building2, Briefcase, Scale, ShieldCheck, Play,
+  ArrowRight, Play, Check, ShieldCheck, FileSearch, Lock, Send, Mail, FileDown,
+  Building2, Briefcase, Scale, Landmark, Palette, Gem,
+  BookOpen, Clock, Users, Gavel, MapPin, EyeOff, Server, AlertTriangle, FileText, BadgeCheck,
 } from "lucide-react";
 import FloatingNav from "@/components/landing/FloatingNav";
 import HeroCarousel from "@/components/landing/HeroCarousel";
-import KlarisLogo from "@/components/ui/KlarisLogo";
+import LegalFooter from "@/components/legal/LegalFooter";
+import {
+  Section, SectionHeader, H1, H2, H3, Lede, P, Card, IconCircle, CTA,
+  Eyebrow, LegalRef, Mono,
+} from "@/components/landing/primitives";
 
 export default function LandingPage() {
   const { openSignUp } = useClerk();
   const { isSignedIn } = useAuth();
+
+  const openDemo = () => window.dispatchEvent(new Event("klaris:open-demo"));
 
   return (
     <div
@@ -23,164 +32,322 @@ export default function LandingPage() {
     >
       <BackgroundOrbs />
       <NoiseTexture />
-
       <FloatingNav />
 
-      {/* HERO */}
-      <section className="relative max-w-7xl mx-auto px-6 pt-36 pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+      {/* ───────── HERO ───────── */}
+      <section className="relative max-w-7xl mx-auto px-5 sm:px-6 pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr,1fr] gap-10 lg:gap-12 items-center">
           <div className="relative z-10">
-            <FloatingChip>
-              <Sparkles className="w-3.5 h-3.5 text-violet-300" />
-              <span>La conformité LCB-FT, simplifiée</span>
-            </FloatingChip>
+            <Eyebrow>Conformité LCB-FT · Souveraineté UE</Eyebrow>
 
-            <h1 className="text-[42px] md:text-[58px] lg:text-[68px] leading-[1.04] font-extrabold tracking-[-0.035em] mb-6 mt-6">
-              Protégez votre agence
-              <br />
-              avec des audits{" "}
+            <h1
+              className="mt-5 text-[36px] sm:text-[46px] md:text-[56px] lg:text-[62px] leading-[1.03] font-bold tracking-tight"
+              style={{
+                background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.68) 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              Tracez vos dossiers KYC{" "}
               <span
-                className="inline-block bg-clip-text text-transparent"
                 style={{
-                  backgroundImage: "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)",
-                  backgroundSize: "200% 200%",
-                  animation: "gradShift 6s ease infinite",
+                  background: "linear-gradient(135deg, #a78bfa 0%, #f0abfc 100%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
                 }}
               >
-                LCB-FT instantanés
+                comme l'exige la loi.
               </span>
+              <br className="hidden sm:block" /> Sans stress.
             </h1>
 
-            <p className="text-base md:text-lg text-white/55 mb-8 leading-relaxed max-w-xl">
-              Générez des fiches KYC sécurisées, collectez les pièces justificatives et obtenez un score de risque Tracfin automatique pour chaque transaction.
+            <p className="mt-5 sm:mt-6 text-[15px] sm:text-[17px] text-white/65 leading-relaxed max-w-xl">
+              Klaris est la plateforme française de conformité LCB-FT pour les professionnels
+              assujettis. Identification client, scoring de risque, conservation 5 ans, attestations
+              opposables — tout ce qu'attend un contrôle DGCCRF, ACPR ou de votre Ordre.
             </p>
 
-            <div className="flex flex-wrap gap-3 mb-10">
+            <div className="mt-7 sm:mt-8 flex flex-wrap gap-3">
               {isSignedIn ? (
-                <CTAButton href="/dashboard" primary>
-                  Mon dashboard
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-                </CTAButton>
+                <CTA href="/dashboard" variant="primary" size="lg">
+                  Mon tableau de bord
+                  <ArrowRight width={15} height={15} />
+                </CTA>
               ) : (
                 <>
-                  <CTAButton
-                    onClick={() => window.dispatchEvent(new Event("klaris:open-demo"))}
-                    primary
-                  >
-                    <Play className="w-4 h-4" fill="currentColor" strokeWidth={0} />
+                  <CTA onClick={openDemo} variant="primary" size="lg">
+                    <Play width={13} height={13} fill="currentColor" strokeWidth={0} />
                     Voir la démo
-                  </CTAButton>
-                  <CTAButton onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}>
-                    Essayer gratuitement
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-                  </CTAButton>
+                  </CTA>
+                  <CTA onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })} variant="ghost" size="lg">
+                    Essayer 14 jours gratuits
+                    <ArrowRight width={15} height={15} />
+                  </CTA>
                 </>
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[11px] text-white/40 uppercase tracking-[0.15em] font-semibold">
+            <div className="mt-7 sm:mt-9 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[11.5px] text-white/55">
+              <TrustItem>Sans carte bancaire</TrustItem>
+              <TrustItem>Données 100% UE</TrustItem>
               <TrustItem>Conforme RGPD</TrustItem>
-              <TrustItem>Sans CB requise</TrustItem>
-              <TrustItem>Hébergé en Europe</TrustItem>
             </div>
           </div>
 
-          {/* Carrousel */}
-          <div className="relative z-10 hidden lg:block">
+          {/* Mockup carrousel */}
+          <div className="relative z-10 mt-2 lg:mt-0">
             <HeroCarousel />
           </div>
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section id="features" className="relative max-w-7xl mx-auto px-6 py-24">
-        <SectionHeader
-          eyebrow="Fonctionnalités"
-          title="Tout ce qu'il vous faut, rien de superflu"
-          desc="Pensé pour les professionnels de l'immobilier. Chaque fonctionnalité répond à une obligation Tracfin réelle."
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <FeatureCard
-            icon={<FileSearch className="w-5 h-5" />} accent="cyan" badge="KYC"
-            title="Formulaire KYC dynamique"
-            description="Un lien unique sécurisé envoyé à vos clients (Physique ou Morale) pour collecter leurs informations et pièces justificatives."
-          />
-          <FeatureCard
-            icon={<ShieldCheck className="w-5 h-5" />} accent="violet" badge="Score auto"
-            title="Scoring Tracfin en temps réel"
-            description="Notre algorithme analyse 7 critères réglementaires pour donner un niveau de risque immédiat."
-          />
-          <FeatureCard
-            icon={<Lock className="w-5 h-5" />} accent="emerald" badge="RGPD"
-            title="Stockage sécurisé"
-            description="Hébergement chiffré en Europe pour les Kbis, pièces d'identité et documents financiers."
-          />
-          <FeatureCard
-            icon={<Send className="w-5 h-5" />} accent="pink" badge="0 friction"
-            title="Envoi par lien partagé"
-            description="Pas d'app à installer côté client. Vous générez un lien, vous l'envoyez par email ou WhatsApp."
-          />
-          <FeatureCard
-            icon={<Mail className="w-5 h-5" />} accent="indigo" badge="Auto"
-            title="Pré-remplissage intelligent"
-            description="Quand le client a rempli sa fiche KYC, son dossier Tracfin se pré-remplit automatiquement."
-          />
-          <FeatureCard
-            icon={<FileDown className="w-5 h-5" />} accent="cyan" badge="PDF"
-            title="Attestation PDF premium"
-            description="Exportez en un clic une attestation LCB-FT au design pro, archivable lors d'un contrôle."
-          />
-        </div>
-      </section>
-
-      {/* COMMENT ÇA MARCHE */}
-      <section id="how" className="relative max-w-6xl mx-auto px-6 py-24">
-        <SectionHeader
-          eyebrow="Comment ça marche"
-          title={<>De la collecte à l'attestation,<br />en 4 étapes</>}
-        />
-
-        <div className="relative">
-          <div
-            className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px"
-            style={{ background: "linear-gradient(to bottom, transparent, rgba(168,85,247,0.4) 30%, rgba(168,85,247,0.4) 70%, transparent)" }}
-          />
-
-          <div className="space-y-8 md:space-y-16">
-            <StepRow num="01" title="Créez le dossier" desc="En quelques secondes, créez un dossier dans votre tableau de bord, attribuez-lui un client (physique ou morale)." align="left" />
-            <StepRow num="02" title="Envoyez la fiche KYC" desc="Générez un lien sécurisé personnalisé. Partagez-le par email, WhatsApp ou SMS. Le client remplit en ligne et upload ses documents." align="right" />
-            <StepRow num="03" title="Pré-remplissage automatique" desc="Vous êtes notifié dès que le client a complété sa fiche. Les données et pièces justificatives remplissent automatiquement votre dossier Tracfin." align="left" />
-            <StepRow num="04" title="Score & attestation" desc="Validez les facteurs de risque, obtenez un score automatique (vert/orange/rouge), exportez l'attestation PDF en un clic." align="right" />
-          </div>
-        </div>
-      </section>
-
-      {/* POUR QUI */}
-      <section className="relative max-w-7xl mx-auto px-6 py-24">
-        <SectionHeader eyebrow="Pour qui" title="Conçu pour les professionnels exigeants" />
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <AudienceCard icon={<Building2 className="w-6 h-6" />} title="Agences immobilières" description="Gérez vos transactions vendeurs/acquéreurs en conformité avec le décret n° 2018-284." />
-          <AudienceCard icon={<Briefcase className="w-6 h-6" />} title="Conseillers patrimoniaux" description="Sécurisez vos opérations clients avec une trace écrite des contrôles LCB-FT effectués." />
-          <AudienceCard icon={<Scale className="w-6 h-6" />} title="Notaires & juristes" description="Centralisez les pièces et l'analyse de risque dans un dossier structuré, prêt pour les contrôles." />
-        </div>
-      </section>
-
-      {/* CTA FINAL */}
-      <section className="relative max-w-5xl mx-auto px-6 py-24">
+      {/* ───────── BANDEAU AUTORITÉS ───────── */}
+      <section className="relative max-w-6xl mx-auto px-5 sm:px-6 pb-8">
         <div
-          className="relative rounded-3xl p-10 md:p-14 text-center overflow-hidden"
+          className="rounded-2xl p-4 sm:p-5 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 border"
+          style={{
+            background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
+            borderColor: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(20px)",
+          }}
+        >
+          <AuthorityPill icon={Scale} label="RGPD" sub="Règlement UE 2016/679" />
+          <AuthorityPill icon={Gavel} label="CMF L.561" sub="Code monétaire & financier" />
+          <AuthorityPill icon={ShieldCheck} label="Privacy by design" sub="Registre RGPD tenu" />
+          <AuthorityPill icon={MapPin} label="🇪🇺 Souverain" sub="Francfort · Paris" />
+        </div>
+      </section>
+
+      {/* ───────── COMPRENDRE LA LCB-FT ───────── */}
+      <Section id="understand">
+        <SectionHeader
+          eyebrow="Comprendre"
+          title={<>La LCB-FT, en 60 secondes.</>}
+          desc="Avant de parler outil, posons les bases. Trois questions, trois réponses, pour savoir où vous mettez les pieds."
+        />
+
+        <div className="grid md:grid-cols-3 gap-3 sm:gap-4">
+          <Card>
+            <IconCircle icon={BookOpen} />
+            <div className="mt-4 mb-1.5 flex items-center gap-2">
+              <H3>De quoi parle-t-on ?</H3>
+            </div>
+            <P>
+              La <strong className="text-white">lutte contre le blanchiment de capitaux et le
+              financement du terrorisme</strong>. Imposée par la 5ᵉ directive européenne, transposée
+              en droit français au sein du <em>Code monétaire et financier</em>.
+            </P>
+            <div className="mt-3"><LegalRef>CMF Art. L.561-1 et s.</LegalRef></div>
+          </Card>
+
+          <Card>
+            <IconCircle icon={Users} />
+            <div className="mt-4 mb-1.5"><H3>À qui ça s'applique ?</H3></div>
+            <P>
+              Aux <strong className="text-white">professions assujetties</strong> : agents
+              immobiliers, experts-comptables, CGP, notaires, avocats sous conditions, marchands
+              d'art… Plus de 200 000 professionnels en France.
+            </P>
+            <div className="mt-3"><LegalRef>CMF Art. L.561-2</LegalRef></div>
+          </Card>
+
+          <Card>
+            <IconCircle icon={Clock} />
+            <div className="mt-4 mb-1.5"><H3>Quelles obligations ?</H3></div>
+            <P>
+              Identifier vos clients (KYC), évaluer le risque, <strong className="text-white">conserver
+              les pièces 5 ans</strong>, signaler les soupçons à TRACFIN. Le contrôle peut tomber
+              à tout moment.
+            </P>
+            <div className="mt-3"><LegalRef>CMF Art. L.561-12-1 · L.561-15</LegalRef></div>
+          </Card>
+        </div>
+
+        <div className="mt-6 text-center text-[12.5px] text-white/45">
+          Vous voulez tout savoir ? Un guide pédagogique est inclus dans le tableau de bord (7 chapitres, ~10 min).
+        </div>
+      </Section>
+
+      {/* ───────── VOUS ÊTES CONCERNÉ SI… ───────── */}
+      <Section maxWidth="6xl">
+        <SectionHeader
+          eyebrow="Périmètre"
+          title={<>Vous êtes concerné si vous exercez…</>}
+          desc="La LCB-FT vise une dizaine de professions distinctes. Klaris s'adapte au cadre légal de chacune — KYC, scoring, autorité de contrôle."
+        />
+
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+          <ProfCard icon={Building2} title="Agent immobilier" sub="Transactions ≥ 10 000 € · Locations ≥ 10 000 €/mois" auth="Contrôle DGCCRF" available />
+          <ProfCard icon={Briefcase} title="Expert-comptable" sub="Toute mission de conseil ou de tenue comptable" auth="Contrôle Conseil de l'Ordre" comingSoon />
+          <ProfCard icon={Landmark} title="CGP · CIF" sub="Conseil en gestion de patrimoine / investissements" auth="Contrôle AMF" comingSoon />
+          <ProfCard icon={Scale} title="Notaire" sub="Toute relation d'affaires à risque" auth="Conseil supérieur du notariat" comingSoon />
+          <ProfCard icon={FileText} title="Avocat" sub="Sous conditions : immo, fiscal, fiducie" auth="Contrôle Bâtonniers" comingSoon />
+          <ProfCard icon={Gem} title="Marchand d'art / précieux" sub="Transactions en numéraire ≥ 10 000 €" auth="Contrôle Douanes" comingSoon />
+        </div>
+      </Section>
+
+      {/* ───────── FONCTIONNALITÉS ───────── */}
+      <Section id="features">
+        <SectionHeader
+          eyebrow="Plateforme"
+          title="Tout ce qu'un contrôle peut exiger."
+          desc="Six fonctionnalités, six obligations LCB-FT réelles. Pas de gadget — chaque module répond à un article du CMF."
+        />
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <FeatureCard
+            icon={FileSearch}
+            title="Formulaire KYC dynamique"
+            text="Lien sécurisé unique envoyé à votre client. Identification, bénéficiaires effectifs, justificatifs, consentement RGPD."
+            ref="L.561-5"
+          />
+          <FeatureCard
+            icon={ShieldCheck}
+            title="Scoring LCB-FT v2"
+            text="Algorithme propriétaire à 4 niveaux : vigilance standard, renforcée, examen renforcé, interdiction. Versionné et auditable."
+            ref="L.561-10"
+          />
+          <FeatureCard
+            icon={Lock}
+            title="Conservation 5 ans"
+            text="Stockage chiffré AES-256 en France & UE. Conservation automatique conforme à l'obligation légale, suppression bloquée jusqu'au terme."
+            ref="L.561-12-1"
+          />
+          <FeatureCard
+            icon={Send}
+            title="Envoi 0 friction"
+            text="Pas d'app à installer pour vos clients. Le formulaire passe par email, SMS ou WhatsApp. Réception automatique dans votre dossier."
+            ref="L.561-4"
+          />
+          <FeatureCard
+            icon={Mail}
+            title="Déclaration TRACFIN"
+            text="Bouton direct vers le portail ERMES. Export structuré de votre fiche KYC, prêt à joindre à la déclaration de soupçon."
+            ref="L.561-15"
+          />
+          <FeatureCard
+            icon={FileDown}
+            title="Attestation PDF certifiée"
+            text="Document horodaté, signé SHA-256, opposable lors d'un contrôle. Format premium, références CMF intégrées."
+            ref="L.561-32"
+          />
+        </div>
+      </Section>
+
+      {/* ───────── 4 ÉTAPES ───────── */}
+      <Section id="how" maxWidth="5xl">
+        <SectionHeader
+          eyebrow="Workflow"
+          title={<>De la collecte à l'attestation,<br className="hidden sm:block" /> en 4 étapes claires.</>}
+          desc="Aucune étape ne dépasse 2 minutes côté professionnel. Le client final n'a aucun compte à créer."
+        />
+
+        <div className="space-y-3 sm:space-y-4">
+          <StepRow
+            num="01"
+            title="Créez le dossier"
+            text="Saisissez le nom du client (personne physique ou morale), choisissez son type. Klaris pré-configure le KYC adapté."
+          />
+          <StepRow
+            num="02"
+            title="Envoyez le formulaire KYC"
+            text="Un lien sécurisé est généré. Vous le partagez par le canal de votre choix. Le client remplit en autonomie depuis n'importe quel appareil."
+          />
+          <StepRow
+            num="03"
+            title="Recevez l'analyse automatique"
+            text="Dès soumission, l'algorithme Klaris v2 calcule le niveau de vigilance. Les pièces sont stockées, le dossier pré-rempli pour vous."
+          />
+          <StepRow
+            num="04"
+            title="Exportez l'attestation"
+            text="Téléchargez l'attestation PDF + fiche KYC + pièces dans un ZIP unique, prêt pour archivage ou contrôle. SHA-256 inclus."
+          />
+        </div>
+      </Section>
+
+      {/* ───────── SOUVERAINETÉ TEASER ───────── */}
+      <Section maxWidth="6xl">
+        <SectionHeader
+          eyebrow="Souveraineté"
+          title={<>Vos dossiers ne quittent jamais le sol européen.</>}
+          desc="Klaris a été conçu pour traiter ce qui se fait de plus sensible : l'identité de vos clients, leurs documents personnels, vos analyses de soupçon. La souveraineté n'est pas un argument marketing, c'est une promesse vérifiable."
+        />
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <SovereigntyPoint icon={MapPin} title="🇪🇺 100% UE" text="Postgres Frankfurt, fichiers Paris. Aucun transfert hors UE des KYC." />
+          <SovereigntyPoint icon={Lock} title="AES-256 + TLS 1.3" text="Chiffrement au repos et en transit. Aucune donnée en clair stockée." />
+          <SovereigntyPoint icon={EyeOff} title="Aucune lecture" text="Nous ne consultons jamais vos dossiers, sauf demande explicite ou réquisition." />
+          <SovereigntyPoint icon={Server} title="5 sous-traitants" text="Liste publique et exhaustive. Pas un tiers caché." />
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <CTA href="/confiance" variant="ghost">
+            Lire notre engagement complet
+            <ArrowRight width={14} height={14} />
+          </CTA>
+        </div>
+      </Section>
+
+      {/* ───────── SANCTIONS ───────── */}
+      <Section maxWidth="6xl">
+        <SectionHeader
+          eyebrow="Le risque réel"
+          title={<>La conformité n'est plus une option.</>}
+          desc="Les sanctions LCB-FT sont graduelles, mais elles sont prononcées. En cas de manquement, vous risquez bien plus qu'un avertissement."
+        />
+
+        <div className="grid md:grid-cols-3 gap-3">
+          <SanctionCard
+            icon={AlertTriangle}
+            level="Disciplinaire"
+            headline="Avertissement à radiation"
+            text="Avertissement, blâme, interdiction temporaire d'exercer, radiation définitive. Décision de votre autorité de tutelle."
+            ref="CMF L.561-36"
+          />
+          <SanctionCard
+            icon={Gavel}
+            level="Pécuniaire"
+            headline="Jusqu'à 1 million €"
+            text="Sanctions financières graduelles, pouvant atteindre 1 M€ pour défaut de vigilance manifeste. Cumul possible avec les sanctions disciplinaires."
+            ref="CMF L.561-36"
+          />
+          <SanctionCard
+            icon={ShieldCheck}
+            level="Pénale"
+            headline="5 ans · 375 000 €"
+            text="Complicité de blanchiment : 5 ans d'emprisonnement et 375 000 € d'amende. Doublé en cas de circonstance aggravante."
+            ref="Code pénal 324-1"
+          />
+        </div>
+
+        <div
+          className="mt-8 rounded-2xl p-5 sm:p-6 text-center border"
+          style={{
+            background: "linear-gradient(180deg, rgba(124,58,237,0.10), rgba(124,58,237,0.03))",
+            borderColor: "rgba(124,58,237,0.22)",
+          }}
+        >
+          <P className="!text-white/80 max-w-2xl mx-auto">
+            En 2024, <strong className="text-white">+47 %</strong> de contrôles DGCCRF sur les
+            agences immobilières. <strong className="text-white">3 sanctions pécuniaires sur 4</strong>{" "}
+            visaient un défaut de KYC formalisé.
+          </P>
+        </div>
+      </Section>
+
+      {/* ───────── CTA FINAL ───────── */}
+      <Section maxWidth="4xl">
+        <div
+          className="relative rounded-3xl p-8 sm:p-12 md:p-14 text-center overflow-hidden border"
           style={{
             background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+            borderColor: "rgba(255,255,255,0.10)",
             backdropFilter: "blur(28px) saturate(180%)",
             WebkitBackdropFilter: "blur(28px) saturate(180%)",
-            boxShadow: [
-              "0 0 0 1px rgba(255,255,255,0.08)",
-              "0 1px 0 rgba(255,255,255,0.15) inset",
-              "0 30px 80px -20px rgba(168,85,247,0.40)",
-              "0 12px 30px -8px rgba(0,0,0,0.5)",
-            ].join(", "),
+            boxShadow: "0 30px 80px -20px rgba(124,58,237,0.40), 0 12px 30px -8px rgba(0,0,0,0.5)",
           }}
         >
           <div
@@ -189,70 +356,64 @@ export default function LandingPage() {
           />
           <div
             className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full opacity-40 blur-3xl pointer-events-none"
-            style={{ background: "radial-gradient(circle, #EC4899, transparent 70%)" }}
+            style={{ background: "radial-gradient(circle, #ec4899, transparent 70%)" }}
           />
-          <div
-            className="absolute inset-x-12 top-0 h-px rounded-full"
-            style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.30) 50%, transparent)" }}
-          />
-
           <div className="relative">
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-[-0.025em] mb-4">
-              Prêt à sécuriser votre activité ?
-            </h2>
-            <p className="text-white/55 mb-8 max-w-xl mx-auto leading-relaxed">
-              Démarrez gratuitement. Sans carte bancaire. Première fiche KYC en moins de 2 minutes.
-            </p>
-            {!isSignedIn && (
-              <CTAButton onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })} primary large>
-                Créer mon compte gratuitement
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-              </CTAButton>
-            )}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.10] mb-5">
+              <BadgeCheck width={14} height={14} className="text-violet-300" />
+              <span className="text-[11px] uppercase tracking-widest font-semibold text-white/70">14 jours gratuits · sans carte bancaire</span>
+            </div>
+            <H2 className="!text-[28px] sm:!text-[36px] md:!text-[42px]">
+              Démarrez votre conformité.
+            </H2>
+            <div className="mt-3 sm:mt-4 max-w-xl mx-auto">
+              <Lede>
+                Première fiche KYC en moins de 2 minutes. Première attestation signée et téléchargée
+                en moins de 5 minutes. Sans frais, sans engagement.
+              </Lede>
+            </div>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              {!isSignedIn ? (
+                <>
+                  <CTA onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })} variant="primary" size="lg">
+                    Créer mon compte
+                    <ArrowRight width={15} height={15} />
+                  </CTA>
+                  <CTA onClick={openDemo} variant="ghost" size="lg">
+                    <Play width={13} height={13} fill="currentColor" strokeWidth={0} />
+                    Voir la démo d'abord
+                  </CTA>
+                </>
+              ) : (
+                <CTA href="/dashboard" variant="primary" size="lg">
+                  Aller au dashboard
+                  <ArrowRight width={15} height={15} />
+                </CTA>
+              )}
+            </div>
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* FOOTER */}
-      <footer className="relative border-t border-white/[0.06] py-10 mt-12">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <KlarisLogo size={26} />
-            <span className="text-[14px] font-bold tracking-tight">Klaris</span>
-          </div>
-          <div className="text-[11px] text-white/30 uppercase tracking-widest">
-            © {new Date().getFullYear()} — Tous droits réservés
-          </div>
-        </div>
-      </footer>
-
-      <style jsx global>{`
-        @keyframes gradShift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-      `}</style>
+      <LegalFooter />
     </div>
   );
 }
 
-/* ----- Sub-components ----- */
+/* ════════════════════════════════════════════════════════════
+   PRIMITIVES SPÉCIFIQUES À LA LANDING
+   ════════════════════════════════════════════════════════════ */
 
 function BackgroundOrbs() {
   return (
     <>
       <div className="fixed pointer-events-none rounded-full" style={{
-        width: 800, height: 800, top: -250, left: -180, zIndex: 0, filter: "blur(110px)",
-        background: "radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%)",
+        width: 700, height: 700, top: -250, left: -180, zIndex: 0, filter: "blur(110px)",
+        background: "radial-gradient(circle, rgba(124,58,237,0.22) 0%, transparent 70%)",
       }} />
       <div className="fixed pointer-events-none rounded-full" style={{
-        width: 700, height: 700, bottom: -200, right: -150, zIndex: 0, filter: "blur(110px)",
-        background: "radial-gradient(circle, rgba(236,72,153,0.18) 0%, transparent 70%)",
-      }} />
-      <div className="fixed pointer-events-none rounded-full" style={{
-        width: 500, height: 500, top: "40%", left: "50%", zIndex: 0, filter: "blur(110px)",
-        transform: "translate(-50%, -50%)",
-        background: "radial-gradient(circle, rgba(168,85,247,0.20) 0%, transparent 70%)",
+        width: 600, height: 600, bottom: -200, right: -150, zIndex: 0, filter: "blur(110px)",
+        background: "radial-gradient(circle, rgba(236,72,153,0.16) 0%, transparent 70%)",
       }} />
     </>
   );
@@ -261,7 +422,7 @@ function BackgroundOrbs() {
 function NoiseTexture() {
   return (
     <div
-      className="fixed inset-0 pointer-events-none opacity-[0.035] mix-blend-overlay"
+      className="fixed inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay"
       style={{
         zIndex: 1,
         backgroundImage:
@@ -271,250 +432,186 @@ function NoiseTexture() {
   );
 }
 
-function FloatingChip({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
-      style={{
-        background: "linear-gradient(180deg, rgba(168,85,247,0.15), rgba(168,85,247,0.05))",
-        backdropFilter: "blur(20px)",
-        boxShadow: "0 0 0 1px rgba(168,85,247,0.30), 0 1px 0 rgba(255,255,255,0.10) inset, 0 0 24px -4px rgba(168,85,247,0.40)",
-      }}
-    >
-      <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-violet-200 inline-flex items-center gap-2">
-        {children}
-      </span>
-    </div>
-  );
-}
-
-function CTAButton({
-  children, onClick, href, primary = false, large = false,
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  href?: string;
-  primary?: boolean;
-  large?: boolean;
-}) {
-  const sizeClass = large ? "px-8 py-4 text-[14px]" : "px-7 py-3.5 text-[14px]";
-
-  const base = `group inline-flex items-center justify-center gap-2 rounded-full font-bold transition-transform hover:scale-105 ${sizeClass}`;
-
-  const primaryStyle: React.CSSProperties = {
-    background: "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)",
-    backgroundSize: "200% 200%",
-    animation: "gradShift 6s ease infinite",
-    color: "white",
-    boxShadow:
-      "0 0 0 1px rgba(255,255,255,0.10) inset, 0 1px 0 rgba(255,255,255,0.30) inset, 0 10px 40px rgba(168,85,247,0.50), 0 4px 12px rgba(0,0,0,0.3)",
-  };
-
-  const secondaryStyle: React.CSSProperties = {
-    background: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
-    color: "rgba(255,255,255,0.85)",
-    backdropFilter: "blur(20px)",
-    boxShadow: "0 0 0 1px rgba(255,255,255,0.10), 0 1px 0 rgba(255,255,255,0.10) inset, 0 8px 24px -4px rgba(0,0,0,0.3)",
-  };
-
-  if (href) {
-    return (
-      <Link href={href} className={base} style={primary ? primaryStyle : secondaryStyle}>
-        {children}
-      </Link>
-    );
-  }
-  return (
-    <button onClick={onClick} className={base} style={primary ? primaryStyle : secondaryStyle}>
-      {children}
-    </button>
-  );
-}
-
 function TrustItem({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-1.5">
       <div
-        className="w-4 h-4 rounded-full flex items-center justify-center"
+        className="w-4 h-4 rounded-full flex items-center justify-center shrink-0"
         style={{
           background: "rgba(52,211,153,0.15)",
-          boxShadow: "0 0 0 1px rgba(52,211,153,0.40), 0 0 8px rgba(52,211,153,0.30)",
+          border: "1px solid rgba(52,211,153,0.40)",
         }}
       >
         <Check className="w-2.5 h-2.5 text-emerald-400" strokeWidth={3} />
       </div>
-      {children}
+      <span className="text-[12px] text-white/65 font-medium">{children}</span>
     </div>
   );
 }
 
-function SectionHeader({
-  eyebrow, title, desc,
+function AuthorityPill({
+  icon: Icon,
+  label,
+  sub,
 }: {
-  eyebrow: string;
-  title: React.ReactNode;
-  desc?: string;
+  icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
+  label: string;
+  sub: string;
 }) {
   return (
-    <div className="text-center mb-16">
-      <div className="inline-block mb-3 text-[11px] font-bold tracking-[0.2em] uppercase"
+    <div className="flex items-center gap-2.5">
+      <div
+        className="w-9 h-9 rounded-lg grid place-items-center shrink-0"
         style={{
-          background: "linear-gradient(90deg, #6366F1, #A855F7, #EC4899)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          WebkitTextFillColor: "transparent",
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.10)",
         }}
       >
-        {eyebrow}
+        <Icon width={15} height={15} className="text-white/75" />
       </div>
-      <h2 className="text-3xl md:text-5xl font-extrabold tracking-[-0.025em] mb-4">
-        {title}
-      </h2>
-      {desc && <p className="text-white/50 max-w-2xl mx-auto leading-relaxed">{desc}</p>}
+      <div className="min-w-0">
+        <div className="text-[12.5px] font-semibold text-white truncate">{label}</div>
+        <div className="text-[10.5px] text-white/45 truncate">{sub}</div>
+      </div>
     </div>
+  );
+}
+
+function ProfCard({
+  icon: Icon,
+  title,
+  sub,
+  auth,
+  available,
+  comingSoon,
+}: {
+  icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
+  title: string;
+  sub: string;
+  auth: string;
+  available?: boolean;
+  comingSoon?: boolean;
+}) {
+  return (
+    <Card accent={available} className="relative">
+      <div className="flex items-start gap-3">
+        <IconCircle icon={Icon} size="sm" />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <H3 className="!text-[14.5px] sm:!text-[15.5px]">{title}</H3>
+            {available && (
+              <span
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] font-semibold uppercase tracking-widest"
+                style={{ background: "rgba(16,185,129,0.12)", color: "#6ee7b7", border: "1px solid rgba(16,185,129,0.30)" }}
+              >
+                <span className="w-1 h-1 rounded-full bg-emerald-300" />
+                Disponible
+              </span>
+            )}
+            {comingSoon && (
+              <span
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] font-semibold uppercase tracking-widest"
+                style={{ background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.55)", border: "1px solid rgba(255,255,255,0.10)" }}
+              >
+                Bientôt
+              </span>
+            )}
+          </div>
+          <div className="mt-1 text-[12px] text-white/55 leading-relaxed">{sub}</div>
+          <div className="mt-2 text-[10.5px] uppercase tracking-widest text-white/40">{auth}</div>
+        </div>
+      </div>
+    </Card>
   );
 }
 
 function FeatureCard({
-  icon, accent, badge, title, description,
+  icon: Icon,
+  title,
+  text,
+  ref,
 }: {
-  icon: React.ReactNode;
-  accent: "indigo" | "cyan" | "emerald" | "violet" | "pink";
-  badge: string;
+  icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
   title: string;
-  description: string;
+  text: string;
+  ref: string;
 }) {
-  const colorMap = {
-    indigo: { hex: "99,102,241", text: "text-indigo-300" },
-    cyan: { hex: "6,182,212", text: "text-cyan-300" },
-    emerald: { hex: "52,211,153", text: "text-emerald-300" },
-    violet: { hex: "168,85,247", text: "text-violet-300" },
-    pink: { hex: "236,72,153", text: "text-pink-300" },
-  }[accent];
-
   return (
-    <div
-      className="group relative rounded-3xl p-6 transition-all overflow-hidden"
-      style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-        backdropFilter: "blur(28px) saturate(180%)",
-        WebkitBackdropFilter: "blur(28px) saturate(180%)",
-        boxShadow: [
-          "0 0 0 1px rgba(255,255,255,0.06)",
-          "0 1px 0 rgba(255,255,255,0.10) inset",
-          "0 20px 40px -12px rgba(0,0,0,0.4)",
-          `0 0 0 0 rgba(${colorMap.hex},0)`,
-        ].join(", "),
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = [
-          `0 0 0 1px rgba(${colorMap.hex},0.25)`,
-          "0 1px 0 rgba(255,255,255,0.15) inset",
-          "0 20px 40px -12px rgba(0,0,0,0.4)",
-          `0 0 40px -8px rgba(${colorMap.hex},0.40)`,
-        ].join(", ");
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = [
-          "0 0 0 1px rgba(255,255,255,0.06)",
-          "0 1px 0 rgba(255,255,255,0.10) inset",
-          "0 20px 40px -12px rgba(0,0,0,0.4)",
-        ].join(", ");
-      }}
-    >
-      {/* Highlight courbe top */}
-      <div
-        className="absolute inset-x-6 top-0 h-px rounded-full"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.25) 50%, transparent)" }}
-      />
-      <div
-        className="absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-15 blur-3xl group-hover:opacity-35 transition-opacity"
-        style={{ background: `rgb(${colorMap.hex})` }}
-      />
-      <div className="relative">
-        <div className="flex items-center justify-between mb-5">
-          <div
-            className={`w-10 h-10 rounded-2xl ${colorMap.text} flex items-center justify-center`}
-            style={{
-              background: `linear-gradient(180deg, rgba(${colorMap.hex},0.20), rgba(${colorMap.hex},0.08))`,
-              boxShadow: `0 0 0 1px rgba(${colorMap.hex},0.35), 0 0 20px -4px rgba(${colorMap.hex},0.30), 0 1px 0 rgba(255,255,255,0.15) inset`,
-            }}
-          >
-            {icon}
-          </div>
-          <span
-            className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest ${colorMap.text}`}
-            style={{
-              background: `rgba(${colorMap.hex},0.10)`,
-              boxShadow: `0 0 0 1px rgba(${colorMap.hex},0.30)`,
-            }}
-          >
-            {badge}
-          </span>
-        </div>
-        <h3 className="text-lg font-bold mb-2 tracking-tight">{title}</h3>
-        <p className="text-[13px] text-white/50 leading-relaxed">{description}</p>
+    <Card>
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <IconCircle icon={Icon} />
+        <LegalRef>CMF {ref}</LegalRef>
       </div>
-    </div>
+      <H3>{title}</H3>
+      <P className="mt-1.5">{text}</P>
+    </Card>
   );
 }
 
-function StepRow({ num, title, desc, align }: { num: string; title: string; desc: string; align: "left" | "right" }) {
+function StepRow({ num, title, text }: { num: string; title: string; text: string }) {
   return (
-    <div className={`md:grid md:grid-cols-2 md:gap-12 items-center ${align === "right" ? "md:[&>*:first-child]:order-2" : ""}`}>
-      <div className={`md:max-w-md ${align === "right" ? "md:ml-auto md:text-right" : ""}`}>
+    <Card>
+      <div className="flex items-start gap-4 sm:gap-5">
         <div
-          className="inline-block text-[60px] md:text-[84px] font-black leading-none tracking-tighter mb-2"
+          className="font-mono text-[22px] sm:text-[26px] font-bold tracking-tight shrink-0 w-12 sm:w-14"
           style={{
-            background: "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)",
-            backgroundSize: "200% 200%",
-            animation: "gradShift 6s ease infinite",
+            background: "linear-gradient(135deg, #a78bfa, #f0abfc)",
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            filter: "drop-shadow(0 0 30px rgba(168,85,247,0.4))",
+            color: "transparent",
           }}
         >
           {num}
         </div>
-        <h3 className="text-2xl md:text-3xl font-extrabold tracking-[-0.02em] mb-3">{title}</h3>
-        <p className="text-white/55 leading-relaxed">{desc}</p>
+        <div className="flex-1">
+          <H3>{title}</H3>
+          <P className="mt-1.5">{text}</P>
+        </div>
       </div>
-      <div className={`hidden md:block ${align === "right" ? "" : ""}`} />
-    </div>
+    </Card>
   );
 }
 
-function AudienceCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function SovereigntyPoint({
+  icon: Icon,
+  title,
+  text,
+}: {
+  icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
+  title: string;
+  text: string;
+}) {
   return (
-    <div
-      className="group relative rounded-3xl p-7 transition-all"
-      style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-        backdropFilter: "blur(28px) saturate(180%)",
-        WebkitBackdropFilter: "blur(28px) saturate(180%)",
-        boxShadow: [
-          "0 0 0 1px rgba(255,255,255,0.06)",
-          "0 1px 0 rgba(255,255,255,0.10) inset",
-          "0 20px 40px -12px rgba(0,0,0,0.4)",
-        ].join(", "),
-      }}
-    >
-      <div
-        className="absolute inset-x-6 top-0 h-px rounded-full"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.20) 50%, transparent)" }}
-      />
-      <div
-        className="w-12 h-12 rounded-2xl text-white/70 flex items-center justify-center mb-5 group-hover:text-violet-300 transition-all"
-        style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))",
-          boxShadow: "0 0 0 1px rgba(255,255,255,0.10), 0 1px 0 rgba(255,255,255,0.10) inset",
-        }}
-      >
-        {icon}
+    <Card>
+      <IconCircle icon={Icon} size="sm" />
+      <H3 className="mt-3 !text-[14px] sm:!text-[14.5px]">{title}</H3>
+      <P className="mt-1.5 !text-[12.5px]">{text}</P>
+    </Card>
+  );
+}
+
+function SanctionCard({
+  icon: Icon,
+  level,
+  headline,
+  text,
+  ref,
+}: {
+  icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
+  level: string;
+  headline: string;
+  text: string;
+  ref: string;
+}) {
+  return (
+    <Card>
+      <div className="flex items-center gap-2 mb-3">
+        <IconCircle icon={Icon} size="sm" />
+        <div className="text-[10.5px] uppercase tracking-widest text-white/50 font-semibold">{level}</div>
       </div>
-      <h3 className="text-lg font-bold mb-2 tracking-tight">{title}</h3>
-      <p className="text-[13px] text-white/50 leading-relaxed">{description}</p>
-    </div>
+      <H3 className="!text-[16px] sm:!text-[17px]">{headline}</H3>
+      <P className="mt-1.5">{text}</P>
+      <div className="mt-3"><LegalRef>{ref}</LegalRef></div>
+    </Card>
   );
 }

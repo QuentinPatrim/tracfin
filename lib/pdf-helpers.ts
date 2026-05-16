@@ -93,3 +93,27 @@ export function formatMontant(s: string): string {
   if (!Number.isFinite(n)) return s;
   return n.toLocaleString("fr-FR");
 }
+
+/**
+ * Logo Klaris officiel — SVG inline pour PDF (Puppeteer).
+ * K géométrique à 4 facettes triangulaires + losange pivot, sur carré arrondi gradient.
+ * Signature unifiée avec components/ui/KlarisLogo.tsx (mêmes coordonnées viewBox 0 0 48 48).
+ */
+export function klarisLogoSvg(size: number = 36): string {
+  return `
+<svg width="${size}" height="${size}" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="display:block">
+  <defs>
+    <linearGradient id="klogo-pdf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed" />
+      <stop offset="55%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="44" height="44" rx="11" fill="url(#klogo-pdf)" />
+  <rect x="2" y="2" width="44" height="22" rx="11" fill="white" fill-opacity="0.10" />
+  <rect x="11" y="11" width="5" height="26" rx="1.5" fill="#ffffff" />
+  <path d="M 16 24 L 31 11 L 35 11 L 20 24 Z" fill="#ffffff" />
+  <path d="M 16 24 L 31 37 L 35 37 L 20 24 Z" fill="#ffffff" />
+  <rect x="17.5" y="22.5" width="3" height="3" transform="rotate(45 19 24)" fill="url(#klogo-pdf)" stroke="#ffffff" stroke-width="0.5" />
+</svg>`.trim();
+}

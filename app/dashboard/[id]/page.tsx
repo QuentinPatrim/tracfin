@@ -5,10 +5,11 @@ import { auth } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
 import TracfinForm from "@/components/tracfin/TracfinForm";
 import type { Dossier } from "@/types/dossier";
-import type { DossierForm } from "@/lib/tracfin";
+import { V1_TO_NIVEAU, type DossierForm, type Niveau } from "@/lib/tracfin";
 import { rowToForm as dossierRowToForm } from "@/lib/dossier";
 import { listDossierFiles, type KycFilesRow } from "@/lib/dossier-files";
 import DossierPieces from "@/components/dashboard/DossierPieces";
+import MarcheASuivre from "@/components/dashboard/MarcheASuivre";
 
 function toDateInput(val: unknown): string {
   if (!val) return "";
@@ -168,9 +169,27 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
 
   const files = listDossierFiles(kycRows[0]);
 
+  // Résolution du niveau effectif (v2 prioritaire, sinon mapping v1)
+  const niveauEffectif: Niveau | null =
+    dossier.algo_version === "v2"
+      ? dossier.niveau
+      : dossier.statut
+      ? V1_TO_NIVEAU[dossier.statut]
+      : null;
+
   return (
     <>
       <DossierPieces dossierId={id} files={files} />
+      {niveauEffectif && (
+        <div style={{ maxWidth: 768, margin: "24px auto 0", padding: "0 24px" }}>
+          <MarcheASuivre
+            niveau={niveauEffectif}
+            dossierId={id}
+            clientName={dossier.nom_prenom}
+            mode="full"
+          />
+        </div>
+      )}
       <TracfinForm initialData={rowToForm(dossier, kycRows[0])} dossierId={id} hasKyc />
     </>
   );

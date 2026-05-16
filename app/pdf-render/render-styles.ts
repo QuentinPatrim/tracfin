@@ -61,18 +61,10 @@ header.doc-head{
 }
 .brand{display:flex; align-items:center; gap:12px}
 .brand .logo{
-  width:36px; height:36px; border-radius:50%;
-  background: conic-gradient(from 220deg, #7C3AED, #A855F7 30%, #EC4899 60%, #7C3AED);
-  position:relative; box-shadow: 0 6px 18px rgba(124,58,237,.30);
+  display:inline-flex; align-items:center; justify-content:center;
+  filter: drop-shadow(0 6px 14px rgba(124,58,237,.25));
 }
-.brand .logo::after{
-  content:""; position:absolute; inset:8px; border-radius:50%;
-  background:#fff;
-}
-.brand .logo::before{
-  content:""; position:absolute; inset:13px; border-radius:50%;
-  background: var(--grad);
-}
+.brand .logo svg{display:block}
 .brand .name{font-weight:800; font-size:22px; letter-spacing:-.02em}
 .brand .tag{
   margin-left: 4px; padding: 4px 10px; border-radius:999px;
@@ -342,6 +334,33 @@ footer.doc-foot{
   font:600 11px/1 'Inter'; color:var(--ink-2);
 }
 .stat b{font:700 11px/1 'JetBrains Mono'; color:var(--violet)}
+
+/* Compteurs de signaux (remplace l'ancien score arbitraire) */
+.signal-row{
+  display:flex; align-items:center; gap:10px; margin-top: 16px; flex-wrap: wrap;
+}
+.signal{
+  display:inline-flex; align-items:center; gap:8px;
+  padding: 8px 14px; border-radius: 999px;
+  font:600 12px/1 'Inter';
+  border:1px solid transparent;
+}
+.signal b{font:700 13.5px/1 'JetBrains Mono'}
+.signal .d{
+  width:8px; height:8px; border-radius:50%;
+}
+.signal.ok{
+  background: var(--green-soft); color: #047857; border-color: #A7F3D0;
+}
+.signal.ok .d{background:#10B981; box-shadow: 0 0 0 3px rgba(16,185,129,.20)}
+.signal.warn{
+  background: var(--amber-soft); color: #92400E; border-color: #FDE68A;
+}
+.signal.warn .d{background:#F59E0B; box-shadow: 0 0 0 3px rgba(245,158,11,.20)}
+.signal.crit{
+  background: var(--red-soft); color: #9F1239; border-color: #FECDD3;
+}
+.signal.crit .d{background:#E11D48; box-shadow: 0 0 0 3px rgba(225,29,72,.20)}
 
 @page{ size: A4; margin: 0; }
 `;

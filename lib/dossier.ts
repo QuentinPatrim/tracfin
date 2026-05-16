@@ -1,6 +1,7 @@
 // lib/dossier.ts — Mapping row Postgres ↔ DossierForm (centralisé, v2)
 
 import { initialForm, type DossierForm } from "@/lib/tracfin";
+import { initialKycForm, type KycForm, type BeneficiaireEffectif } from "@/lib/kyc";
 import type { Dossier } from "@/types/dossier";
 
 // Mapping KYC libellé client → values scoring Tracfin (mêmes que dans app/dashboard/[id]/page.tsx)
@@ -61,6 +62,35 @@ export interface KycResponseRow {
   url_cni_gerant: string | null;
 }
 
+// ─── Shape COMPLET d'une ligne kyc_responses (pour la Fiche KYC PDF exhaustive) ──
+export interface KycResponseRowFull extends KycResponseRow {
+  email_contact: string | null;
+  telephone: string | null;
+  ppe_precisions: string | null;
+  ppe_proche_precisions: string | null;
+  piece_identite_type: string | null;
+  piece_identite_numero: string | null;
+  piece_identite_expiration: string | null;
+  piece_identite_autorite: string | null;
+  forme_juridique: string | null;
+  siren: string | null;
+  date_constitution: string | null;
+  activite_principale: string | null;
+  nom_gerant: string | null;
+  beneficiaires_effectifs_json: BeneficiaireEffectif[] | string | null;
+  origine_fonds_vente_adresse: string | null;
+  origine_fonds_donateur: string | null;
+  origine_fonds_lien_defunt: string | null;
+  url_avis_imposition: string | null;
+  url_justif_revenus: string | null;
+  url_justif_origine_fonds: string | null;
+  url_bilans: string | null;
+  url_rbe: string | null;
+  consentement_rgpd: boolean | null;
+  consentement_rgpd_at: string | null;
+  submitted_at: string | null;
+}
+
 /**
  * Mapping kyc_responses → DossierForm.
  * Source de vérité pour la Fiche KYC PDF (ce que le client a déclaré, indépendamment
@@ -97,6 +127,81 @@ export function kycRowToForm(kyc: KycResponseRow): DossierForm {
     kbis: !!kyc.url_kbis,
     statuts: !!kyc.url_statuts,
     cniGerant: !!kyc.url_cni_gerant,
+  };
+}
+
+/**
+ * Mapping COMPLET kyc_responses → KycForm.
+ * Source de vérité côté client : toutes les déclarations sont préservées.
+ * Utilisé pour la Fiche KYC PDF exhaustive (commentaires, BE structurés, etc.).
+ */
+export function kycRowToKycForm(kyc: KycResponseRowFull): KycForm {
+  // Parse beneficiaires_effectifs_json (string JSON ou array déjà parsé selon le driver)
+  let be: BeneficiaireEffectif[] = [];
+  const raw = kyc.beneficiaires_effectifs_json;
+  if (raw) {
+    try {
+      const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+      if (Array.isArray(parsed)) be = parsed as BeneficiaireEffectif[];
+    } catch { /* malformé → array vide */ }
+  }
+
+  return {
+    ...initialKycForm,
+    emailContact: kyc.email_contact ?? "",
+    telephone: kyc.telephone ?? "",
+    typeClient: kyc.type_client === "morale" ? "morale" : "physique",
+    nomPrenom: kyc.nom_prenom ?? "",
+    dateNaissance: toDateInput(kyc.date_naissance),
+    lieuNaissance: kyc.lieu_naissance ?? "",
+    nationalite: kyc.nationalite ?? "",
+    paysNationalite: kyc.pays_nationalite ?? "",
+    adresse: kyc.adresse ?? "",
+    profession: kyc.profession ?? "",
+    secteurActivite: kyc.secteur_activite ?? "",
+
+    ppe: kyc.ppe,
+    ppePrecisions: kyc.ppe_precisions ?? "",
+    ppeProcheDetecte: kyc.ppe_proche_detecte,
+    ppeProchePrecisions: kyc.ppe_proche_precisions ?? "",
+
+    pieceIdentiteType: kyc.piece_identite_type ?? "",
+    pieceIdentiteNumero: kyc.piece_identite_numero ?? "",
+    pieceIdentiteExpiration: toDateInput(kyc.piece_identite_expiration),
+    pieceIdentiteAutorite: kyc.piece_identite_autorite ?? "",
+
+    formeJuridique: kyc.forme_juridique ?? "",
+    siren: kyc.siren ?? "",
+    dateConstitution: toDateInput(kyc.date_constitution),
+    activitePrincipale: kyc.activite_principale ?? "",
+    nomGerant: kyc.nom_gerant ?? "",
+    beneficiairesEffectifsJson: be,
+
+    paysResidenceFiscale: kyc.pays_residence_fiscale ?? "",
+    origineFonds: kyc.origine_fonds ?? "",
+    origineFondsPrecisions: kyc.origine_fonds_precisions ?? "",
+    origineFondsVenteAdresse: kyc.origine_fonds_vente_adresse ?? "",
+    origineFondsDonateur: kyc.origine_fonds_donateur ?? "",
+    origineFondsLienDefunt: kyc.origine_fonds_lien_defunt ?? "",
+    modeFinancement: kyc.mode_financement ?? "",
+    modePaiement: kyc.mode_paiement ?? "",
+    montantOperation: kyc.montant_operation ?? "",
+
+    typeBien: kyc.type_bien ?? "",
+    lieuBien: kyc.lieu_bien ?? "",
+
+    urlPieceIdentite: kyc.url_piece_identite ?? "",
+    urlJustifDomicile: kyc.url_justif_domicile ?? "",
+    urlAvisImposition: kyc.url_avis_imposition ?? "",
+    urlJustifRevenus: kyc.url_justif_revenus ?? "",
+    urlJustifOrigineFonds: kyc.url_justif_origine_fonds ?? "",
+    urlKbis: kyc.url_kbis ?? "",
+    urlStatuts: kyc.url_statuts ?? "",
+    urlCniGerant: kyc.url_cni_gerant ?? "",
+    urlBilans: kyc.url_bilans ?? "",
+    urlRbe: kyc.url_rbe ?? "",
+
+    consentementRgpd: !!kyc.consentement_rgpd || !!kyc.consentement_rgpd_at,
   };
 }
 

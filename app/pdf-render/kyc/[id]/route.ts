@@ -1,11 +1,11 @@
-// app/pdf-render/kyc/[id]/route.ts — Page de rendu HTML pour la fiche KYC
-// Protégée par PDF_RENDER_SECRET (jamais exposé au client — utilisée seulement par Puppeteer côté serveur)
+// app/pdf-render/kyc/[id]/route.ts — Route de rendu HTML legacy (PDF_RENDER_SECRET)
+// Conservée pour rétro-compat ; le path principal est /api/dossiers/[id]/kyc-pdf.
 
 import { createHash } from "crypto";
 import { sql } from "@/lib/db";
-import { rowToForm } from "@/lib/dossier";
+import { kycRowToKycForm, type KycResponseRowFull } from "@/lib/dossier";
+import { initialKycForm } from "@/lib/kyc";
 import { buildKycHtml } from "../../kyc-template";
-import type { Dossier } from "@/types/dossier";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -22,32 +22,41 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return new Response("Bad request", { status: 400 });
   }
 
-  const rows = (await sql`
-    SELECT * FROM dossiers WHERE id = ${id} LIMIT 1
-  `) as unknown as Dossier[];
-  if (rows.length === 0) return new Response("Not found", { status: 404 });
-
-  // Date de signature électronique = quand le client a soumis le KYC (preuve légale)
-  // Source : kyc_responses.consentement_rgpd_at (v2) ou submitted_at (v1, fallback)
-  const sigRows = (await sql`
-    SELECT consentement_rgpd_at, submitted_at
+  // Récupère la dernière réponse KYC complète
+  const kycRows = (await sql`
+    SELECT
+      type_client, nom_prenom, date_naissance, lieu_naissance, nationalite,
+      pays_nationalite, adresse, profession, secteur_activite,
+      email_contact, telephone,
+      ppe, ppe_precisions, ppe_proche_detecte, ppe_proche_precisions,
+      piece_identite_type, piece_identite_numero, piece_identite_expiration,
+      piece_identite_autorite,
+      forme_juridique, siren, date_constitution, activite_principale, nom_gerant,
+      beneficiaires_effectifs_json,
+      pays_residence_fiscale,
+      origine_fonds, origine_fonds_precisions,
+      origine_fonds_vente_adresse, origine_fonds_donateur, origine_fonds_lien_defunt,
+      mode_financement, mode_paiement, montant_operation,
+      type_bien, lieu_bien,
+      url_piece_identite, url_justif_domicile, url_avis_imposition,
+      url_justif_revenus, url_justif_origine_fonds,
+      url_kbis, url_statuts, url_cni_gerant, url_bilans, url_rbe,
+      consentement_rgpd, consentement_rgpd_at, submitted_at
     FROM kyc_responses
     WHERE dossier_id = ${id}
     ORDER BY submitted_at DESC
     LIMIT 1
-  `) as unknown as Array<{ consentement_rgpd_at: string | null; submitted_at: string | null }>;
+  `) as unknown as KycResponseRowFull[];
 
-  const form = rowToForm(rows[0]);
   const generatedAt = url.searchParams.get("at") || new Date().toISOString();
-  const signedAt =
-    sigRows[0]?.consentement_rgpd_at ||
-    sigRows[0]?.submitted_at ||
-    generatedAt;   // dernier recours si dossier sans soumission KYC
+  const form = kycRows.length > 0 ? kycRowToKycForm(kycRows[0]) : { ...initialKycForm };
+  const signedAt = kycRows[0]?.consentement_rgpd_at ?? kycRows[0]?.submitted_at ?? generatedAt;
 
   const hash = createHash("sha256")
     .update(JSON.stringify({
       id, signedAt, nom: form.nomPrenom, type: form.typeClient,
       naissance: form.dateNaissance, adresse: form.adresse,
+      piece: form.pieceIdentiteNumero,
     }))
     .digest("hex");
 
