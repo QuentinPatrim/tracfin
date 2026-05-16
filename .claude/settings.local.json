@@ -34,7 +34,8 @@
       "Bash(cp /tmp/klaris-dashboard.html C:/Users/quent/Desktop/tracfin/_migration/klaris-dashboard.html)",
       "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/app.jsx C:/Users/quent/Desktop/tracfin/_migration/klaris-app.jsx)",
       "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/components.jsx C:/Users/quent/Desktop/tracfin/_migration/klaris-components.jsx)",
-      "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/styles.css C:/Users/quent/Desktop/tracfin/_migration/klaris-styles.css)"
+      "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/styles.css C:/Users/quent/Desktop/tracfin/_migration/klaris-styles.css)",
+      "Bash(node --env-file=.env.local _migration/seen-guide.mjs)"
     ]
   }
 }

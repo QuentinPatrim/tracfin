@@ -141,6 +141,23 @@ function computeStatus(row: Row): SubscriptionStatus {
 
 // ─── Mutations (utilisées par le webhook Stripe) ─────────────────────────
 
+/** Récupère uniquement la date de vue du guide (NULL si jamais vu) */
+export async function getSeenGuideAt(userId: string): Promise<Date | null> {
+  const rows = (await sql`
+    SELECT seen_guide_at FROM subscriptions WHERE user_id = ${userId} LIMIT 1
+  `) as unknown as Array<{ seen_guide_at: string | null }>;
+  if (rows.length === 0 || !rows[0].seen_guide_at) return null;
+  return new Date(rows[0].seen_guide_at);
+}
+
+/** Marque le guide onboarding comme vu (au skip ou à la fin) */
+export async function markGuideSeen(userId: string): Promise<void> {
+  await sql`
+    UPDATE subscriptions SET seen_guide_at = NOW(), updated_at = NOW()
+    WHERE user_id = ${userId}
+  `;
+}
+
 export async function attachStripeCustomer(userId: string, stripeCustomerId: string) {
   await sql`
     UPDATE subscriptions

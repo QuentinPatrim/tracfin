@@ -479,10 +479,10 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
           <ArrowRight width={12} height={12} />
         </Link>
 
-        {/* Déclaration TRACFIN/ERMES si niveau critique */}
+        {/* Déclaration TRACFIN / ERMES si niveau critique */}
         {d.kyc_status === "received" && isCritical && (
           <a
-            href="https://www.tracfin.gouv.fr/professionnels-assujettis-tracfin/declarer-tracfin"
+            href="https://tracfin.finances.gouv.fr/"
             target="_blank"
             rel="noreferrer noopener"
             className="btn-grad small block"
@@ -492,7 +492,7 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
             }}
           >
             <AlertTriangle width={12} height={12} />
-            Déclarer à TRACFIN
+            Déclarer à TRACFIN (ERMES)
             <ExternalLink width={11} height={11} style={{ opacity: 0.85 }} />
           </a>
         )}
