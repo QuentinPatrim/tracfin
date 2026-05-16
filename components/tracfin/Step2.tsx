@@ -221,6 +221,9 @@ export default function Step2({ form, set }: Props) {
       </Sect>
 
       <Sect title="Sanctions & PPE" sub="Gates absolues — L561-10, L561-15">
+        {/* Outils de screening pré-remplis avec le nom du client */}
+        <ScreeningTools nom={form.nomPrenom} />
+
         <BinaryField
           label="Personne sous gel des avoirs ?"
           value={form.gelAvoirs}
@@ -252,5 +255,78 @@ export default function Step2({ form, set }: Props) {
         />
       </Sect>
     </>
+  );
+}
+
+/* ─── ScreeningTools : un seul bouton Open Sanctions (agrège DGT + UE + ONU + 200+ listes) ───── */
+function ScreeningTools({ nom }: { nom: string }) {
+  const cleanedName = nom.trim();
+  const hasName = cleanedName.length >= 2;
+  const q = encodeURIComponent(cleanedName);
+  const openSanctions = `https://www.opensanctions.org/search/?q=${q}`;
+
+  return (
+    <div
+      className="rounded-xl p-5 mb-4"
+      style={{
+        background: "linear-gradient(180deg, rgba(168,85,247,0.08), rgba(99,102,241,0.04) 60%, rgba(255,255,255,0.02))",
+        border: "1px solid rgba(168,85,247,0.25)",
+        boxShadow: "0 1px 0 rgba(255,255,255,0.08) inset, 0 10px 30px -10px rgba(168,85,247,0.18)",
+      }}
+    >
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <div className="flex-1 min-w-0">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-300 mb-1.5">
+            Vérification des sanctions internationales
+          </div>
+          <p className="text-[12px] text-white/65 leading-relaxed">
+            {hasName ? (
+              <>Lance une recherche pour <span className="font-semibold text-white">«&nbsp;{cleanedName}&nbsp;»</span> contre les listes officielles agrégées de :</>
+            ) : (
+              <>Renseignez d'abord le nom du client à l'étape 1 pour activer la vérification.</>
+            )}
+          </p>
+          {hasName && (
+            <ul className="text-[11px] text-white/55 leading-relaxed mt-2 space-y-0.5">
+              <li>• <strong className="text-white/75">DGT Trésor France</strong> (Registre national des gels)</li>
+              <li>• <strong className="text-white/75">UE Consolidated</strong> (sanctions financières européennes)</li>
+              <li>• <strong className="text-white/75">ONU Security Council</strong></li>
+              <li>• <strong className="text-white/75">OFAC US</strong> + 200+ autres listes officielles</li>
+            </ul>
+          )}
+        </div>
+      </div>
+
+      <a
+        href={hasName ? openSanctions : undefined}
+        target="_blank"
+        rel="noreferrer noopener"
+        aria-disabled={!hasName}
+        onClick={(e) => { if (!hasName) e.preventDefault(); }}
+        className="group flex items-center justify-center gap-2.5 rounded-lg px-4 py-3 transition-all w-full"
+        style={{
+          background: hasName
+            ? "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)"
+            : "rgba(255,255,255,0.04)",
+          border: hasName ? "1px solid rgba(255,255,255,0.20)" : "1px solid rgba(255,255,255,0.08)",
+          cursor: hasName ? "pointer" : "not-allowed",
+          opacity: hasName ? 1 : 0.5,
+          textDecoration: "none",
+          boxShadow: hasName
+            ? "0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 20px rgba(168,85,247,0.30)"
+            : "none",
+          color: "white",
+          fontWeight: 600,
+        }}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+        <span className="text-[13px]">
+          {hasName ? "Vérifier sur Open Sanctions" : "Nom du client requis"}
+        </span>
+        {hasName && (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: 0.7 }}><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+        )}
+      </a>
+    </div>
   );
 }

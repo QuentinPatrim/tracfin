@@ -101,6 +101,22 @@ export async function getFileStream(key: string) {
   };
 }
 
+/**
+ * Récupère le contenu complet d'un fichier Scaleway sous forme de Buffer.
+ * Utilise `Body.transformToByteArray()` du SDK AWS v3 qui fonctionne dans tous
+ * les runtimes (Node, Web ReadableStream) — contrairement à un appel manuel
+ * à `getReader()` qui plante sur IncomingMessage Node.
+ */
+export async function getFileBuffer(key: string): Promise<{ buffer: Buffer; contentType: string }> {
+  const res = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
+  if (!res.Body) throw new Error("Fichier introuvable");
+  const bytes = await res.Body.transformToByteArray();
+  return {
+    buffer: Buffer.from(bytes),
+    contentType: res.ContentType ?? "application/octet-stream",
+  };
+}
+
 export async function fileExists(key: string): Promise<boolean> {
   try {
     await s3.send(new HeadObjectCommand({ Bucket: BUCKET, Key: key }));

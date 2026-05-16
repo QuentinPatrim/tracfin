@@ -2,28 +2,70 @@
 
 "use client";
 
-import { useState } from "react";
-import { Check, Sparkles, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, Sparkles, ArrowRight, Settings } from "lucide-react";
+import { useAuth } from "@clerk/nextjs";
 import FloatingNav from "@/components/landing/FloatingNav";
 
 type Period = "monthly" | "yearly";
+type PlanKey = "pro" | "agence";
+
+interface StatusResp {
+  isActive: boolean;
+  state: string;
+  plan: string | null;
+  daysLeft: number | null;
+}
 
 export default function TarifsPage() {
+  const { isSignedIn } = useAuth();
   const [period, setPeriod] = useState<Period>("monthly");
   const [loading, setLoading] = useState<string | null>(null);
+  const [status, setStatus] = useState<StatusResp | null>(null);
 
-  const handleCheckout = async (plan: string) => {
+  // Récupère l'état d'abonnement si connecté
+  useEffect(() => {
+    if (!isSignedIn) return;
+    fetch("/api/subscription/status")
+      .then((r) => r.ok ? r.json() : null)
+      .then(setStatus)
+      .catch(() => {});
+  }, [isSignedIn]);
+
+  const currentPlanKey: PlanKey | null = status?.plan
+    ? (status.plan.startsWith("pro_") ? "pro" : "agence")
+    : null;
+
+  const handleCheckout = async (plan: PlanKey) => {
+    const fullPlan = `${plan}_${period === "monthly" ? "monthly" : "yearly"}`;
     setLoading(plan);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, period }),
+        body: JSON.stringify({ plan: fullPlan }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || "Erreur de paiement");
+        setLoading(null);
+      }
     } catch (e) {
       console.error("Erreur de paiement", e);
+      setLoading(null);
+    }
+  };
+
+  const handlePortal = async () => {
+    setLoading("portal");
+    try {
+      const res = await fetch("/api/billing/portal", { method: "POST" });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else { alert(data.error || "Erreur"); setLoading(null); }
+    } catch {
       setLoading(null);
     }
   };
@@ -118,6 +160,42 @@ export default function TarifsPage() {
           </div>
         </div>
 
+        {/* Status banner si abonnement actif */}
+        {status?.isActive && currentPlanKey && (
+          <div
+            className="max-w-4xl mx-auto mb-6 rounded-2xl px-5 py-4 flex items-center justify-between gap-4 flex-wrap"
+            style={{
+              background: "linear-gradient(135deg, rgba(16,185,129,0.12), rgba(52,211,153,0.06))",
+              border: "1px solid rgba(16,185,129,0.30)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#10B981", boxShadow: "0 0 0 4px rgba(16,185,129,0.20)" }} />
+              <div>
+                <div className="text-[11px] font-bold tracking-widest uppercase text-emerald-300">
+                  {status.state === "trialing" ? "Essai gratuit en cours" : "Abonnement actif"}
+                </div>
+                <div className="text-sm text-white/80">
+                  {status.state === "trialing"
+                    ? `${status.daysLeft} jour${(status.daysLeft ?? 0) > 1 ? "s" : ""} restant${(status.daysLeft ?? 0) > 1 ? "s" : ""} dans votre essai`
+                    : `Plan ${currentPlanKey === "pro" ? "Pro" : "Agence"}${status.plan?.endsWith("yearly") ? " · annuel" : " · mensuel"}`}
+                </div>
+              </div>
+            </div>
+            {status.state !== "trialing" && (
+              <button
+                onClick={handlePortal}
+                disabled={loading === "portal"}
+                className="px-4 py-2 rounded-full text-[12px] font-bold text-emerald-300 hover:text-emerald-200 transition flex items-center gap-2"
+                style={{ background: "rgba(16,185,129,0.10)", border: "1px solid rgba(16,185,129,0.35)" }}
+              >
+                <Settings className="w-3.5 h-3.5" />
+                {loading === "portal" ? "Redirection…" : "Gérer mon abonnement"}
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Plans */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto">
           <PlanCard
@@ -127,11 +205,14 @@ export default function TarifsPage() {
               "Jusqu'à 15 dossiers KYC / mois",
               "Fiches Personne Physique & Morale",
               "Scoring Tracfin automatique",
-              "Stockage sécurisé Cloudinary",
+              "Stockage sécurisé Paris (Scaleway)",
               "Export PDF des attestations",
               "Support email",
             ]}
-            cta="Commencer" onClick={() => handleCheckout("pro")} loading={loading === "pro"}
+            cta={currentPlanKey === "pro" ? "Plan actuel" : "Commencer"}
+            onClick={() => handleCheckout("pro")}
+            loading={loading === "pro"}
+            isCurrent={currentPlanKey === "pro"}
           />
           <PlanCard
             name="Agence" tagline="Pour les agences immobilières"
@@ -146,7 +227,10 @@ export default function TarifsPage() {
               "Support prioritaire",
               "API Webhook (à venir)",
             ]}
-            cta="Choisir Agence" onClick={() => handleCheckout("agence")} loading={loading === "agence"}
+            cta={currentPlanKey === "agence" ? "Plan actuel" : "Choisir Agence"}
+            onClick={() => handleCheckout("agence")}
+            loading={loading === "agence"}
+            isCurrent={currentPlanKey === "agence"}
           />
         </div>
 
@@ -189,10 +273,10 @@ export default function TarifsPage() {
 }
 
 function PlanCard({
-  name, tagline, priceMonthly, priceYearly, period, features, cta, onClick, popular = false, loading = false,
+  name, tagline, priceMonthly, priceYearly, period, features, cta, onClick, popular = false, loading = false, isCurrent = false,
 }: {
   name: string; tagline: string; priceMonthly: number; priceYearly: number; period: Period;
-  features: string[]; cta: string; onClick: () => void; popular?: boolean; loading?: boolean;
+  features: string[]; cta: string; onClick: () => void; popular?: boolean; loading?: boolean; isCurrent?: boolean;
 }) {
   const price = period === "monthly" ? priceMonthly : priceYearly;
 
@@ -266,10 +350,16 @@ function PlanCard({
 
         <button
           onClick={onClick}
-          disabled={loading}
-          className="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-[14px] font-bold transition-transform hover:scale-[1.02] mb-7 disabled:opacity-50 disabled:cursor-wait"
+          disabled={loading || isCurrent}
+          className="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-[14px] font-bold transition-transform hover:scale-[1.02] mb-7 disabled:opacity-60 disabled:cursor-default disabled:hover:scale-100"
           style={
-            popular
+            isCurrent
+              ? {
+                  background: "rgba(16,185,129,0.15)",
+                  color: "#34D399",
+                  boxShadow: "0 0 0 1px rgba(16,185,129,0.40), 0 1px 0 rgba(255,255,255,0.10) inset",
+                }
+              : popular
               ? {
                   background: "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)",
                   backgroundSize: "200% 200%",
@@ -281,8 +371,9 @@ function PlanCard({
               : { background: "white", color: "#0F172A" }
           }
         >
-          {loading ? "Redirection..." : cta}
-          {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />}
+          {loading ? "Redirection…" : cta}
+          {!loading && !isCurrent && <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />}
+          {isCurrent && <Check className="w-4 h-4" strokeWidth={3} />}
         </button>
 
         <ul className="space-y-3">

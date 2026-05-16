@@ -7,6 +7,8 @@ import TracfinForm from "@/components/tracfin/TracfinForm";
 import type { Dossier } from "@/types/dossier";
 import type { DossierForm } from "@/lib/tracfin";
 import { rowToForm as dossierRowToForm } from "@/lib/dossier";
+import { listDossierFiles, type KycFilesRow } from "@/lib/dossier-files";
+import DossierPieces from "@/components/dashboard/DossierPieces";
 
 function toDateInput(val: unknown): string {
   if (!val) return "";
@@ -143,24 +145,33 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
     redirect(`/dashboard/${id}/wait`);
   }
 
-  // Récupère la dernière réponse KYC
+  // Récupère la dernière réponse KYC (avec TOUTES les pièces pour DocumentsList étendu)
   const kycRows = (await sql`
     SELECT kyc_version, email_contact, type_client, nom_prenom, date_naissance, lieu_naissance,
            nationalite, pays_nationalite, adresse, profession, secteur_activite,
            ppe, ppe_proche_detecte, ppe_precisions, ppe_proche_precisions,
            pays_residence_fiscale, origine_fonds, origine_fonds_precisions,
            mode_financement, mode_paiement, type_bien, lieu_bien, montant_operation,
-           url_piece_identite, url_justif_domicile, url_kbis, url_statuts, url_cni_gerant
+           url_piece_identite, url_justif_domicile, url_avis_imposition,
+           url_justif_revenus, url_justif_origine_fonds,
+           url_kbis, url_statuts, url_cni_gerant, url_bilans, url_rbe
     FROM kyc_responses
     WHERE dossier_id = ${id}
     ORDER BY submitted_at DESC
     LIMIT 1
-  `) as unknown as KycRow[];
+  `) as unknown as Array<KycRow & KycFilesRow>;
 
   if (kycRows.length === 0) {
     // Edge case : kyc_status='received' mais pas de réponse → redirect wait
     redirect(`/dashboard/${id}/wait`);
   }
 
-  return <TracfinForm initialData={rowToForm(dossier, kycRows[0])} dossierId={id} hasKyc />;
+  const files = listDossierFiles(kycRows[0]);
+
+  return (
+    <>
+      <DossierPieces dossierId={id} files={files} />
+      <TracfinForm initialData={rowToForm(dossier, kycRows[0])} dossierId={id} hasKyc />
+    </>
+  );
 }

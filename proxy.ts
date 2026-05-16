@@ -6,7 +6,7 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/tarifs",
   "/api/checkout",
-  "/api/webhook/stripe",
+  "/api/webhooks/stripe",
   // Routes KYC publiques (accessibles sans authentification)
   "/kyc/(.*)",
   "/api/kyc/(.*)",

@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { randomBytes } from "crypto";
 import { sql } from "@/lib/db";
+import { getSubscriptionStatus } from "@/lib/subscription";
 
 export async function GET() {
   const { userId } = await auth();
@@ -28,6 +29,23 @@ interface CreateBody {
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // ─── Guard abonnement : pas de création de nouveau dossier si essai expiré ou abo inactif ─
+  const sub = await getSubscriptionStatus(userId);
+  if (!sub.isActive) {
+    return NextResponse.json(
+      {
+        error: "subscription_required",
+        message:
+          sub.state === "expired"
+            ? "Votre essai gratuit est terminé. Souscrivez à un abonnement pour créer de nouveaux dossiers."
+            : "Un abonnement actif est requis pour créer un nouveau dossier.",
+        state: sub.state,
+        redirect: "/tarifs",
+      },
+      { status: 402 } // Payment Required
+    );
+  }
 
   let body: CreateBody;
   try {

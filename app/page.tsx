@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useClerk, useAuth } from "@clerk/nextjs";
 import {
   FileSearch, Lock, Send, Mail, FileDown,
-  Sparkles, ArrowRight, Check, Building2, Briefcase, Scale, ShieldCheck,
+  Sparkles, ArrowRight, Check, Building2, Briefcase, Scale, ShieldCheck, Play,
 } from "lucide-react";
 import FloatingNav from "@/components/landing/FloatingNav";
 import HeroCarousel from "@/components/landing/HeroCarousel";
@@ -62,12 +62,20 @@ export default function LandingPage() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
                 </CTAButton>
               ) : (
-                <CTAButton onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })} primary>
-                  Essayer gratuitement
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-                </CTAButton>
+                <>
+                  <CTAButton
+                    onClick={() => window.dispatchEvent(new Event("klaris:open-demo"))}
+                    primary
+                  >
+                    <Play className="w-4 h-4" fill="currentColor" strokeWidth={0} />
+                    Voir la démo
+                  </CTAButton>
+                  <CTAButton onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}>
+                    Essayer gratuitement
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+                  </CTAButton>
+                </>
               )}
-              <CTAButton href="/tarifs">Voir les tarifs</CTAButton>
             </div>
 
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[11px] text-white/40 uppercase tracking-[0.15em] font-semibold">

@@ -24,7 +24,17 @@
       "Bash(rm -f C:/Users/quent/Desktop/tracfin/components/pdf/AttestationPDF.tsx C:/Users/quent/Desktop/tracfin/components/pdf/KycPDF.tsx C:/Users/quent/Desktop/tracfin/lib/pdf-fonts.ts)",
       "Bash(npm uninstall *)",
       "Bash(node -e \"import\\('@sparticuz/chromium-min'\\).then\\(m => console.log\\(Object.keys\\(m.default || m\\)\\)\\)\")",
-      "Bash(node -e \"import\\('@sparticuz/chromium-min'\\).then\\(m => { const c = m.default || m; console.log\\('args length:', c.args?.length, 'execPath fn:', typeof c.executablePath\\); }\\)\")"
+      "Bash(node -e \"import\\('@sparticuz/chromium-min'\\).then\\(m => { const c = m.default || m; console.log\\('args length:', c.args?.length, 'execPath fn:', typeof c.executablePath\\); }\\)\")",
+      "Bash(node --env-file=.env.local _migration/subscriptions.mjs)",
+      "Read(//tmp/klaris-dashboard/**)",
+      "Read(//tmp/**)",
+      "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/README.md /tmp/klaris-readme.md)",
+      "Bash(cp \"/tmp/klaris-dashboard/dashboard-klaris/project/Klaris Dashboard.html\" /tmp/klaris-dashboard.html)",
+      "Bash(cp /tmp/klaris-readme.md C:/Users/quent/Desktop/tracfin/_migration/klaris-readme.md)",
+      "Bash(cp /tmp/klaris-dashboard.html C:/Users/quent/Desktop/tracfin/_migration/klaris-dashboard.html)",
+      "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/app.jsx C:/Users/quent/Desktop/tracfin/_migration/klaris-app.jsx)",
+      "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/components.jsx C:/Users/quent/Desktop/tracfin/_migration/klaris-components.jsx)",
+      "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/styles.css C:/Users/quent/Desktop/tracfin/_migration/klaris-styles.css)"
     ]
   }
 }

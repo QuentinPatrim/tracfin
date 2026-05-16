@@ -4,13 +4,16 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Play } from "lucide-react";
 import { useClerk, useAuth, UserButton } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
+import DemoModal from "./DemoModal";
 
 export default function FloatingNav() {
   const { openSignIn, openSignUp } = useClerk();
   const { isSignedIn, isLoaded } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [demoOpen, setDemoOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -19,7 +22,20 @@ export default function FloatingNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Expose un déclencheur global pour que la landing puisse ouvrir la modal aussi (CTA hero, carrousel)
+  useEffect(() => {
+    const open = () => setDemoOpen(true);
+    window.addEventListener("klaris:open-demo", open);
+    return () => window.removeEventListener("klaris:open-demo", open);
+  }, []);
+
   return (
+    <>
+    <DemoModal
+      open={demoOpen}
+      onClose={() => setDemoOpen(false)}
+      onCta={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}
+    />
     <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl">
       <div
         className="relative flex items-center justify-between px-3 py-2 rounded-full transition-all duration-300"
@@ -67,8 +83,9 @@ export default function FloatingNav() {
               >
                 Connexion
               </button>
-              <GradientPillButton onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}>
-                Essayer gratuitement
+              <GradientPillButton onClick={() => setDemoOpen(true)}>
+                <Play className="w-3.5 h-3.5 inline mr-1.5 -mt-0.5" fill="currentColor" strokeWidth={0} />
+                Voir la démo
               </GradientPillButton>
             </>
           )}
@@ -88,6 +105,7 @@ export default function FloatingNav() {
         </div>
       </div>
     </nav>
+    </>
   );
 }
 

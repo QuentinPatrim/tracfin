@@ -3,13 +3,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Mail, Send, ChevronRight } from "lucide-react";
-import KlarisLogo from "@/components/ui/KlarisLogo";
+import { Mail, Send, ChevronRight, Play } from "lucide-react";
 
 type Slide = "dashboard" | "form" | "report";
 
 export default function HeroCarousel() {
   const [active, setActive] = useState<Slide>("dashboard");
+  const [hover, setHover] = useState(false);
 
   useEffect(() => {
     const order: Slide[] = ["dashboard", "form", "report"];
@@ -19,8 +19,39 @@ export default function HeroCarousel() {
     return () => clearInterval(id);
   }, []);
 
+  const openDemo = () => window.dispatchEvent(new Event("klaris:open-demo"));
+
   return (
-    <div className="relative w-full h-[580px] flex items-center justify-center">
+    <button
+      type="button"
+      onClick={openDemo}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      aria-label="Voir la démo guidée"
+      className="relative w-full h-[580px] flex items-center justify-center cursor-pointer group bg-transparent border-0 p-0 text-left"
+    >
+      {/* Hover overlay : Play badge centré */}
+      <div
+        className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none transition-opacity duration-300"
+        style={{ opacity: hover ? 1 : 0 }}
+      >
+        <div
+          className="flex items-center gap-2.5 px-5 py-3 rounded-full"
+          style={{
+            background: "rgba(7,8,15,0.85)",
+            backdropFilter: "blur(20px) saturate(180%)",
+            WebkitBackdropFilter: "blur(20px) saturate(180%)",
+            boxShadow: [
+              "0 0 0 1px rgba(255,255,255,0.18)",
+              "0 1px 0 rgba(255,255,255,0.18) inset",
+              "0 20px 40px -10px rgba(168,85,247,0.5)",
+            ].join(", "),
+          }}
+        >
+          <Play className="w-4 h-4 text-white" fill="white" strokeWidth={0} />
+          <span className="text-[13px] font-bold text-white tracking-tight">Voir la démo</span>
+        </div>
+      </div>
       {/* Halo ambiant violet/magenta derrière */}
       <div
         className="absolute inset-0 -z-10"
@@ -68,12 +99,13 @@ export default function HeroCarousel() {
       </div>
 
       {/* Indicateurs */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2 items-center">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2 items-center z-20">
         {(["dashboard", "form", "report"] as Slide[]).map((s) => (
-          <button
+          <span
             key={s}
-            onClick={() => setActive(s)}
-            className="h-1 rounded-full transition-all duration-300 cursor-pointer"
+            onClick={(e) => { e.stopPropagation(); setActive(s); }}
+            role="button"
+            className="h-1 rounded-full transition-all duration-300 cursor-pointer block"
             style={{
               width: active === s ? 28 : 6,
               background: active === s ? "linear-gradient(90deg,#6366F1,#A855F7,#EC4899)" : "rgba(255,255,255,0.2)",
@@ -82,7 +114,7 @@ export default function HeroCarousel() {
           />
         ))}
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -329,66 +361,159 @@ function RiskRow({ label, value, risk }: { label: string; value: string; risk: "
 function ReportMockup() {
   return (
     <div
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[440px] rounded-2xl overflow-hidden"
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[440px] rounded-xl overflow-hidden bg-white"
       style={{
         boxShadow: [
           "0 0 0 1px rgba(255,255,255,0.08)",
-          "0 30px 80px -20px rgba(168,85,247,0.40)",
+          "0 30px 80px -20px rgba(168,85,247,0.50)",
           "0 12px 30px -8px rgba(0,0,0,0.5)",
         ].join(", "),
       }}
     >
-      <div className="bg-white text-slate-900 p-6 relative">
-        {/* Highlight top */}
-        <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
+      {/* Bandeau dégradé top — signature Klaris */}
+      <div className="h-1.5" style={{ background: "linear-gradient(90deg,#7C3AED,#A855F7,#EC4899)" }} />
 
-        <div className="flex items-center justify-between pb-3 mb-4 border-b-2 border-slate-900">
-          <div className="flex items-center gap-2">
-            <KlarisLogo size={28} glow={false} />
+      {/* Glow ambient en coin (façon PDF maquette) */}
+      <div
+        className="absolute -right-16 -top-16 w-44 h-44 rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(closest-side, rgba(168,85,247,0.18), rgba(236,72,153,0.07) 60%, transparent 70%)" }}
+      />
+
+      <div className="relative p-6 text-slate-900" style={{ fontFamily: "Inter, sans-serif", color: "#0B0822" }}>
+        {/* Header brand + meta */}
+        <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#EDE9F4]">
+          <div className="flex items-center gap-2.5">
+            {/* Logo conique façon maquette */}
+            <div className="relative w-7 h-7 rounded-full"
+              style={{
+                background: "conic-gradient(from 220deg, #7C3AED, #A855F7 30%, #EC4899 60%, #7C3AED)",
+                boxShadow: "0 4px 12px rgba(124,58,237,0.30)",
+              }}
+            >
+              <div className="absolute inset-[6px] rounded-full bg-white" />
+              <div className="absolute inset-[9px] rounded-full" style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)" }} />
+            </div>
             <div className="text-[15px] font-extrabold tracking-tight">Klaris</div>
+            <div
+              className="ml-1 px-2 py-0.5 rounded-full text-[8px] font-bold tracking-[0.16em] uppercase"
+              style={{ background: "rgba(124,58,237,0.08)", color: "#7C3AED", border: "1px solid #E5DBFB" }}
+            >
+              Attestation
+            </div>
           </div>
           <div className="text-right">
-            <div className="text-[8px] uppercase tracking-widest text-slate-500 font-semibold">Dossier</div>
-            <div className="text-[10px] font-bold">#02919BCF</div>
+            <div className="text-[7px] uppercase tracking-[0.18em] text-[#7A7592] font-semibold">Dossier</div>
+            <div className="text-[10px] font-bold font-mono text-[#0B0822]">#02919BCF</div>
           </div>
         </div>
 
-        <div className="text-[18px] font-extrabold tracking-tight mb-1">Attestation LCB-FT</div>
-        <div className="text-[10px] text-slate-500 mb-4">Évaluation des risques de blanchiment</div>
+        {/* Titre dégradé + sceau */}
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <h3
+            className="text-[20px] font-extrabold tracking-tight leading-[1.1]"
+            style={{
+              backgroundImage: "linear-gradient(90deg, #1B1438 0%, #4C1D95 60%, #7C3AED 100%)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              color: "transparent",
+            }}
+          >
+            Attestation de<br />Conformité LCB-FT
+          </h3>
+          <span
+            className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[8px] font-bold tracking-[0.14em] uppercase whitespace-nowrap"
+            style={{
+              border: "1px dashed #C7B8F3",
+              color: "#9333EA",
+              background: "#FAF6FF",
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#7C3AED", boxShadow: "0 0 0 3px rgba(124,58,237,0.18)" }} />
+            Vérifié
+          </span>
+        </div>
 
+        {/* Verdict box (bordure dégradée vert façon maquette) */}
         <div
-          className="rounded-xl p-4 mb-4"
+          className="rounded-xl p-3 mb-4 relative overflow-hidden"
           style={{
-            background: "#ECFDF5",
-            boxShadow: "0 0 0 2px #34D399, 0 8px 24px -6px rgba(52,211,153,0.4)",
+            background: "linear-gradient(#F2FBF7,#ECFDF5) padding-box, linear-gradient(135deg,#059669,#10B981 60%,#34D399) border-box",
+            border: "1.5px solid transparent",
           }}
         >
-          <div className="text-[8px] font-bold uppercase tracking-[0.2em] mb-1 text-emerald-700">
-            Verdict de conformité
+          <div className="flex items-center gap-1.5 text-[8px] font-bold tracking-[0.2em] uppercase mb-1" style={{ color: "#047857" }}>
+            <span className="w-2 h-2 rounded-full" style={{ background: "#10B981" }} />
+            Verdict · Niveau 1 / 4
           </div>
-          <div className="text-[16px] font-extrabold mb-2 tracking-tight text-emerald-700">
-            Dossier Valide
+          <div className="text-[16px] font-extrabold tracking-tight mb-2" style={{ color: "#047857" }}>
+            Dossier conforme
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex-1 h-1.5 bg-emerald-200/60 rounded-full overflow-hidden">
-              <div className="h-full bg-emerald-600" style={{ width: "100%" }} />
+            <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(16,185,129,0.15)" }}>
+              <div className="h-full" style={{
+                width: "100%",
+                background: "linear-gradient(90deg,#059669,#10B981)",
+                boxShadow: "0 0 12px rgba(16,185,129,0.45)",
+              }} />
             </div>
-            <div className="text-[14px] font-extrabold text-emerald-700">100%</div>
+            <div className="text-[14px] font-extrabold" style={{ color: "#047857" }}>100%</div>
           </div>
         </div>
 
-        <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-violet-600 mb-2 pb-1.5 border-b border-slate-200">
-          Détail par critère
+        {/* Section numérotée */}
+        <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-[#EDE9F4]">
+          <span
+            className="font-mono text-[8px] font-bold px-1.5 py-0.5 rounded text-white tracking-[0.06em]"
+            style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)" }}
+          >02</span>
+          <span
+            className="text-[9px] font-bold uppercase tracking-[0.2em]"
+            style={{
+              backgroundImage: "linear-gradient(135deg,#7C3AED,#EC4899)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              color: "transparent",
+            }}
+          >
+            Détail des critères
+          </span>
         </div>
-        <div className="space-y-1.5">
-          {["Bénéficiaires effectifs", "Résidence fiscale", "Origine des fonds"].map((label) => (
-            <div key={label} className="flex items-center justify-between py-1.5 border-b border-slate-100">
-              <span className="text-[10px] text-slate-700">{label}</span>
-              <span className="text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+        <div className="space-y-1">
+          {[
+            { name: "Bénéficiaires effectifs", sub: "Personne physique" },
+            { name: "Résidence fiscale", sub: "France / UE" },
+            { name: "Origine des fonds", sub: "Épargne — justifiée" },
+          ].map((c) => (
+            <div key={c.name} className="flex items-center justify-between py-1.5">
+              <div>
+                <div className="text-[10px] font-semibold text-[#0B0822] leading-tight">{c.name}</div>
+                <div className="text-[8px] text-[#7A7592] mt-0.5">{c.sub}</div>
+              </div>
+              <span
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[7px] font-bold tracking-[0.14em] uppercase whitespace-nowrap"
+                style={{
+                  background: "#ECFDF5",
+                  color: "#047857",
+                  border: "1px solid #A7F3D0",
+                }}
+              >
+                <span className="w-1 h-1 rounded-full" style={{ background: "#10B981", boxShadow: "0 0 0 2px rgba(16,185,129,0.20)" }} />
                 Conforme
               </span>
             </div>
           ))}
+        </div>
+
+        {/* Footer mini */}
+        <div className="mt-3 pt-2.5 border-t border-[#EDE9F4] flex items-center justify-between">
+          <span
+            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[7px] font-bold tracking-[0.16em] uppercase"
+            style={{ background: "#F5F0FF", color: "#7C3AED", border: "1px solid #E5DBFB" }}
+          >
+            <span className="w-1 h-1 rounded-full" style={{ background: "#7C3AED" }} />
+            Document confidentiel
+          </span>
+          <span className="text-[8px] font-mono text-[#7A7592]">SHA-256 · a1f7…3bc4</span>
         </div>
       </div>
     </div>
