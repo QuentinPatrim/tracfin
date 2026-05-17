@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight, FileDown, Trash2, Mail, FileCheck,
-  ChevronRight, AlertTriangle, Send, ExternalLink, Package,
+  ChevronRight, AlertTriangle, Send, ExternalLink, Package, Check,
 } from "lucide-react";
 import Topbar from "./Topbar";
 import KpiRow from "./KpiRow";
@@ -18,7 +18,7 @@ import OnboardingGuide from "./OnboardingGuide";
 import DashboardFooter from "./DashboardFooter";
 import { EmptyState } from "./primitives";
 import { FolderPlus, BookOpen } from "lucide-react";
-import MarcheASuivre from "./MarcheASuivre";
+import MarcheASuivre, { isMarcheTerminee } from "./MarcheASuivre";
 import { NIVEAU_CFG, type Niveau, type StatutKey, V1_TO_NIVEAU } from "@/lib/tracfin";
 import type { DossierFile } from "@/lib/dossier-files";
 
@@ -58,13 +58,14 @@ function resolveNiveau(d: DossierItem): Niveau | null {
   return null;
 }
 
-function niveauBadge(d: DossierItem): { tone: "success" | "warn" | "danger" | "pending"; label: string } {
+function niveauBadge(d: DossierItem): { tone: "success" | "warn" | "danger" | "critical" | "pending"; label: string } {
   if (d.kyc_status !== "received") return { tone: "pending", label: "En attente du KYC" };
   const n = resolveNiveau(d);
   if (!n) return { tone: "pending", label: "À analyser" };
   if (n === "vigilance_standard") return { tone: "success", label: "Conforme" };
   if (n === "vigilance_renforcee") return { tone: "warn", label: "Vigilance renforcée" };
-  return { tone: "danger", label: n === "interdiction" ? "Interdiction" : "Examen renforcé" };
+  if (n === "examen_renforce") return { tone: "danger", label: "Examen renforcé" };
+  return { tone: "critical", label: "Interdiction" };
 }
 
 function formatDate(iso: string): string {
@@ -93,6 +94,26 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
     return () => window.removeEventListener("klaris:open-guide", onOpen);
   }, []);
 
+  // ─── Marches à suivre terminées (synchronisation localStorage) ───────
+  const [marcheCompletedIds, setMarcheCompletedIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    const recompute = () => {
+      const s = new Set<string>();
+      for (const d of dossiers) {
+        const n = resolveNiveau(d);
+        if (n && isMarcheTerminee(d.id, n)) s.add(d.id);
+      }
+      setMarcheCompletedIds(s);
+    };
+    recompute();
+    window.addEventListener("klaris:marche-updated", recompute);
+    window.addEventListener("storage", recompute);
+    return () => {
+      window.removeEventListener("klaris:marche-updated", recompute);
+      window.removeEventListener("storage", recompute);
+    };
+  }, [dossiers]);
+
   // Sélection initiale : 1er dossier (priorité aux KYC reçus, puis critiques)
   const defaultSelected = useMemo(() => {
     const received = dossiers.find((d) => d.kyc_status === "received");
@@ -118,13 +139,15 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
     }
   };
 
-  // Dossiers en alerte (examen_renforce / interdiction OU statut critical legacy)
+  // Dossiers en alerte (examen_renforce / interdiction) — sauf si la marche
+  // à suivre a été menée à son terme par l'agent (toutes les étapes cochées).
   const alerts = useMemo(
     () => dossiers.filter((d) => {
       const n = resolveNiveau(d);
-      return n === "examen_renforce" || n === "interdiction";
+      if (n !== "examen_renforce" && n !== "interdiction") return false;
+      return !marcheCompletedIds.has(d.id);
     }),
-    [dossiers]
+    [dossiers, marcheCompletedIds]
   );
 
   // Filtrage de la liste
@@ -214,14 +237,17 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
               <span className="muted small">— examen renforcé ou interdiction TRACFIN</span>
             </div>
             <div className="alerts-list">
-              {alerts.map((d) => (
-                <Link key={d.id} href={`/dashboard/${d.id}`} className="alert-pill">
-                  <span className="risk-dot" style={{ background: "#ef4444" }} />
-                  <span className="alert-name">{d.nom_prenom}</span>
-                  <span className="muted small">{niveauBadge(d).label}</span>
-                  <ChevronRight width={12} height={12} style={{ opacity: 0.6 }} />
-                </Link>
-              ))}
+              {alerts.map((d) => {
+                const ab = niveauBadge(d);
+                return (
+                  <Link key={d.id} href={`/dashboard/${d.id}`} className="alert-pill">
+                    <span className="risk-dot" style={{ background: ab.tone === "critical" ? "#0f172a" : "#ef4444" }} />
+                    <span className="alert-name">{d.nom_prenom}</span>
+                    <span className="muted small">{ab.label}</span>
+                    <ChevronRight width={12} height={12} style={{ opacity: 0.6 }} />
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}
@@ -268,6 +294,20 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
                       </div>
                     </div>
                     <div className="row-r">
+                      {marcheCompletedIds.has(d.id) && (b.tone === "danger" || b.tone === "warn" || b.tone === "critical") && (
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                          style={{
+                            background: "rgba(16,185,129,0.10)",
+                            border: "1px solid rgba(16,185,129,0.30)",
+                            color: "#047857",
+                          }}
+                          title="Marche à suivre terminée"
+                        >
+                          <Check width={9} height={9} strokeWidth={3} />
+                          Traité
+                        </span>
+                      )}
                       <span className={`badge tone-${b.tone}`}>{b.label}</span>
                     </div>
                   </button>
@@ -465,7 +505,16 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
       {/* Niveau de vigilance (verdict qualitatif) */}
       {d.kyc_status === "received" && cfg && niveau && (
         <div>
-          <div className="preview-risk-label" style={{ color: b.tone === "success" ? "#059669" : b.tone === "warn" ? "#d97706" : "#dc2626" }}>
+          <div
+            className="preview-risk-label"
+            style={{
+              color:
+                b.tone === "success" ? "#059669"
+                : b.tone === "warn" ? "#d97706"
+                : b.tone === "critical" ? "#0f172a"
+                : "#dc2626",
+            }}
+          >
             {cfg.label}
           </div>
           <div className="muted small" style={{ marginBottom: 14 }}>{cfg.ref}</div>
@@ -609,11 +658,12 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
 
 /* Disque coloré plein qui matérialise visuellement le NIVEAU de vigilance.
    Pas de pourcentage, pas de score — juste la couleur du verdict. */
-function NiveauDisc({ tone }: { tone: "success" | "warn" | "danger" | "pending" }) {
+function NiveauDisc({ tone }: { tone: "success" | "warn" | "danger" | "critical" | "pending" }) {
   const cfg =
-    tone === "success" ? { from: "#10b981", to: "#34d399", glow: "rgba(16,185,129,0.40)" }
-    : tone === "warn"  ? { from: "#f59e0b", to: "#fbbf24", glow: "rgba(245,158,11,0.40)" }
-    : tone === "danger"? { from: "#dc2626", to: "#f43f5e", glow: "rgba(220,38,38,0.40)" }
+    tone === "success"  ? { from: "#10b981", to: "#34d399", glow: "rgba(16,185,129,0.40)" }
+    : tone === "warn"   ? { from: "#f59e0b", to: "#fbbf24", glow: "rgba(245,158,11,0.40)" }
+    : tone === "danger" ? { from: "#dc2626", to: "#f43f5e", glow: "rgba(220,38,38,0.40)" }
+    : tone === "critical" ? { from: "#0f172a", to: "#1e293b", glow: "rgba(220,38,38,0.45)" }
     : { from: "#7c3aed", to: "#ec4899", glow: "rgba(124,58,237,0.40)" };
 
   return (
@@ -639,6 +689,18 @@ function NiveauDisc({ tone }: { tone: "success" | "warn" | "danger" | "pending" 
           opacity: 0.7,
         }}
       />
+      {/* Accent rouge pulsé pour le mode critical (interdiction) */}
+      {tone === "critical" && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            borderRadius: "50%",
+            boxShadow: "0 0 0 1.5px rgba(220,38,38,0.55) inset",
+            pointerEvents: "none",
+          }}
+        />
+      )}
     </div>
   );
 }

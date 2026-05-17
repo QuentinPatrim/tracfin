@@ -830,6 +830,13 @@
 .badge.tone-success { color: var(--k-success); background: var(--k-success-bg); border-color: var(--k-success-bd); box-shadow: 0 0 12px -4px var(--k-success-glow); }
 .badge.tone-warn    { color: var(--k-warn);    background: var(--k-warn-bg);    border-color: var(--k-warn-bd);    box-shadow: 0 0 12px -4px var(--k-warn-glow); }
 .badge.tone-danger  { color: var(--k-danger);  background: var(--k-danger-bg);  border-color: var(--k-danger-bd);  box-shadow: 0 0 12px -4px var(--k-danger-glow); }
+/* Interdiction = "stop absolu", distinct du rouge "examen renforcé" */
+.badge.tone-critical {
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-color: rgba(220,38,38,0.45);
+  box-shadow: 0 0 0 1px rgba(220,38,38,0.30), 0 0 14px -4px rgba(220,38,38,0.45), 0 4px 10px -4px rgba(15,23,42,0.30);
+}
 .badge.tone-info    { color: var(--k-info);    background: rgba(8,145,178,.10); border-color: rgba(8,145,178,.30); }
 .badge.tone-pending { color: var(--k-accent);  background: var(--k-accent-soft); border-color: rgba(124,58,237,.25); box-shadow: 0 0 12px -4px var(--k-accent-glow); }
 

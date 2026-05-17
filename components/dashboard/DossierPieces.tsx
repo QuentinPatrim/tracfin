@@ -22,8 +22,10 @@ export default function DossierPieces({ dossierId, files }: Props) {
         position: "sticky",
         top: 0,
         zIndex: 30,
-        background: "#07080F",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(250,250,255,0.92)",
+        backdropFilter: "blur(18px) saturate(170%)",
+        WebkitBackdropFilter: "blur(18px) saturate(170%)",
+        borderBottom: "1px solid rgba(124,58,237,0.10)",
         padding: "12px 24px",
       }}
     >
@@ -38,7 +40,7 @@ export default function DossierPieces({ dossierId, files }: Props) {
             width: "100%",
             background: "transparent",
             border: 0,
-            color: "white",
+            color: "#0f172a",
             cursor: "pointer",
             padding: "6px 0",
           }}
@@ -46,22 +48,22 @@ export default function DossierPieces({ dossierId, files }: Props) {
           <div
             style={{
               width: 30, height: 30, borderRadius: 8,
-              background: "linear-gradient(135deg, rgba(99,102,241,0.20), rgba(168,85,247,0.10))",
-              border: "1px solid rgba(168,85,247,0.35)",
+              background: "linear-gradient(135deg, rgba(124,58,237,0.14), rgba(236,72,153,0.08))",
+              border: "1px solid rgba(124,58,237,0.30)",
               display: "grid", placeItems: "center",
-              color: "#C4B5FD",
+              color: "#6d28d9",
             }}
           >
             <FileBox width={15} height={15} />
           </div>
           <div style={{ flex: 1, textAlign: "left" }}>
-            <div style={{ fontSize: 12.5, fontWeight: 600, color: "white" }}>
+            <div style={{ fontSize: 12.5, fontWeight: 600, color: "#0f172a" }}>
               Pièces justificatives reçues
-              <span style={{ color: "rgba(255,255,255,0.4)", marginLeft: 6, fontWeight: 400 }}>
+              <span style={{ color: "#94a3b8", marginLeft: 6, fontWeight: 400 }}>
                 · {files.length} fichier{files.length > 1 ? "s" : ""}
               </span>
             </div>
-            <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>
+            <div style={{ fontSize: 10.5, color: "#94a3b8", marginTop: 2 }}>
               Cliquer pour {open ? "réduire" : "afficher"}
             </div>
           </div>
@@ -74,12 +76,12 @@ export default function DossierPieces({ dossierId, files }: Props) {
               gap: 6,
               padding: "7px 13px",
               borderRadius: 8,
-              background: "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)",
+              background: "linear-gradient(135deg, #7c3aed, #ec4899)",
               color: "white",
               fontSize: 12,
               fontWeight: 600,
               textDecoration: "none",
-              boxShadow: "0 4px 14px rgba(168,85,247,0.40), inset 0 1px 0 rgba(255,255,255,0.20)",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 16px rgba(124,58,237,0.35)",
             }}
           >
             <Package width={12} height={12} />
@@ -89,7 +91,7 @@ export default function DossierPieces({ dossierId, files }: Props) {
             width={16}
             height={16}
             style={{
-              color: "rgba(255,255,255,0.5)",
+              color: "#94a3b8",
               transform: open ? "rotate(180deg)" : "rotate(0deg)",
               transition: "transform 0.2s",
             }}
@@ -101,15 +103,16 @@ export default function DossierPieces({ dossierId, files }: Props) {
             marginTop: 12,
             padding: 14,
             borderRadius: 12,
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(255,255,255,0.65)",
+            border: "1px solid rgba(124,58,237,0.10)",
+            boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset",
           }}>
             {files.length === 0 ? (
-              <div style={{ padding: 12, textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 12.5 }}>
+              <div style={{ padding: 12, textAlign: "center", color: "#94a3b8", fontSize: 12.5 }}>
                 Aucune pièce justificative reçue.
               </div>
             ) : (
-              <DossierPiecesDark files={files} />
+              <DossierPiecesLight files={files} />
             )}
           </div>
         )}
@@ -118,8 +121,8 @@ export default function DossierPieces({ dossierId, files }: Props) {
   );
 }
 
-/** Variante "dark" du listing pour matcher le fond sombre du TracfinForm */
-function DossierPiecesDark({ files }: { files: DossierFile[] }) {
+/** Liste light des pièces, cohérent avec le TracfinForm light */
+function DossierPiecesLight({ files }: { files: DossierFile[] }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10 }}>
       {files.map((f) => (
@@ -134,26 +137,28 @@ function DossierPiecesDark({ files }: { files: DossierFile[] }) {
             gap: 10,
             padding: "10px 12px",
             borderRadius: 10,
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            color: "white",
+            background: "white",
+            border: "1px solid rgba(15,23,42,0.08)",
+            color: "#0f172a",
             textDecoration: "none",
-            transition: "background .12s, border-color .12s",
+            transition: "background .12s, border-color .12s, box-shadow .12s",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(168,85,247,0.08)";
-            e.currentTarget.style.borderColor = "rgba(168,85,247,0.30)";
+            e.currentTarget.style.background = "rgba(124,58,237,0.04)";
+            e.currentTarget.style.borderColor = "rgba(124,58,237,0.25)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(124,58,237,0.10)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-            e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+            e.currentTarget.style.background = "white";
+            e.currentTarget.style.borderColor = "rgba(15,23,42,0.08)";
+            e.currentTarget.style.boxShadow = "none";
           }}
         >
           <div
             style={{
               width: 28, height: 28, borderRadius: 7,
-              background: "rgba(168,85,247,0.15)",
-              color: "#C4B5FD",
+              background: "rgba(124,58,237,0.10)",
+              color: "#6d28d9",
               display: "grid", placeItems: "center",
               flexShrink: 0,
               fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
@@ -162,14 +167,14 @@ function DossierPiecesDark({ files }: { files: DossierFile[] }) {
             {f.ext.slice(0, 3)}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {f.label}
             </div>
-            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", marginTop: 1 }}>
+            <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 1 }}>
               Cliquer pour ouvrir
             </div>
           </div>
-          <FileDown width={12} height={12} style={{ color: "rgba(255,255,255,0.40)", flexShrink: 0 }} />
+          <FileDown width={12} height={12} style={{ color: "#94a3b8", flexShrink: 0 }} />
         </a>
       ))}
     </div>

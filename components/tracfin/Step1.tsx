@@ -3,69 +3,12 @@
 "use client";
 
 import { OPTIONS, type DossierForm } from "@/lib/tracfin";
+import { inputStyle, Sect, Field, Toggle, Check } from "./primitives";
 
 interface Props {
   form: DossierForm;
   set: <K extends keyof DossierForm>(key: K, value: DossierForm[K]) => void;
 }
-
-const inputStyle =
-  "w-full bg-white/[0.04] border border-white/[0.12] rounded-xl px-4 py-[11px] text-white text-sm outline-none backdrop-blur-md placeholder:text-white/[0.28] transition-all focus:border-indigo-400/60 focus:bg-white/[0.07] focus:ring-4 focus:ring-indigo-500/10";
-
-const Sect = ({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) => (
-  <div className="relative bg-white/[0.05] border border-white/[0.12] backdrop-blur-xl rounded-2xl mb-6 overflow-hidden">
-    <div className="bg-gradient-to-r from-indigo-500/10 to-transparent px-6 py-4 border-b border-white/[0.05] flex justify-between items-center">
-      <span className="font-bold text-indigo-300 uppercase tracking-[0.15em] text-[10px]">{title}</span>
-      {sub && <span className="text-[10px] text-white/30 uppercase tracking-widest">{sub}</span>}
-    </div>
-    <div className="p-6 flex flex-col gap-5">{children}</div>
-  </div>
-);
-
-const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <div className="flex flex-col gap-2">
-    <label className="text-[11px] font-semibold text-white/50 uppercase tracking-[0.12em]">{label}</label>
-    {children}
-  </div>
-);
-
-const Toggle = ({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: { value: string; label: string }[] }) => (
-  <div className="flex gap-2">
-    {options.map((o) => (
-      <button
-        key={o.value}
-        type="button"
-        onClick={() => onChange(o.value)}
-        className={`flex-1 py-3 rounded-xl border text-sm font-semibold transition-all backdrop-blur-md ${
-          value === o.value
-            ? "bg-indigo-500/15 border-indigo-500/40 text-indigo-300 shadow-[0_0_20px_rgba(99,102,241,0.15)]"
-            : "bg-white/[0.03] border-white/10 text-white/40 hover:bg-white/[0.06]"
-        }`}
-      >
-        {o.label}
-      </button>
-    ))}
-  </div>
-);
-
-const Check = ({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) => (
-  <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-white/[0.03] transition">
-    <button
-      type="button"
-      onClick={() => onChange(!checked)}
-      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-        checked ? "bg-emerald-500 border-emerald-500" : "border-white/20 hover:border-white/40"
-      }`}
-    >
-      {checked && (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
-      )}
-    </button>
-    <span className="text-sm text-white/80">{label}</span>
-  </label>
-);
 
 export default function Step1({ form, set }: Props) {
   const isMorale = form.typeClient === "morale";
@@ -156,15 +99,10 @@ export default function Step1({ form, set }: Props) {
         </div>
       </Sect>
 
-      <Sect title="Détection" sub="Métadonnées">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Date de détection">
-            <input type="date" className={inputStyle} value={form.dateDetection} onChange={(e) => set("dateDetection", e.target.value)} />
-          </Field>
-          <Field label="Lien KYC (optionnel)">
-            <input className={inputStyle} value={form.lienKyc} onChange={(e) => set("lienKyc", e.target.value)} placeholder="https://..." />
-          </Field>
-        </div>
+      <Sect title="Détection" sub="Métadonnée d'audit">
+        <Field label="Date de détection" hint="Date à laquelle vous avez identifié pour la première fois ce dossier comme nécessitant une analyse LCB-FT.">
+          <input type="date" className={inputStyle} value={form.dateDetection} onChange={(e) => set("dateDetection", e.target.value)} />
+        </Field>
       </Sect>
     </>
   );

@@ -178,7 +178,7 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
       : null;
 
   return (
-    <>
+    <div style={{ background: "#fafaff", minHeight: "100vh" }}>
       <DossierPieces dossierId={id} files={files} />
       {niveauEffectif && (
         <div style={{ maxWidth: 768, margin: "24px auto 0", padding: "0 24px" }}>
@@ -191,6 +191,6 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
         </div>
       )}
       <TracfinForm initialData={rowToForm(dossier, kycRows[0])} dossierId={id} hasKyc />
-    </>
+    </div>
   );
 }

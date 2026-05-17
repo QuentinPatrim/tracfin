@@ -3,108 +3,52 @@
 "use client";
 
 import { useState } from "react";
-import { OPTIONS, PAYS_NOIRE, PAYS_GRISE_REGIONS, type DossierForm } from "@/lib/tracfin";
+import { PAYS_NOIRE, PAYS_GRISE_REGIONS, type DossierForm } from "@/lib/tracfin";
+import { inputStyle, Sect, Field, RiskSelect, BinaryField } from "./primitives";
 
 interface Props {
   form: DossierForm;
   set: <K extends keyof DossierForm>(key: K, value: DossierForm[K]) => void;
 }
 
-const inputStyle =
-  "w-full bg-white/[0.04] border border-white/[0.12] rounded-xl px-4 py-[11px] text-white text-sm outline-none backdrop-blur-md placeholder:text-white/[0.28] transition-all focus:border-indigo-400/60 focus:bg-white/[0.07] focus:ring-4 focus:ring-indigo-500/10";
-
-const Sect = ({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) => (
-  <div className="relative bg-white/[0.05] border border-white/[0.12] backdrop-blur-xl rounded-2xl mb-6 overflow-hidden">
-    <div className="bg-gradient-to-r from-indigo-500/10 to-transparent px-6 py-4 border-b border-white/[0.05] flex justify-between items-center">
-      <span className="font-bold text-indigo-300 uppercase tracking-[0.15em] text-[10px]">{title}</span>
-      {sub && <span className="text-[10px] text-white/30 uppercase tracking-widest">{sub}</span>}
-    </div>
-    <div className="p-6 flex flex-col gap-5">{children}</div>
-  </div>
-);
-
-const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <div className="flex flex-col gap-2">
-    <label className="text-[11px] font-semibold text-white/50 uppercase tracking-[0.12em]">{label}</label>
-    {children}
-  </div>
-);
-
-const RISK_BORDER = { green: "border-emerald-500/40", orange: "border-orange-500/40", red: "border-red-500/40" };
-const RISK_BG = { green: "bg-emerald-500/10 text-emerald-300", orange: "bg-orange-500/10 text-orange-300", red: "bg-red-500/10 text-red-300" };
-
-const RiskSelect = ({ optionsKey, value, onChange }: { optionsKey: keyof typeof OPTIONS; value: string; onChange: (v: string) => void }) => (
-  <select
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    className={`${inputStyle} appearance-none cursor-pointer ${
-      value && OPTIONS[optionsKey].find((o) => o.value === value)
-        ? `${RISK_BORDER[OPTIONS[optionsKey].find((o) => o.value === value)!.risk]}`
-        : ""
-    }`}
-  >
-    <option value="" className="bg-slate-900">— Sélectionner —</option>
-    {OPTIONS[optionsKey].map((o) => (
-      <option key={o.value} value={o.value} className="bg-slate-900">
-        {o.label}
-      </option>
-    ))}
-  </select>
-);
-
-const BinaryField = ({ label, value, onChange, yesLabel = "Oui", noLabel = "Non", yesIsBad = true }: { label: string; value: boolean | null; onChange: (v: boolean) => void; yesLabel?: string; noLabel?: string; yesIsBad?: boolean }) => (
-  <Field label={label}>
-    <div className="flex gap-3">
-      <button
-        type="button"
-        onClick={() => onChange(false)}
-        className={`flex-1 py-3 rounded-xl border text-sm font-semibold transition-all backdrop-blur-md ${
-          value === false
-            ? yesIsBad
-              ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
-              : "bg-red-500/15 border-red-500/40 text-red-400 shadow-[0_0_20px_rgba(239,68,68,0.15)]"
-            : "bg-white/[0.03] border-white/10 text-white/40 hover:bg-white/[0.06]"
-        }`}
-      >
-        {noLabel}
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange(true)}
-        className={`flex-1 py-3 rounded-xl border text-sm font-semibold transition-all backdrop-blur-md ${
-          value === true
-            ? yesIsBad
-              ? "bg-red-500/15 border-red-500/40 text-red-400 shadow-[0_0_20px_rgba(239,68,68,0.15)]"
-              : "bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
-            : "bg-white/[0.03] border-white/10 text-white/40 hover:bg-white/[0.06]"
-        }`}
-      >
-        {yesLabel}
-      </button>
-    </div>
-  </Field>
-);
-
 function PaysModal({ onClose }: { onClose: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(15,23,42,0.40)", backdropFilter: "blur(8px)" }}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-slate-900/90 border border-white/[0.12] rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+        className="rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+        style={{
+          background: "white",
+          border: "1px solid rgba(124,58,237,0.18)",
+          boxShadow: "0 30px 80px -20px rgba(15,23,42,0.30)",
+        }}
       >
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-bold">Pays sous surveillance GAFI</h3>
-          <button onClick={onClose} className="text-white/40 hover:text-white text-2xl leading-none">×</button>
+          <h3 className="text-lg font-bold" style={{ color: "#0f172a" }}>Pays sous surveillance GAFI</h3>
+          <button
+            onClick={onClose}
+            className="text-2xl leading-none"
+            style={{ color: "#94a3b8" }}
+          >×</button>
         </div>
 
         <div className="mb-6">
-          <h4 className="text-sm font-bold text-red-400 mb-3 uppercase tracking-widest">Liste noire</h4>
+          <h4 className="text-sm font-bold mb-3 uppercase tracking-widest" style={{ color: "#b91c1c" }}>Liste noire</h4>
           <div className="flex flex-wrap gap-2">
             {PAYS_NOIRE.map((p) => (
-              <span key={p} className="px-3 py-1 bg-red-500/10 border border-red-500/30 rounded-full text-xs text-red-300">
+              <span
+                key={p}
+                className="px-3 py-1 rounded-full text-xs"
+                style={{
+                  background: "rgba(220,38,38,0.08)",
+                  border: "1px solid rgba(220,38,38,0.30)",
+                  color: "#b91c1c",
+                }}
+              >
                 {p}
               </span>
             ))}
@@ -112,13 +56,21 @@ function PaysModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div>
-          <h4 className="text-sm font-bold text-orange-400 mb-3 uppercase tracking-widest">Liste grise</h4>
+          <h4 className="text-sm font-bold mb-3 uppercase tracking-widest" style={{ color: "#b45309" }}>Liste grise</h4>
           {PAYS_GRISE_REGIONS.map((g) => (
             <div key={g.region} className="mb-4">
-              <div className="text-[11px] uppercase tracking-widest text-white/40 mb-2">{g.region}</div>
+              <div className="text-[11px] uppercase tracking-widest mb-2" style={{ color: "#94a3b8" }}>{g.region}</div>
               <div className="flex flex-wrap gap-2">
                 {g.pays.map((p) => (
-                  <span key={p} className="px-3 py-1 bg-orange-500/10 border border-orange-500/30 rounded-full text-xs text-orange-300">
+                  <span
+                    key={p}
+                    className="px-3 py-1 rounded-full text-xs"
+                    style={{
+                      background: "rgba(245,158,11,0.08)",
+                      border: "1px solid rgba(245,158,11,0.30)",
+                      color: "#b45309",
+                    }}
+                  >
                     {p}
                   </span>
                 ))}
@@ -144,7 +96,8 @@ export default function Step2({ form, set }: Props) {
           <button
             type="button"
             onClick={() => setShowPays(true)}
-            className="self-start text-xs text-indigo-400 hover:text-indigo-300 underline mt-1"
+            className="self-start text-xs underline mt-1"
+            style={{ color: "#6d28d9" }}
           >
             Voir la liste des pays GAFI
           </button>
@@ -196,7 +149,7 @@ export default function Step2({ form, set }: Props) {
 
         <Field label="Mode de paiement">
           <RiskSelect optionsKey="modePaiement" value={form.modePaiement} onChange={(v) => set("modePaiement", v)} />
-          <p className="text-[11px] text-white/40 mt-1">
+          <p className="text-[11px] mt-1" style={{ color: "#64748b" }}>
             Espèces &gt; 1 000 € interdites (art. L112-6 CMF) entre professionnel et particulier.
           </p>
         </Field>
@@ -276,22 +229,22 @@ function ScreeningTools({ nom }: { nom: string }) {
     >
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex-1 min-w-0">
-          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-300 mb-1.5">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] mb-1.5" style={{ color: "#6d28d9" }}>
             Vérification des sanctions internationales
           </div>
-          <p className="text-[12px] text-white/65 leading-relaxed">
+          <p className="text-[12px] leading-relaxed" style={{ color: "#475569" }}>
             {hasName ? (
-              <>Lance une recherche pour <span className="font-semibold text-white">«&nbsp;{cleanedName}&nbsp;»</span> contre les listes officielles agrégées de :</>
+              <>Lance une recherche pour <span className="font-semibold" style={{ color: "#0f172a" }}>«&nbsp;{cleanedName}&nbsp;»</span> contre les listes officielles agrégées de :</>
             ) : (
-              <>Renseignez d'abord le nom du client à l'étape 1 pour activer la vérification.</>
+              <>Renseignez d&apos;abord le nom du client à l&apos;étape 1 pour activer la vérification.</>
             )}
           </p>
           {hasName && (
-            <ul className="text-[11px] text-white/55 leading-relaxed mt-2 space-y-0.5">
-              <li>• <strong className="text-white/75">DGT Trésor France</strong> (Registre national des gels)</li>
-              <li>• <strong className="text-white/75">UE Consolidated</strong> (sanctions financières européennes)</li>
-              <li>• <strong className="text-white/75">ONU Security Council</strong></li>
-              <li>• <strong className="text-white/75">OFAC US</strong> + 200+ autres listes officielles</li>
+            <ul className="text-[11px] leading-relaxed mt-2 space-y-0.5" style={{ color: "#64748b" }}>
+              <li>• <strong style={{ color: "#334155" }}>DGT Trésor France</strong> (Registre national des gels)</li>
+              <li>• <strong style={{ color: "#334155" }}>UE Consolidated</strong> (sanctions financières européennes)</li>
+              <li>• <strong style={{ color: "#334155" }}>ONU Security Council</strong></li>
+              <li>• <strong style={{ color: "#334155" }}>OFAC US</strong> + 200+ autres listes officielles</li>
             </ul>
           )}
         </div>
