@@ -18,6 +18,7 @@ import {
   Section, SectionHeader, H1, H2, H3, Lede, P, Card, IconCircle, CTA,
   Eyebrow, LegalRef, Mono,
 } from "@/components/landing/primitives";
+import EnvoiLienSection from "@/components/landing/sections/EnvoiLienSection";
 
 export default function LandingPage() {
   const { openSignUp } = useClerk();
@@ -235,6 +236,9 @@ export default function LandingPage() {
           />
         </div>
       </Section>
+
+      {/* ───────── ENVOI DU LIEN KYC (spotlight différenciateur) ───────── */}
+      <EnvoiLienSection />
 
       {/* ───────── 4 ÉTAPES ───────── */}
       <Section id="how" maxWidth="5xl">

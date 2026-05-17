@@ -58,13 +58,7 @@ export default function DashboardFooter() {
 
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link
-      href={href}
-      className="transition"
-      style={{ color: "#64748b" }}
-      onMouseEnter={(e) => (e.currentTarget.style.color = "#6d28d9")}
-      onMouseLeave={(e) => (e.currentTarget.style.color = "#64748b")}
-    >
+    <Link href={href} className="dashboard-footer-link">
       {children}
     </Link>
   );

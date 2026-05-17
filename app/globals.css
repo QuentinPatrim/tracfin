@@ -5,6 +5,14 @@
   --foreground: #171717;
 }
 
+/* Footer light global (utilisé par DashboardFooter sur toutes les pages light) */
+.dashboard-footer-link {
+  color: #64748b;
+  text-decoration: none;
+  transition: color .15s;
+}
+.dashboard-footer-link:hover { color: #6d28d9; }
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

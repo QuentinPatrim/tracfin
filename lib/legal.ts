@@ -26,7 +26,7 @@ export const EDITEUR = {
   emailRgpd: "contact@klaris.fr",
 
   // Web
-  siteUrl: "https://klaris.fr",                      // ← à ajuster selon ton domaine prod
+  siteUrl: "https://klaris-app.fr",                      // ← à ajuster selon ton domaine prod
   directeurPublication: "Quentin Delsol",
 } as const;
 

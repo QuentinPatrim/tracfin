@@ -8,7 +8,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import {
-  Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles,
+  Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles, UserCog,
 } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
@@ -64,6 +64,13 @@ export default function Topbar({
           >
             <Folder width={13} height={13} />
             <span>Dossiers</span>
+          </Link>
+          <Link
+            href="/abonnement"
+            className="topbar-v2-nav-link"
+          >
+            <UserCog width={13} height={13} />
+            <span>Abonnement</span>
           </Link>
           <Link
             href="/tarifs"
@@ -139,7 +146,7 @@ function SubscriptionBadge({ subscription }: { subscription: SubInfo }) {
     const urgent = subscription.daysLeft <= 3;
     return (
       <Link
-        href="/tarifs"
+        href="/abonnement"
         className="topbar-v2-sub-badge"
         style={{
           background: urgent ? "rgba(245,158,11,0.08)" : "rgba(124,58,237,0.06)",
@@ -161,7 +168,7 @@ function SubscriptionBadge({ subscription }: { subscription: SubInfo }) {
   if (subscription.state === "expired") {
     return (
       <Link
-        href="/tarifs"
+        href="/abonnement"
         className="topbar-v2-sub-badge"
         style={{
           background: "rgba(220,38,38,0.08)",
@@ -178,7 +185,7 @@ function SubscriptionBadge({ subscription }: { subscription: SubInfo }) {
   if (subscription.state === "active") {
     return (
       <Link
-        href="/tarifs"
+        href="/abonnement"
         className="topbar-v2-sub-badge"
         style={{
           background: "rgba(16,185,129,0.06)",

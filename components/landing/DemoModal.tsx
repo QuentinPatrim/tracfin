@@ -201,7 +201,7 @@ export default function DemoModal({ open, onClose, onCta }: Props) {
               </div>
               <div className="flex-1 mx-3">
                 <div className="text-[10.5px] text-white/45 font-mono truncate text-center">
-                  app.klaris.fr{stepUrl(step)}
+                  klaris-app.fr{stepUrl(step)}
                 </div>
               </div>
               <Lock width={11} height={11} className="text-emerald-400/80" />
@@ -598,7 +598,7 @@ function Step2_Send({ active }: { active: boolean }) {
             >
               <Lock width={11} height={11} className="text-violet-300" />
               <div className="flex-1 text-[10.5px] font-mono text-violet-200 truncate">
-                klaris.fr/kyc/Yt8K…aB3z
+                klaris-app.fr/kyc/Yt8K…aB3z
               </div>
               <div className="text-[9px] text-white/40">↗</div>
             </div>
