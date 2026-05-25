@@ -2,9 +2,9 @@
 // Auth : soit Clerk (agent qui possède le dossier), soit ?token=... (KYC public)
 
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
 import { getFileStream } from "@/lib/storage";
+import { getScope, findScopedDossier } from "@/lib/scope";
 
 export const runtime = "nodejs";
 
@@ -38,14 +38,12 @@ export async function GET(
       return NextResponse.json({ error: "Token expiré" }, { status: 410 });
     }
   } else {
-    const { userId } = await auth();
-    if (!userId) {
+    const scope = await getScope();
+    if (!scope) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const owns = (await sql`
-      SELECT 1 FROM dossiers WHERE id = ${dossierId} AND user_id = ${userId} LIMIT 1
-    `) as unknown as Array<{ "?column?": number }>;
-    if (owns.length === 0) {
+    const owns = await findScopedDossier<{ id: string }>(dossierId, scope, "id");
+    if (!owns) {
       return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
     }
   }

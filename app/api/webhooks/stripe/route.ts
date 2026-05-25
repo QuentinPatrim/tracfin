@@ -76,10 +76,13 @@ async function handleSubscription(sub: Stripe.Subscription) {
 
   // Mapping Stripe status → notre State
   // (Stripe : trialing | active | past_due | canceled | unpaid | incomplete | incomplete_expired | paused)
+  // ⚠️ trialing → "trialing" (et pas "active") : on distingue la phase d'essai
+  // (aucun prélèvement, annulation sans frais) de la phase payante effective.
+  // Les deux donnent isActive=true côté getSubscriptionStatus.
   let state: State;
   switch (sub.status) {
     case "active": state = "active"; break;
-    case "trialing": state = "active"; break;  // déjà payé même si en trial Stripe
+    case "trialing": state = "trialing"; break;
     case "past_due": state = "past_due"; break;
     case "canceled": state = "canceled"; break;
     case "unpaid": state = "past_due"; break;
@@ -94,12 +97,16 @@ async function handleSubscription(sub: Stripe.Subscription) {
     (firstItem as unknown as { current_period_end?: number })?.current_period_end ??
     (sub as unknown as { current_period_end?: number }).current_period_end;
 
+  // trial_end : timestamp Stripe (null si pas en trial ou trial terminé)
+  const trialEnd = sub.trial_end ?? null;
+
   await upsertSubscriptionFromStripe({
     stripeCustomerId: customerId,
     stripeSubscriptionId: sub.id,
     state,
     plan,
     currentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
+    trialEnd: trialEnd ? new Date(trialEnd * 1000) : null,
     cancelAtPeriodEnd: sub.cancel_at_period_end,
   });
 }

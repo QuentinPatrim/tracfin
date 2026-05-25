@@ -91,7 +91,7 @@ export default function LandingPage() {
             </div>
 
             <div className="mt-7 sm:mt-9 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[11.5px] text-white/55">
-              <TrustItem>Sans carte bancaire</TrustItem>
+              <TrustItem>Aucun prélèvement avant J14</TrustItem>
               <TrustItem>Données 100% UE</TrustItem>
               <TrustItem>Conforme RGPD</TrustItem>
             </div>
@@ -365,7 +365,7 @@ export default function LandingPage() {
           <div className="relative">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.10] mb-5">
               <BadgeCheck width={14} height={14} className="text-violet-300" />
-              <span className="text-[11px] uppercase tracking-widest font-semibold text-white/70">14 jours gratuits · sans carte bancaire</span>
+              <span className="text-[11px] uppercase tracking-widest font-semibold text-white/70">14 jours gratuits · aucun prélèvement avant J14</span>
             </div>
             <H2 className="!text-[28px] sm:!text-[36px] md:!text-[42px]">
               Démarrez votre conformité.

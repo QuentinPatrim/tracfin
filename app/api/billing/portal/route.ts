@@ -3,21 +3,21 @@
 
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { auth } from "@clerk/nextjs/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { EDITEUR } from "@/lib/legal";
+import { getScope } from "@/lib/scope";
 
 export const runtime = "nodejs";
 
 export async function POST() {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const scope = await getScope();
+  if (!scope) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.json({ error: "Stripe non configuré" }, { status: 500 });
   }
 
-  const status = await getSubscriptionStatus(userId);
+  const status = await getSubscriptionStatus({ userId: scope.userId, orgId: scope.orgId });
   if (!status.stripeCustomerId) {
     return NextResponse.json(
       { error: "Aucun abonnement à gérer. Souscrivez d'abord." },

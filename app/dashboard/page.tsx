@@ -1,11 +1,11 @@
 // app/dashboard/page.tsx — Dashboard Klaris (refonte selon design handoff)
 
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
 import type { Niveau } from "@/lib/tracfin";
 import { V1_TO_NIVEAU } from "@/lib/tracfin";
 import { getSubscriptionStatus, getSeenGuideAt } from "@/lib/subscription";
+import { getScope } from "@/lib/scope";
 import DashboardClient, { type DossierItem } from "@/components/dashboard/DashboardClient";
 import { listDossierFiles, type DossierFile, type KycFilesRow } from "@/lib/dossier-files";
 import "./dashboard.css";
@@ -13,37 +13,58 @@ import "./dashboard.css";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const { userId } = await auth();
-  if (!userId) redirect("/");
+  const scope = await getScope();
+  if (!scope) redirect("/");
 
-  // Lazy-init essai 14j au 1er accès
-  const sub = await getSubscriptionStatus(userId);
+  // Abonnement du scope courant (perso ou org). Lazy-init essai 14j en perso.
+  const sub = await getSubscriptionStatus({ userId: scope.userId, orgId: scope.orgId });
 
-  // Guide pédagogique LCB-FT : vu ou pas
-  const seenGuideAt = await getSeenGuideAt(userId);
+  // Guide pédagogique LCB-FT : vu ou pas (état stocké sur subscriptions perso —
+  // l'onboarding reste lié au user, pas à l'org).
+  const seenGuideAt = await getSeenGuideAt(scope.userId);
   const showGuide = seenGuideAt === null;
 
-  // Dossiers
-  const rows = (await sql`
-    SELECT id, nom_prenom, type_client, partie, algo_version, niveau, statut, score_pct,
-           created_at, updated_at, kyc_status
-    FROM dossiers
-    WHERE user_id = ${userId}
-    ORDER BY created_at DESC
-  `) as unknown as DossierItem[];
+  // Dossiers du scope (org_id = orgId OU user_id = userId AND org_id IS NULL).
+  const rows = scope.isOrgContext
+    ? (await sql`
+        SELECT id, nom_prenom, type_client, partie, algo_version, niveau, statut, score_pct,
+               created_at, updated_at, kyc_status
+        FROM dossiers
+        WHERE org_id = ${scope.orgId} AND archived_at IS NULL
+        ORDER BY created_at DESC
+      `) as unknown as DossierItem[]
+    : (await sql`
+        SELECT id, nom_prenom, type_client, partie, algo_version, niveau, statut, score_pct,
+               created_at, updated_at, kyc_status
+        FROM dossiers
+        WHERE user_id = ${scope.userId} AND org_id IS NULL AND archived_at IS NULL
+        ORDER BY created_at DESC
+      `) as unknown as DossierItem[];
 
-  // Pièces justificatives (dernière kyc_response par dossier)
-  const filesRows = (rows.length > 0 ? await sql`
-    SELECT DISTINCT ON (kr.dossier_id)
-      kr.dossier_id,
-      kr.url_piece_identite, kr.url_justif_domicile, kr.url_avis_imposition,
-      kr.url_justif_revenus, kr.url_justif_origine_fonds,
-      kr.url_kbis, kr.url_statuts, kr.url_cni_gerant, kr.url_bilans, kr.url_rbe
-    FROM kyc_responses kr
-    JOIN dossiers d ON d.id = kr.dossier_id
-    WHERE d.user_id = ${userId}
-    ORDER BY kr.dossier_id, kr.submitted_at DESC
-  ` : []) as unknown as Array<KycFilesRow & { dossier_id: string }>;
+  // Pièces justificatives — même filtre scope sur le JOIN.
+  const filesRows = (rows.length > 0 ? (scope.isOrgContext
+    ? await sql`
+        SELECT DISTINCT ON (kr.dossier_id)
+          kr.dossier_id,
+          kr.url_piece_identite, kr.url_justif_domicile, kr.url_avis_imposition,
+          kr.url_justif_revenus, kr.url_justif_origine_fonds,
+          kr.url_kbis, kr.url_statuts, kr.url_cni_gerant, kr.url_bilans, kr.url_rbe
+        FROM kyc_responses kr
+        JOIN dossiers d ON d.id = kr.dossier_id
+        WHERE d.org_id = ${scope.orgId}
+        ORDER BY kr.dossier_id, kr.submitted_at DESC
+      `
+    : await sql`
+        SELECT DISTINCT ON (kr.dossier_id)
+          kr.dossier_id,
+          kr.url_piece_identite, kr.url_justif_domicile, kr.url_avis_imposition,
+          kr.url_justif_revenus, kr.url_justif_origine_fonds,
+          kr.url_kbis, kr.url_statuts, kr.url_cni_gerant, kr.url_bilans, kr.url_rbe
+        FROM kyc_responses kr
+        JOIN dossiers d ON d.id = kr.dossier_id
+        WHERE d.user_id = ${scope.userId} AND d.org_id IS NULL
+        ORDER BY kr.dossier_id, kr.submitted_at DESC
+      `) : []) as unknown as Array<KycFilesRow & { dossier_id: string }>;
 
   const filesByDossier: Record<string, DossierFile[]> = {};
   for (const fr of filesRows) {

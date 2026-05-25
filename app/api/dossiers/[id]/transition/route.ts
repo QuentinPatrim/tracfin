@@ -5,9 +5,10 @@
 // renforcée, ou escalader → interdiction).
 
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
 import type { Niveau } from "@/lib/tracfin";
+import { logAudit } from "@/lib/audit";
+import { getScope, findScopedDossier } from "@/lib/scope";
 
 export const runtime = "nodejs";
 
@@ -31,8 +32,8 @@ const VALID_NIVEAUX: Niveau[] = [
 ];
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const scope = await getScope();
+  if (!scope) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) {
@@ -51,16 +52,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Niveau cible invalide" }, { status: 400 });
   }
 
-  // Récupère le dossier et vérifie ownership + niveau actuel
-  const rows = (await sql`
-    SELECT niveau, algo_version FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
-  `) as unknown as Array<{ niveau: Niveau | null; algo_version: string }>;
-
-  if (rows.length === 0) {
+  // Récupère le dossier scopé (user_id perso OU org_id agence)
+  const dossier = await findScopedDossier<{ niveau: Niveau | null; algo_version: string }>(
+    id,
+    scope,
+    "niveau, algo_version",
+  );
+  if (!dossier) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const current = rows[0].niveau;
+  const current = dossier.niveau;
   if (!current) {
     return NextResponse.json(
       { error: "Niveau actuel non défini, transition impossible" },
@@ -80,12 +82,29 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     );
   }
 
-  // Met à jour le niveau du dossier
-  await sql`
-    UPDATE dossiers
-    SET niveau = ${target}, updated_at = NOW()
-    WHERE id = ${id} AND user_id = ${userId}
-  `;
+  // Met à jour le niveau du dossier (scope déjà confirmé par findScopedDossier)
+  if (scope.isOrgContext) {
+    await sql`
+      UPDATE dossiers
+      SET niveau = ${target}, updated_at = NOW()
+      WHERE id = ${id} AND org_id = ${scope.orgId}
+    `;
+  } else {
+    await sql`
+      UPDATE dossiers
+      SET niveau = ${target}, updated_at = NOW()
+      WHERE id = ${id} AND user_id = ${scope.userId} AND org_id IS NULL
+    `;
+  }
+
+  await logAudit({
+    userId: scope.userId,
+    orgId: scope.orgId,
+    dossierId: id,
+    action: "dossier.transition",
+    metadata: { from: current, to: target, algo_version: dossier.algo_version },
+    req,
+  });
 
   return NextResponse.json({ ok: true, from: current, to: target });
 }

@@ -4,7 +4,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CreditCard, Receipt, Sparkles, Calendar, Lock, AlertTriangle } from "lucide-react";
+import { ArrowLeft, CreditCard, Receipt, Sparkles, Calendar, Lock, AlertTriangle, Info, Check } from "lucide-react";
 import { getSubscriptionStatus, PLAN_LABELS, STATE_LABELS } from "@/lib/subscription";
 import AbonnementActions from "./AbonnementActions";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
@@ -203,7 +203,32 @@ export default async function AbonnementPage() {
           hasStripe={!!sub.stripeCustomerId}
           isTrialing={sub.isTrialing}
           state={sub.state}
+          cancelAtPeriodEnd={sub.cancelAtPeriodEnd}
+          hasActiveSubscription={!!sub.stripeSubscriptionId && (sub.state === "active" || sub.state === "trialing" || sub.state === "past_due")}
         />
+
+        {/* Section : Comment fonctionne la facturation */}
+        <section
+          className="mt-8 rounded-2xl p-5 sm:p-6 border"
+          style={{
+            background: "rgba(255,255,255,0.65)",
+            borderColor: "rgba(124,58,237,0.15)",
+          }}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Info className="w-4 h-4" style={{ color: "#6d28d9" }} />
+            <h2 className="text-[14px] font-bold tracking-tight" style={{ color: "#0f172a" }}>
+              Comment fonctionne la facturation
+            </h2>
+          </div>
+          <ul className="space-y-3 text-[13px] leading-relaxed" style={{ color: "#475569" }}>
+            <BillingPoint title="Essai gratuit de 14 jours" desc="Lors de votre première souscription, Stripe ne vous prélève rien pendant 14 jours. La carte est enregistrée uniquement pour automatiser le renouvellement à la fin de l'essai." />
+            <BillingPoint title="Premier prélèvement à J14" desc="Sauf annulation préalable, vous êtes prélevé du montant du plan choisi à la fin des 14 jours. Vous recevez un e-mail Stripe quelques jours avant pour vous prévenir." />
+            <BillingPoint title="Annulation à tout moment, 1 clic" desc="Depuis cette page (bouton Annuler). Si vous annulez pendant l'essai, aucun débit n'est effectué. Si vous annulez après, vous gardez l'accès jusqu'à la fin de la période payée." />
+            <BillingPoint title="Changement de plan avec prorata" desc="Passer de Pro à Agence (ou inverse) ne crée jamais de double facturation : Stripe calcule la différence au prorata des jours restants et l'applique automatiquement." />
+            <BillingPoint title="Aucune donnée bancaire chez Klaris" desc="Tout transite directement vers Stripe (Dublin, Irlande). Aucun numéro de carte ni cryptogramme ne touche les serveurs de Klaris." />
+          </ul>
+        </section>
 
         {/* Info confidentialité */}
         <div
@@ -239,6 +264,28 @@ export default async function AbonnementPage() {
 
       <DashboardFooter />
     </div>
+  );
+}
+
+/* ─── BillingPoint (puce explicative) ───────────────────── */
+
+function BillingPoint({ title, desc }: { title: string; desc: string }) {
+  return (
+    <li className="flex items-start gap-3">
+      <div
+        className="w-5 h-5 rounded-full grid place-items-center shrink-0 mt-0.5"
+        style={{
+          background: "rgba(16,185,129,0.12)",
+          border: "1px solid rgba(16,185,129,0.30)",
+        }}
+      >
+        <Check className="w-3 h-3" style={{ color: "#047857" }} strokeWidth={3} />
+      </div>
+      <div>
+        <div className="font-semibold text-[13px]" style={{ color: "#0f172a" }}>{title}</div>
+        <div className="text-[12.5px] mt-0.5" style={{ color: "#64748b" }}>{desc}</div>
+      </div>
+    </li>
   );
 }
 

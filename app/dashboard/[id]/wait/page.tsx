@@ -1,26 +1,23 @@
 // app/dashboard/[id]/wait/page.tsx — Vue "En attente du KYC"
 
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
 import { randomBytes } from "crypto";
 import { sql } from "@/lib/db";
 import WaitingView from "./WaitingView";
+import { getScope, findScopedDossier } from "@/lib/scope";
 import type { Dossier } from "@/types/dossier";
 
 export const dynamic = "force-dynamic";
 
 export default async function WaitPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { userId } = await auth();
-  if (!userId) return notFound();
+  const scope = await getScope();
+  if (!scope) return notFound();
 
   if (!/^[0-9a-f-]{36}$/i.test(id)) return notFound();
 
-  const rows = (await sql`
-    SELECT * FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
-  `) as unknown as Dossier[];
-  if (rows.length === 0) return notFound();
-  const dossier = rows[0];
+  const dossier = await findScopedDossier<Dossier>(id, scope);
+  if (!dossier) return notFound();
 
   // Si déjà reçu, on bascule sur l'édition
   if (dossier.kyc_status === "received") {
@@ -36,22 +33,16 @@ export default async function WaitPage({ params }: { params: Promise<{ id: strin
     LIMIT 1
   `) as unknown as Array<{ token: string; status: string; opened_at: string | null; expires_at: string }>;
 
-  // Aucun lien actif → on en regénère un
+  // Aucun lien actif → on en regénère un, avec expires_at + scope explicites.
   if (linkRows.length === 0) {
     const token = randomBytes(18).toString("base64url");
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     await sql`
-      INSERT INTO kyc_links (dossier_id, user_id, token, status)
-      VALUES (${id}, ${userId}, ${token}, 'pending')
+      INSERT INTO kyc_links (dossier_id, user_id, org_id, token, status, expires_at)
+      VALUES (${id}, ${scope.userId}, ${scope.orgId}, ${token}, 'pending', ${expiresAt})
     `;
     await sql`UPDATE dossiers SET kyc_status = 'sent' WHERE id = ${id}`;
-    linkRows = [
-      {
-        token,
-        status: "pending",
-        opened_at: null,
-        expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-    ];
+    linkRows = [{ token, status: "pending", opened_at: null, expires_at: expiresAt }];
   }
 
   return (

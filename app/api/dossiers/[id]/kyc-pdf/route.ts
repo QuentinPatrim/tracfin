@@ -1,35 +1,36 @@
 // app/api/dossiers/[id]/kyc-pdf/route.ts — Fiche KYC exhaustive depuis kyc_responses
 
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { createHash } from "crypto";
 import { sql } from "@/lib/db";
 import { kycRowToKycForm, type KycResponseRowFull } from "@/lib/dossier";
 import { initialKycForm } from "@/lib/kyc";
 import { renderHtmlPdf } from "@/lib/pdf-renderer";
 import { buildKycHtml } from "@/app/pdf-render/kyc-template";
+import { getScope, findScopedDossier } from "@/lib/scope";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const scope = await getScope();
+  if (!scope) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) {
     return NextResponse.json({ error: "Bad id" }, { status: 400 });
   }
 
-  // Vérifie ownership du dossier + récupère la partie (vendeur / acquéreur)
-  const owns = (await sql`
-    SELECT nom_prenom, partie FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
-  `) as unknown as Array<{ nom_prenom: string; partie: "vendeur" | "acquereur" | null }>;
-  if (owns.length === 0) {
+  const ownership = await findScopedDossier<{ nom_prenom: string; partie: "vendeur" | "acquereur" | null }>(
+    id,
+    scope,
+    "nom_prenom, partie",
+  );
+  if (!ownership) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  const partie: "vendeur" | "acquereur" = owns[0].partie === "vendeur" ? "vendeur" : "acquereur";
+  const partie: "vendeur" | "acquereur" = ownership.partie === "vendeur" ? "vendeur" : "acquereur";
 
   // Récupère la dernière réponse KYC complète du client
   const kycRows = (await sql`
@@ -65,7 +66,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
     if (kycRows.length === 0) {
       // Aucune réponse KYC encore reçue → PDF avec dossier vide + nom agent
-      form = { ...initialKycForm, nomPrenom: owns[0].nom_prenom };
+      form = { ...initialKycForm, nomPrenom: ownership.nom_prenom };
       signedAt = generatedAt;
     } else {
       const kyc = kycRows[0];

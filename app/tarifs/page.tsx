@@ -15,6 +15,14 @@ interface StatusResp {
   state: string;
   plan: string | null;
   daysLeft: number | null;
+  cancelAtPeriodEnd?: boolean;
+  stripeSubscriptionId?: string | null;
+}
+
+// Pour le récap de facturation (date de fin de trial = première facturation)
+function formatDateFromNow(days: number): string {
+  const d = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+  return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 }
 
 export default function TarifsPage() {
@@ -36,24 +44,58 @@ export default function TarifsPage() {
     ? (status.plan.startsWith("pro_") ? "pro" : "agence")
     : null;
 
-  const handleCheckout = async (plan: PlanKey) => {
+  const hasActiveSubscription = !!status?.stripeSubscriptionId && (status?.state === "active" || status?.state === "trialing" || status?.state === "past_due");
+
+  /**
+   * Aiguillage intelligent :
+   * - Pas de sub Stripe → /api/checkout (création + trial 14j)
+   * - Sub Stripe existante (active / trialing / past_due) → /api/billing/change-plan (prorata)
+   */
+  const handleSubscribe = async (plan: PlanKey) => {
     const fullPlan = `${plan}_${period === "monthly" ? "monthly" : "yearly"}`;
     setLoading(plan);
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: fullPlan }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (hasActiveSubscription) {
+        // Changement de plan — prorata Stripe
+        if (!window.confirm(
+          `Confirmer le changement de plan vers ${plan === "pro" ? "Pro" : "Agence"} (${period === "monthly" ? "mensuel" : "annuel"}) ?\n\n` +
+          `Le prorata sera appliqué automatiquement par Stripe :\n` +
+          `• Upgrade → différence facturée immédiatement\n` +
+          `• Downgrade → crédit appliqué à la prochaine facture`,
+        )) {
+          setLoading(null);
+          return;
+        }
+        const res = await fetch("/api/billing/change-plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan: fullPlan }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.error || "Erreur de changement de plan");
+          setLoading(null);
+          return;
+        }
+        alert(data.message || "Plan modifié.");
+        window.location.reload();
       } else {
-        alert(data.error || "Erreur de paiement");
-        setLoading(null);
+        // Nouvelle souscription — Checkout Session avec trial 14j
+        const res = await fetch("/api/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan: fullPlan }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          alert(data.error || "Erreur de paiement");
+          setLoading(null);
+        }
       }
     } catch (e) {
-      console.error("Erreur de paiement", e);
+      console.error("Erreur abonnement", e);
       setLoading(null);
     }
   };
@@ -94,19 +136,25 @@ export default function TarifsPage() {
 
       <main className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-24">
         <div className="text-center mb-12">
+          {/* Badge "14 jours gratuits" très visible, bien au-dessus du titre */}
           <div
-            className="inline-flex items-center gap-2 mb-5 px-3 py-1.5 rounded-full"
+            className="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full"
             style={{
-              background: "linear-gradient(180deg, rgba(168,85,247,0.15), rgba(168,85,247,0.05))",
+              background: "linear-gradient(135deg, rgba(16,185,129,0.18), rgba(52,211,153,0.10))",
               backdropFilter: "blur(20px)",
-              boxShadow: "0 0 0 1px rgba(168,85,247,0.30), 0 1px 0 rgba(255,255,255,0.10) inset, 0 0 24px -4px rgba(168,85,247,0.40)",
+              boxShadow: "0 0 0 1px rgba(16,185,129,0.40), 0 1px 0 rgba(255,255,255,0.10) inset, 0 0 28px -4px rgba(16,185,129,0.40)",
             }}
           >
-            <Sparkles className="w-3.5 h-3.5 text-violet-300" />
-            <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-violet-200">Tarifs</span>
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ background: "#10B981", boxShadow: "0 0 0 4px rgba(16,185,129,0.30)" }}
+            />
+            <span className="text-[12px] font-bold tracking-[0.14em] uppercase text-emerald-300">
+              14 jours gratuits · annulable en 1 clic
+            </span>
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-[-0.03em] mb-5 leading-[1.05]">
-            Des tarifs simples,<br />
+            Essayez Klaris,<br />
             <span
               className="inline-block bg-clip-text text-transparent"
               style={{
@@ -115,12 +163,13 @@ export default function TarifsPage() {
                 animation: "gradShift 6s ease infinite",
               }}
             >
-              transparents
+              sans engagement
             </span>
             .
           </h1>
-          <p className="text-white/55 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
-            Choisissez le plan adapté à votre volume. Sans engagement, annulable à tout moment.
+          <p className="text-white/65 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
+            <strong className="text-white">Aucun prélèvement pendant 14 jours.</strong>{" "}
+            Vous pouvez annuler à tout moment avant la fin de l'essai — vous ne serez pas débité.
           </p>
         </div>
 
@@ -209,10 +258,17 @@ export default function TarifsPage() {
               "Export PDF des attestations",
               "Support email",
             ]}
-            cta={currentPlanKey === "pro" ? "Plan actuel" : "Commencer"}
-            onClick={() => handleCheckout("pro")}
+            cta={
+              currentPlanKey === "pro"
+                ? "Plan actuel"
+                : hasActiveSubscription
+                  ? "Basculer sur Pro (prorata)"
+                  : "Démarrer l'essai gratuit"
+            }
+            onClick={() => handleSubscribe("pro")}
             loading={loading === "pro"}
             isCurrent={currentPlanKey === "pro"}
+            isUpgrade={hasActiveSubscription}
           />
           <PlanCard
             name="Agence" tagline="Pour les agences immobilières"
@@ -227,12 +283,48 @@ export default function TarifsPage() {
               "Support prioritaire",
               "API Webhook (à venir)",
             ]}
-            cta={currentPlanKey === "agence" ? "Plan actuel" : "Choisir Agence"}
-            onClick={() => handleCheckout("agence")}
+            cta={
+              currentPlanKey === "agence"
+                ? "Plan actuel"
+                : hasActiveSubscription
+                  ? "Basculer sur Agence (prorata)"
+                  : "Démarrer l'essai gratuit"
+            }
+            onClick={() => handleSubscribe("agence")}
             loading={loading === "agence"}
             isCurrent={currentPlanKey === "agence"}
+            isUpgrade={hasActiveSubscription}
           />
         </div>
+
+        {/* Explication de la facturation — sous les cards, bien visible */}
+        {!hasActiveSubscription && (
+          <div
+            className="max-w-4xl mx-auto mt-8 rounded-2xl p-5 sm:p-6"
+            style={{
+              background: "linear-gradient(135deg, rgba(16,185,129,0.06), rgba(52,211,153,0.03))",
+              border: "1px solid rgba(16,185,129,0.20)",
+            }}
+          >
+            <div className="grid sm:grid-cols-3 gap-5">
+              <BillingStep
+                step="Aujourd'hui"
+                title="0 €"
+                desc="Aucun prélèvement. Vous renseignez votre carte uniquement pour l'auto-conversion à la fin de l'essai."
+              />
+              <BillingStep
+                step={`Le ${formatDateFromNow(14)}`}
+                title="Premier prélèvement"
+                desc="Sauf annulation préalable, vous serez prélevé du montant du plan choisi. Vous gardez le contrôle."
+              />
+              <BillingStep
+                step="À tout moment"
+                title="Annulez en 1 clic"
+                desc="Depuis votre espace abonnement, sans passer par le portail Stripe. Aucun frais si annulé avant la fin de l'essai."
+              />
+            </div>
+          </div>
+        )}
 
         {/* FAQ */}
         <div className="mt-24 max-w-3xl mx-auto">
@@ -254,10 +346,26 @@ export default function TarifsPage() {
           </div>
 
           <div className="space-y-3">
-            <FaqItem q="Puis-je annuler à tout moment ?" a="Oui, l'abonnement est sans engagement. Vous pouvez résilier en un clic depuis votre tableau de bord. Vous gardez l'accès jusqu'à la fin de la période payée." />
-            <FaqItem q="Mes données sont-elles vraiment sécurisées ?" a="Oui. Toutes les données sont hébergées en Europe (Neon EU + Cloudinary EU), chiffrées au repos et en transit. Conforme RGPD. Vous pouvez exporter ou supprimer vos données à tout moment." />
-            <FaqItem q="Comment fonctionne la limite de 15 dossiers du plan Pro ?" a="Le compteur se réinitialise au début de chaque cycle de facturation. Vous pouvez basculer vers le plan Agence à tout moment si vous avez besoin de plus." />
-            <FaqItem q="Puis-je essayer avant de payer ?" a="Oui, vous pouvez créer un compte gratuitement et créer 2 dossiers test avant de choisir un plan. Aucune carte bancaire requise pour s'inscrire." />
+            <FaqItem
+              q="Quand est-ce que je suis prélevé ?"
+              a="Pas avant la fin de l'essai de 14 jours. La carte est enregistrée à l'inscription uniquement pour automatiser le renouvellement. Aucun débit n'est effectué pendant les 14 premiers jours. Le premier prélèvement intervient à J14, sauf si vous annulez avant."
+            />
+            <FaqItem
+              q="Puis-je annuler à tout moment ?"
+              a="Oui — en 1 clic, directement dans Klaris (espace abonnement), sans passer par un portail externe. Si vous annulez pendant l'essai, vous n'êtes pas débité. Si vous annulez après, vous gardez l'accès jusqu'à la fin de la période payée."
+            />
+            <FaqItem
+              q="Que se passe-t-il si je change de plan ?"
+              a="Stripe applique automatiquement un prorata. Si vous montez de Pro à Agence à mi-mois, vous ne payez que la différence pour les jours restants. Si vous rétrogradez, le crédit est appliqué à votre prochaine facture (jamais de double facturation)."
+            />
+            <FaqItem
+              q="Mes données sont-elles vraiment sécurisées ?"
+              a="Oui. Toutes les données sont hébergées en Europe (Scaleway Paris + Neon Frankfurt), chiffrées au repos (AES-256) et en transit (TLS 1.3). Conforme RGPD. Voir la page /securite pour le détail des certifications."
+            />
+            <FaqItem
+              q="Comment fonctionne la limite de 15 dossiers du plan Pro ?"
+              a="Le compteur se réinitialise au début de chaque cycle de facturation. Vous pouvez basculer vers le plan Agence à tout moment si vous avez besoin de plus — avec prorata appliqué."
+            />
           </div>
         </div>
       </main>
@@ -273,10 +381,10 @@ export default function TarifsPage() {
 }
 
 function PlanCard({
-  name, tagline, priceMonthly, priceYearly, period, features, cta, onClick, popular = false, loading = false, isCurrent = false,
+  name, tagline, priceMonthly, priceYearly, period, features, cta, onClick, popular = false, loading = false, isCurrent = false, isUpgrade = false,
 }: {
   name: string; tagline: string; priceMonthly: number; priceYearly: number; period: Period;
-  features: string[]; cta: string; onClick: () => void; popular?: boolean; loading?: boolean; isCurrent?: boolean;
+  features: string[]; cta: string; onClick: () => void; popular?: boolean; loading?: boolean; isCurrent?: boolean; isUpgrade?: boolean;
 }) {
   const price = period === "monthly" ? priceMonthly : priceYearly;
 
@@ -351,7 +459,7 @@ function PlanCard({
         <button
           onClick={onClick}
           disabled={loading || isCurrent}
-          className="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-[14px] font-bold transition-transform hover:scale-[1.02] mb-7 disabled:opacity-60 disabled:cursor-default disabled:hover:scale-100"
+          className="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-[14px] font-bold transition-transform hover:scale-[1.02] mb-2 disabled:opacity-60 disabled:cursor-default disabled:hover:scale-100"
           style={
             isCurrent
               ? {
@@ -375,6 +483,17 @@ function PlanCard({
           {!loading && !isCurrent && <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />}
           {isCurrent && <Check className="w-4 h-4" strokeWidth={3} />}
         </button>
+
+        {/* Sous-texte explicatif : selon le contexte */}
+        <div className="text-center text-[11px] mb-6 leading-snug" style={{ color: "rgba(255,255,255,0.50)" }}>
+          {isCurrent ? (
+            <span style={{ color: "rgba(52,211,153,0.85)" }}>✓ Vous êtes sur ce plan</span>
+          ) : isUpgrade ? (
+            <span>Prorata Stripe appliqué · pas de double facturation</span>
+          ) : (
+            <span>0 € aujourd'hui · {price}€/mois après 14 jours · annulable à tout moment</span>
+          )}
+        </div>
 
         <ul className="space-y-3">
           {features.map((f) => (
@@ -402,6 +521,18 @@ function PlanCard({
           ))}
         </ul>
       </div>
+    </div>
+  );
+}
+
+function BillingStep({ step, title, desc }: { step: string; title: string; desc: string }) {
+  return (
+    <div className="text-center sm:text-left">
+      <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-emerald-300/85 mb-1.5">
+        {step}
+      </div>
+      <div className="text-[15px] font-bold text-white mb-1">{title}</div>
+      <div className="text-[12.5px] text-white/55 leading-relaxed">{desc}</div>
     </div>
   );
 }

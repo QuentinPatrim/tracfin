@@ -10,7 +10,7 @@ import { useEffect, useRef } from "react";
 import {
   Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles, UserCog,
 } from "lucide-react";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, OrganizationSwitcher } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 
 interface SubInfo {
@@ -83,6 +83,19 @@ export default function Topbar({
 
         <div className="topbar-v2-actions">
           <SubscriptionBadge subscription={subscription} />
+          {/*
+            OrganizationSwitcher Clerk : permet de basculer entre "compte perso"
+            (= scope.orgId NULL côté serveur) et l'une de ses orgs Agence. Le
+            switch déclenche un refresh du token Clerk → tous les SSR repassent
+            par getScope() avec le bon orgId. hidePersonal={false} maintient
+            l'accès au plan Pro perso même quand l'utilisateur est membre d'orgs.
+          */}
+          <OrganizationSwitcher
+            hidePersonal={false}
+            afterSelectOrganizationUrl="/dashboard"
+            afterSelectPersonalUrl="/dashboard"
+            afterCreateOrganizationUrl="/dashboard"
+          />
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent("klaris:open-guide"))}

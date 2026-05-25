@@ -1,8 +1,19 @@
 // lib/subscription.ts — Logique d'abonnement Klaris (essai 14j + Stripe)
+//
+// Multi-tenant :
+//   - Plan Pro → abonnement personnel (subscriptions.org_id IS NULL, user_id = abonné)
+//   - Plan Agence → abonnement d'organisation (subscriptions.org_id = org Clerk,
+//     user_id = l'admin qui a souscrit, sert d'ancre Stripe).
+//   - Un même user peut avoir : un abo perso (Pro) + être membre d'une org avec
+//     son propre abo Agence. Les deux sont distincts.
 
 import { sql } from "@/lib/db";
 
 export type Plan = "pro_monthly" | "pro_yearly" | "agence_monthly" | "agence_yearly";
+
+export function isAgencePlan(plan: Plan): boolean {
+  return plan === "agence_monthly" || plan === "agence_yearly";
+}
 
 export type State =
   | "trialing"      // essai 14j en cours
@@ -58,25 +69,66 @@ interface Row {
   stripe_subscription_id: string | null;
 }
 
+export interface ScopeRef {
+  userId: string;
+  orgId?: string | null;
+}
+
 /**
- * Récupère le statut d'abonnement pour un user Clerk.
- * Si pas de ligne existante → crée automatiquement un essai 14j à partir de NOW().
+ * Récupère le statut d'abonnement pour un scope donné.
+ *
+ *  - orgId set → on cherche WHERE org_id = orgId. L'abonnement appartient à
+ *    l'organisation, peu importe quel membre fait l'appel.
+ *  - orgId null → on cherche WHERE user_id = userId AND org_id IS NULL.
+ *    Abonnement personnel (plan Pro).
+ *
+ * Lazy-init de l'essai 14j seulement en contexte perso. En contexte org, on
+ * n'auto-crée pas — l'org doit explicitement souscrire au plan Agence depuis
+ * /tarifs (sinon n'importe quelle nouvelle org bénéficierait d'un essai gratis,
+ * exploitable).
+ *
+ * Compat : `getSubscriptionStatus(userId)` (signature legacy) reste supportée.
  */
-export async function getSubscriptionStatus(userId: string): Promise<SubscriptionStatus> {
-  const rows = (await sql`
-    SELECT state, plan, trial_ends_at, current_period_end, cancel_at_period_end,
-           stripe_customer_id, stripe_subscription_id
-    FROM subscriptions WHERE user_id = ${userId} LIMIT 1
-  `) as unknown as Row[];
+export async function getSubscriptionStatus(
+  scopeOrUserId: ScopeRef | string,
+): Promise<SubscriptionStatus> {
+  const ref: ScopeRef = typeof scopeOrUserId === "string"
+    ? { userId: scopeOrUserId, orgId: null }
+    : scopeOrUserId;
+
+  const rows = ref.orgId
+    ? (await sql`
+        SELECT state, plan, trial_ends_at, current_period_end, cancel_at_period_end,
+               stripe_customer_id, stripe_subscription_id
+        FROM subscriptions WHERE org_id = ${ref.orgId} LIMIT 1
+      `) as unknown as Row[]
+    : (await sql`
+        SELECT state, plan, trial_ends_at, current_period_end, cancel_at_period_end,
+               stripe_customer_id, stripe_subscription_id
+        FROM subscriptions WHERE user_id = ${ref.userId} AND org_id IS NULL LIMIT 1
+      `) as unknown as Row[];
 
   let row: Row;
   if (rows.length === 0) {
-    // Lazy-init : premier accès → essai 14j
+    if (ref.orgId) {
+      // Pas d'auto-essai côté org → on retourne un état "expired" pour forcer la
+      // souscription. Évite l'exploitation : créer une nouvelle org = nouvel essai.
+      return computeStatus({
+        state: "expired",
+        plan: null,
+        trial_ends_at: null,
+        current_period_end: null,
+        cancel_at_period_end: false,
+        stripe_customer_id: null,
+        stripe_subscription_id: null,
+      });
+    }
+    // Lazy-init perso : premier accès → essai 14j
     const trialEnd = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
     const inserted = (await sql`
       INSERT INTO subscriptions (user_id, state, trial_ends_at)
-      VALUES (${userId}, 'trialing', ${trialEnd.toISOString()})
-      ON CONFLICT (user_id) DO UPDATE SET updated_at = NOW()
+      VALUES (${ref.userId}, 'trialing', ${trialEnd.toISOString()})
+      ON CONFLICT (user_id) WHERE org_id IS NULL DO UPDATE SET updated_at = NOW()
       RETURNING state, plan, trial_ends_at, current_period_end, cancel_at_period_end,
                 stripe_customer_id, stripe_subscription_id
     `) as unknown as Row[];
@@ -158,12 +210,25 @@ export async function markGuideSeen(userId: string): Promise<void> {
   `;
 }
 
-export async function attachStripeCustomer(userId: string, stripeCustomerId: string) {
-  await sql`
-    UPDATE subscriptions
-    SET stripe_customer_id = ${stripeCustomerId}, updated_at = NOW()
-    WHERE user_id = ${userId}
-  `;
+export async function attachStripeCustomer(
+  scope: ScopeRef,
+  stripeCustomerId: string,
+): Promise<void> {
+  if (scope.orgId) {
+    // L'abo de l'org peut ne pas exister encore : on l'insère ou met à jour.
+    await sql`
+      INSERT INTO subscriptions (user_id, org_id, state, stripe_customer_id)
+      VALUES (${scope.userId}, ${scope.orgId}, 'incomplete', ${stripeCustomerId})
+      ON CONFLICT (org_id) WHERE org_id IS NOT NULL
+      DO UPDATE SET stripe_customer_id = EXCLUDED.stripe_customer_id, updated_at = NOW()
+    `;
+  } else {
+    await sql`
+      UPDATE subscriptions
+      SET stripe_customer_id = ${stripeCustomerId}, updated_at = NOW()
+      WHERE user_id = ${scope.userId} AND org_id IS NULL
+    `;
+  }
 }
 
 export async function upsertSubscriptionFromStripe(params: {
@@ -172,16 +237,22 @@ export async function upsertSubscriptionFromStripe(params: {
   state: State;
   plan: Plan | null;
   currentPeriodEnd: Date | null;
+  /** Fin de l'essai Stripe (si state=trialing). Remplace la valeur lazy-init locale. */
+  trialEnd: Date | null;
   cancelAtPeriodEnd: boolean;
 }) {
-  const { stripeCustomerId, stripeSubscriptionId, state, plan, currentPeriodEnd, cancelAtPeriodEnd } = params;
+  const { stripeCustomerId, stripeSubscriptionId, state, plan, currentPeriodEnd, trialEnd, cancelAtPeriodEnd } = params;
 
+  // Note : on update toutes les lignes ayant ce stripe_customer_id. Comme
+  // chaque scope (perso, org_id) a son propre Stripe Customer (créé séparément
+  // côté /api/checkout), il n'y a aucune ambiguïté — au plus 1 ligne match.
   await sql`
     UPDATE subscriptions SET
       stripe_subscription_id = ${stripeSubscriptionId},
       state = ${state},
       plan = ${plan},
       current_period_end = ${currentPeriodEnd ? currentPeriodEnd.toISOString() : null},
+      trial_ends_at = ${trialEnd ? trialEnd.toISOString() : null},
       cancel_at_period_end = ${cancelAtPeriodEnd},
       updated_at = NOW()
     WHERE stripe_customer_id = ${stripeCustomerId}

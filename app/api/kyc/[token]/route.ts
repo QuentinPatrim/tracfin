@@ -7,9 +7,21 @@ import {
   MENTION_CNIL_VERSION,
   type KycForm,
 } from "@/lib/kyc";
+import { logAudit } from "@/lib/audit";
+import { enforceRateLimit, ipFromRequest } from "@/lib/ratelimit";
 
 export async function POST(req: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
+
+  // Rate limit par IP : 10 tentatives / 10 min sur la soumission KYC.
+  // Empêche le brute-force de tokens et le spam de soumissions invalides.
+  const rl = await enforceRateLimit({
+    key: `kyc-submit:${ipFromRequest(req)}`,
+    limit: 10,
+    windowSec: 600,
+  });
+  if (rl) return rl;
+
   let form: KycForm;
   try {
     form = await req.json();
@@ -17,10 +29,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     return NextResponse.json({ error: "JSON invalide" }, { status: 400 });
   }
 
-  // Vérifie le token
+  // Vérifie le token (on lit org_id pour le propager sur kyc_responses + audit)
   const links = (await sql`
-    SELECT id, dossier_id, status, expires_at FROM kyc_links WHERE token = ${token} LIMIT 1
-  `) as unknown as Array<{ id: string; dossier_id: string; status: string; expires_at: string }>;
+    SELECT id, dossier_id, org_id, status, expires_at FROM kyc_links WHERE token = ${token} LIMIT 1
+  `) as unknown as Array<{ id: string; dossier_id: string; org_id: string | null; status: string; expires_at: string }>;
 
   if (links.length === 0) return NextResponse.json({ error: "Lien invalide" }, { status: 404 });
   const link = links[0];
@@ -79,7 +91,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   // ─── Persistance ────────────────────────────────────────────────────
   await sql`
     INSERT INTO kyc_responses (
-      link_id, dossier_id, kyc_version,
+      link_id, dossier_id, org_id, kyc_version,
       email_contact, telephone, type_client,
       nom_prenom, date_naissance, lieu_naissance, nationalite, pays_nationalite,
       adresse, profession, secteur_activite,
@@ -95,7 +107,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
       url_kbis, url_statuts, url_cni_gerant, url_bilans, url_rbe,
       consentement_rgpd, consentement_rgpd_at, mention_cnil_version
     ) VALUES (
-      ${link.id}, ${link.dossier_id}, 'v2',
+      ${link.id}, ${link.dossier_id}, ${link.org_id}, 'v2',
       ${form.emailContact}, ${form.telephone || null}, ${form.typeClient},
       ${form.nomPrenom}, ${form.dateNaissance || null}, ${form.lieuNaissance || null},
       ${form.nationalite || null}, ${form.paysNationalite || null},
@@ -124,6 +136,20 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   // Marque le lien comme complété + dossier en "KYC reçu"
   await sql`UPDATE kyc_links SET status = 'completed', completed_at = NOW() WHERE id = ${link.id}`;
   await sql`UPDATE dossiers SET kyc_status = 'received' WHERE id = ${link.dossier_id}`;
+
+  // Audit côté client public (userId = NULL, orgId hérité du lien KYC).
+  await logAudit({
+    userId: null,
+    orgId: link.org_id,
+    dossierId: link.dossier_id,
+    action: "kyc.submit",
+    metadata: {
+      type_client: form.typeClient,
+      partie,
+      consentement_rgpd_version: MENTION_CNIL_VERSION,
+    },
+    req,
+  });
 
   return NextResponse.json({ ok: true });
 }

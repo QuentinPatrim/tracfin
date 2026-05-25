@@ -1,8 +1,8 @@
 // app/dashboard/[id]/page.tsx — Édition Tracfin (uniquement si KYC reçu)
 
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
+import { getScope, findScopedDossier } from "@/lib/scope";
 import TracfinForm from "@/components/tracfin/TracfinForm";
 import type { Dossier } from "@/types/dossier";
 import { V1_TO_NIVEAU, type DossierForm, type Niveau } from "@/lib/tracfin";
@@ -180,17 +180,13 @@ function rowToForm(row: Dossier, kyc: KycRow): Partial<DossierForm> {
 
 export default async function EditDossierPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { userId } = await auth();
-  if (!userId) return notFound();
+  const scope = await getScope();
+  if (!scope) return notFound();
 
   if (id === "nouveau" || !/^[0-9a-f-]{36}$/i.test(id)) return notFound();
 
-  const rows = (await sql`
-    SELECT * FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
-  `) as unknown as Dossier[];
-
-  if (rows.length === 0) return notFound();
-  const dossier = rows[0];
+  const dossier = await findScopedDossier<Dossier>(id, scope);
+  if (!dossier) return notFound();
 
   // 🔒 Si KYC pas encore reçu → redirige vers la page d'attente
   if (dossier.kyc_status !== "received") {

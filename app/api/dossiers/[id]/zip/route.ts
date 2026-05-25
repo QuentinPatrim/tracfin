@@ -2,15 +2,16 @@
 // Contenu : attestation PDF + fiche KYC PDF + toutes les pièces justificatives Scaleway/Cloudinary
 
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { createHash } from "crypto";
 import JSZip from "jszip";
 
 import { sql } from "@/lib/db";
 import { computeScore } from "@/lib/tracfin";
 import { rowToForm, kycRowToKycForm, type KycResponseRowFull } from "@/lib/dossier";
-import { computeContentHash } from "@/lib/pdf-helpers";
+import { getOrCreateAttestation } from "@/lib/attestation";
 import { renderHtmlPdf } from "@/lib/pdf-renderer";
+import { logAudit } from "@/lib/audit";
+import { getScope, findScopedDossier } from "@/lib/scope";
 import { buildAttestationHtml } from "@/app/pdf-render/attestation-template";
 import { buildKycHtml } from "@/app/pdf-render/kyc-template";
 import { listDossierFiles, type KycFilesRow } from "@/lib/dossier-files";
@@ -35,23 +36,19 @@ function slugify(name: string): string {
 // Row du ZIP : tous les champs KYC complets + pièces (URLs)
 type KycRow = KycResponseRowFull & KycFilesRow;
 
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const scope = await getScope();
+  if (!scope) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) {
     return NextResponse.json({ error: "Bad id" }, { status: 400 });
   }
 
-  // Vérifie ownership
-  const dossierRows = (await sql`
-    SELECT * FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
-  `) as unknown as Dossier[];
-  if (dossierRows.length === 0) {
+  const dossier = await findScopedDossier<Dossier>(id, scope);
+  if (!dossier) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  const dossier = dossierRows[0];
 
   // Dernière réponse KYC (données complètes + pièces + horodatage signature)
   const kycRows = (await sql`
@@ -87,11 +84,23 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     const generatedAt = new Date().toISOString();
     const kyc = kycRows[0];
 
-    // ─── 1) Attestation PDF (depuis dossiers) ────────────────────────────
+    // ─── 1) Attestation PDF (snapshot opposable depuis lib/attestation) ──
     const formForAtt = rowToForm(dossier);
     const score = computeScore(formForAtt);
-    const attHash = computeContentHash(formForAtt, score, id, generatedAt);
-    const attHtml = buildAttestationHtml({ form: formForAtt, score, dossierId: id, hash: attHash, generatedAt });
+    const snapshot = await getOrCreateAttestation({
+      dossierId: id,
+      userId: scope.userId,
+      orgId: scope.orgId,
+      form: formForAtt,
+      score,
+    });
+    const attHtml = buildAttestationHtml({
+      form: snapshot.form_snapshot,
+      score: snapshot.score_snapshot,
+      dossierId: id,
+      hash: snapshot.content_hash,
+      generatedAt: snapshot.generated_at,
+    });
 
     // ─── 2) Fiche KYC PDF (depuis kyc_responses, source de vérité client) ────
     const formForKyc = kycRowToKycForm(kyc);
@@ -158,13 +167,28 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       compressionOptions: { level: 6 },
     });
 
+    await logAudit({
+      userId: scope.userId,
+      orgId: scope.orgId,
+      dossierId: id,
+      action: "attestation.emit",
+      metadata: {
+        attestation_id: snapshot.id,
+        export: "zip",
+        algo_version: snapshot.algo_version,
+        niveau: snapshot.niveau,
+        content_hash: snapshot.content_hash,
+      },
+      req,
+    });
+
     // Note : la trace SHA-256 reste visible dans les pieds de page des PDFs.
     return new NextResponse(zipBuffer as unknown as BodyInit, {
       headers: {
         "Content-Type": "application/zip",
         "Content-Disposition": `attachment; filename="klaris-${slug}-${shortId}.zip"`,
         "Cache-Control": "no-store",
-        "X-Klaris-Attestation-SHA256": attHash,
+        "X-Klaris-Attestation-SHA256": snapshot.content_hash,
         "X-Klaris-Kyc-SHA256": kycHash,
       },
     });
