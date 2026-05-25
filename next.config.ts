@@ -1,24 +1,58 @@
 import type { NextConfig } from "next";
 
 // ─── Content-Security-Policy ────────────────────────────────────────────────
-// On autorise explicitement :
-//  - Clerk (auth) : *.clerk.accounts.dev, *.clerk.com, frontend api
-//  - Stripe (checkout / portail / JS) : js.stripe.com, m.stripe.network, api.stripe.com
-//  - Scaleway S3 (pièces) : *.s3.fr-par.scw.cloud
-//  - Vercel : *.vercel-insights.com (web analytics)
-//  - data: pour les SVG inline du logo + images base64
+// On autorise explicitement les domaines de nos sous-traitants :
+//
+//  Clerk (auth) — variantes de domaines selon l'environnement et le setup :
+//   - *.clerk.accounts.dev  : instance dev
+//   - *.clerk.com           : prod CDN par défaut
+//   - *.clerk.app           : prod hosted (autre format)
+//   - *.lcl.dev             : dev tunneling Clerk
+//   - clerk.klaris-app.fr   : custom CNAME prod si configuré (Frontend API)
+//   - clerk-telemetry.com   : métriques Clerk
+//
+//  Stripe : js.stripe.com (JS), api.stripe.com (XHR), hooks.stripe.com (iframe),
+//           checkout.stripe.com (form action), m.stripe.network (anti-fraude)
+//
+//  Scaleway S3 : *.s3.fr-par.scw.cloud + *.scw.cloud
+//  Cloudinary (legacy uploads) : res.cloudinary.com
+//  Vercel : *.vercel-insights.com
 //
 // 'unsafe-inline' sur style-src est tolérée car Tailwind 4 + components inline
 // styles (gradient orbs, dashboard) en dépendent. 'unsafe-eval' sur script-src
-// est requise par Clerk JS en dev/prod selon les version. À durcir progressivement.
+// est requise par Clerk JS. À durcir progressivement (CSP nonces) en Vague 4.
+const CLERK_DOMAINS = [
+  "https://*.clerk.accounts.dev",
+  "https://*.clerk.com",
+  "https://*.clerk.app",
+  "https://*.lcl.dev",
+  "https://clerk.klaris-app.fr",
+  "https://clerk-telemetry.com",
+  "https://*.clerk-telemetry.com",
+].join(" ");
+
+const STRIPE_DOMAINS = [
+  "https://js.stripe.com",
+  "https://api.stripe.com",
+  "https://hooks.stripe.com",
+  "https://m.stripe.network",
+  "https://m.stripe.com",
+].join(" ");
+
+const STORAGE_DOMAINS = [
+  "https://*.s3.fr-par.scw.cloud",
+  "https://*.scw.cloud",
+  "https://res.cloudinary.com",
+].join(" ");
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://js.stripe.com https://challenges.cloudflare.com",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${CLERK_DOMAINS} ${STRIPE_DOMAINS} https://challenges.cloudflare.com https://*.vercel-insights.com`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.clerk.com https://img.clerk.com https://*.s3.fr-par.scw.cloud https://*.scw.cloud https://res.cloudinary.com",
+  `img-src 'self' data: blob: ${CLERK_DOMAINS} ${STORAGE_DOMAINS} https://img.clerk.com https://www.gravatar.com`,
   "font-src 'self' data:",
-  "connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://api.stripe.com https://*.s3.fr-par.scw.cloud https://*.scw.cloud https://*.vercel-insights.com",
-  "frame-src 'self' https://*.clerk.com https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com",
+  `connect-src 'self' ${CLERK_DOMAINS} ${STRIPE_DOMAINS} ${STORAGE_DOMAINS} https://*.vercel-insights.com wss://*.clerk.com wss://*.clerk.accounts.dev`,
+  `frame-src 'self' ${CLERK_DOMAINS} ${STRIPE_DOMAINS} https://challenges.cloudflare.com`,
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",

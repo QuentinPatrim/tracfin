@@ -86,9 +86,13 @@ export default function FloatingNav() {
             ))}
           </div>
 
-          {/* Actions à droite */}
+          {/* Actions à droite —
+              Le bouton "Connexion" est rendu INCONDITIONNELLEMENT (pas de gate
+              sur isLoaded) : même si Clerk lag ou plante en silence (CSP, réseau,
+              adblock…), l'utilisateur doit toujours avoir un chemin vers la page
+              de connexion. Si déjà connecté, openSignIn redirige vers /dashboard. */}
           <div className="flex items-center gap-1.5 pr-1">
-            {isLoaded && !isSignedIn && (
+            {(!isLoaded || !isSignedIn) && (
               <>
                 <button
                   onClick={() => openSignIn({ fallbackRedirectUrl: "/dashboard" })}

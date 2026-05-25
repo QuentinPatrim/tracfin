@@ -21,7 +21,7 @@ import {
 import EnvoiLienSection from "@/components/landing/sections/EnvoiLienSection";
 
 export default function LandingPage() {
-  const { openSignUp } = useClerk();
+  const { openSignUp, openSignIn } = useClerk();
   const { isSignedIn } = useAuth();
 
   const openDemo = () => window.dispatchEvent(new Event("klaris:open-demo"));
@@ -89,6 +89,21 @@ export default function LandingPage() {
                 </>
               )}
             </div>
+
+            {/* Lien discret pour les utilisateurs déjà inscrits — évite que la
+                seule porte d'entrée pour eux soit le bouton sign-up (ambigu). */}
+            {!isSignedIn && (
+              <div className="mt-3 text-[13px] text-white/55">
+                Déjà un compte ?{" "}
+                <button
+                  type="button"
+                  onClick={() => openSignIn({ fallbackRedirectUrl: "/dashboard" })}
+                  className="font-medium text-white/85 hover:text-white underline underline-offset-4 decoration-white/30 hover:decoration-white/60 transition"
+                >
+                  Se connecter
+                </button>
+              </div>
+            )}
 
             <div className="mt-7 sm:mt-9 flex flex-wrap items-center gap-x-5 gap-y-2.5 text-[11.5px] text-white/55">
               <TrustItem>Aucun prélèvement avant J14</TrustItem>
