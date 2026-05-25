@@ -966,3 +966,9 @@
 @media (max-width: 380px) {
   .kpi-row { grid-template-columns: 1fr; }
 }
+
+/* ─── Animation badge alerte re-screening ─────────────────────────────── */
+@keyframes pulse-alert {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.30); }
+  50%      { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+}

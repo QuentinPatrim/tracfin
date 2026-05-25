@@ -421,7 +421,7 @@ export default function KycPublicForm({ token, dossierId, partie }: Props) {
 
         {/* ÉTAPES */}
         {step === 0 && <Step0_Vous form={form} set={set} cnilOpen={cnilOpen} setCnilOpen={setCnilOpen} isVendeur={isVendeur} />}
-        {step === 1 && <Step1_Identite form={form} set={set} isMorale={isMorale} />}
+        {step === 1 && <Step1_Identite form={form} set={set} isMorale={isMorale} token={token} />}
         {step === 2 && <Step2_Piece form={form} set={set} isMorale={isMorale} />}
         {step === 3 && <Step3_Situation form={form} set={set} isMorale={isMorale} />}
         {step === 4 && <Step4_Operation form={form} set={set} isVendeur={isVendeur} />}
@@ -568,7 +568,7 @@ function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
 }
 
 /* ─── ÉTAPE 1 : Identité ─── */
-function Step1_Identite({ form, set, isMorale }: { form: KycForm; set: Setter; isMorale: boolean }) {
+function Step1_Identite({ form, set, isMorale, token }: { form: KycForm; set: Setter; isMorale: boolean; token: string }) {
   return (
     <Section
       title={isMorale ? "La société" : "Votre identité"}
@@ -632,7 +632,7 @@ function Step1_Identite({ form, set, isMorale }: { form: KycForm; set: Setter; i
           <Field label="Forme juridique" required>
             <Selectt value={form.formeJuridique} options={FORME_JURIDIQUE_OPTIONS} onChange={(v) => set("formeJuridique", v)} />
           </Field>
-          <Field label="N° SIREN" required hint="9 chiffres sans espace">
+          <Field label="N° SIREN" required hint="9 chiffres sans espace · le bouton ci-dessous récupère automatiquement les informations depuis l'INPI">
             <input
               inputMode="numeric"
               className={inputStyle}
@@ -642,6 +642,9 @@ function Step1_Identite({ form, set, isMorale }: { form: KycForm; set: Setter; i
               maxLength={9}
             />
           </Field>
+
+          <PappersLookupButton form={form} set={set} token={token} />
+
           <Field label="Date de constitution">
             <input
               type="date"
@@ -684,6 +687,207 @@ function Step1_Identite({ form, set, isMorale }: { form: KycForm; set: Setter; i
         />
       </Field>
     </Section>
+  );
+}
+
+/* ─── Bouton lookup INPI/Pappers — pré-remplit l'identité morale ─────────── */
+
+// Validation SIREN locale (Luhn) — pure JS, pas d'import lib/pappers (qui
+// embarquerait la logique fetch côté client + leak potentiel env var).
+function isSirenValid(s: string): boolean {
+  const d = s.replace(/\s/g, "");
+  if (!/^\d{9}$/.test(d)) return false;
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    let n = parseInt(d[i], 10);
+    if (i % 2 === 1) {
+      n *= 2;
+      if (n > 9) n -= 9;
+    }
+    sum += n;
+  }
+  return sum % 10 === 0;
+}
+
+// Normalise les formes juridiques INPI vers les options du select Klaris.
+function mapFormeJuridique(label: string): string {
+  const l = label.toLowerCase();
+  if (/sas\b|société par actions simplifiée/.test(l) && !/sasu/.test(l)) return "SAS";
+  if (/sasu/.test(l)) return "SASU";
+  if (/sarl|société à responsabilité limitée/.test(l) && !/eurl/.test(l)) return "SARL";
+  if (/eurl/.test(l)) return "EURL";
+  if (/société civile immobilière|\bsci\b/.test(l)) return "SCI";
+  if (/société anonyme|\bsa\b/.test(l)) return "SA";
+  if (/snc|société en nom collectif/.test(l)) return "SNC";
+  return "autre";
+}
+
+interface PappersNormalized {
+  siren: string;
+  denomination: string;
+  formeJuridique: string;
+  dateConstitution: string | null;
+  adresseSiege: string;
+  activitePrincipale: string;
+  capital: number | null;
+  dirigeantPrincipal: {
+    nom: string;
+    prenom: string;
+    nomComplet: string;
+    qualite: string;
+    dateNaissance: string | null;
+    nationalite: string | null;
+  } | null;
+  beneficiairesEffectifs: Array<{
+    nom: string;
+    prenom: string;
+    nomComplet: string;
+    dateNaissance: string | null;
+    nationalite: string | null;
+    pourcentageParts: number | null;
+    pourcentageVotes: number | null;
+  }>;
+  statutActif: boolean;
+}
+
+function PappersLookupButton({ form, set, token }: { form: KycForm; set: Setter; token: string }) {
+  const sirenOk = isSirenValid(form.siren);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const run = async () => {
+    if (!sirenOk) return;
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      const res = await fetch(
+        `/api/pappers/lookup?siren=${encodeURIComponent(form.siren)}&kycToken=${encodeURIComponent(token)}`,
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error ?? `HTTP ${res.status}`);
+      }
+      const company = data.company as PappersNormalized;
+
+      // ─ Pré-remplissage du formulaire ─
+      if (company.denomination) set("nomPrenom", company.denomination);
+      if (company.formeJuridique) set("formeJuridique", mapFormeJuridique(company.formeJuridique));
+      if (company.dateConstitution) set("dateConstitution", company.dateConstitution);
+      if (company.activitePrincipale) set("activitePrincipale", company.activitePrincipale);
+      if (company.adresseSiege) set("adresse", company.adresseSiege);
+      if (company.dirigeantPrincipal?.nomComplet) {
+        set("nomGerant", company.dirigeantPrincipal.nomComplet);
+      }
+
+      // BE structurés : on remplit beneficiairesEffectifsJson si Pappers en a
+      if (company.beneficiairesEffectifs.length > 0) {
+        const beList: BeneficiaireEffectif[] = company.beneficiairesEffectifs.map((b) => {
+          // Détermine le type de contrôle dominant : si votes > parts c'est "vote"
+          // sinon "capital" (le critère AML retient le plus fort des deux).
+          const parts = b.pourcentageParts ?? 0;
+          const votes = b.pourcentageVotes ?? 0;
+          const typeControle = votes > parts ? "vote" : "capital";
+          const pct = Math.max(parts, votes);
+          return {
+            nom: b.nomComplet || [b.prenom, b.nom].filter(Boolean).join(" "),
+            // pctDetention attendu en string (saisie progressive UI). On formatte.
+            pctDetention: pct > 0 ? pct.toString() : "",
+            typeControle,
+          };
+        });
+        set("beneficiairesEffectifsJson", beList);
+      }
+
+      // Stocke le snapshot brut pour transmission au POST (preuve d'audit)
+      set("pappersSnapshot", data.snapshot);
+
+      setSuccess(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur inconnue");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      className="rounded-xl p-4 mb-1"
+      style={{
+        background: "linear-gradient(180deg, rgba(168,85,247,0.06), rgba(99,102,241,0.03) 60%, transparent)",
+        border: "1px solid rgba(168,85,247,0.22)",
+      }}
+    >
+      <button
+        type="button"
+        onClick={run}
+        disabled={!sirenOk || loading}
+        className="flex items-center justify-center gap-2.5 rounded-lg px-4 py-3 transition-all w-full"
+        style={{
+          background: sirenOk && !loading
+            ? "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)"
+            : "rgba(255,255,255,0.04)",
+          border: sirenOk ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.06)",
+          cursor: sirenOk && !loading ? "pointer" : "not-allowed",
+          opacity: sirenOk && !loading ? 1 : 0.5,
+          boxShadow: sirenOk && !loading
+            ? "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 16px rgba(168,85,247,0.25)"
+            : "none",
+          color: "white",
+          fontWeight: 600,
+          fontSize: 13,
+        }}
+      >
+        {loading ? (
+          <>
+            <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+            Récupération en cours…
+          </>
+        ) : (
+          <>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            {success ? "Re-récupérer depuis l'INPI" : sirenOk ? "Récupérer automatiquement depuis l'INPI" : "Saisissez un SIREN valide pour activer"}
+          </>
+        )}
+      </button>
+
+      {error && (
+        <div
+          className="mt-3 rounded-md px-3 py-2 text-[12.5px]"
+          style={{
+            background: "rgba(220,38,38,0.10)",
+            border: "1px solid rgba(220,38,38,0.30)",
+            color: "#fca5a5",
+          }}
+        >
+          ⚠️ {error}
+        </div>
+      )}
+
+      {success && (
+        <div
+          className="mt-3 rounded-md px-3 py-2 text-[12.5px] flex items-start gap-2"
+          style={{
+            background: "rgba(16,185,129,0.10)",
+            border: "1px solid rgba(16,185,129,0.30)",
+            color: "#6ee7b7",
+          }}
+        >
+          <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+          <div>
+            <strong>Données INPI récupérées.</strong> Dénomination, forme juridique, date de constitution,
+            adresse, dirigeant et bénéficiaires effectifs pré-remplis. Vérifiez les informations puis
+            poursuivez — vous pouvez modifier librement si besoin.
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

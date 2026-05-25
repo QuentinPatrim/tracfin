@@ -18,6 +18,7 @@ import {
 } from "@/lib/subscription";
 import { EDITEUR } from "@/lib/legal";
 import { getScope } from "@/lib/scope";
+import { syncOrgMembershipCap } from "@/lib/org";
 
 export const runtime = "nodejs";
 
@@ -153,6 +154,13 @@ export async function POST(req: Request) {
       },
       payment_method_collection: "always",
     });
+
+    // Si plan Agence en contexte org : on borne immédiatement le cap Clerk pour
+    // que l'admin puisse inviter ses collaborateurs dès le début de l'essai
+    // (sans attendre le webhook customer.subscription.created).
+    if (scope.orgId && isAgencePlan(plan)) {
+      await syncOrgMembershipCap(scope.orgId, plan);
+    }
 
     return NextResponse.json({ url: session.url });
   } catch (e) {

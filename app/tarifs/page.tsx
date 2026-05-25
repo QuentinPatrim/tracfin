@@ -3,8 +3,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Sparkles, ArrowRight, Settings } from "lucide-react";
-import { useAuth } from "@clerk/nextjs";
+import { Check, Sparkles, ArrowRight, Settings, Building2, User } from "lucide-react";
+import { useAuth, useOrganizationList, useClerk } from "@clerk/nextjs";
 import FloatingNav from "@/components/landing/FloatingNav";
 
 type Period = "monthly" | "yearly";
@@ -17,6 +17,8 @@ interface StatusResp {
   daysLeft: number | null;
   cancelAtPeriodEnd?: boolean;
   stripeSubscriptionId?: string | null;
+  /** "personal" ou "org" — renvoyé par /api/subscription/status. */
+  scope?: "personal" | "org";
 }
 
 // Pour le récap de facturation (date de fin de trial = première facturation)
@@ -26,10 +28,16 @@ function formatDateFromNow(days: number): string {
 }
 
 export default function TarifsPage() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, orgId } = useAuth();
+  const { setActive, createOrganization } = useOrganizationList({ userMemberships: { infinite: false } });
+  const { openSignUp } = useClerk();
   const [period, setPeriod] = useState<Period>("monthly");
   const [loading, setLoading] = useState<string | null>(null);
   const [status, setStatus] = useState<StatusResp | null>(null);
+  const [creatingOrg, setCreatingOrg] = useState(false);
+
+  // Détermine le scope visible côté UI : contexte org actif ou perso.
+  const isOrgContext = !!orgId;
 
   // Récupère l'état d'abonnement si connecté
   useEffect(() => {
@@ -48,10 +56,57 @@ export default function TarifsPage() {
 
   /**
    * Aiguillage intelligent :
+   * - Plan Agence en contexte perso → demande de créer une org d'abord
+   * - Plan Pro en contexte org → demande de sortir du contexte org
    * - Pas de sub Stripe → /api/checkout (création + trial 14j)
    * - Sub Stripe existante (active / trialing / past_due) → /api/billing/change-plan (prorata)
    */
   const handleSubscribe = async (plan: PlanKey) => {
+    // Pas connecté → ouverture du sign-up direct (avec plan en metadata pour
+    // pré-sélection après inscription).
+    if (!isSignedIn) {
+      openSignUp({ fallbackRedirectUrl: `/tarifs?plan=${plan}_${period}` });
+      return;
+    }
+
+    // ─ Scope mismatch : Agence en perso → propose de créer une organisation ─
+    if (plan === "agence" && !isOrgContext) {
+      if (!createOrganization || !setActive) {
+        alert("Le SDK Clerk n'est pas encore chargé, réessayez dans un instant.");
+        return;
+      }
+      const orgName = window.prompt(
+        "Nom de votre agence ? (ex: Delsol Immobilier)\n\n" +
+        "Une organisation Klaris sera créée, vous en deviendrez l'administrateur, " +
+        "et vous pourrez inviter vos collaborateurs ensuite.",
+      );
+      if (!orgName?.trim()) return;
+      setCreatingOrg(true);
+      try {
+        const org = await createOrganization({ name: orgName.trim() });
+        await setActive({ organization: org.id });
+        // Recharge la page en contexte org puis l'utilisateur reclique
+        window.location.href = `/tarifs?plan=agence_${period}&created=1`;
+      } catch (e) {
+        alert(e instanceof Error ? e.message : "Erreur lors de la création de l'organisation");
+        setCreatingOrg(false);
+      }
+      return;
+    }
+
+    // ─ Scope mismatch : Pro en org → propose de basculer en perso ─
+    if (plan === "pro" && isOrgContext) {
+      if (!setActive) return;
+      const ok = window.confirm(
+        "Le plan Pro est individuel. Voulez-vous basculer sur votre compte personnel " +
+        "pour y souscrire ? (vous pourrez rebasculer sur l'organisation à tout moment)",
+      );
+      if (!ok) return;
+      await setActive({ organization: null });
+      window.location.href = `/tarifs?plan=pro_${period}`;
+      return;
+    }
+
     const fullPlan = `${plan}_${period === "monthly" ? "monthly" : "yearly"}`;
     setLoading(plan);
     try {
@@ -209,6 +264,31 @@ export default function TarifsPage() {
           </div>
         </div>
 
+        {/* Bandeau scope courant — visible uniquement si connecté */}
+        {isSignedIn && (
+          <div
+            className="max-w-4xl mx-auto mb-4 rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 flex-wrap text-[12px]"
+            style={{
+              background: isOrgContext
+                ? "linear-gradient(135deg, rgba(16,185,129,0.10), rgba(52,211,153,0.04))"
+                : "linear-gradient(135deg, rgba(124,58,237,0.10), rgba(168,85,247,0.04))",
+              border: `1px solid ${isOrgContext ? "rgba(16,185,129,0.25)" : "rgba(124,58,237,0.25)"}`,
+            }}
+          >
+            {isOrgContext ? <Building2 className="w-3.5 h-3.5 text-emerald-300" /> : <User className="w-3.5 h-3.5 text-violet-300" />}
+            <span className="text-white/85">
+              Vous souscrivez en contexte{" "}
+              <strong className={isOrgContext ? "text-emerald-300" : "text-violet-300"}>
+                {isOrgContext ? "organisation" : "personnel"}
+              </strong>
+              .{" "}
+              {isOrgContext
+                ? "Le plan Agence s'applique. Pour souscrire à titre personnel (Pro), basculez via le sélecteur en haut à droite."
+                : "Le plan Pro s'applique. Pour l'Agence (multi-utilisateurs), créez d'abord une organisation."}
+            </span>
+          </div>
+        )}
+
         {/* Status banner si abonnement actif */}
         {status?.isActive && currentPlanKey && (
           <div
@@ -261,12 +341,14 @@ export default function TarifsPage() {
             cta={
               currentPlanKey === "pro"
                 ? "Plan actuel"
-                : hasActiveSubscription
-                  ? "Basculer sur Pro (prorata)"
-                  : "Démarrer l'essai gratuit"
+                : isSignedIn && isOrgContext
+                  ? "Basculer sur le compte perso"
+                  : hasActiveSubscription
+                    ? "Basculer sur Pro (prorata)"
+                    : "Démarrer l'essai gratuit"
             }
             onClick={() => handleSubscribe("pro")}
-            loading={loading === "pro"}
+            loading={loading === "pro" || creatingOrg}
             isCurrent={currentPlanKey === "pro"}
             isUpgrade={hasActiveSubscription}
           />
@@ -286,12 +368,14 @@ export default function TarifsPage() {
             cta={
               currentPlanKey === "agence"
                 ? "Plan actuel"
-                : hasActiveSubscription
-                  ? "Basculer sur Agence (prorata)"
-                  : "Démarrer l'essai gratuit"
+                : isSignedIn && !isOrgContext
+                  ? "Créer mon organisation"
+                  : hasActiveSubscription
+                    ? "Basculer sur Agence (prorata)"
+                    : "Démarrer l'essai gratuit"
             }
             onClick={() => handleSubscribe("agence")}
-            loading={loading === "agence"}
+            loading={loading === "agence" || creatingOrg}
             isCurrent={currentPlanKey === "agence"}
             isUpgrade={hasActiveSubscription}
           />

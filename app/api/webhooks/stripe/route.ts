@@ -2,7 +2,9 @@
 
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { sql } from "@/lib/db";
 import { upsertSubscriptionFromStripe, planFromPriceId, type State, type Plan } from "@/lib/subscription";
+import { syncOrgMembershipCap } from "@/lib/org";
 
 export const runtime = "nodejs";
 
@@ -109,4 +111,21 @@ async function handleSubscription(sub: Stripe.Subscription) {
     trialEnd: trialEnd ? new Date(trialEnd * 1000) : null,
     cancelAtPeriodEnd: sub.cancel_at_period_end,
   });
+
+  // ─── Sync cap utilisateurs côté Clerk si l'abo concerne une organisation ─
+  // Le cap Clerk est appliqué à chaque évènement Stripe pour rester en phase :
+  //   - upgrade Pro → Agence : cap passe à 5
+  //   - downgrade Agence → Pro : cap passe à 1 (les membres existants au-delà
+  //     ne sont PAS retirés ; ils restent, mais aucune nouvelle invitation possible)
+  //   - canceled / expired : cap reste sur la dernière valeur connue tant que
+  //     l'accès court (current_period_end), puis l'org est implicitement gelée.
+  const orgRows = (await sql`
+    SELECT org_id FROM subscriptions WHERE stripe_customer_id = ${customerId} LIMIT 1
+  `) as unknown as Array<{ org_id: string | null }>;
+  const orgId = orgRows[0]?.org_id ?? null;
+  if (orgId) {
+    const planForCap: Plan | null =
+      state === "active" || state === "trialing" || state === "past_due" ? plan : null;
+    await syncOrgMembershipCap(orgId, planForCap);
+  }
 }

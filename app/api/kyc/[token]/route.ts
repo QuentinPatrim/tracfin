@@ -133,6 +133,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     )
   `;
 
+  // ─── Persiste le snapshot Pappers/INPI si présent (preuve d'audit) ────
+  // On le met à jour APRÈS l'insert car la colonne est nullable et l'INSERT
+  // ne la liste pas (compat schéma sans la migration vague2-pappers).
+  if (form.pappersSnapshot) {
+    await sql`
+      UPDATE kyc_responses
+      SET pappers_snapshot = ${JSON.stringify(form.pappersSnapshot)}::jsonb
+      WHERE link_id = ${link.id}
+    `;
+  }
+
   // Marque le lien comme complété + dossier en "KYC reçu"
   await sql`UPDATE kyc_links SET status = 'completed', completed_at = NOW() WHERE id = ${link.id}`;
   await sql`UPDATE dossiers SET kyc_status = 'received' WHERE id = ${link.dossier_id}`;

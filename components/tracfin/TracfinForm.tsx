@@ -253,7 +253,7 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false }: 
 
           <div className="transition-all duration-200" style={{ opacity: anim ? 0 : 1, transform: anim ? "translateY(8px)" : "translateY(0)" }}>
             {step === 0 && <Step1 form={form} set={set} />}
-            {step === 1 && <Step2 form={form} set={set} />}
+            {step === 1 && <Step2 form={form} set={set} dossierId={dossierId} />}
             {step === 2 && <Step3 form={form} set={set} score={score} />}
           </div>
         </div>

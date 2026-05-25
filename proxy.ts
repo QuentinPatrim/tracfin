@@ -48,6 +48,11 @@ const isPublicRoute = createRouteMatcher([
   // Upload / download de pièces : auth gérée dans la route (Clerk OU token KYC)
   "/api/upload",
   "/api/files/(.*)",
+  // Lookup Pappers : auth gérée dans la route (Clerk OU token KYC pour le
+  // pré-remplissage côté client public)
+  "/api/pappers/(.*)",
+  // Endpoints cron Vercel : protégés par CRON_SECRET dans la route
+  "/api/cron/(.*)",
   // Rendu HTML interne pour Puppeteer (protégé par PDF_RENDER_SECRET dans la route)
   "/pdf-render/(.*)",
 ]);

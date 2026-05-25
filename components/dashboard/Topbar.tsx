@@ -8,7 +8,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import {
-  Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles, UserCog,
+  Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles, UserCog, ShieldAlert,
 } from "lucide-react";
 import { UserButton, OrganizationSwitcher } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
@@ -28,7 +28,7 @@ interface Props {
   newHref: string;
   canCreate: boolean;
   subscription: SubInfo;
-  currentScreen?: "dossiers" | "tarifs";
+  currentScreen?: "dossiers" | "tarifs" | "cartographie";
 }
 
 export default function Topbar({
@@ -64,6 +64,14 @@ export default function Topbar({
           >
             <Folder width={13} height={13} />
             <span>Dossiers</span>
+          </Link>
+          <Link
+            href="/dashboard/cartographie"
+            className={`topbar-v2-nav-link ${currentScreen === "cartographie" ? "active" : ""}`}
+            title="Cartographie des risques L.561-4-1 — document à présenter en contrôle DGCCRF"
+          >
+            <ShieldAlert width={13} height={13} />
+            <span>Cartographie</span>
           </Link>
           <Link
             href="/abonnement"

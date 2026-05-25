@@ -1,11 +1,17 @@
 // app/abonnement/page.tsx — Page de gestion de l'abonnement utilisateur
 // Affiche un récap visuel + redirige vers le Stripe Customer Portal pour gestion détaillée.
+//
+// Multi-tenant : la page reflète l'abonnement du SCOPE COURANT.
+//  - Contexte perso → l'abo Pro de l'user.
+//  - Contexte org   → l'abo Agence de l'org (qui couvre tous les membres).
+// Pour basculer, l'utilisateur utilise le <OrganizationSwitcher /> du dashboard.
 
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { clerkClient } from "@clerk/nextjs/server";
 import Link from "next/link";
-import { ArrowLeft, CreditCard, Receipt, Sparkles, Calendar, Lock, AlertTriangle, Info, Check } from "lucide-react";
+import { ArrowLeft, CreditCard, Receipt, Sparkles, Calendar, Lock, AlertTriangle, Info, Check, Building2 } from "lucide-react";
 import { getSubscriptionStatus, PLAN_LABELS, STATE_LABELS } from "@/lib/subscription";
+import { getScope } from "@/lib/scope";
 import AbonnementActions from "./AbonnementActions";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import KlarisLogo from "@/components/ui/KlarisLogo";
@@ -18,10 +24,22 @@ function formatDate(d: Date | null): string {
 }
 
 export default async function AbonnementPage() {
-  const { userId } = await auth();
-  if (!userId) redirect("/");
+  const scope = await getScope();
+  if (!scope) redirect("/");
 
-  const sub = await getSubscriptionStatus(userId);
+  const sub = await getSubscriptionStatus({ userId: scope.userId, orgId: scope.orgId });
+
+  // Récupère le nom de l'org pour l'afficher dans le contexte (Clerk API).
+  let orgName: string | null = null;
+  if (scope.orgId) {
+    try {
+      const client = await clerkClient();
+      const org = await client.organizations.getOrganization({ organizationId: scope.orgId });
+      orgName = org.name;
+    } catch {
+      orgName = "Organisation";
+    }
+  }
 
   // Détermine la tonalité du statut
   const tone =
@@ -84,18 +102,27 @@ export default async function AbonnementPage() {
 
       {/* Contenu */}
       <main className="relative z-10 max-w-3xl mx-auto px-6 py-10">
-        {/* Eyebrow + titre */}
+        {/* Eyebrow + titre — adapté au scope courant */}
         <div className="mb-8">
           <div
             className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10.5px] uppercase tracking-widest font-semibold mb-3"
             style={{
-              background: "rgba(124,58,237,0.08)",
-              border: "1px solid rgba(124,58,237,0.18)",
-              color: "#6d28d9",
+              background: scope.isOrgContext ? "rgba(16,185,129,0.08)" : "rgba(124,58,237,0.08)",
+              border: `1px solid ${scope.isOrgContext ? "rgba(16,185,129,0.30)" : "rgba(124,58,237,0.18)"}`,
+              color: scope.isOrgContext ? "#047857" : "#6d28d9",
             }}
           >
-            <span className="w-1 h-1 rounded-full" style={{ background: "#7c3aed" }} />
-            Espace personnel
+            {scope.isOrgContext ? (
+              <>
+                <Building2 className="w-3 h-3" />
+                <span>Organisation · {orgName ?? scope.orgId}</span>
+              </>
+            ) : (
+              <>
+                <span className="w-1 h-1 rounded-full" style={{ background: "#7c3aed" }} />
+                <span>Espace personnel</span>
+              </>
+            )}
           </div>
           <h1
             className="text-[34px] font-bold tracking-tight"
@@ -106,11 +133,12 @@ export default async function AbonnementPage() {
               color: "transparent",
             }}
           >
-            Mon abonnement
+            {scope.isOrgContext ? `Abonnement ${orgName ?? "de l'organisation"}` : "Mon abonnement"}
           </h1>
           <p className="text-[14.5px] mt-2 leading-relaxed" style={{ color: "#64748b" }}>
-            Gérez votre plan, vos factures, votre moyen de paiement et votre résiliation
-            depuis l'espace sécurisé Stripe.
+            {scope.isOrgContext
+              ? "Plan Agence partagé par tous les membres. Seul un administrateur peut modifier l'abonnement."
+              : "Gérez votre plan, vos factures, votre moyen de paiement et votre résiliation depuis l'espace sécurisé Stripe."}
           </p>
         </div>
 

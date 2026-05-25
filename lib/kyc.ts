@@ -82,6 +82,11 @@ export interface KycForm {
 
   // Consentement RGPD (preuve d'audit)
   consentementRgpd: boolean;        // v2 — case obligatoire à la soumission
+
+  // Snapshot de la réponse Pappers/INPI au moment du pré-remplissage (preuve
+  // d'audit : « le RNE disait X à la date du KYC »). Optionnel : seulement
+  // présent si le client a utilisé le bouton "Récupérer depuis l'INPI".
+  pappersSnapshot?: unknown | null;
 }
 
 export const initialKycForm: KycForm = {
@@ -134,6 +139,7 @@ export const initialKycForm: KycForm = {
   urlBilans: "",
   urlRbe: "",
   consentementRgpd: false,
+  pappersSnapshot: null,
 };
 
 // ─── Options affichées au client (libellés non techniques) ──────────────

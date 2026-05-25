@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowRight, FileDown, Trash2, Mail, FileCheck,
+  ArrowRight, FileDown, Archive, Mail, FileCheck,
   ChevronRight, AlertTriangle, Send, ExternalLink, Package, Check,
 } from "lucide-react";
 import Topbar from "./Topbar";
@@ -39,6 +39,9 @@ export interface DossierItem {
 interface Props {
   dossiers: DossierItem[];
   counts: { total: number; conformes: number; vigilance: number; critique: number };
+  archivedCount?: number;
+  /** IDs des dossiers avec une alerte de re-screening non acquittée (badge UI). */
+  pendingAlertIds?: string[];
   canCreate: boolean;
   filesByDossier: Record<string, DossierFile[]>;
   showGuide: boolean;
@@ -82,7 +85,8 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export default function DashboardClient({ dossiers, counts, canCreate, filesByDossier, showGuide, subscription }: Props) {
+export default function DashboardClient({ dossiers, counts, archivedCount = 0, pendingAlertIds = [], canCreate, filesByDossier, showGuide, subscription }: Props) {
+  const alertSet = useMemo(() => new Set(pendingAlertIds), [pendingAlertIds]);
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterKey>("all");
@@ -122,21 +126,21 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
   }, [dossiers]);
   const [selectedId, setSelectedId] = useState<string | null>(defaultSelected);
 
-  // État de suppression
-  const [confirmDelete, setConfirmDelete] = useState<DossierItem | null>(null);
-  const [deleting, setDeleting] = useState(false);
+  // État d'archivage (soft-delete conforme L.561-12-1 : conservation 5 ans)
+  const [confirmArchive, setConfirmArchive] = useState<DossierItem | null>(null);
+  const [archiving, setArchiving] = useState(false);
 
-  const doDelete = async () => {
-    if (!confirmDelete) return;
-    setDeleting(true);
+  const doArchive = async () => {
+    if (!confirmArchive) return;
+    setArchiving(true);
     try {
-      const res = await fetch(`/api/dossiers/${confirmDelete.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Échec de la suppression");
-      setConfirmDelete(null);
+      const res = await fetch(`/api/dossiers/${confirmArchive.id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Échec de l'archivage");
+      setConfirmArchive(null);
       router.refresh();
     } catch (e) {
-      alert(e instanceof Error ? e.message : "Erreur lors de la suppression");
-      setDeleting(false);
+      alert(e instanceof Error ? e.message : "Erreur lors de l'archivage");
+      setArchiving(false);
     }
   };
 
@@ -256,7 +260,7 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
         <div className="split">
           {/* ─── LIST ─── */}
           <section className="card list-card">
-            <header className="card-h list-h">
+            <header className="card-h list-h" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
               <div className="seg flex-wrap">
                 {filters.map((f) => (
                   <button
@@ -268,6 +272,29 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
                   </button>
                 ))}
               </div>
+              {archivedCount > 0 && (
+                <Link
+                  href="/dashboard/archives"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#6d28d9",
+                    padding: "5px 11px",
+                    borderRadius: 8,
+                    background: "rgba(124,58,237,0.06)",
+                    border: "1px solid rgba(124,58,237,0.22)",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                  title="Dossiers archivés (lecture seule, conservés 5 ans — L.561-12-1 CMF)"
+                >
+                  <Archive width={12} height={12} />
+                  Archives <span style={{ opacity: 0.7 }}>· {archivedCount}</span>
+                </Link>
+              )}
             </header>
 
             <div className="rows">
@@ -310,6 +337,20 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
                       </div>
                     </div>
                     <div className="row-r">
+                      {alertSet.has(d.id) && (
+                        <span
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                          style={{
+                            background: "rgba(220,38,38,0.10)",
+                            border: "1px solid rgba(220,38,38,0.40)",
+                            color: "#b91c1c",
+                            animation: "pulse-alert 2s ease-in-out infinite",
+                          }}
+                          title="Nouvelle correspondance sanctions détectée — vigilance L.561-6"
+                        >
+                          🚨 Alerte
+                        </span>
+                      )}
                       {marcheCompletedIds.has(d.id) && (b.tone === "danger" || b.tone === "warn" || b.tone === "critical") && (
                         <span
                           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
@@ -338,7 +379,7 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
               <SelectedPreview
                 dossier={selected}
                 files={filesByDossier[selected.id] ?? []}
-                onAskDelete={() => setConfirmDelete(selected)}
+                onAskArchive={() => setConfirmArchive(selected)}
               />
             ) : (
               <div className="empty-preview">
@@ -361,12 +402,12 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
       <DashboardFooter />
 
       {/* ─── Confirmation suppression ─── */}
-      {confirmDelete && (
-        <ConfirmDeleteModal
-          dossier={confirmDelete}
-          onConfirm={doDelete}
-          onCancel={() => setConfirmDelete(null)}
-          loading={deleting}
+      {confirmArchive && (
+        <ConfirmArchiveModal
+          dossier={confirmArchive}
+          onConfirm={doArchive}
+          onCancel={() => setConfirmArchive(null)}
+          loading={archiving}
         />
       )}
 
@@ -380,8 +421,15 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
   );
 }
 
-/* ─── Modale de confirmation de suppression ─────────────────────────── */
-function ConfirmDeleteModal({
+/* ─── Modale de confirmation d'archivage ─────────────────────────────────
+ *
+ * Le bouton "Supprimer" historique a été remplacé par "Archiver" : la
+ * suppression physique d'un dossier KYC reçu serait non conforme à l'obligation
+ * de conservation 5 ans (CMF L.561-12-1). L'archivage retire le dossier de la
+ * liste active, mais les pièces, l'audit log et l'attestation restent
+ * consultables et opposables jusqu'à l'expiration légale.
+ */
+function ConfirmArchiveModal({
   dossier, onConfirm, onCancel, loading,
 }: {
   dossier: DossierItem;
@@ -410,7 +458,7 @@ function ConfirmDeleteModal({
         style={{
           width: "min(480px, 100%)",
           background: "#ffffff",
-          border: "1px solid rgba(220,38,38,0.22)",
+          border: "1px solid rgba(124,58,237,0.22)",
           borderRadius: 16,
           padding: 24,
           boxShadow: "0 30px 80px rgba(15,23,42,0.18), 0 0 0 1px rgba(255,255,255,0.6) inset",
@@ -420,16 +468,16 @@ function ConfirmDeleteModal({
           <div
             style={{
               width: 40, height: 40, borderRadius: 12,
-              background: "rgba(220,38,38,0.10)",
+              background: "rgba(124,58,237,0.10)",
               display: "grid", placeItems: "center",
-              color: "#dc2626",
-              border: "1px solid rgba(220,38,38,0.22)",
+              color: "#6d28d9",
+              border: "1px solid rgba(124,58,237,0.22)",
             }}
           >
-            <AlertTriangle width={20} height={20} />
+            <Archive width={20} height={20} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 16, color: "#0f172a" }}>Supprimer ce dossier ?</div>
+            <div style={{ fontWeight: 700, fontSize: 16, color: "#0f172a" }}>Archiver ce dossier ?</div>
             <div style={{ fontSize: 13, color: "#64748b", marginTop: 2 }}>
               Dossier de <strong>{dossier.nom_prenom}</strong>
             </div>
@@ -440,15 +488,15 @@ function ConfirmDeleteModal({
           style={{
             marginBottom: 16,
             padding: 12,
-            background: "rgba(245,158,11,0.08)",
-            border: "1px solid rgba(245,158,11,0.30)",
+            background: "rgba(16,185,129,0.08)",
+            border: "1px solid rgba(16,185,129,0.30)",
             borderRadius: 10,
             fontSize: 12.5,
             color: "#334155",
             lineHeight: 1.5,
           }}
         >
-          <strong style={{ color: "#d97706" }}>⚠️ Action irréversible et non conforme</strong> à l'art. <strong>L.561-12-1 du CMF</strong> qui impose la conservation des données 5 ans après la fin de la relation d'affaires. Toutes les pièces seront également supprimées. Confirmez seulement si vous savez ce que vous faites.
+          <strong style={{ color: "#047857" }}>✓ Action conforme L.561-12-1 CMF.</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
         </div>
 
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
@@ -475,20 +523,20 @@ function ConfirmDeleteModal({
               padding: "8px 16px",
               borderRadius: 9,
               border: 0,
-              background: "linear-gradient(135deg, #ef4444, #dc2626)",
+              background: "linear-gradient(135deg, #7c3aed, #a855f7)",
               color: "white",
               fontWeight: 600,
               fontSize: 13,
               cursor: loading ? "wait" : "pointer",
-              boxShadow: "0 4px 14px rgba(220,38,38,0.30), 0 1px 0 rgba(255,255,255,0.20) inset",
+              boxShadow: "0 4px 14px rgba(124,58,237,0.30), 0 1px 0 rgba(255,255,255,0.20) inset",
               opacity: loading ? 0.7 : 1,
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
             }}
           >
-            <Trash2 width={13} height={13} />
-            {loading ? "Suppression…" : "Supprimer définitivement"}
+            <Archive width={13} height={13} />
+            {loading ? "Archivage…" : "Archiver le dossier"}
           </button>
         </div>
       </div>
@@ -498,7 +546,7 @@ function ConfirmDeleteModal({
 
 /* ─── Preview d'un dossier sélectionné ─────────────────────────────── */
 
-function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierItem; files: DossierFile[]; onAskDelete: () => void }) {
+function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: DossierItem; files: DossierFile[]; onAskArchive: () => void }) {
   const b = niveauBadge(d);
   const niveau = resolveNiveau(d);
   const cfg = niveau ? NIVEAU_CFG[niveau] : null;
@@ -675,12 +723,13 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
         )}
 
         <button
-          onClick={onAskDelete}
+          onClick={onAskArchive}
           className="ghost-btn small block"
-          style={{ justifyContent: "center", color: "#dc2626", borderColor: "rgba(220,38,38,0.20)" }}
+          style={{ justifyContent: "center", color: "#6d28d9", borderColor: "rgba(124,58,237,0.20)" }}
+          title="Retire le dossier de la liste active. Conservation 5 ans (L.561-12-1)."
         >
-          <Trash2 width={12} height={12} />
-          Supprimer le dossier
+          <Archive width={12} height={12} />
+          Archiver le dossier
         </button>
       </div>
     </>

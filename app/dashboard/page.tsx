@@ -6,6 +6,7 @@ import type { Niveau } from "@/lib/tracfin";
 import { V1_TO_NIVEAU } from "@/lib/tracfin";
 import { getSubscriptionStatus, getSeenGuideAt } from "@/lib/subscription";
 import { getScope } from "@/lib/scope";
+import { batchPendingAlerts } from "@/lib/rescreening";
 import DashboardClient, { type DossierItem } from "@/components/dashboard/DashboardClient";
 import { listDossierFiles, type DossierFile, type KycFilesRow } from "@/lib/dossier-files";
 import "./dashboard.css";
@@ -23,6 +24,18 @@ export default async function DashboardPage() {
   // l'onboarding reste lié au user, pas à l'org).
   const seenGuideAt = await getSeenGuideAt(scope.userId);
   const showGuide = seenGuideAt === null;
+
+  // Compte des dossiers archivés du scope (pour le bouton "Archives" du dashboard).
+  const archivedCountRows = scope.isOrgContext
+    ? (await sql`
+        SELECT COUNT(*)::int AS count FROM dossiers
+        WHERE org_id = ${scope.orgId} AND archived_at IS NOT NULL
+      `) as unknown as Array<{ count: number }>
+    : (await sql`
+        SELECT COUNT(*)::int AS count FROM dossiers
+        WHERE user_id = ${scope.userId} AND org_id IS NULL AND archived_at IS NOT NULL
+      `) as unknown as Array<{ count: number }>;
+  const archivedCount = archivedCountRows[0]?.count ?? 0;
 
   // Dossiers du scope (org_id = orgId OU user_id = userId AND org_id IS NULL).
   const rows = scope.isOrgContext
@@ -71,6 +84,10 @@ export default async function DashboardPage() {
     filesByDossier[fr.dossier_id] = listDossierFiles(fr);
   }
 
+  // Dossiers en alerte re-screening non acquittée (badge "🚨" sur leur card).
+  const alertIds = await batchPendingAlerts(rows.map((r) => r.id));
+  const pendingAlertIds = Array.from(alertIds);
+
   // Compteurs (résolution rétro-compat v1/v2)
   const resolveN = (d: DossierItem): Niveau | null => {
     if (d.algo_version === "v2") return d.niveau;
@@ -94,6 +111,8 @@ export default async function DashboardPage() {
           <DashboardClient
             dossiers={rows}
             counts={counts}
+            archivedCount={archivedCount}
+            pendingAlertIds={pendingAlertIds}
             canCreate={sub.isActive}
             filesByDossier={filesByDossier}
             showGuide={showGuide}

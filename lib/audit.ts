@@ -18,7 +18,13 @@ export type AuditAction =
   | "kyc.submit"
   | "attestation.emit"
   | "file.upload"
-  | "file.download";
+  | "file.download"
+  | "screening.run"               // appel API sanctions (OpenSanctions…)
+  | "screening.gate.confirm"      // agent a confirmé / infirmé les gates suggérées
+  | "screening.alert"             // nouvelle correspondance détectée en re-screening
+  | "cartography.view"            // consultation cartographie L.561-4-1
+  | "cartography.export"          // export PDF cartographie pour contrôle DGCCRF
+  | "pappers.lookup";             // appel INPI/Pappers pour récupérer données PM
 
 export interface LogAuditParams {
   /** ID Clerk de l'agent. NULL pour les actions client public (KYC, upload via token). */

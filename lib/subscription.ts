@@ -15,6 +15,25 @@ export function isAgencePlan(plan: Plan): boolean {
   return plan === "agence_monthly" || plan === "agence_yearly";
 }
 
+// ─── Cap utilisateurs par plan ──────────────────────────────────────────
+// Le plan Agence est vendu pour 5 collaborateurs (cf. /tarifs). On enforce
+// ce cap côté Clerk via `max_allowed_memberships` sur l'org. Au-delà, l'admin
+// doit upgrader (cap futur "Agence+" non encore commercialisé).
+//
+// null = aucun plan actif (org inactive, on bloque toute invitation au-delà du créateur).
+export const MEMBERSHIP_CAP: Record<Plan, number> = {
+  pro_monthly: 1,
+  pro_yearly: 1,
+  agence_monthly: 5,
+  agence_yearly: 5,
+};
+
+export const MEMBERSHIP_CAP_NO_PLAN = 1;
+
+export function membershipCapForPlan(plan: Plan | null): number {
+  return plan ? MEMBERSHIP_CAP[plan] : MEMBERSHIP_CAP_NO_PLAN;
+}
+
 export type State =
   | "trialing"      // essai 14j en cours
   | "active"        // abonnement payant Stripe valide
