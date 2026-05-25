@@ -25,8 +25,9 @@ export const EDITEUR = {
   email: "contact@klaris.fr",
   emailRgpd: "contact@klaris.fr",
 
-  // Web
-  siteUrl: "https://klaris-app.fr",                      // ← à ajuster selon ton domaine prod
+  // Web — URL canonique = celle marquée "Primary" dans Vercel
+  // (apex `klaris-app.fr` fait un 307 vers `www.klaris-app.fr`).
+  siteUrl: "https://www.klaris-app.fr",
   directeurPublication: "Quentin Delsol",
 } as const;
 

@@ -11,7 +11,7 @@ export async function GET() {
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const rows = await sql`
-    SELECT id, nom_prenom, type_client, algo_version, niveau, statut, score_pct,
+    SELECT id, nom_prenom, type_client, partie, algo_version, niveau, statut, score_pct,
            date_detection, created_at, updated_at, kyc_status, email_contact
     FROM dossiers
     WHERE user_id = ${userId}
@@ -22,6 +22,7 @@ export async function GET() {
 
 interface CreateBody {
   typeClient: "physique" | "morale";
+  partie: "vendeur" | "acquereur";
   nomPrenom: string;
   emailContact: string;
 }
@@ -63,11 +64,14 @@ export async function POST(req: Request) {
   if (body.typeClient !== "physique" && body.typeClient !== "morale") {
     return NextResponse.json({ error: "Type client invalide" }, { status: 400 });
   }
+  if (body.partie !== "vendeur" && body.partie !== "acquereur") {
+    return NextResponse.json({ error: "Partie invalide (vendeur|acquereur)" }, { status: 400 });
+  }
 
   // Création du dossier minimal en statut "en attente du KYC"
   const dossierRows = await sql`
-    INSERT INTO dossiers (user_id, type_client, nom_prenom, email_contact, kyc_status)
-    VALUES (${userId}, ${body.typeClient}, ${body.nomPrenom}, ${body.emailContact}, 'sent')
+    INSERT INTO dossiers (user_id, type_client, partie, nom_prenom, email_contact, kyc_status)
+    VALUES (${userId}, ${body.typeClient}, ${body.partie}, ${body.nomPrenom}, ${body.emailContact}, 'sent')
     RETURNING id
   `;
   const dossierId = dossierRows[0].id as string;

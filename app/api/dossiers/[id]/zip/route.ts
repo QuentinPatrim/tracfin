@@ -103,7 +103,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
         piece: formForKyc.pieceIdentiteNumero,
       }))
       .digest("hex");
-    const kycHtml = buildKycHtml({ form: formForKyc, dossierId: id, hash: kycHash, generatedAt, signedAt });
+    const partie: "vendeur" | "acquereur" = dossier.partie === "vendeur" ? "vendeur" : "acquereur";
+    const kycHtml = buildKycHtml({ form: formForKyc, dossierId: id, hash: kycHash, generatedAt, signedAt, partie });
 
     // Génération séquentielle (parallèle = trop de RAM Vercel serverless)
     const attBuffer = await renderHtmlPdf(attHtml);

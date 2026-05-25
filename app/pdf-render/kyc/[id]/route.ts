@@ -22,6 +22,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return new Response("Bad request", { status: 400 });
   }
 
+  // Récupère la partie du dossier (vendeur / acquéreur)
+  const dossierRows = (await sql`
+    SELECT partie FROM dossiers WHERE id = ${id} LIMIT 1
+  `) as unknown as Array<{ partie: "vendeur" | "acquereur" | null }>;
+  const partie: "vendeur" | "acquereur" =
+    dossierRows[0]?.partie === "vendeur" ? "vendeur" : "acquereur";
+
   // Récupère la dernière réponse KYC complète
   const kycRows = (await sql`
     SELECT
@@ -60,7 +67,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     }))
     .digest("hex");
 
-  const html = buildKycHtml({ form, dossierId: id, hash, generatedAt, signedAt });
+  const html = buildKycHtml({ form, dossierId: id, hash, generatedAt, signedAt, partie });
 
   return new Response(html, {
     headers: {

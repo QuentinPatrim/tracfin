@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { auth } from "@clerk/nextjs/server";
 import { getSubscriptionStatus } from "@/lib/subscription";
+import { EDITEUR } from "@/lib/legal";
 
 export const runtime = "nodejs";
 
@@ -28,9 +29,10 @@ export async function POST() {
     apiVersion: "2026-04-22.dahlia",
   });
 
+  // Idem checkout : pas de fallback VERCEL_URL (boucle Clerk sur le mauvais domaine).
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+    (process.env.NODE_ENV === "production" ? EDITEUR.siteUrl : "http://localhost:3000");
 
   try {
     const session = await stripe.billingPortal.sessions.create({

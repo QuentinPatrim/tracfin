@@ -176,10 +176,10 @@ export const MODE_PAIEMENT_OPTIONS = [
 export const TYPE_BIEN_OPTIONS = [
   { value: "green_residentiel_principal", label: "Résidence principale" },
   { value: "green_residentiel_secondaire", label: "Résidence secondaire" },
-  { value: "orange_locatif", label: "Investissement locatif" },
+  { value: "green_locatif", label: "Investissement locatif" },
+  { value: "green_terrain", label: "Terrain à bâtir / agricole" },
   { value: "orange_commercial", label: "Local commercial / professionnel" },
   { value: "orange_sci", label: "Acquisition via SCI / holding" },
-  { value: "orange_terrain", label: "Terrain à bâtir / agricole" },
   { value: "orange_multilots", label: "Acquisition multi-lots" },
 ];
 

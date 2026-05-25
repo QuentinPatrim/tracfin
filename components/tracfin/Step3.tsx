@@ -124,9 +124,9 @@ export default function Step3({ form, set, score }: Props) {
             onChange={(e) => set("formation", e.target.value)}
             className={`${inputStyle} appearance-none cursor-pointer`}
           >
-            <option value="" className="bg-slate-900">— Sélectionner —</option>
+            <option value="">— Sélectionner —</option>
             {OPTIONS.formation.map((o) => (
-              <option key={o.value} value={o.value} className="bg-slate-900">
+              <option key={o.value} value={o.value}>
                 {o.label}
               </option>
             ))}

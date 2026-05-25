@@ -6,6 +6,7 @@ export interface Dossier {
   id: string;
   user_id: string;
   type_client: "physique" | "morale";
+  partie: "vendeur" | "acquereur";       // v2 — rôle du client dans la transaction immo
   nom_prenom: string;
   email_contact: string | null;
 

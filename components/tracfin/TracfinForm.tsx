@@ -42,21 +42,22 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false }: 
   };
 
   const canNext0 = form.nomPrenom.trim().length > 0;
+  const isVendeur = form.partie === "vendeur";
   const canNext1 = !!(
-    // Risque géographique
+    // Risque géographique (applicable aux 2)
     form.residenceFiscale && form.lieuBien &&
-    // Comportement
+    // Comportement (applicable aux 2)
     form.comportement &&
-    // Origine des fonds
-    form.origineFonds &&
-    // Transaction
-    form.typeBien && form.montageFinancier && form.modePaiement && form.coherencePrix &&
-    // Bénéficiaires effectifs
+    // Type de bien (applicable aux 2)
+    form.typeBien &&
+    // Bénéficiaires effectifs (applicable aux 2)
     form.rbe &&
-    // Gates absolues
+    // Gates absolues (applicables aux 2)
     form.gelAvoirs !== null && form.sanctionsListe !== null &&
-    // PPE étendue
-    form.ppe !== null && form.ppeProcheDetecte !== null
+    // PPE étendue (applicable aux 2)
+    form.ppe !== null && form.ppeProcheDetecte !== null &&
+    // Champs propres à l'ACQUÉREUR uniquement
+    (isVendeur || (form.origineFonds && form.montageFinancier && form.modePaiement && form.coherencePrix))
   );
 
   const titles = ["Identification du Client", "Analyse des Risques", "Récapitulatif & Validation"];

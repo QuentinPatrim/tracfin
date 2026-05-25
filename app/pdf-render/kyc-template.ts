@@ -38,6 +38,8 @@ interface BuildKycOpts {
   hash: string;
   generatedAt: string;
   signedAt: string;
+  /** Rôle du client dans la transaction immobilière (defaut acquéreur pour legacy). */
+  partie?: "vendeur" | "acquereur";
 }
 
 const DOC_ID_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="12" r="2.5"/><path d="M14 10h5"/><path d="M14 14h4"/></svg>`;
@@ -48,6 +50,9 @@ const DOC_RECEIPT_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentCol
 
 export function buildKycHtml(opts: BuildKycOpts): string {
   const { form, dossierId, hash, generatedAt, signedAt } = opts;
+  const partie = opts.partie ?? "acquereur";
+  const isVendeur = partie === "vendeur";
+  const roleLabel = isVendeur ? "Vendeur" : "Acquéreur";
   const isMorale = form.typeClient === "morale";
   const dossierShort = `#${dossierId.slice(0, 8).toUpperCase()}`;
   const today = formatDateLong(generatedAt);
@@ -56,6 +61,7 @@ export function buildKycHtml(opts: BuildKycOpts): string {
 
   // ─── Inventaire des pièces ──────────────────────────────────────────
   type PieceDef = { icon: string; key: string; provided: boolean; required: boolean };
+  const justifOrigineLabel = isVendeur ? "Justificatif d'origine du bien" : "Justificatif d'origine fonds";
   const pieces: PieceDef[] = isMorale
     ? [
         { icon: DOC_BIZ_SVG,    key: "Extrait Kbis (-3 mois)",       provided: !!form.urlKbis,           required: true  },
@@ -65,14 +71,20 @@ export function buildKycHtml(opts: BuildKycOpts): string {
         { icon: DOC_HOME_SVG,   key: "Justificatif de domicile",     provided: !!form.urlJustifDomicile, required: true  },
         { icon: DOC_RECEIPT_SVG,key: "Bilans / liasses fiscales",    provided: !!form.urlBilans,         required: false },
         { icon: DOC_FILE_SVG,   key: "Registre bénéf. effectifs",    provided: !!form.urlRbe,            required: false },
-        { icon: DOC_RECEIPT_SVG,key: "Justificatif d'origine fonds", provided: !!form.urlJustifOrigineFonds, required: false },
+        { icon: DOC_RECEIPT_SVG,key: justifOrigineLabel,             provided: !!form.urlJustifOrigineFonds, required: false },
+      ]
+    : isVendeur
+    ? [
+        { icon: DOC_ID_SVG,     key: "Pièce d'identité",             provided: !!form.urlPieceIdentite,  required: true  },
+        { icon: DOC_HOME_SVG,   key: "Justificatif de domicile",     provided: !!form.urlJustifDomicile, required: true  },
+        { icon: DOC_RECEIPT_SVG,key: justifOrigineLabel,             provided: !!form.urlJustifOrigineFonds, required: false },
       ]
     : [
         { icon: DOC_ID_SVG,     key: "Pièce d'identité",             provided: !!form.urlPieceIdentite,  required: true  },
         { icon: DOC_HOME_SVG,   key: "Justificatif de domicile",     provided: !!form.urlJustifDomicile, required: true  },
         { icon: DOC_RECEIPT_SVG,key: "Avis d'imposition",            provided: !!form.urlAvisImposition, required: false },
         { icon: DOC_RECEIPT_SVG,key: "Justificatifs de revenus",     provided: !!form.urlJustifRevenus,  required: false },
-        { icon: DOC_RECEIPT_SVG,key: "Justificatif d'origine fonds", provided: !!form.urlJustifOrigineFonds, required: false },
+        { icon: DOC_RECEIPT_SVG,key: justifOrigineLabel,             provided: !!form.urlJustifOrigineFonds, required: false },
       ];
   const piecesProvided = pieces.filter((p) => p.provided).length;
   const piecesRequired = pieces.filter((p) => p.required).length;
@@ -81,6 +93,7 @@ export function buildKycHtml(opts: BuildKycOpts): string {
 
   // ─── Champs identité ──────────────────────────────────────────────────
   const idFields: Array<{ k: string; v: string; mono?: boolean; full?: boolean }> = [
+    { k: "Rôle dans l'opération", v: roleLabel },
     { k: "Type", v: isMorale ? "Personne morale (société)" : "Personne physique" },
     { k: isMorale ? "Dénomination sociale" : "Nom et prénom", v: form.nomPrenom || "—" },
     ...(has(form.emailContact) ? [{ k: "Email", v: form.emailContact, mono: true }] : []),
@@ -169,7 +182,7 @@ export function buildKycHtml(opts: BuildKycOpts): string {
   <div class="title-row">
     <div>
       <h1 class="doc-title">Fiche Know Your<br/>Customer (KYC)</h1>
-      <div class="doc-sub">Déclarations et informations recueillies auprès du client lors de l'entrée en relation. Données chiffrées (TLS 1.3 + AES-256), hébergées en France.</div>
+      <div class="doc-sub">Déclarations et informations recueillies auprès du client lors de l'entrée en relation, en qualité de <b>${escapeHtml(roleLabel.toLowerCase())}</b>. Données chiffrées (TLS 1.3 + AES-256), hébergées en France.</div>
     </div>
     <div class="stamp"><span class="pulse"></span>Vérifié par Klaris</div>
   </div>
@@ -290,23 +303,23 @@ export function buildKycHtml(opts: BuildKycOpts): string {
   <section class="section">
     <div class="section-head">
       <span class="num">${isMorale ? "06" : "04"}</span>
-      <span class="ttl">L'opération immobilière</span>
+      <span class="ttl">${isVendeur ? "Le bien vendu" : "L'opération immobilière"}</span>
       <span class="accent"></span>
     </div>
     <div class="tx-grid">
       ${has(form.typeBien) ? `<div class="tx-card"><div class="k">Type de bien</div><div class="v">${escapeHtml(optLabel(TYPE_BIEN_OPTIONS, form.typeBien))}</div></div>` : ""}
       ${has(form.lieuBien) ? `<div class="tx-card"><div class="k">Adresse du bien</div><div class="v">${escapeHtml(form.lieuBien)}</div></div>` : ""}
-      ${has(form.montantOperation) ? `<div class="tx-card"><div class="k">Montant</div><div class="v">${formatMontant(form.montantOperation)} €</div></div>` : ""}
-      ${has(form.modeFinancement) ? `<div class="tx-card"><div class="k">Mode de financement</div><div class="v">${escapeHtml(optLabel(MODE_FINANCEMENT_OPTIONS, form.modeFinancement))}</div></div>` : ""}
-      ${has(form.modePaiement) ? `<div class="tx-card"><div class="k">Mode de paiement</div><div class="v">${escapeHtml(optLabel(MODE_PAIEMENT_OPTIONS, form.modePaiement))}</div></div>` : ""}
-      ${has(form.origineFonds) ? `<div class="tx-card"><div class="k">Origine principale des fonds</div><div class="v">${escapeHtml(optLabel(ORIGINE_FONDS_OPTIONS, form.origineFonds))}</div></div>` : ""}
+      ${has(form.montantOperation) ? `<div class="tx-card"><div class="k">${isVendeur ? "Prix de vente" : "Montant"}</div><div class="v">${formatMontant(form.montantOperation)} €</div></div>` : ""}
+      ${!isVendeur && has(form.modeFinancement) ? `<div class="tx-card"><div class="k">Mode de financement</div><div class="v">${escapeHtml(optLabel(MODE_FINANCEMENT_OPTIONS, form.modeFinancement))}</div></div>` : ""}
+      ${!isVendeur && has(form.modePaiement) ? `<div class="tx-card"><div class="k">Mode de paiement</div><div class="v">${escapeHtml(optLabel(MODE_PAIEMENT_OPTIONS, form.modePaiement))}</div></div>` : ""}
+      ${has(form.origineFonds) ? `<div class="tx-card"><div class="k">${isVendeur ? "Origine du bien vendu" : "Origine principale des fonds"}</div><div class="v">${escapeHtml(optLabel(ORIGINE_FONDS_OPTIONS, form.origineFonds))}</div></div>` : ""}
     </div>
 
     ${(has(form.origineFondsVenteAdresse) || has(form.origineFondsDonateur) || has(form.origineFondsLienDefunt) || has(form.origineFondsPrecisions)) ? `
     <div class="reco" style="margin-top:14px">
-      <div class="label">Détails sur l'origine des fonds</div>
+      <div class="label">${isVendeur ? "Détails sur l'origine du bien" : "Détails sur l'origine des fonds"}</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;font-size:13px;color:var(--ink-2);line-height:1.55">
-        ${has(form.origineFondsVenteAdresse) ? `<div><b>Bien vendu :</b> ${escapeHtml(form.origineFondsVenteAdresse)}</div>` : ""}
+        ${has(form.origineFondsVenteAdresse) ? `<div><b>${isVendeur ? "Bien initial" : "Bien vendu"} :</b> ${escapeHtml(form.origineFondsVenteAdresse)}</div>` : ""}
         ${has(form.origineFondsDonateur) ? `<div><b>Donateur :</b> ${escapeHtml(form.origineFondsDonateur)}</div>` : ""}
         ${has(form.origineFondsLienDefunt) ? `<div><b>Défunt :</b> ${escapeHtml(form.origineFondsLienDefunt)}</div>` : ""}
         ${has(form.origineFondsPrecisions) ? `<div><b>Commentaires :</b> ${escapeHtml(form.origineFondsPrecisions)}</div>` : ""}

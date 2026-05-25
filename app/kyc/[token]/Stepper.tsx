@@ -17,7 +17,6 @@ interface Props {
 
 export default function Stepper({ steps, current, onJumpBack }: Props) {
   const total = steps.length;
-  const pct = ((current + 1) / total) * 100;
 
   return (
     <div
@@ -40,20 +39,8 @@ export default function Stepper({ steps, current, onJumpBack }: Props) {
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
-          <div
-            className="h-full transition-all duration-500"
-            style={{
-              width: `${pct}%`,
-              background: "linear-gradient(90deg, #7c3aed, #ec4899)",
-              boxShadow: "0 0 12px rgba(124,58,237,0.50)",
-            }}
-          />
-        </div>
-
-        {/* Dots cliquables pour revenir en arrière */}
-        <div className="flex gap-1 mt-2">
+        {/* Segments cliquables (un par étape) — barre unique, lisible et navigable */}
+        <div className="flex gap-1">
           {steps.map((s, i) => {
             const isPast = i < current;
             const isActive = i === current;

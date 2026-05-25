@@ -25,7 +25,7 @@ export default async function DashboardPage() {
 
   // Dossiers
   const rows = (await sql`
-    SELECT id, nom_prenom, type_client, algo_version, niveau, statut, score_pct,
+    SELECT id, nom_prenom, type_client, partie, algo_version, niveau, statut, score_pct,
            created_at, updated_at, kyc_status
     FROM dossiers
     WHERE user_id = ${userId}

@@ -209,6 +209,7 @@ export function rowToForm(row: Dossier): DossierForm {
   return {
     ...initialForm,
     typeClient: row.type_client,
+    partie: row.partie ?? "acquereur",
     nomPrenom: row.nom_prenom,
     dateNaissance: toDateInput(row.date_naissance),
     lieuNaissance: row.lieu_naissance ?? "",

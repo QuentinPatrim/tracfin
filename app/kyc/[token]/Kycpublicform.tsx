@@ -30,9 +30,12 @@ import Stepper from "./Stepper";
 import StepFooter from "./StepFooter";
 import { useKycPersist } from "./useKycPersist";
 
+type Partie = "vendeur" | "acquereur";
+
 interface Props {
   token: string;
   dossierId: string;
+  partie: Partie;
 }
 
 /* ─────────── Étapes du wizard ─────────── */
@@ -185,7 +188,9 @@ function Selectt<T extends { value: string; label: string }>({ value, options, o
    COMPOSANT PRINCIPAL
    ═══════════════════════════════════════════════════════════════ */
 
-export default function KycPublicForm({ token, dossierId }: Props) {
+export default function KycPublicForm({ token, dossierId, partie }: Props) {
+  const isVendeur = partie === "vendeur";
+  const isAcquereur = partie === "acquereur";
   const [form, setForm] = useState<KycForm>(initialKycForm);
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -262,6 +267,16 @@ export default function KycPublicForm({ token, dossierId }: Props) {
             : null,
         };
       case 4: // Opération
+        // Pour un vendeur, on n'exige pas origine/financement/paiement (il reçoit l'argent)
+        if (isVendeur) {
+          return {
+            ok: !!(form.typeBien && form.lieuBien.trim() && form.montantOperation.trim()),
+            msg: !form.typeBien ? "Type de bien requis."
+              : !form.lieuBien.trim() ? "Adresse du bien requise."
+              : !form.montantOperation.trim() ? "Prix de vente requis."
+              : null,
+          };
+        }
         return {
           ok: !!(form.typeBien && form.lieuBien.trim() && form.montantOperation.trim() && form.origineFonds && form.modeFinancement && form.modePaiement),
           msg: !form.typeBien ? "Type de bien requis."
@@ -297,7 +312,7 @@ export default function KycPublicForm({ token, dossierId }: Props) {
       default:
         return { ok: true, msg: null };
     }
-  }, [step, form, isMorale]);
+  }, [step, form, isMorale, isVendeur]);
 
   /* ─── Navigation ─── */
   const goNext = () => {
@@ -405,13 +420,13 @@ export default function KycPublicForm({ token, dossierId }: Props) {
         )}
 
         {/* ÉTAPES */}
-        {step === 0 && <Step0_Vous form={form} set={set} cnilOpen={cnilOpen} setCnilOpen={setCnilOpen} />}
+        {step === 0 && <Step0_Vous form={form} set={set} cnilOpen={cnilOpen} setCnilOpen={setCnilOpen} isVendeur={isVendeur} />}
         {step === 1 && <Step1_Identite form={form} set={set} isMorale={isMorale} />}
         {step === 2 && <Step2_Piece form={form} set={set} isMorale={isMorale} />}
         {step === 3 && <Step3_Situation form={form} set={set} isMorale={isMorale} />}
-        {step === 4 && <Step4_Operation form={form} set={set} />}
+        {step === 4 && <Step4_Operation form={form} set={set} isVendeur={isVendeur} />}
         {step === 5 && <Step5_Pieces form={form} set={set} dossierId={dossierId} token={token} isMorale={isMorale} />}
-        {step === 6 && <Step6_Recap form={form} set={set} jumpTo={jumpTo} />}
+        {step === 6 && <Step6_Recap form={form} set={set} jumpTo={jumpTo} isVendeur={isVendeur} />}
       </div>
 
       <StepFooter
@@ -435,14 +450,33 @@ export default function KycPublicForm({ token, dossierId }: Props) {
 type Setter = <K extends keyof KycForm>(k: K, v: KycForm[K]) => void;
 
 /* ─── ÉTAPE 0 : Type de client + contact ─── */
-function Step0_Vous({ form, set, cnilOpen, setCnilOpen }: {
-  form: KycForm; set: Setter; cnilOpen: boolean; setCnilOpen: (b: boolean) => void;
+function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
+  form: KycForm; set: Setter; cnilOpen: boolean; setCnilOpen: (b: boolean) => void; isVendeur: boolean;
 }) {
   return (
     <>
+      {/* Badge rôle visible dès l'ouverture */}
+      <div className="mb-5 flex justify-center">
+        <span
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] uppercase tracking-widest font-bold"
+          style={{
+            background: isVendeur ? "rgba(124,58,237,0.10)" : "rgba(236,72,153,0.10)",
+            border: `1px solid ${isVendeur ? "rgba(124,58,237,0.30)" : "rgba(236,72,153,0.30)"}`,
+            color: isVendeur ? "#c4b5fd" : "#f9a8d4",
+          }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: isVendeur ? "#7c3aed" : "#ec4899" }} />
+          Vous êtes le {isVendeur ? "vendeur" : "acquéreur"} du bien
+        </span>
+      </div>
+
       <Section
         title="Commençons par vous"
-        description="Votre conseiller doit identifier formellement le client de la transaction (CMF L.561-5). Cela prend environ 5 minutes."
+        description={
+          isVendeur
+            ? "Votre conseiller doit identifier formellement chaque partie de la transaction, y compris le vendeur (CMF L.561-5). Cela prend environ 5 minutes."
+            : "Votre conseiller doit identifier formellement le client de la transaction (CMF L.561-5). Cela prend environ 5 minutes."
+        }
         icon={ShieldCheck}
       >
         <Field label="Vous êtes" required>
@@ -848,11 +882,15 @@ function BeneficiairesEffectifsEditor({ value, onChange }: {
 }
 
 /* ─── ÉTAPE 4 : Opération ─── */
-function Step4_Operation({ form, set }: { form: KycForm; set: Setter }) {
+function Step4_Operation({ form, set, isVendeur }: { form: KycForm; set: Setter; isVendeur: boolean }) {
   return (
     <Section
-      title="L'opération immobilière"
-      description="Le bien concerné et le financement envisagé."
+      title={isVendeur ? "Le bien que vous vendez" : "L'opération immobilière"}
+      description={
+        isVendeur
+          ? "Informations sur le bien que vous cédez. Le financement de l'acquéreur ne vous concerne pas."
+          : "Le bien concerné et le financement envisagé."
+      }
     >
       <Field label="Type de bien" required>
         <Selectt value={form.typeBien} options={TYPE_BIEN_OPTIONS} onChange={(v) => set("typeBien", v)} />
@@ -865,7 +903,7 @@ function Step4_Operation({ form, set }: { form: KycForm; set: Setter }) {
           placeholder="N°, rue, code postal, ville, pays"
         />
       </Field>
-      <Field label="Montant de l'opération (€)" required>
+      <Field label={isVendeur ? "Prix de vente (€)" : "Montant de l'opération (€)"} required>
         <input
           type="number"
           inputMode="numeric"
@@ -877,54 +915,86 @@ function Step4_Operation({ form, set }: { form: KycForm; set: Setter }) {
         />
       </Field>
 
-      <Field label="Mode de financement" required>
-        <Selectt value={form.modeFinancement} options={MODE_FINANCEMENT_OPTIONS} onChange={(v) => set("modeFinancement", v)} />
-      </Field>
-      <Field label="Mode de paiement" required hint="Espèces > 1 000 € interdit (art. L.112-6 CMF).">
-        <Selectt value={form.modePaiement} options={MODE_PAIEMENT_OPTIONS} onChange={(v) => set("modePaiement", v)} />
-      </Field>
+      {/* Champs propres à l'ACQUÉREUR uniquement */}
+      {!isVendeur && (
+        <>
+          <Field label="Mode de financement" required>
+            <Selectt value={form.modeFinancement} options={MODE_FINANCEMENT_OPTIONS} onChange={(v) => set("modeFinancement", v)} />
+          </Field>
+          <Field label="Mode de paiement" required hint="Espèces > 1 000 € interdit (art. L.112-6 CMF).">
+            <Selectt value={form.modePaiement} options={MODE_PAIEMENT_OPTIONS} onChange={(v) => set("modePaiement", v)} />
+          </Field>
 
-      <Field label="Source principale des fonds" required>
-        <Selectt value={form.origineFonds} options={ORIGINE_FONDS_OPTIONS} onChange={(v) => set("origineFonds", v)} />
-      </Field>
-      {form.origineFonds === "vente" && (
-        <Field label="Adresse du bien vendu">
-          <input
-            className={inputStyle}
-            value={form.origineFondsVenteAdresse}
-            onChange={(e) => set("origineFondsVenteAdresse", e.target.value)}
-            placeholder="Adresse + ville"
-          />
-        </Field>
+          <Field label="Source principale des fonds" required>
+            <Selectt value={form.origineFonds} options={ORIGINE_FONDS_OPTIONS} onChange={(v) => set("origineFonds", v)} />
+          </Field>
+          {form.origineFonds === "vente" && (
+            <Field label="Adresse du bien vendu">
+              <input
+                className={inputStyle}
+                value={form.origineFondsVenteAdresse}
+                onChange={(e) => set("origineFondsVenteAdresse", e.target.value)}
+                placeholder="Adresse + ville"
+              />
+            </Field>
+          )}
+          {form.origineFonds === "donation" && (
+            <Field label="Identité du donateur">
+              <input
+                className={inputStyle}
+                value={form.origineFondsDonateur}
+                onChange={(e) => set("origineFondsDonateur", e.target.value)}
+                placeholder="Ex : Jean Dupont (père)"
+              />
+            </Field>
+          )}
+          {form.origineFonds === "heritage" && (
+            <Field label="Identité du défunt et lien de parenté">
+              <input
+                className={inputStyle}
+                value={form.origineFondsLienDefunt}
+                onChange={(e) => set("origineFondsLienDefunt", e.target.value)}
+                placeholder="Ex : Marie Dupont (grand-mère)"
+              />
+            </Field>
+          )}
+          <Field label="Précisions complémentaires">
+            <textarea
+              className={`${inputStyle} min-h-[80px] resize-none`}
+              value={form.origineFondsPrecisions}
+              onChange={(e) => set("origineFondsPrecisions", e.target.value)}
+              placeholder="Décrivez l'origine des fonds, dates, montants…"
+            />
+          </Field>
+        </>
       )}
-      {form.origineFonds === "donation" && (
-        <Field label="Identité du donateur">
-          <input
-            className={inputStyle}
-            value={form.origineFondsDonateur}
-            onChange={(e) => set("origineFondsDonateur", e.target.value)}
-            placeholder="Ex : Jean Dupont (père)"
-          />
-        </Field>
+
+      {/* Champs propres au VENDEUR : origine du bien vendu */}
+      {isVendeur && (
+        <>
+          <Field
+            label="Comment avez-vous acquis ce bien ?"
+            hint="Mode d'acquisition antérieur : achat, héritage, donation, construction, etc."
+          >
+            <textarea
+              className={`${inputStyle} min-h-[80px] resize-none`}
+              value={form.origineFondsPrecisions}
+              onChange={(e) => set("origineFondsPrecisions", e.target.value)}
+              placeholder="Ex : Acheté en 2015 via un prêt bancaire ; héritage de mes parents en 2018 ; construit en 2010…"
+            />
+          </Field>
+          <div
+            className="rounded-xl px-3 py-2.5 text-[12px] border"
+            style={{
+              background: "rgba(124,58,237,0.05)",
+              borderColor: "rgba(124,58,237,0.20)",
+              color: "rgba(255,255,255,0.75)",
+            }}
+          >
+            <span className="text-violet-200 font-semibold">ℹ️ Bon à savoir</span> — En tant que vendeur, vous n&apos;avez pas à renseigner le mode de paiement ou de financement de l&apos;acquéreur. C&apos;est lui qui s&apos;en occupe de son côté.
+          </div>
+        </>
       )}
-      {form.origineFonds === "heritage" && (
-        <Field label="Identité du défunt et lien de parenté">
-          <input
-            className={inputStyle}
-            value={form.origineFondsLienDefunt}
-            onChange={(e) => set("origineFondsLienDefunt", e.target.value)}
-            placeholder="Ex : Marie Dupont (grand-mère)"
-          />
-        </Field>
-      )}
-      <Field label="Précisions complémentaires">
-        <textarea
-          className={`${inputStyle} min-h-[80px] resize-none`}
-          value={form.origineFondsPrecisions}
-          onChange={(e) => set("origineFondsPrecisions", e.target.value)}
-          placeholder="Décrivez l'origine des fonds, dates, montants…"
-        />
-      </Field>
     </Section>
   );
 }
@@ -968,7 +1038,13 @@ function Step5_Pieces({ form, set, dossierId, token, isMorale }: {
 }
 
 /* ─── ÉTAPE 6 : Récap + consentement ─── */
-function Step6_Recap({ form, set, jumpTo }: { form: KycForm; set: Setter; jumpTo: (i: number) => void }) {
+function Step6_Recap({ form, set, jumpTo, isVendeur }: { form: KycForm; set: Setter; jumpTo: (i: number) => void; isVendeur: boolean }) {
+  // Helper : valeur brute → label humain (ex: "green_fr" → "France")
+  const lbl = <T extends { value: string; label: string }>(
+    options: readonly T[],
+    value: string,
+  ): string => (value ? options.find((o) => o.value === value)?.label ?? value : "");
+
   return (
     <Section
       title="Récapitulatif"
@@ -987,7 +1063,7 @@ function Step6_Recap({ form, set, jumpTo }: { form: KycForm; set: Setter; jumpTo
       <RecapBlock
         label="Pièce d'identité"
         items={[
-          { k: "Type", v: form.pieceIdentiteType },
+          { k: "Type", v: lbl(PIECE_IDENTITE_TYPES, form.pieceIdentiteType) },
           { k: "Numéro", v: form.pieceIdentiteNumero },
           { k: "Expiration", v: form.pieceIdentiteExpiration },
         ]}
@@ -998,18 +1074,29 @@ function Step6_Recap({ form, set, jumpTo }: { form: KycForm; set: Setter; jumpTo
         items={[
           { k: "PPE", v: form.ppe ? "Oui" : "Non" },
           { k: "Proche PPE", v: form.ppeProcheDetecte ? "Oui" : "Non" },
-          { k: "Résidence fiscale", v: form.paysResidenceFiscale },
+          { k: "Résidence fiscale", v: lbl(PAYS_OPTIONS, form.paysResidenceFiscale) },
         ]}
         onEdit={() => jumpTo(3)}
       />
       <RecapBlock
-        label="Opération"
-        items={[
-          { k: "Type de bien", v: form.typeBien },
-          { k: "Adresse", v: form.lieuBien },
-          { k: "Montant", v: form.montantOperation ? `${Number(form.montantOperation).toLocaleString("fr-FR")} €` : "" },
-          { k: "Financement", v: form.modeFinancement },
-        ]}
+        label={isVendeur ? "Le bien vendu" : "Opération"}
+        items={
+          isVendeur
+            ? [
+                { k: "Type de bien", v: lbl(TYPE_BIEN_OPTIONS, form.typeBien) },
+                { k: "Adresse", v: form.lieuBien },
+                { k: "Prix de vente", v: form.montantOperation ? `${Number(form.montantOperation).toLocaleString("fr-FR")} €` : "" },
+                { k: "Origine du bien", v: lbl(ORIGINE_FONDS_OPTIONS, form.origineFonds) },
+              ]
+            : [
+                { k: "Type de bien", v: lbl(TYPE_BIEN_OPTIONS, form.typeBien) },
+                { k: "Adresse", v: form.lieuBien },
+                { k: "Montant", v: form.montantOperation ? `${Number(form.montantOperation).toLocaleString("fr-FR")} €` : "" },
+                { k: "Origine des fonds", v: lbl(ORIGINE_FONDS_OPTIONS, form.origineFonds) },
+                { k: "Mode de financement", v: lbl(MODE_FINANCEMENT_OPTIONS, form.modeFinancement) },
+                { k: "Mode de paiement", v: lbl(MODE_PAIEMENT_OPTIONS, form.modePaiement) },
+              ]
+        }
         onEdit={() => jumpTo(4)}
       />
 

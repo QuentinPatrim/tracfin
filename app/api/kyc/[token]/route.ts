@@ -32,6 +32,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     return NextResponse.json({ error: "Déjà rempli" }, { status: 409 });
   }
 
+  // Récupère le rôle du client dans la transaction (vendeur / acquéreur) :
+  // vendeur n'a pas à justifier son mode de financement ni son mode de paiement,
+  // il reçoit l'argent — seule l'origine du bien lui est demandée (champ origineFonds réutilisé).
+  const dossierRows = (await sql`
+    SELECT partie FROM dossiers WHERE id = ${link.dossier_id} LIMIT 1
+  `) as unknown as Array<{ partie: "vendeur" | "acquereur" | null }>;
+  const partie: "vendeur" | "acquereur" =
+    dossierRows[0]?.partie === "vendeur" ? "vendeur" : "acquereur";
+  const isVendeur = partie === "vendeur";
+
   // ─── Validation serveur (défense en profondeur) ─────────────────────
   if (!form.consentementRgpd) {
     return NextResponse.json({ error: "Consentement RGPD requis" }, { status: 400 });
@@ -51,7 +61,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   if (!form.typeBien || !form.lieuBien?.trim() || !form.montantOperation?.trim()) {
     return NextResponse.json({ error: "Détail de l'opération incomplet" }, { status: 400 });
   }
-  if (!form.modeFinancement || !form.modePaiement || !form.origineFonds) {
+  // Acquéreur uniquement : il doit justifier le montage, le paiement et l'origine des fonds.
+  // Vendeur : ces champs n'ont pas de sens (c'est lui qui reçoit l'argent).
+  if (!isVendeur && (!form.modeFinancement || !form.modePaiement || !form.origineFonds)) {
     return NextResponse.json({ error: "Données financières incomplètes" }, { status: 400 });
   }
 

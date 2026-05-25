@@ -35,7 +35,12 @@
       "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/app.jsx C:/Users/quent/Desktop/tracfin/_migration/klaris-app.jsx)",
       "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/components.jsx C:/Users/quent/Desktop/tracfin/_migration/klaris-components.jsx)",
       "Bash(cp /tmp/klaris-dashboard/dashboard-klaris/project/styles.css C:/Users/quent/Desktop/tracfin/_migration/klaris-styles.css)",
-      "Bash(node --env-file=.env.local _migration/seen-guide.mjs)"
+      "Bash(node --env-file=.env.local _migration/seen-guide.mjs)",
+      "Bash(node --env-file=.env.local _migration/add-partie.mjs)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(node -e \"const { neon } = require\\('@neondatabase/serverless'\\); require\\('dotenv'\\).config\\({ path: '.env.local' }\\); const sql = neon\\(process.env.DATABASE_URL\\); sql\\\\`SELECT id, nom_prenom, partie FROM dossiers ORDER BY created_at DESC LIMIT 5\\\\`.then\\(r => console.log\\(JSON.stringify\\(r, null, 2\\)\\)\\);\")",
+      "Bash(node --env-file=.env.local _migration/reclass-typebien.mjs)",
+      "Bash(node --env-file=.env.local -e \"import\\('@neondatabase/serverless'\\).then\\(async \\({ neon }\\) => { const sql = neon\\(process.env.DATABASE_URL\\); const r1 = await sql\\\\`SELECT type_bien, COUNT\\(*\\)::int AS n FROM dossiers GROUP BY type_bien ORDER BY n DESC\\\\`; console.log\\('dossiers.type_bien:'\\); console.table\\(r1\\); const r2 = await sql\\\\`SELECT type_bien, COUNT\\(*\\)::int AS n FROM kyc_responses GROUP BY type_bien ORDER BY n DESC\\\\`; console.log\\('kyc_responses.type_bien:'\\); console.table\\(r2\\); }\\);\")"
     ]
   }
 }

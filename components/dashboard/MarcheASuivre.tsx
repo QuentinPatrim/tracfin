@@ -19,6 +19,8 @@ interface Props {
   niveau: Niveau;
   dossierId: string;
   clientName: string;
+  /** Rôle du client dans la transaction (defaut acquéreur pour legacy). */
+  partie?: "vendeur" | "acquereur";
   mode?: "compact" | "full";
 }
 
@@ -60,9 +62,29 @@ interface Wizard {
   steps: Step[];
 }
 
-function buildWizard(niveau: Niveau, clientName: string, dossierId: string): Wizard {
+function buildWizard(
+  niveau: Niveau,
+  clientName: string,
+  dossierId: string,
+  partie: "vendeur" | "acquereur" = "acquereur",
+): Wizard {
   const safeName = clientName || "votre client";
   const ref = `Klaris · Dossier ${dossierId.slice(0, 8).toUpperCase()}`;
+  const isVendeur = partie === "vendeur";
+  // Wording adapté selon que le client est vendeur (justifier origine du bien)
+  // ou acquéreur (justifier origine des fonds + montage).
+  const justifOrigineLine = isVendeur
+    ? "• Un justificatif détaillé de l'origine du bien vendu (acte d'achat initial, attestation notariée, donation, succession…)"
+    : "• Un justificatif détaillé de l'origine des fonds (relevé bancaire 3 derniers mois, acte de vente, attestation héritage…)";
+  const justifOrigineShort = isVendeur
+    ? "Justificatif détaillé de l'origine du bien vendu"
+    : "Justificatif détaillé de l'origine des fonds";
+  const noteOrigine = isVendeur
+    ? "Ex : Le client a fourni l'acte d'achat initial du bien (notaire Maître X, 2014). Origine confirmée. Aucun lien avec pays à risque. Décision : poursuite de la relation sous surveillance renforcée."
+    : "Ex : Le client a fourni les relevés bancaires demandés. Origine des fonds confirmée par notaire. Aucun lien avec pays à risque. Décision : poursuite de la relation sous surveillance renforcée.";
+  const noteDeliberation = isVendeur
+    ? "Ex : Réunion du JJ/MM/AAAA avec le correspondant LCB-FT. Anomalie : montage atypique sur l'acquisition initiale du bien. Justifications fournies : acte notarié et historique d'occupation. Décision : levée du doute, poursuite sous vigilance renforcée."
+    : "Ex : Réunion du JJ/MM/AAAA avec le correspondant LCB-FT. Anomalie : montant atypique vs. revenus déclarés. Justifications fournies : héritage récent avec acte notarié à l'appui. Décision : levée du doute, poursuite sous vigilance renforcée.";
 
   switch (niveau) {
     case "vigilance_standard":
@@ -101,7 +123,7 @@ function buildWizard(niveau: Niveau, clientName: string, dossierId: string): Wiz
 Dans le cadre de nos obligations légales de Lutte contre le Blanchiment et le Financement du Terrorisme (LCB-FT — art. L.561-10 du Code monétaire et financier), nous avons besoin de pièces complémentaires pour finaliser votre dossier.
 
 Merci de nous transmettre :
-• Un justificatif détaillé de l'origine des fonds (relevé bancaire 3 derniers mois, acte de vente, attestation héritage…)
+${justifOrigineLine}
 • Un justificatif d'activité professionnelle ou source de revenus (avis d'imposition récent, bulletins de salaire)
 • Si applicable : une déclaration sur l'honneur précisant votre fonction et durée d'exercice
 
@@ -115,7 +137,7 @@ Cordialement,
             subtitle: "Décrivez en quelques lignes pourquoi le dossier reste acceptable (ou pas). Cette note est conservée et opposable en cas de contrôle.",
             action: {
               kind: "note",
-              placeholder: "Ex : Le client a fourni les relevés bancaires demandés. Origine des fonds confirmée par notaire. Aucun lien avec pays à risque. Décision : poursuite de la relation sous surveillance renforcée.",
+              placeholder: noteOrigine,
               cta: "Enregistrer mon analyse",
             },
           },
@@ -157,7 +179,9 @@ Cordialement,
         steps: [
           {
             title: "Recueillir des informations complémentaires auprès du client",
-            subtitle: "L'art. L.561-10-2 vous impose de vous renseigner sur l'origine des fonds, l'objet et la destination de l'opération avant de poursuivre. Vous pouvez (mais n'êtes pas obligé) de suspendre temporairement la transaction. La suspension n'est obligatoire qu'en cas de soupçon avéré.",
+            subtitle: isVendeur
+              ? "L'art. L.561-10-2 vous impose de vous renseigner sur l'origine du bien, l'objet et la destination de l'opération avant de poursuivre. Vous pouvez (mais n'êtes pas obligé) de suspendre temporairement la transaction. La suspension n'est obligatoire qu'en cas de soupçon avéré."
+              : "L'art. L.561-10-2 vous impose de vous renseigner sur l'origine des fonds, l'objet et la destination de l'opération avant de poursuivre. Vous pouvez (mais n'êtes pas obligé) de suspendre temporairement la transaction. La suspension n'est obligatoire qu'en cas de soupçon avéré.",
             action: {
               kind: "mailto",
               subject: `[${ref}] Informations complémentaires demandées`,
@@ -167,7 +191,7 @@ Cordialement,
 Dans le cadre de nos obligations réglementaires (LCB-FT), nous avons besoin de compléments avant de finaliser le traitement de votre dossier.
 
 Merci de nous transmettre :
-• Justificatif détaillé de l'origine des fonds
+• ${justifOrigineShort}
 • Justification écrite de l'objet et de la destination de l'opération
 • Tout document pouvant éclairer le contexte (acte notarié, contrat de vente antérieur, attestation comptable…)
 
@@ -199,7 +223,7 @@ Cordialement,
             subtitle: "Notez les conclusions de la réunion : anomalies identifiées, justifications obtenues ou non, décision motivée.",
             action: {
               kind: "note",
-              placeholder: "Ex : Réunion du JJ/MM/AAAA avec le correspondant LCB-FT. Anomalie : montant atypique vs. revenus déclarés. Justifications fournies : héritage récent avec acte notarié à l'appui. Décision : levée du doute, poursuite sous vigilance renforcée.",
+              placeholder: noteDeliberation,
               cta: "Enregistrer la délibération",
             },
           },
@@ -412,8 +436,11 @@ const NIVEAU_LABEL: Record<Niveau, string> = {
    COMPOSANT PRINCIPAL
    ════════════════════════════════════════════════════════════════════ */
 
-export default function MarcheASuivre({ niveau, dossierId, clientName, mode = "compact" }: Props) {
-  const wizard = useMemo(() => buildWizard(niveau, clientName, dossierId), [niveau, clientName, dossierId]);
+export default function MarcheASuivre({ niveau, dossierId, clientName, partie = "acquereur", mode = "compact" }: Props) {
+  const wizard = useMemo(
+    () => buildWizard(niveau, clientName, dossierId, partie),
+    [niveau, clientName, dossierId, partie],
+  );
   const c = tones(wizard.tone);
 
   // ─── État persistant ─────────────────────────────────────────────

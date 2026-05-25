@@ -125,13 +125,22 @@ export const OPTIONS: Record<string, Option[]> = {
     { value: "orange", label: "Atypique (écart ± 20%)", risk: "orange" },
     { value: "red", label: "Très anormal — suspicion (> ± 40%)", risk: "red" },
   ],
+  // Reclassement (mai 2026) : l'investissement locatif et le terrain agricole
+  // ne sont PAS listés comme typologies à risque par les lignes directrices DGCCRF
+  // / TRACFIN pour le secteur immobilier (cf. Lignes directrices DGCCRF 2023,
+  // Annexe "typologies"). Les classer en vigilance créait des faux positifs
+  // décrédibilisant le scoring et noyait les vrais signaux.
+  // Restent en vigilance les seules typologies explicitement reconnues :
+  //   - SCI / holding (opacité potentielle des bénéficiaires effectifs)
+  //   - Acquisitions multi-lots (volume atypique)
+  //   - Local commercial / professionnel (vérification du secteur d'activité du locataire)
   typeBien: [
     { value: "green_residentiel_principal", label: "Résidentiel — résidence principale", risk: "green" },
     { value: "green_residentiel_secondaire", label: "Résidentiel — résidence secondaire", risk: "green" },
-    { value: "orange_locatif", label: "Investissement locatif", risk: "orange" },
+    { value: "green_locatif", label: "Investissement locatif", risk: "green" },
+    { value: "green_terrain", label: "Terrain à bâtir / agricole", risk: "green" },
     { value: "orange_commercial", label: "Local commercial / professionnel", risk: "orange" },
     { value: "orange_sci", label: "Acquisition via SCI / holding", risk: "orange" },
-    { value: "orange_terrain", label: "Terrain à bâtir / agricole", risk: "orange" },
     { value: "orange_multilots", label: "Acquisition multi-lots", risk: "orange" },
   ],
   secteurActivite: [
@@ -195,10 +204,17 @@ export const PPE_LIEN_LABELS: Record<PpeLien, string> = {
   associe_etroit: "Associé étroit (pers. morale détenue conjointement)",
 };
 
+// ─── Rôle dans la transaction immobilière (vendeur ou acquéreur) ──────
+// L'agent immobilier est soumis à la vigilance LCB-FT vis-à-vis des 2 parties
+// (Décret 2018-284, lignes directrices DGCCRF). Les critères évalués différent
+// néanmoins selon le rôle (cf. CRITERES_NON_PERTINENTS).
+export type Partie = "vendeur" | "acquereur";
+
 // ─── Formulaire (étendu v2) ──────────────────────────────────────────────
 export interface DossierForm {
   // Identité
   typeClient: "physique" | "morale";
+  partie: Partie;                   // v2 — rôle dans la transaction immo
   nomPrenom: string;
   dateNaissance: string;
   lieuNaissance: string;
@@ -253,6 +269,7 @@ export interface DossierForm {
 
 export const initialForm: DossierForm = {
   typeClient: "physique",
+  partie: "acquereur",
   nomPrenom: "",
   dateNaissance: "",
   lieuNaissance: "",
@@ -323,6 +340,21 @@ const RISK_CRITERES = [
   "typeBien", "secteurActivite", "formation",
 ] as const;
 
+// Critères qui ne s'appliquent qu'à l'acquéreur (le côté "argent qui entre")
+// Pour un vendeur : pas d'origine des fonds, pas de mode de paiement / financement,
+// pas de cohérence de prix subie. Ces critères sont mis à null dans le scoring.
+const CRITERES_ACQUEREUR_ONLY: ReadonlySet<string> = new Set([
+  "origineFonds",
+  "montageFinancier",
+  "modePaiement",
+  "coherencePrix",
+]);
+
+function isCritereApplicable(critere: string, partie: Partie): boolean {
+  if (partie === "vendeur" && CRITERES_ACQUEREUR_ONLY.has(critere)) return false;
+  return true;
+}
+
 function getRisk(key: string, val: string): Risk | null {
   return OPTIONS[key]?.find((o) => o.value === val)?.risk ?? null;
 }
@@ -336,6 +368,11 @@ function motifFor(key: string, val: string): string {
 export function computeScore(form: DossierForm): ScoreResult {
   const risks: Record<string, Risk | null> = {};
   for (const c of RISK_CRITERES) {
+    // Critère non applicable à ce rôle (ex: origineFonds pour un vendeur) → null
+    if (!isCritereApplicable(c, form.partie)) {
+      risks[c] = null;
+      continue;
+    }
     risks[c] = getRisk(c, form[c as keyof DossierForm] as string);
   }
 
@@ -385,25 +422,28 @@ export function computeScore(form: DossierForm): ScoreResult {
     });
   }
 
-  // ─ Espèces > 1 000 € interdit (L112-6 CMF) ─
-  const cashInterdit = form.modePaiement === "red_especes";
+  const isAcquereur = form.partie === "acquereur";
 
-  // ─ Pays GAFI grise/noire (B1, B2, B3) ─
+  // ─ Espèces > 1 000 € interdit (L112-6 CMF) — uniquement côté acquéreur ─
+  const cashInterdit = isAcquereur && form.modePaiement === "red_especes";
+
+  // ─ Pays GAFI grise/noire (B1, B2, B3) — s'applique aux 2 parties ─
   const payIsolement =
     risks.residenceFiscale === "orange" || risks.residenceFiscale === "red" ||
     risks.paysNationalite === "orange" || risks.paysNationalite === "red" ||
     risks.lieuBien === "orange" || risks.lieuBien === "red";
 
   // ─ Structure complexe ─
+  // montageFinancier ne concerne que l'acquéreur, mais le typeBien (SCI) reste pertinent
+  // pour les 2 (un vendeur en SCI = signal pour les 2 côtés)
   const structureComplexe =
-    form.montageFinancier === "orange_complexe" ||
-    form.montageFinancier === "red_offshore" ||
+    (isAcquereur && (form.montageFinancier === "orange_complexe" || form.montageFinancier === "red_offshore")) ||
     form.typeBien === "orange_sci";
 
-  // ─ Origine des fonds non documentée ─
+  // ─ Origine des fonds non documentée — uniquement côté acquéreur ─
   const origineFondsNonDoc =
-    form.origineFonds.startsWith("orange_") ||
-    form.origineFonds.startsWith("red_");
+    isAcquereur &&
+    (form.origineFonds.startsWith("orange_") || form.origineFonds.startsWith("red_"));
 
   // ─ Décision niveau ─
   const hasRed = Object.values(risks).some((r) => r === "red");
@@ -454,12 +494,13 @@ function finalize(
       risks.paysNationalite === "orange" || risks.paysNationalite === "red" ||
       risks.lieuBien === "orange" || risks.lieuBien === "red",
     structureComplexe:
-      form.montageFinancier === "orange_complexe" ||
-      form.montageFinancier === "red_offshore" ||
+      (form.partie === "acquereur" &&
+        (form.montageFinancier === "orange_complexe" || form.montageFinancier === "red_offshore")) ||
       form.typeBien === "orange_sci",
     origineFondsNonDoc:
-      form.origineFonds.startsWith("orange_") || form.origineFonds.startsWith("red_"),
-    cashInterdit: form.modePaiement === "red_especes",
+      form.partie === "acquereur" &&
+      (form.origineFonds.startsWith("orange_") || form.origineFonds.startsWith("red_")),
+    cashInterdit: form.partie === "acquereur" && form.modePaiement === "red_especes",
 
     statutKey: NIVEAU_TO_V1[niveau],
     pct,

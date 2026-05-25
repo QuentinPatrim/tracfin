@@ -31,23 +31,35 @@ export default function Step1({ form, set }: Props) {
           <input className={inputStyle} value={form.nomPrenom} onChange={(e) => set("nomPrenom", e.target.value)} placeholder={isMorale ? "Ex: ACME SAS" : "Ex: Martin Claire"} />
         </Field>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label={isMorale ? "Date de constitution" : "Date de naissance"}>
-            <input type="date" className={inputStyle} value={form.dateNaissance} onChange={(e) => set("dateNaissance", e.target.value)} />
-          </Field>
-          <Field label={isMorale ? "Lieu d'immatriculation" : "Lieu de naissance"}>
-            <input className={inputStyle} value={form.lieuNaissance} onChange={(e) => set("lieuNaissance", e.target.value)} placeholder="Ex: Paris" />
-          </Field>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label={isMorale ? "Pays de constitution" : "Nationalité"}>
-            <input className={inputStyle} value={form.nationalite} onChange={(e) => set("nationalite", e.target.value)} placeholder="Ex: Française" />
-          </Field>
-          <Field label="Profession / Activité">
-            <input className={inputStyle} value={form.profession} onChange={(e) => set("profession", e.target.value)} placeholder="Ex: Ingénieur" />
-          </Field>
-        </div>
+        {isMorale ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Field label="Date de constitution">
+              <input type="date" className={inputStyle} value={form.dateNaissance} onChange={(e) => set("dateNaissance", e.target.value)} />
+            </Field>
+            <Field label="Activité principale">
+              <input className={inputStyle} value={form.profession} onChange={(e) => set("profession", e.target.value)} placeholder="Ex: Promotion immobilière" />
+            </Field>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Field label="Date de naissance">
+                <input type="date" className={inputStyle} value={form.dateNaissance} onChange={(e) => set("dateNaissance", e.target.value)} />
+              </Field>
+              <Field label="Lieu de naissance">
+                <input className={inputStyle} value={form.lieuNaissance} onChange={(e) => set("lieuNaissance", e.target.value)} placeholder="Ex: Paris" />
+              </Field>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Field label="Nationalité">
+                <input className={inputStyle} value={form.nationalite} onChange={(e) => set("nationalite", e.target.value)} placeholder="Ex: Française" />
+              </Field>
+              <Field label="Profession / Activité">
+                <input className={inputStyle} value={form.profession} onChange={(e) => set("profession", e.target.value)} placeholder="Ex: Ingénieur" />
+              </Field>
+            </div>
+          </>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Pays (risque géographique)">
@@ -56,9 +68,9 @@ export default function Step1({ form, set }: Props) {
               onChange={(e) => set("paysNationalite", e.target.value)}
               className={`${inputStyle} appearance-none cursor-pointer`}
             >
-              <option value="" className="bg-slate-900">— Sélectionner —</option>
+              <option value="">— Sélectionner —</option>
               {OPTIONS.paysNationalite.map((o) => (
-                <option key={o.value} value={o.value} className="bg-slate-900">{o.label}</option>
+                <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </select>
           </Field>
@@ -68,9 +80,9 @@ export default function Step1({ form, set }: Props) {
               onChange={(e) => set("secteurActivite", e.target.value)}
               className={`${inputStyle} appearance-none cursor-pointer`}
             >
-              <option value="" className="bg-slate-900">— Sélectionner —</option>
+              <option value="">— Sélectionner —</option>
               {OPTIONS.secteurActivite.map((o) => (
-                <option key={o.value} value={o.value} className="bg-slate-900">{o.label}</option>
+                <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </select>
           </Field>

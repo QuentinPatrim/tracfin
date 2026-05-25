@@ -24,6 +24,7 @@ export default function LegalFooter() {
           <Link href="/" className="text-white/55 hover:text-white transition">Accueil</Link>
           <Link href="/tarifs" className="text-white/55 hover:text-white transition">Tarifs</Link>
           <Link href="/confiance" className="text-white/55 hover:text-white transition">Confiance & souveraineté</Link>
+          <Link href="/securite" className="text-white/55 hover:text-white transition">Sécurité & certifications</Link>
           <Link href="/legal/mentions-legales" className="text-white/55 hover:text-white transition">Mentions légales</Link>
           <Link href="/legal/confidentialite" className="text-white/55 hover:text-white transition">Confidentialité</Link>
           <Link href="/legal/cgu" className="text-white/55 hover:text-white transition">CGU</Link>

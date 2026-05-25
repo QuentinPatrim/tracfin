@@ -58,22 +58,28 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
   const niveauNum = (["vigilance_standard", "vigilance_renforcee", "examen_renforce", "interdiction"] as const).indexOf(score.niveau) + 1;
   const verdictTitle = verdictTitleFor(score.niveau);
   const isMorale = form.typeClient === "morale";
+  const isVendeur = form.partie === "vendeur";
+  const roleLabel = isVendeur ? "Vendeur" : "Acquéreur";
+  const montantLabel = isVendeur ? "Prix de vente" : "Montant";
 
   // ─── Critères évalués ────────────────────────────────────────────────
-  const CRITERE_DEFS: Array<{ key: keyof typeof OPTIONS; name: string }> = [
+  // Vendeur : on retire les critères qui ne s'appliquent qu'à l'acquéreur
+  // (origine des fonds, montage, mode de paiement, cohérence du prix).
+  const CRITERE_DEFS_ALL: Array<{ key: keyof typeof OPTIONS; name: string; acquereurOnly?: boolean }> = [
     { key: "rbe", name: "Bénéficiaires Effectifs" },
     { key: "residenceFiscale", name: "Résidence Fiscale" },
     { key: "paysNationalite", name: "Nationalité" },
     { key: "lieuBien", name: "Lieu du bien" },
     { key: "comportement", name: "Comportement du client" },
-    { key: "origineFonds", name: "Origine des Fonds" },
-    { key: "montageFinancier", name: "Montage Financier" },
-    { key: "modePaiement", name: "Mode de Paiement" },
-    { key: "coherencePrix", name: "Cohérence du Prix" },
+    { key: "origineFonds", name: "Origine des Fonds", acquereurOnly: true },
+    { key: "montageFinancier", name: "Montage Financier", acquereurOnly: true },
+    { key: "modePaiement", name: "Mode de Paiement", acquereurOnly: true },
+    { key: "coherencePrix", name: "Cohérence du Prix", acquereurOnly: true },
     { key: "typeBien", name: "Type de Bien" },
     { key: "secteurActivite", name: "Secteur d'activité" },
     { key: "formation", name: "Formation TRACFIN" },
   ];
+  const CRITERE_DEFS = CRITERE_DEFS_ALL.filter((d) => !(isVendeur && d.acquereurOnly));
 
   type Row = { n: number; name: string; sub: string; badgeCls: "ok" | "warn" | "crit" | "violet"; badgeLabel: string };
   const rows: Row[] = [];
@@ -141,7 +147,8 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
 
   // ─── Commentaires / justifications (champs texte libre du pro) ────────
   const hasJustifFonds = has(form.justifFonds);
-  const hasJustifPrix = has(form.justifPrix);
+  // Cohérence du prix : critère acquéreur uniquement.
+  const hasJustifPrix = !isVendeur && has(form.justifPrix);
   const hasPpePrecisions = form.ppeProches && form.ppeProches.length > 0;
 
   // Critère le plus critique pour la recommandation
@@ -178,6 +185,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
 
   // Champs identification (riches)
   const idFields: Array<{ k: string; v: string; mono?: boolean; full?: boolean }> = [
+    { k: "Rôle dans l'opération", v: roleLabel },
     { k: "Type de client", v: isMorale ? "Personne morale (société)" : "Personne physique" },
     { k: isMorale ? "Dénomination" : "Nom et prénom", v: form.nomPrenom || "—" },
     ...(has(form.dateNaissance) ? [{ k: isMorale ? "Date de constitution" : "Date de naissance", v: fmtDateShort(form.dateNaissance), mono: true }] : []),
@@ -207,7 +215,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
   <div class="title-row">
     <div>
       <h1 class="doc-title">Attestation de Conformité<br/>LCB-FT</h1>
-      <div class="doc-sub">Évaluation des risques de blanchiment de capitaux et de financement du terrorisme — analyse algorithmique opposable sur ${rows.length} critères (CMF L.561-1 et suivants).</div>
+      <div class="doc-sub">Évaluation des risques de blanchiment de capitaux et de financement du terrorisme — analyse algorithmique opposable sur ${rows.length} critères (CMF L.561-1 et suivants). Client analysé en qualité de <b>${escapeHtml(roleLabel.toLowerCase())}</b>.</div>
     </div>
     <div class="stamp"><span class="pulse"></span>Vérifié par Klaris</div>
   </div>
@@ -314,6 +322,11 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
       <span class="accent"></span>
     </div>
     <div class="tx-grid">
+      ${isVendeur ? `
+      <div class="tx-card">
+        <div class="k">Origine du bien vendu</div>
+        <div class="v">${escapeHtml(labelOf("origineFonds", form.origineFonds))}</div>
+      </div>` : `
       <div class="tx-card">
         <div class="k">Origine des fonds</div>
         <div class="v">${escapeHtml(labelOf("origineFonds", form.origineFonds))}</div>
@@ -329,13 +342,13 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
       <div class="tx-card">
         <div class="k">Cohérence du prix</div>
         <div class="v">${escapeHtml(labelOf("coherencePrix", form.coherencePrix))}</div>
-      </div>
+      </div>`}
       <div class="tx-card">
         <div class="k">Type de bien</div>
         <div class="v">${escapeHtml(labelOf("typeBien", form.typeBien))}</div>
       </div>
       <div class="tx-card">
-        <div class="k">Montant</div>
+        <div class="k">${escapeHtml(montantLabel)}</div>
         <div class="v">${form.montantTransaction ? `${formatMontant(form.montantTransaction)} €` : "—"}</div>
       </div>
       <div class="tx-card">
@@ -358,10 +371,10 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     </div>
     ${hasJustifFonds ? `
     <div class="reco" style="margin-top:10px">
-      <div class="label">Justification de l'origine des fonds</div>
+      <div class="label">${isVendeur ? "Justification de l'origine du bien vendu" : "Justification de l'origine des fonds"}</div>
       <p>${escapeHtml(form.justifFonds)}</p>
     </div>` : ""}
-    ${hasJustifPrix ? `
+    ${hasJustifPrix && !isVendeur ? `
     <div class="reco" style="margin-top:10px">
       <div class="label">Justification de la cohérence du prix</div>
       <p>${escapeHtml(form.justifPrix)}</p>

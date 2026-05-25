@@ -46,6 +46,7 @@ export default function ConfiancePage() {
             <span className="font-bold tracking-tight text-[15px]">Klaris</span>
           </Link>
           <nav className="flex items-center gap-5 text-[12.5px] text-white/60">
+            <Link href="/securite" className="hover:text-white transition">Sécurité</Link>
             <Link href="/tarifs" className="hover:text-white transition">Tarifs</Link>
             <Link href="/" className="hover:text-white transition">Accueil</Link>
           </nav>

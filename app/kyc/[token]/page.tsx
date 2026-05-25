@@ -64,5 +64,12 @@ export default async function KycPublicPage({ params }: { params: Promise<{ toke
     `;
   }
 
-  return <KycPublicForm token={token} dossierId={link.dossier_id} />;
+  // Récupère la partie (vendeur/acquéreur) du dossier pour adapter le formulaire
+  const dossierRows = (await sql`
+    SELECT partie FROM dossiers WHERE id = ${link.dossier_id} LIMIT 1
+  `) as unknown as Array<{ partie: "vendeur" | "acquereur" | null }>;
+  const partie: "vendeur" | "acquereur" =
+    dossierRows[0]?.partie === "vendeur" ? "vendeur" : "acquereur";
+
+  return <KycPublicForm token={token} dossierId={link.dossier_id} partie={partie} />;
 }

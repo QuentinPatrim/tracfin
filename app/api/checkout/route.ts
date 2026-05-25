@@ -8,6 +8,7 @@ import {
   priceIdForPlan, getSubscriptionStatus, attachStripeCustomer,
   type Plan,
 } from "@/lib/subscription";
+import { EDITEUR } from "@/lib/legal";
 
 export const runtime = "nodejs";
 
@@ -57,10 +58,13 @@ export async function POST(req: Request) {
     await attachStripeCustomer(userId, stripeCustomerId);
   }
 
-  // URL de base (Vercel ou local)
+  // URL de base : on N'UTILISE PAS `VERCEL_URL` en fallback car celui-ci renvoie
+  // l'URL auto-générée Vercel (ex: tracfin-mu.vercel.app) qui n'est pas un
+  // domaine Clerk autorisé → boucle de redirection /sign-in après checkout.
+  // Source unique de vérité : EDITEUR.siteUrl (lib/legal.ts).
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+    (process.env.NODE_ENV === "production" ? EDITEUR.siteUrl : "http://localhost:3000");
 
   try {
     const session = await stripe.checkout.sessions.create({

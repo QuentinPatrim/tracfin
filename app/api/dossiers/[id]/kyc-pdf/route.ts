@@ -22,13 +22,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Bad id" }, { status: 400 });
   }
 
-  // Vérifie ownership du dossier
+  // Vérifie ownership du dossier + récupère la partie (vendeur / acquéreur)
   const owns = (await sql`
-    SELECT nom_prenom FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
-  `) as unknown as Array<{ nom_prenom: string }>;
+    SELECT nom_prenom, partie FROM dossiers WHERE id = ${id} AND user_id = ${userId} LIMIT 1
+  `) as unknown as Array<{ nom_prenom: string; partie: "vendeur" | "acquereur" | null }>;
   if (owns.length === 0) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  const partie: "vendeur" | "acquereur" = owns[0].partie === "vendeur" ? "vendeur" : "acquereur";
 
   // Récupère la dernière réponse KYC complète du client
   const kycRows = (await sql`
@@ -80,7 +81,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       }))
       .digest("hex");
 
-    const html = buildKycHtml({ form, dossierId: id, hash, generatedAt, signedAt });
+    const html = buildKycHtml({ form, dossierId: id, hash, generatedAt, signedAt, partie });
     const buffer = await renderHtmlPdf(html);
 
     return new NextResponse(buffer as unknown as BodyInit, {

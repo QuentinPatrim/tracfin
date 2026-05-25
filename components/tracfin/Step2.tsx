@@ -112,26 +112,53 @@ export default function Step2({ form, set }: Props) {
         </Field>
       </Sect>
 
-      <Sect title="Origine des fonds">
-        <Field label="Source des fonds">
-          <RiskSelect optionsKey="origineFonds" value={form.origineFonds} onChange={(v) => set("origineFonds", v)} />
-        </Field>
-        <Field label="Justification (optionnel)">
-          <textarea
-            className={`${inputStyle} min-h-[80px] resize-none`}
-            value={form.justifFonds}
-            onChange={(e) => set("justifFonds", e.target.value)}
-            placeholder="Détails complémentaires..."
-          />
-        </Field>
-      </Sect>
+      {/* ─── Section Origine des fonds : ACQUÉREUR uniquement ─── */}
+      {form.partie === "acquereur" && (
+        <Sect title="Origine des fonds" sub="Côté acquéreur">
+          <Field label="Source des fonds">
+            <RiskSelect optionsKey="origineFonds" value={form.origineFonds} onChange={(v) => set("origineFonds", v)} />
+          </Field>
+          <Field label="Justification (optionnel)">
+            <textarea
+              className={`${inputStyle} min-h-[80px] resize-none`}
+              value={form.justifFonds}
+              onChange={(e) => set("justifFonds", e.target.value)}
+              placeholder="Détails complémentaires..."
+            />
+          </Field>
+        </Sect>
+      )}
+
+      {/* ─── Section Origine du bien : VENDEUR uniquement ─── */}
+      {form.partie === "vendeur" && (
+        <Sect title="Origine du bien vendu" sub="Côté vendeur">
+          <Field label="Comment le vendeur a-t-il acquis ce bien ?">
+            <textarea
+              className={`${inputStyle} min-h-[80px] resize-none`}
+              value={form.justifFonds}
+              onChange={(e) => set("justifFonds", e.target.value)}
+              placeholder="Achat en 2015 (prêt bancaire) — héritage 2018 — construction 2010 — donation..."
+            />
+          </Field>
+          <div
+            className="rounded-xl px-3 py-2.5 text-[12px]"
+            style={{
+              background: "rgba(124,58,237,0.05)",
+              border: "1px solid rgba(124,58,237,0.20)",
+              color: "#475569",
+            }}
+          >
+            <span className="font-semibold" style={{ color: "#6d28d9" }}>ℹ️ Côté vendeur</span> — Les questions relatives à l&apos;origine des fonds (mode de paiement, financement, espèces) ne s&apos;appliquent pas. Concentrez-vous sur la traçabilité du bien cédé.
+          </div>
+        </Sect>
+      )}
 
       <Sect title="Transaction" sub="Bien & financement">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Type de bien">
             <RiskSelect optionsKey="typeBien" value={form.typeBien} onChange={(v) => set("typeBien", v)} />
           </Field>
-          <Field label="Montant de l'opération (€)">
+          <Field label={form.partie === "vendeur" ? "Prix de vente (€)" : "Montant de l'opération (€)"}>
             <input
               type="number"
               min="0"
@@ -143,28 +170,33 @@ export default function Step2({ form, set }: Props) {
           </Field>
         </div>
 
-        <Field label="Montage financier">
-          <RiskSelect optionsKey="montageFinancier" value={form.montageFinancier} onChange={(v) => set("montageFinancier", v)} />
-        </Field>
+        {/* Montage / paiement / cohérence prix : ACQUÉREUR uniquement */}
+        {form.partie === "acquereur" && (
+          <>
+            <Field label="Montage financier">
+              <RiskSelect optionsKey="montageFinancier" value={form.montageFinancier} onChange={(v) => set("montageFinancier", v)} />
+            </Field>
 
-        <Field label="Mode de paiement">
-          <RiskSelect optionsKey="modePaiement" value={form.modePaiement} onChange={(v) => set("modePaiement", v)} />
-          <p className="text-[11px] mt-1" style={{ color: "#64748b" }}>
-            Espèces &gt; 1 000 € interdites (art. L112-6 CMF) entre professionnel et particulier.
-          </p>
-        </Field>
+            <Field label="Mode de paiement">
+              <RiskSelect optionsKey="modePaiement" value={form.modePaiement} onChange={(v) => set("modePaiement", v)} />
+              <p className="text-[11px] mt-1" style={{ color: "#64748b" }}>
+                Espèces &gt; 1 000 € interdites (art. L112-6 CMF) entre professionnel et particulier.
+              </p>
+            </Field>
 
-        <Field label="Cohérence du prix">
-          <RiskSelect optionsKey="coherencePrix" value={form.coherencePrix} onChange={(v) => set("coherencePrix", v)} />
-        </Field>
-        <Field label="Justification du prix (optionnel)">
-          <textarea
-            className={`${inputStyle} min-h-[80px] resize-none`}
-            value={form.justifPrix}
-            onChange={(e) => set("justifPrix", e.target.value)}
-            placeholder="Comparables, expertise, référence DVF..."
-          />
-        </Field>
+            <Field label="Cohérence du prix">
+              <RiskSelect optionsKey="coherencePrix" value={form.coherencePrix} onChange={(v) => set("coherencePrix", v)} />
+            </Field>
+            <Field label="Justification du prix (optionnel)">
+              <textarea
+                className={`${inputStyle} min-h-[80px] resize-none`}
+                value={form.justifPrix}
+                onChange={(e) => set("justifPrix", e.target.value)}
+                placeholder="Comparables, expertise, référence DVF..."
+              />
+            </Field>
+          </>
+        )}
       </Sect>
 
       <Sect title="Bénéficiaires effectifs">

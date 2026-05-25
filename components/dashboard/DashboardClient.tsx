@@ -26,6 +26,7 @@ export interface DossierItem {
   id: string;
   nom_prenom: string;
   type_client: "physique" | "morale";
+  partie?: "vendeur" | "acquereur" | null;
   algo_version: "v1" | "v2";
   niveau: Niveau | null;
   statut: StatutKey | null;
@@ -286,8 +287,23 @@ export default function DashboardClient({ dossiers, counts, canCreate, filesByDo
                       <span className="row-avatar">{initials(d.nom_prenom)}</span>
                       <div>
                         <div className="row-title">{d.nom_prenom}</div>
-                        <div className="row-sub muted small">
+                        <div className="row-sub muted small flex items-center gap-2">
                           <span>{d.type_client === "morale" ? "Personne morale" : "Personne physique"}</span>
+                          {d.partie && (
+                            <>
+                              <span className="dot-sep">•</span>
+                              <span
+                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] uppercase tracking-widest font-bold"
+                                style={{
+                                  background: d.partie === "vendeur" ? "rgba(124,58,237,0.08)" : "rgba(236,72,153,0.08)",
+                                  border: `1px solid ${d.partie === "vendeur" ? "rgba(124,58,237,0.25)" : "rgba(236,72,153,0.25)"}`,
+                                  color: d.partie === "vendeur" ? "#6d28d9" : "#be185d",
+                                }}
+                              >
+                                {d.partie === "vendeur" ? "Vendeur" : "Acquéreur"}
+                              </span>
+                            </>
+                          )}
                           <span className="dot-sep">•</span>
                           <span>Maj. {formatDate(d.updated_at)}</span>
                         </div>
@@ -497,7 +513,21 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
           </span>
           <div>
             <div className="preview-name">{d.nom_prenom}</div>
-            <div className="muted small">{d.type_client === "morale" ? "Personne morale" : "Personne physique"}</div>
+            <div className="muted small flex items-center gap-2 flex-wrap">
+              <span>{d.type_client === "morale" ? "Personne morale" : "Personne physique"}</span>
+              {d.partie && (
+                <span
+                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] uppercase tracking-widest font-bold"
+                  style={{
+                    background: d.partie === "vendeur" ? "rgba(124,58,237,0.08)" : "rgba(236,72,153,0.08)",
+                    border: `1px solid ${d.partie === "vendeur" ? "rgba(124,58,237,0.25)" : "rgba(236,72,153,0.25)"}`,
+                    color: d.partie === "vendeur" ? "#6d28d9" : "#be185d",
+                  }}
+                >
+                  {d.partie === "vendeur" ? "Vendeur" : "Acquéreur"}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -535,6 +565,7 @@ function SelectedPreview({ dossier: d, files, onAskDelete }: { dossier: DossierI
             niveau={niveau}
             dossierId={d.id}
             clientName={d.nom_prenom}
+            partie={d.partie === "vendeur" ? "vendeur" : "acquereur"}
             mode="compact"
           />
         </div>
