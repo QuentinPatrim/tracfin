@@ -4,10 +4,6 @@
     {
       "path": "/api/cron/rescreening",
       "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/cron/webhooks",
-      "schedule": "*/5 * * * *"
     }
   ]
 }
