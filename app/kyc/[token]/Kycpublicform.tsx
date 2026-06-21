@@ -64,7 +64,7 @@ const TOTAL_STEPS = STEPS.length;
    ═══════════════════════════════════════════════════════════════ */
 
 const inputBase =
-  "w-full bg-white/[0.04] border border-white/[0.12] rounded-xl px-4 py-3 text-white outline-none transition-all placeholder:text-white/30 focus:border-violet-400/60 focus:bg-white/[0.07] focus:ring-4 focus:ring-violet-500/15";
+  "w-full bg-[var(--lp-input-bg)] border border-[color:var(--lp-input-border)] rounded-xl px-4 py-3 text-[color:var(--lp-text)] outline-none transition-all placeholder:text-[color:var(--lp-text-4)] focus:border-[color:var(--lp-accent)] focus:bg-[var(--lp-surface-2)] focus:ring-4 focus:ring-violet-500/15";
 // 16px sur mobile (évite le zoom iOS), 14px sur ≥sm
 const inputStyle = `${inputBase} text-[16px] sm:text-[14px]`;
 
@@ -81,19 +81,20 @@ function Section({ title, description, icon: Icon, children }: {
           <div
             className="w-9 h-9 rounded-lg grid place-items-center shrink-0"
             style={{
-              background: "linear-gradient(135deg, rgba(124,58,237,0.18), rgba(236,72,153,0.10))",
-              border: "1px solid rgba(124,58,237,0.30)",
+              background: "var(--lp-icon-bg)",
+              border: "1px solid var(--lp-icon-border)",
+              color: "var(--lp-icon-color)",
             }}
           >
-            <Icon className="w-4 h-4 text-violet-200" />
+            <Icon className="w-4 h-4" />
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <h2 className="text-[20px] sm:text-[22px] font-bold tracking-tight text-white leading-tight">
+          <h2 className="text-[20px] sm:text-[22px] font-bold tracking-tight text-[color:var(--lp-text)] leading-tight">
             {title}
           </h2>
           {description && (
-            <p className="text-[13px] text-white/55 leading-relaxed mt-1">{description}</p>
+            <p className="text-[13px] text-[color:var(--lp-text-4)] leading-relaxed mt-1">{description}</p>
           )}
         </div>
       </div>
@@ -111,15 +112,15 @@ function Field({ label, required, hint, children, error }: {
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[12px] font-semibold text-white/65 tracking-tight">
-        {label} {required && <span className="text-pink-300">*</span>}
+      <label className="text-[12px] font-semibold text-[color:var(--lp-text-3)] tracking-tight">
+        {label} {required && <span className="text-[color:var(--lp-danger)]">*</span>}
       </label>
       {children}
       {hint && !error && (
-        <p className="text-[11.5px] text-white/40 leading-relaxed">{hint}</p>
+        <p className="text-[11.5px] text-[color:var(--lp-text-4)] leading-relaxed">{hint}</p>
       )}
       {error && (
-        <p className="text-[11.5px] text-pink-300">{error}</p>
+        <p className="text-[11.5px] text-[color:var(--lp-danger)]">{error}</p>
       )}
     </div>
   );
@@ -137,12 +138,12 @@ function YesNo({ value, onChange }: {
         className="h-12 rounded-xl border text-[14px] font-semibold transition-all"
         style={{
           background: value === false
-            ? "rgba(16,185,129,0.12)"
-            : "rgba(255,255,255,0.03)",
+            ? "var(--lp-success-bg)"
+            : "var(--lp-surface)",
           borderColor: value === false
-            ? "rgba(16,185,129,0.40)"
-            : "rgba(255,255,255,0.10)",
-          color: value === false ? "#6ee7b7" : "rgba(255,255,255,0.55)",
+            ? "var(--lp-success-border)"
+            : "var(--lp-border-2)",
+          color: value === false ? "var(--lp-success)" : "var(--lp-text-4)",
         }}
       >
         Non
@@ -153,12 +154,12 @@ function YesNo({ value, onChange }: {
         className="h-12 rounded-xl border text-[14px] font-semibold transition-all"
         style={{
           background: value === true
-            ? "rgba(251,146,60,0.12)"
-            : "rgba(255,255,255,0.03)",
+            ? "var(--lp-warn-bg)"
+            : "var(--lp-surface)",
           borderColor: value === true
-            ? "rgba(251,146,60,0.40)"
-            : "rgba(255,255,255,0.10)",
-          color: value === true ? "#fdba74" : "rgba(255,255,255,0.55)",
+            ? "var(--lp-warn-border)"
+            : "var(--lp-border-2)",
+          color: value === true ? "var(--lp-warn)" : "var(--lp-text-4)",
         }}
       >
         Oui
@@ -180,14 +181,14 @@ function Selectt<T extends { value: string; label: string }>({ value, options, o
         onChange={(e) => onChange(e.target.value)}
         className={`${inputStyle} appearance-none pr-10 cursor-pointer`}
       >
-        <option value="" className="bg-slate-900">{placeholder}</option>
+        <option value="">{placeholder}</option>
         {options.map((o) => (
-          <option key={o.value} value={o.value} className="bg-slate-900">
+          <option key={o.value} value={o.value}>
             {o.label}
           </option>
         ))}
       </select>
-      <ChevronDown className="w-4 h-4 text-white/40 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+      <ChevronDown className="w-4 h-4 text-[color:var(--lp-text-4)] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
     </div>
   );
 }
@@ -373,28 +374,28 @@ export default function KycPublicForm({ token, dossierId, partie, pappersEnabled
   /* ─── Page de succès ─── */
   if (submitted) {
     return (
-      <div className="min-h-screen relative flex items-center justify-center p-6"
-        style={{ background: "#06070D", color: "white", fontFamily: "Inter, sans-serif" }}>
+      <div className="kyc-app min-h-screen relative flex items-center justify-center p-6">
         <BackgroundHalos />
         <div className="relative z-10 text-center max-w-md">
           <div
             className="w-20 h-20 rounded-full grid place-items-center mx-auto mb-6"
             style={{
-              background: "linear-gradient(135deg, rgba(16,185,129,0.18), rgba(52,211,153,0.10))",
-              border: "1px solid rgba(16,185,129,0.40)",
-              boxShadow: "0 0 40px rgba(16,185,129,0.30)",
+              background: "var(--lp-success-bg)",
+              border: "1px solid var(--lp-success-border)",
+              boxShadow: "0 0 40px var(--lp-success-bg)",
+              color: "var(--lp-success)",
             }}
           >
-            <Check className="w-10 h-10 text-emerald-300" strokeWidth={2.5} />
+            <Check className="w-10 h-10" strokeWidth={2.5} />
           </div>
           <h1 className="text-[28px] sm:text-[32px] font-bold tracking-tight mb-3">
             Merci, c'est envoyé.
           </h1>
-          <p className="text-white/65 leading-relaxed mb-6">
+          <p className="text-[color:var(--lp-text-3)] leading-relaxed mb-6">
             Vos informations sont arrivées à votre conseiller, chiffrées et hébergées en France.
             Vous serez recontacté(e) prochainement.
           </p>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.10] text-[11px] uppercase tracking-widest text-white/55">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] text-[11px] uppercase tracking-widest text-[color:var(--lp-text-4)]">
             <Lock className="w-3 h-3" />
             Données conservées 5 ans (L.561-12-1 CMF)
           </div>
@@ -406,8 +407,7 @@ export default function KycPublicForm({ token, dossierId, partie, pappersEnabled
   /* ─── Wizard ─── */
   return (
     <div
-      className="min-h-screen relative pb-4"
-      style={{ background: "#06070D", color: "white", fontFamily: "Inter, sans-serif" }}
+      className="kyc-app min-h-screen relative pb-4"
     >
       <BackgroundHalos />
 
@@ -419,13 +419,13 @@ export default function KycPublicForm({ token, dossierId, partie, pappersEnabled
           <div
             className="mb-5 rounded-xl p-3 flex items-center gap-2.5 border"
             style={{
-              background: "rgba(16,185,129,0.06)",
-              borderColor: "rgba(16,185,129,0.30)",
+              background: "var(--lp-success-bg)",
+              borderColor: "var(--lp-success-border)",
             }}
           >
-            <Info className="w-4 h-4 text-emerald-300 shrink-0" />
-            <div className="text-[12.5px] text-white/85">
-              <span className="font-semibold text-emerald-300">Saisie restaurée.</span>{" "}
+            <Info className="w-4 h-4 text-[color:var(--lp-success)] shrink-0" />
+            <div className="text-[12.5px] text-[color:var(--lp-text-2)]">
+              <span className="font-semibold text-[color:var(--lp-success)]">Saisie restaurée.</span>{" "}
               Vous reprenez où vous vous étiez arrêté{new Date(restoredAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long" }) ? ` (sauvegardé le ${new Date(restoredAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })})` : ""}.
             </div>
           </div>
@@ -475,12 +475,12 @@ function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
         <span
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] uppercase tracking-widest font-bold"
           style={{
-            background: isVendeur ? "rgba(124,58,237,0.10)" : "rgba(236,72,153,0.10)",
-            border: `1px solid ${isVendeur ? "rgba(124,58,237,0.30)" : "rgba(236,72,153,0.30)"}`,
-            color: isVendeur ? "#c4b5fd" : "#f9a8d4",
+            background: "var(--lp-card-bg-accent)",
+            border: "1px solid var(--lp-card-border-accent)",
+            color: "var(--lp-accent-text)",
           }}
         >
-          <span className="w-1.5 h-1.5 rounded-full" style={{ background: isVendeur ? "#7c3aed" : "#ec4899" }} />
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--lp-accent)" }} />
           Vous êtes le {isVendeur ? "vendeur" : "acquéreur"} du bien
         </span>
       </div>
@@ -507,12 +507,12 @@ function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
                 className="h-12 rounded-xl border text-[14px] font-semibold transition-all"
                 style={{
                   background: form.typeClient === o.value
-                    ? "linear-gradient(180deg, rgba(124,58,237,0.18), rgba(236,72,153,0.08))"
-                    : "rgba(255,255,255,0.03)",
+                    ? "var(--lp-card-bg-accent)"
+                    : "var(--lp-surface)",
                   borderColor: form.typeClient === o.value
-                    ? "rgba(124,58,237,0.40)"
-                    : "rgba(255,255,255,0.10)",
-                  color: form.typeClient === o.value ? "#fff" : "rgba(255,255,255,0.55)",
+                    ? "var(--lp-card-border-accent)"
+                    : "var(--lp-border-2)",
+                  color: form.typeClient === o.value ? "var(--lp-accent-text)" : "var(--lp-text-4)",
                 }}
               >
                 {o.label}
@@ -549,7 +549,7 @@ function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
       {/* Mention CNIL collapsible */}
       <div
         className="rounded-xl border overflow-hidden"
-        style={{ borderColor: "rgba(124,58,237,0.22)", background: "rgba(124,58,237,0.04)" }}
+        style={{ borderColor: "var(--lp-card-border-accent)", background: "var(--lp-card-bg-accent)" }}
       >
         <button
           type="button"
@@ -557,24 +557,24 @@ function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
           className="w-full px-4 py-3 flex items-center justify-between text-left"
         >
           <div className="flex items-center gap-2.5">
-            <Lock className="w-4 h-4 text-violet-300" />
-            <span className="text-[13px] font-semibold text-violet-100">
+            <Lock className="w-4 h-4 text-[color:var(--lp-accent-text)]" />
+            <span className="text-[13px] font-semibold text-[color:var(--lp-accent-text)]">
               Traitement de vos données — RGPD
             </span>
           </div>
           <ChevronDown
-            className="w-4 h-4 text-white/55 transition-transform"
+            className="w-4 h-4 text-[color:var(--lp-text-4)] transition-transform"
             style={{ transform: cnilOpen ? "rotate(180deg)" : "rotate(0deg)" }}
           />
         </button>
         {cnilOpen && (
-          <div className="px-4 pb-4 text-[12.5px] text-white/65 leading-relaxed space-y-2.5 border-t border-white/[0.05] pt-3">
-            <p><strong className="text-white">Finalité</strong> — Obligations LCB-FT (CMF L.561-1 et suiv.).</p>
-            <p><strong className="text-white">Hébergement</strong> — France (Paris) et UE (Frankfurt). Aucun transfert hors UE.</p>
-            <p><strong className="text-white">Sécurité</strong> — Chiffrement TLS 1.3 + AES-256, accès journalisés.</p>
-            <p><strong className="text-white">Conservation</strong> — 5 ans à compter de la fin de la relation (art. L.561-12-1 CMF).</p>
-            <p><strong className="text-white">Vos droits</strong> — Accès, rectification, opposition (limité par l'obligation légale), réclamation CNIL.</p>
-            <p className="text-[11px] text-white/40 pt-1">Version : {MENTION_CNIL_VERSION}</p>
+          <div className="px-4 pb-4 text-[12.5px] text-[color:var(--lp-text-3)] leading-relaxed space-y-2.5 border-t border-[color:var(--lp-border-1)] pt-3">
+            <p><strong className="text-[color:var(--lp-text)]">Finalité</strong> — Obligations LCB-FT (CMF L.561-1 et suiv.).</p>
+            <p><strong className="text-[color:var(--lp-text)]">Hébergement</strong> — France (Paris) et UE (Frankfurt). Aucun transfert hors UE.</p>
+            <p><strong className="text-[color:var(--lp-text)]">Sécurité</strong> — Chiffrement TLS 1.3 + AES-256, accès journalisés.</p>
+            <p><strong className="text-[color:var(--lp-text)]">Conservation</strong> — 5 ans à compter de la fin de la relation (art. L.561-12-1 CMF).</p>
+            <p><strong className="text-[color:var(--lp-text)]">Vos droits</strong> — Accès, rectification, opposition (limité par l'obligation légale), réclamation CNIL.</p>
+            <p className="text-[11px] text-[color:var(--lp-text-4)] pt-1">Version : {MENTION_CNIL_VERSION}</p>
           </div>
         )}
       </div>
@@ -830,8 +830,8 @@ function PappersLookupButton({ form, set, token }: { form: KycForm; set: Setter;
     <div
       className="rounded-xl p-4 mb-1"
       style={{
-        background: "linear-gradient(180deg, rgba(168,85,247,0.06), rgba(99,102,241,0.03) 60%, transparent)",
-        border: "1px solid rgba(168,85,247,0.22)",
+        background: "var(--lp-card-bg-accent)",
+        border: "1px solid var(--lp-card-border-accent)",
       }}
     >
       <button
@@ -841,13 +841,13 @@ function PappersLookupButton({ form, set, token }: { form: KycForm; set: Setter;
         className="flex items-center justify-center gap-2.5 rounded-lg px-4 py-3 transition-all w-full"
         style={{
           background: sirenOk && !loading
-            ? "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)"
-            : "rgba(255,255,255,0.04)",
-          border: sirenOk ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.06)",
+            ? "var(--lp-cta-grad)"
+            : "var(--lp-surface)",
+          border: sirenOk ? "1px solid var(--lp-border-2)" : "1px solid var(--lp-border-1)",
           cursor: sirenOk && !loading ? "pointer" : "not-allowed",
           opacity: sirenOk && !loading ? 1 : 0.5,
           boxShadow: sirenOk && !loading
-            ? "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 16px rgba(168,85,247,0.25)"
+            ? "var(--lp-cta-shadow)"
             : "none",
           color: "white",
           fontWeight: 600,
@@ -876,9 +876,9 @@ function PappersLookupButton({ form, set, token }: { form: KycForm; set: Setter;
         <div
           className="mt-3 rounded-md px-3 py-2 text-[12.5px]"
           style={{
-            background: "rgba(220,38,38,0.10)",
-            border: "1px solid rgba(220,38,38,0.30)",
-            color: "#fca5a5",
+            background: "var(--lp-danger-bg)",
+            border: "1px solid var(--lp-danger-border)",
+            color: "var(--lp-danger)",
           }}
         >
           ⚠️ {error}
@@ -889,9 +889,9 @@ function PappersLookupButton({ form, set, token }: { form: KycForm; set: Setter;
         <div
           className="mt-3 rounded-md px-3 py-2 text-[12.5px] flex items-start gap-2"
           style={{
-            background: "rgba(16,185,129,0.10)",
-            border: "1px solid rgba(16,185,129,0.30)",
-            color: "#6ee7b7",
+            background: "var(--lp-success-bg)",
+            border: "1px solid var(--lp-success-border)",
+            color: "var(--lp-success)",
           }}
         >
           <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" />
@@ -943,10 +943,10 @@ function Step2_Piece({ form, set, isMorale }: { form: KycForm; set: Setter; isMo
       </Field>
 
       <div
-        className="rounded-xl px-3 py-2.5 text-[12px] text-white/55 border"
-        style={{ background: "rgba(124,58,237,0.05)", borderColor: "rgba(124,58,237,0.20)" }}
+        className="rounded-xl px-3 py-2.5 text-[12px] text-[color:var(--lp-text-4)] border"
+        style={{ background: "var(--lp-card-bg-accent)", borderColor: "var(--lp-card-border-accent)" }}
       >
-        <span className="text-violet-200 font-semibold">📷 Photo à l'étape suivante</span> — la photo de votre pièce sera demandée plus loin, avec un accès direct à votre appareil photo.
+        <span className="text-[color:var(--lp-accent-text)] font-semibold">📷 Photo à l'étape suivante</span> — la photo de votre pièce sera demandée plus loin, avec un accès direct à votre appareil photo.
       </div>
     </Section>
   );
@@ -1036,7 +1036,7 @@ function BeneficiairesEffectifsEditor({ value, onChange }: {
   return (
     <div className="flex flex-col gap-3">
       {value.length === 0 && (
-        <div className="text-[12.5px] text-white/45 italic">
+        <div className="text-[12.5px] text-[color:var(--lp-text-4)] italic">
           Aucun bénéficiaire effectif déclaré. Ajoutez-en au moins un.
         </div>
       )}
@@ -1045,16 +1045,16 @@ function BeneficiairesEffectifsEditor({ value, onChange }: {
         <div
           key={i}
           className="rounded-xl p-3.5 border flex flex-col gap-3"
-          style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.10)" }}
+          style={{ background: "var(--lp-surface)", borderColor: "var(--lp-border-2)" }}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-widest text-white/55">
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-[color:var(--lp-text-4)]">
               Bénéficiaire #{i + 1}
             </span>
             <button
               type="button"
               onClick={() => remove(i)}
-              className="w-8 h-8 rounded-lg hover:bg-red-500/15 hover:text-red-300 text-white/40 grid place-items-center transition"
+              className="w-8 h-8 rounded-lg hover:bg-[var(--lp-danger-bg)] hover:text-[color:var(--lp-danger)] text-[color:var(--lp-text-4)] grid place-items-center transition"
               aria-label="Supprimer"
             >
               <Trash2 className="w-4 h-4" />
@@ -1090,8 +1090,8 @@ function BeneficiairesEffectifsEditor({ value, onChange }: {
       <button
         type="button"
         onClick={add}
-        className="self-start inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-violet-200 px-3 py-2 rounded-lg border transition"
-        style={{ background: "rgba(124,58,237,0.10)", borderColor: "rgba(124,58,237,0.30)" }}
+        className="self-start inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[color:var(--lp-accent-text)] px-3 py-2 rounded-lg border transition"
+        style={{ background: "var(--lp-card-bg-accent)", borderColor: "var(--lp-card-border-accent)" }}
       >
         <Plus className="w-3.5 h-3.5" />
         Ajouter un bénéficiaire effectif
@@ -1205,12 +1205,12 @@ function Step4_Operation({ form, set, isVendeur }: { form: KycForm; set: Setter;
           <div
             className="rounded-xl px-3 py-2.5 text-[12px] border"
             style={{
-              background: "rgba(124,58,237,0.05)",
-              borderColor: "rgba(124,58,237,0.20)",
-              color: "rgba(255,255,255,0.75)",
+              background: "var(--lp-card-bg-accent)",
+              borderColor: "var(--lp-card-border-accent)",
+              color: "var(--lp-text-3)",
             }}
           >
-            <span className="text-violet-200 font-semibold">ℹ️ Bon à savoir</span> — En tant que vendeur, vous n&apos;avez pas à renseigner le mode de paiement ou de financement de l&apos;acquéreur. C&apos;est lui qui s&apos;en occupe de son côté.
+            <span className="text-[color:var(--lp-accent-text)] font-semibold">ℹ️ Bon à savoir</span> — En tant que vendeur, vous n&apos;avez pas à renseigner le mode de paiement ou de financement de l&apos;acquéreur. C&apos;est lui qui s&apos;en occupe de son côté.
           </div>
         </>
       )}
@@ -1322,9 +1322,9 @@ function Step6_Recap({ form, set, jumpTo, isVendeur }: { form: KycForm; set: Set
       {/* Consentement RGPD */}
       <div
         className="rounded-xl p-4 border"
-        style={{ background: "rgba(124,58,237,0.06)", borderColor: "rgba(124,58,237,0.30)" }}
+        style={{ background: "var(--lp-card-bg-accent)", borderColor: "var(--lp-card-border-accent)" }}
       >
-        <p className="text-[13px] text-white/80 leading-relaxed mb-3">
+        <p className="text-[13px] text-[color:var(--lp-text-2)] leading-relaxed mb-3">
           Je certifie sur l'honneur l'exactitude des informations et pièces fournies, et m'engage à
           signaler à mon conseiller tout changement substantiel de ma situation (art. L.561-5-1 CMF).
         </p>
@@ -1333,24 +1333,24 @@ function Step6_Recap({ form, set, jumpTo, isVendeur }: { form: KycForm; set: Set
           onClick={() => set("consentementRgpd", !form.consentementRgpd)}
           className="w-full flex items-start gap-3 p-3 rounded-xl border text-left transition"
           style={{
-            background: form.consentementRgpd ? "rgba(16,185,129,0.08)" : "rgba(255,255,255,0.03)",
-            borderColor: form.consentementRgpd ? "rgba(16,185,129,0.40)" : "rgba(255,255,255,0.10)",
+            background: form.consentementRgpd ? "var(--lp-success-bg)" : "var(--lp-surface)",
+            borderColor: form.consentementRgpd ? "var(--lp-success-border)" : "var(--lp-border-2)",
           }}
         >
           <span
             className="mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0"
             style={{
-              background: form.consentementRgpd ? "#10b981" : "transparent",
-              borderColor: form.consentementRgpd ? "#10b981" : "rgba(255,255,255,0.30)",
+              background: form.consentementRgpd ? "var(--lp-success)" : "transparent",
+              borderColor: form.consentementRgpd ? "var(--lp-success)" : "var(--lp-border-3)",
             }}
           >
             {form.consentementRgpd && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
           </span>
-          <span className="text-[12.5px] text-white/85 leading-relaxed flex-1">
+          <span className="text-[12.5px] text-[color:var(--lp-text-2)] leading-relaxed flex-1">
             J'ai lu et compris les informations relatives au traitement de mes données personnelles
-            (mention RGPD à l'étape 1, version <span className="font-mono text-violet-200">{MENTION_CNIL_VERSION}</span>)
+            (mention RGPD à l'étape 1, version <span className="font-mono text-[color:var(--lp-accent-text)]">{MENTION_CNIL_VERSION}</span>)
             et je consens à leur traitement aux fins décrites.{" "}
-            <span className="text-pink-300">*</span>
+            <span className="text-[color:var(--lp-danger)]">*</span>
           </span>
         </button>
       </div>
@@ -1366,14 +1366,14 @@ function RecapBlock({ label, items, onEdit }: {
   return (
     <div
       className="rounded-xl p-3.5 border"
-      style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.08)" }}
+      style={{ background: "var(--lp-surface)", borderColor: "var(--lp-border-2)" }}
     >
       <div className="flex items-center justify-between mb-2">
-        <div className="text-[11px] uppercase tracking-widest text-white/55 font-semibold">{label}</div>
+        <div className="text-[11px] uppercase tracking-widest text-[color:var(--lp-text-4)] font-semibold">{label}</div>
         <button
           type="button"
           onClick={onEdit}
-          className="text-[11px] font-semibold text-violet-200 hover:text-violet-100 transition"
+          className="text-[11px] font-semibold text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] transition"
         >
           Modifier
         </button>
@@ -1381,8 +1381,8 @@ function RecapBlock({ label, items, onEdit }: {
       <dl className="grid grid-cols-1 gap-1.5">
         {items.map((it) => (
           <div key={it.k} className="flex items-baseline justify-between gap-3">
-            <dt className="text-[12px] text-white/50 shrink-0">{it.k}</dt>
-            <dd className="text-[12.5px] text-white/85 text-right truncate">{it.v || "—"}</dd>
+            <dt className="text-[12px] text-[color:var(--lp-text-4)] shrink-0">{it.k}</dt>
+            <dd className="text-[12.5px] text-[color:var(--lp-text-2)] text-right truncate">{it.v || "—"}</dd>
           </div>
         ))}
       </dl>
@@ -1398,7 +1398,7 @@ function BackgroundHalos() {
         className="fixed pointer-events-none rounded-full"
         style={{
           width: 500, height: 500, top: -200, left: -100,
-          background: "radial-gradient(circle, rgba(124,58,237,0.18), transparent 70%)",
+          background: "radial-gradient(circle, var(--lp-orb-1), transparent 70%)",
           filter: "blur(80px)",
         }}
       />
@@ -1406,7 +1406,7 @@ function BackgroundHalos() {
         className="fixed pointer-events-none rounded-full"
         style={{
           width: 400, height: 400, bottom: -150, right: -100,
-          background: "radial-gradient(circle, rgba(236,72,153,0.12), transparent 70%)",
+          background: "radial-gradient(circle, var(--lp-orb-2), transparent 70%)",
           filter: "blur(80px)",
         }}
       />

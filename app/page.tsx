@@ -12,13 +12,13 @@ import {
   BookOpen, Clock, Users, Gavel, MapPin, EyeOff, Server, AlertTriangle, FileText, BadgeCheck,
 } from "lucide-react";
 import FloatingNav from "@/components/landing/FloatingNav";
-import HeroCarousel from "@/components/landing/HeroCarousel";
 import LegalFooter from "@/components/legal/LegalFooter";
 import {
   Section, SectionHeader, H3, Lede, P, Card, IconCircle, CTA,
   Eyebrow, LegalRef,
 } from "@/components/landing/primitives";
 import EnvoiLienSection from "@/components/landing/sections/EnvoiLienSection";
+import PdfPreviewFrame from "@/components/landing/PdfPreviewFrame";
 import { SOUS_TRAITANTS } from "@/lib/legal";
 
 export default function LandingPage() {
@@ -75,17 +75,16 @@ export default function LandingPage() {
                   <ArrowRight width={15} height={15} />
                 </CTA>
               ) : (
-                <>
-                  <CTA onClick={openDemo} variant="primary" size="lg">
-                    <Play width={13} height={13} fill="currentColor" strokeWidth={0} />
-                    Voir la démo
-                  </CTA>
-                  <CTA onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })} variant="ghost" size="lg">
-                    Essayer 14 jours gratuits
-                    <ArrowRight width={15} height={15} />
-                  </CTA>
-                </>
+                <CTA onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })} variant="primary" size="lg">
+                  Essayer 14 jours gratuits
+                  <ArrowRight width={15} height={15} />
+                </CTA>
               )}
+              {/* Démo guidée : toujours accessible (connecté ou non) */}
+              <CTA onClick={openDemo} variant="ghost" size="lg">
+                <Play width={13} height={13} fill="currentColor" strokeWidth={0} />
+                Voir la démo guidée
+              </CTA>
             </div>
 
             {/* Lien discret pour les utilisateurs déjà inscrits — évite que la
@@ -110,9 +109,10 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Mockup carrousel (maquette « écran » — volontairement sombre) */}
+          {/* Visuel hero : le VRAI document remis (attestation / fiche KYC),
+              rendu par le vrai template PDF. Toggle attestation ↔ fiche inclus. */}
           <div className="relative z-10 mt-2 lg:mt-0">
-            <HeroCarousel />
+            <PdfPreviewFrame compact />
           </div>
         </div>
       </section>
@@ -134,6 +134,9 @@ export default function LandingPage() {
           <AuthorityPill icon={MapPin} label="🇪🇺 Souverain" sub="Francfort · Paris" />
         </div>
       </section>
+
+      {/* ───────── PARCOURS CLIENT (vrai formulaire, remonté en tête) ───────── */}
+      <EnvoiLienSection />
 
       {/* ───────── COMPRENDRE LA LCB-FT ───────── */}
       <Section id="understand">
@@ -217,42 +220,45 @@ export default function LandingPage() {
             title="Formulaire KYC dynamique"
             text="Lien sécurisé unique envoyé à votre client. Identification, bénéficiaires effectifs, justificatifs, consentement RGPD."
             refCode="L.561-5"
+            tone="violet"
           />
           <FeatureCard
             icon={ShieldCheck}
             title="Scoring LCB-FT v2"
             text="Algorithme propriétaire à 4 niveaux : vigilance standard, renforcée, examen renforcé, interdiction. Versionné et auditable."
             refCode="L.561-10"
+            tone="teal"
           />
           <FeatureCard
             icon={Lock}
             title="Conservation 5 ans"
             text="Stockage chiffré AES-256 en France & UE. Conservation automatique conforme à l'obligation légale, suppression bloquée jusqu'au terme."
             refCode="L.561-12-1"
+            tone="pink"
           />
           <FeatureCard
             icon={Send}
             title="Envoi 0 friction"
             text="Pas d'app à installer pour vos clients. Le formulaire passe par email, SMS ou WhatsApp. Réception automatique dans votre dossier."
             refCode="L.561-4"
+            tone="teal"
           />
           <FeatureCard
             icon={Mail}
             title="Déclaration TRACFIN"
             text="Bouton direct vers le portail ERMES. Export structuré de votre fiche KYC, prêt à joindre à la déclaration de soupçon."
             refCode="L.561-15"
+            tone="violet"
           />
           <FeatureCard
             icon={FileDown}
             title="Attestation PDF certifiée"
             text="Document horodaté, signé SHA-256, opposable lors d'un contrôle. Format premium, références CMF intégrées."
             refCode="L.561-32"
+            tone="pink"
           />
         </div>
       </Section>
-
-      {/* ───────── ENVOI DU LIEN KYC (spotlight différenciateur) ───────── */}
-      <EnvoiLienSection />
 
       {/* ───────── 4 ÉTAPES ───────── */}
       <Section id="how" maxWidth="5xl">
@@ -565,16 +571,18 @@ function FeatureCard({
   title,
   text,
   refCode,
+  tone = "violet",
 }: {
   icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
   title: string;
   text: string;
   refCode: string;
+  tone?: "violet" | "teal" | "pink";
 }) {
   return (
     <Card>
       <div className="flex items-start justify-between gap-3 mb-3">
-        <IconCircle icon={Icon} />
+        <IconCircle icon={Icon} tone={tone} />
         <LegalRef>CMF {refCode}</LegalRef>
       </div>
       <H3>{title}</H3>

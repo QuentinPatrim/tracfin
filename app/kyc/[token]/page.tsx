@@ -31,13 +31,16 @@ export default async function KycPublicPage({ params }: { params: Promise<{ toke
   // Lien expiré
   if (new Date(link.expires_at) < new Date()) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#07080F", color: "white", fontFamily: "Inter, sans-serif" }}>
+      <div className="kyc-app min-h-screen flex items-center justify-center p-6">
         <div className="text-center max-w-md">
-          <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto mb-6">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgb(248,113,113)" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ background: "var(--lp-danger-bg)", border: "1px solid var(--lp-danger-border)" }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--lp-danger)" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
           </div>
           <h1 className="text-2xl font-bold mb-2">Lien expiré</h1>
-          <p className="text-white/50">Ce lien KYC n'est plus valide. Contactez votre conseiller pour en obtenir un nouveau.</p>
+          <p style={{ color: "var(--lp-text-4)" }}>Ce lien KYC n'est plus valide. Contactez votre conseiller pour en obtenir un nouveau.</p>
         </div>
       </div>
     );
@@ -46,13 +49,16 @@ export default async function KycPublicPage({ params }: { params: Promise<{ toke
   // Déjà rempli
   if (link.status === "completed") {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#07080F", color: "white", fontFamily: "Inter, sans-serif" }}>
+      <div className="kyc-app min-h-screen flex items-center justify-center p-6">
         <div className="text-center max-w-md">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-6">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgb(52,211,153)" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ background: "var(--lp-success-bg)", border: "1px solid var(--lp-success-border)" }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--lp-success)" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
           </div>
           <h1 className="text-2xl font-bold mb-2">Dossier déjà transmis</h1>
-          <p className="text-white/50">Vos informations ont bien été envoyées. Votre conseiller reviendra vers vous prochainement.</p>
+          <p style={{ color: "var(--lp-text-4)" }}>Vos informations ont bien été envoyées. Votre conseiller reviendra vers vous prochainement.</p>
         </div>
       </div>
     );

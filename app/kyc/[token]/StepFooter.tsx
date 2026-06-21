@@ -20,9 +20,10 @@ export default function StepFooter({
 }: Props) {
   return (
     <div
-      className="sticky bottom-0 z-40 border-t border-white/[0.06]"
+      className="sticky bottom-0 z-40 border-t"
       style={{
-        background: "rgba(6,7,13,0.92)",
+        background: "var(--lp-nav-bg-scrolled)",
+        borderColor: "var(--lp-border-1)",
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
         paddingBottom: "env(safe-area-inset-bottom, 0)",
@@ -31,7 +32,7 @@ export default function StepFooter({
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-3">
         {/* Message de validation */}
         {!canProceed && validationMessage && (
-          <p className="text-[11.5px] text-pink-300/85 mb-2 text-center">
+          <p className="text-[11.5px] mb-2 text-center" style={{ color: "var(--lp-danger)" }}>
             {validationMessage}
           </p>
         )}
@@ -41,7 +42,7 @@ export default function StepFooter({
             type="button"
             onClick={onPrev}
             disabled={isFirst}
-            className="flex items-center justify-center gap-1.5 h-12 px-4 rounded-xl text-[14px] font-semibold text-white/80 border border-white/[0.10] bg-white/[0.04] disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:bg-white/[0.07]"
+            className="flex items-center justify-center gap-1.5 h-12 px-4 rounded-xl text-[14px] font-semibold border disabled:opacity-30 disabled:cursor-not-allowed transition-all text-[color:var(--lp-text-2)] border-[color:var(--lp-border-2)] bg-[var(--lp-surface)] hover:bg-[var(--lp-surface-3)]"
             aria-label="Étape précédente"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -56,10 +57,10 @@ export default function StepFooter({
               className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-[14px] font-bold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: canProceed
-                  ? "linear-gradient(135deg, #7c3aed, #ec4899)"
-                  : "rgba(124,58,237,0.30)",
+                  ? "var(--lp-cta-grad)"
+                  : "var(--lp-surface-3)",
                 boxShadow: canProceed
-                  ? "0 1px 0 rgba(255,255,255,0.20) inset, 0 8px 22px rgba(124,58,237,0.40)"
+                  ? "var(--lp-cta-shadow)"
                   : "none",
               }}
             >
@@ -74,10 +75,10 @@ export default function StepFooter({
               className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl text-[14px] font-bold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: canProceed && !submitting
-                  ? "linear-gradient(135deg, #7c3aed, #ec4899)"
-                  : "rgba(124,58,237,0.30)",
+                  ? "var(--lp-cta-grad)"
+                  : "var(--lp-surface-3)",
                 boxShadow: canProceed && !submitting
-                  ? "0 1px 0 rgba(255,255,255,0.20) inset, 0 8px 22px rgba(124,58,237,0.40)"
+                  ? "var(--lp-cta-shadow)"
                   : "none",
               }}
             >

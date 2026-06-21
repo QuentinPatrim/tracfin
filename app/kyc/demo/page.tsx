@@ -20,9 +20,13 @@ export default function DemoKycPage() {
       if (e?.data?.type === "klaris-demo-step" && typeof e.data.step === "number") {
         setStep(e.data.step);
       }
+      // Le parent (landing) pousse son thème pour que l'aperçu soit synchronisé.
+      if (e?.data?.type === "klaris-demo-theme" && (e.data.theme === "light" || e.data.theme === "dark")) {
+        document.documentElement.setAttribute("data-theme", e.data.theme);
+      }
     };
     window.addEventListener("message", onMsg);
-    // Signale au parent (le film) qu'on est prêt à recevoir l'étape.
+    // Signale au parent (le film) qu'on est prêt à recevoir l'étape + le thème.
     try { window.parent?.postMessage({ type: "klaris-demo-ready" }, "*"); } catch { /* noop */ }
     return () => window.removeEventListener("message", onMsg);
   }, []);

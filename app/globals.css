@@ -99,12 +99,25 @@ body {
   --lp-success-bg: rgba(52,211,153,0.15);
   --lp-success-border: rgba(52,211,153,0.40);
 
+  --lp-danger: #F87171;
+  --lp-danger-bg: rgba(248,113,113,0.12);
+  --lp-danger-border: rgba(248,113,113,0.35);
+
+  --lp-warn: #FBBF24;
+  --lp-warn-bg: rgba(251,191,36,0.12);
+  --lp-warn-border: rgba(251,191,36,0.35);
+
+  /* Champs de formulaire (KYC) */
+  --lp-input-bg: rgba(255,255,255,0.05);
+  --lp-input-border: rgba(255,255,255,0.12);
+
   --lp-legalref-bg: rgba(236,72,153,0.08);
   --lp-legalref-border: rgba(236,72,153,0.20);
   --lp-legalref-text: #F9A8D4;
 }
 
-:root[data-theme="dark"] .klaris-public { color-scheme: dark; }
+:root[data-theme="dark"] .klaris-public,
+:root[data-theme="dark"] .kyc-app { color-scheme: dark; }
 
 /* ---- LIGHT ---- */
 :root[data-theme="light"] {
@@ -163,15 +176,29 @@ body {
   --lp-success-bg: rgba(5,150,105,0.10);
   --lp-success-border: rgba(5,150,105,0.30);
 
+  --lp-danger: #DC2626;
+  --lp-danger-bg: rgba(220,38,38,0.08);
+  --lp-danger-border: rgba(220,38,38,0.28);
+
+  --lp-warn: #B45309;
+  --lp-warn-bg: rgba(245,158,11,0.10);
+  --lp-warn-border: rgba(245,158,11,0.32);
+
+  /* Champs de formulaire (KYC) */
+  --lp-input-bg: #FFFFFF;
+  --lp-input-border: rgba(20,22,43,0.16);
+
   --lp-legalref-bg: rgba(236,72,153,0.08);
   --lp-legalref-border: rgba(236,72,153,0.28);
   --lp-legalref-text: #BE185D;
 }
 
-:root[data-theme="light"] .klaris-public { color-scheme: light; }
+:root[data-theme="light"] .klaris-public,
+:root[data-theme="light"] .kyc-app { color-scheme: light; }
 
 /* Wrapper de page publique : fond + texte + police, transition douce de thème */
-.klaris-public {
+.klaris-public,
+.kyc-app {
   background: var(--lp-bg);
   color: var(--lp-text);
   font-family: var(--font-inter), Inter, system-ui, sans-serif;

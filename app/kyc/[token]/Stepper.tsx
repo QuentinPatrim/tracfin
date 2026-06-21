@@ -20,9 +20,10 @@ export default function Stepper({ steps, current, onJumpBack }: Props) {
 
   return (
     <div
-      className="sticky top-0 z-40 border-b border-white/[0.06]"
+      className="sticky top-0 z-40 border-b"
       style={{
-        background: "rgba(6,7,13,0.85)",
+        background: "var(--lp-nav-bg-scrolled)",
+        borderColor: "var(--lp-border-1)",
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
       }}
@@ -32,9 +33,9 @@ export default function Stepper({ steps, current, onJumpBack }: Props) {
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
             <KlarisLogo size={28} />
-            <div className="text-[14px] font-bold tracking-tight text-white">Klaris</div>
+            <div className="text-[14px] font-bold tracking-tight" style={{ color: "var(--lp-text)" }}>Klaris</div>
           </div>
-          <div className="text-[11px] uppercase tracking-widest text-white/55 font-semibold">
+          <div className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--lp-text-4)" }}>
             Étape {current + 1} / {total}
           </div>
         </div>
@@ -54,10 +55,10 @@ export default function Stepper({ steps, current, onJumpBack }: Props) {
                 className="flex-1 h-1 rounded-full transition-all"
                 style={{
                   background: isPast
-                    ? "rgba(124,58,237,0.65)"
+                    ? "var(--lp-accent)"
                     : isActive
-                    ? "linear-gradient(90deg, #7c3aed, #ec4899)"
-                    : "rgba(255,255,255,0.06)",
+                    ? "var(--lp-cta-grad)"
+                    : "var(--lp-surface-2)",
                   cursor: clickable ? "pointer" : "default",
                   opacity: clickable ? 1 : 0.55,
                 }}
@@ -68,7 +69,7 @@ export default function Stepper({ steps, current, onJumpBack }: Props) {
           })}
         </div>
 
-        <div className="mt-1.5 text-[12.5px] font-semibold text-white/85">
+        <div className="mt-1.5 text-[12.5px] font-semibold" style={{ color: "var(--lp-text-2)" }}>
           {steps[current]?.label}
         </div>
       </div>

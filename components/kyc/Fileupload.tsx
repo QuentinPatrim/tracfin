@@ -94,8 +94,8 @@ export default function FileUpload({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-[11.5px] font-semibold text-white/65 uppercase tracking-[0.10em]">
-        {label} {required && <span className="text-pink-300">*</span>}
+      <label className="text-[11.5px] font-semibold text-[color:var(--lp-text-3)] uppercase tracking-[0.10em]">
+        {label} {required && <span className="text-[color:var(--lp-danger)]">*</span>}
       </label>
 
       {!value && !uploading && (
@@ -106,13 +106,13 @@ export default function FileUpload({
               onClick={() => cameraInputRef.current?.click()}
               className="flex flex-col items-center gap-1.5 px-3 py-4 rounded-xl border transition-all"
               style={{
-                background: "linear-gradient(180deg, rgba(124,58,237,0.10), rgba(236,72,153,0.04))",
-                borderColor: "rgba(124,58,237,0.28)",
+                background: "var(--lp-card-bg-accent)",
+                borderColor: "var(--lp-card-border-accent)",
               }}
             >
-              <Camera className="w-5 h-5 text-violet-200" />
-              <span className="text-[12.5px] font-semibold text-white">Prendre une photo</span>
-              <span className="text-[10px] text-white/45">Avec votre appareil</span>
+              <Camera className="w-5 h-5 text-[color:var(--lp-accent-text)]" />
+              <span className="text-[12.5px] font-semibold text-[color:var(--lp-text)]">Prendre une photo</span>
+              <span className="text-[10px] text-[color:var(--lp-text-4)]">Avec votre appareil</span>
             </button>
           )}
           <button
@@ -120,13 +120,13 @@ export default function FileUpload({
             onClick={() => galleryInputRef.current?.click()}
             className="flex flex-col items-center gap-1.5 px-3 py-4 rounded-xl border transition-all"
             style={{
-              background: "rgba(255,255,255,0.04)",
-              borderColor: "rgba(255,255,255,0.12)",
+              background: "var(--lp-surface)",
+              borderColor: "var(--lp-border-3)",
             }}
           >
-            <FolderOpen className="w-5 h-5 text-white/70" />
-            <span className="text-[12.5px] font-semibold text-white">Choisir un fichier</span>
-            <span className="text-[10px] text-white/45">PDF, JPG, PNG · 10 Mo</span>
+            <FolderOpen className="w-5 h-5 text-[color:var(--lp-text-3)]" />
+            <span className="text-[12.5px] font-semibold text-[color:var(--lp-text)]">Choisir un fichier</span>
+            <span className="text-[10px] text-[color:var(--lp-text-4)]">PDF, JPG, PNG · 10 Mo</span>
           </button>
 
           {/* Inputs cachés */}
@@ -155,24 +155,24 @@ export default function FileUpload({
         <div
           className="rounded-xl p-4 border flex items-center gap-3"
           style={{
-            background: "linear-gradient(180deg, rgba(124,58,237,0.08), rgba(236,72,153,0.03))",
-            borderColor: "rgba(124,58,237,0.30)",
+            background: "var(--lp-card-bg-accent)",
+            borderColor: "var(--lp-card-border-accent)",
           }}
         >
-          <Loader2 className="w-5 h-5 text-violet-200 animate-spin shrink-0" />
+          <Loader2 className="w-5 h-5 text-[color:var(--lp-accent-text)] animate-spin shrink-0" />
           <div className="flex-1 min-w-0">
-            <div className="text-[12.5px] text-white font-semibold mb-1">Envoi sécurisé…</div>
-            <div className="h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+            <div className="text-[12.5px] text-[color:var(--lp-text)] font-semibold mb-1">Envoi sécurisé…</div>
+            <div className="h-1.5 rounded-full bg-[var(--lp-surface-3)] overflow-hidden">
               <div
                 className="h-full transition-all duration-200"
                 style={{
                   width: `${Math.round(progress)}%`,
-                  background: "linear-gradient(90deg, #7c3aed, #ec4899)",
-                  boxShadow: "0 0 8px rgba(124,58,237,0.50)",
+                  background: "var(--lp-cta-grad)",
+                  boxShadow: "var(--lp-cta-shadow)",
                 }}
               />
             </div>
-            <div className="text-[10px] text-white/45 mt-1">{Math.round(progress)} % · chiffré TLS 1.3</div>
+            <div className="text-[10px] text-[color:var(--lp-text-4)] mt-1">{Math.round(progress)} % · chiffré TLS 1.3</div>
           </div>
         </div>
       )}
@@ -182,8 +182,8 @@ export default function FileUpload({
         <div
           className="rounded-xl p-3 border flex items-center gap-3"
           style={{
-            background: "rgba(16,185,129,0.06)",
-            borderColor: "rgba(16,185,129,0.30)",
+            background: "var(--lp-success-bg)",
+            borderColor: "var(--lp-success-border)",
           }}
         >
           {isImage ? (
@@ -191,22 +191,22 @@ export default function FileUpload({
             <img
               src={previewUrl}
               alt={label}
-              className="w-12 h-12 rounded-lg object-cover border border-white/10 shrink-0"
+              className="w-12 h-12 rounded-lg object-cover border border-[color:var(--lp-border-2)] shrink-0"
             />
           ) : (
-            <div className="w-12 h-12 rounded-lg bg-white/[0.05] border border-white/10 flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-lg bg-[var(--lp-surface-2)] border border-[color:var(--lp-border-2)] flex items-center justify-center shrink-0">
               {isPdf ? (
-                <FileText className="w-5 h-5 text-emerald-300" />
+                <FileText className="w-5 h-5 text-[color:var(--lp-success)]" />
               ) : (
-                <ImageIcon className="w-5 h-5 text-emerald-300" />
+                <ImageIcon className="w-5 h-5 text-[color:var(--lp-success)]" />
               )}
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] text-white font-medium truncate">
+            <div className="text-[13px] text-[color:var(--lp-text)] font-medium truncate">
               {fileName || "Fichier envoyé"}
             </div>
-            <div className="flex items-center gap-1.5 text-[10.5px] text-emerald-300 mt-0.5">
+            <div className="flex items-center gap-1.5 text-[10.5px] text-[color:var(--lp-success)] mt-0.5">
               <Check className="w-3 h-3" strokeWidth={3} />
               <span>Reçu · chiffré · Paris</span>
             </div>
@@ -219,7 +219,7 @@ export default function FileUpload({
                 // Petit délai puis on relance la prise de photo si c'était par caméra
                 setTimeout(() => cameraInputRef.current?.click(), 50);
               }}
-              className="w-9 h-9 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white flex items-center justify-center transition border border-white/[0.08]"
+              className="w-9 h-9 rounded-lg bg-[var(--lp-surface)] hover:bg-[var(--lp-surface-3)] text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)] flex items-center justify-center transition border border-[color:var(--lp-border-2)]"
               aria-label="Reprendre"
               title="Reprendre"
             >
@@ -228,7 +228,7 @@ export default function FileUpload({
             <button
               type="button"
               onClick={() => onChange("")}
-              className="w-9 h-9 rounded-lg bg-white/[0.04] hover:bg-red-500/20 hover:text-red-300 text-white/60 flex items-center justify-center transition border border-white/[0.08]"
+              className="w-9 h-9 rounded-lg bg-[var(--lp-surface)] hover:bg-[var(--lp-danger-bg)] hover:text-[color:var(--lp-danger)] text-[color:var(--lp-text-3)] flex items-center justify-center transition border border-[color:var(--lp-border-2)]"
               aria-label="Supprimer"
               title="Supprimer"
             >
@@ -239,10 +239,10 @@ export default function FileUpload({
       )}
 
       {hint && !error && (
-        <p className="text-[11px] text-white/40 leading-relaxed">{hint}</p>
+        <p className="text-[11px] text-[color:var(--lp-text-4)] leading-relaxed">{hint}</p>
       )}
       {error && (
-        <p className="text-[11.5px] text-pink-300">{error}</p>
+        <p className="text-[11.5px] text-[color:var(--lp-danger)]">{error}</p>
       )}
     </div>
   );

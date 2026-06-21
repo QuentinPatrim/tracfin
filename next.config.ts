@@ -48,9 +48,12 @@ const STORAGE_DOMAINS = [
 const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${CLERK_DOMAINS} ${STRIPE_DOMAINS} https://challenges.cloudflare.com https://*.vercel-insights.com`,
-  "style-src 'self' 'unsafe-inline'",
+  // fonts.googleapis.com : feuille @import des polices Inter/JetBrains utilisée par
+  // l'APERÇU des PDF (routes /pdf-render/*/demo) — rendu fidèle au vrai document.
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   `img-src 'self' data: blob: ${CLERK_DOMAINS} ${STORAGE_DOMAINS} https://img.clerk.com https://www.gravatar.com`,
-  "font-src 'self' data:",
+  // fonts.gstatic.com : fichiers de polices chargés par l'aperçu PDF.
+  "font-src 'self' data: https://fonts.gstatic.com",
   `connect-src 'self' ${CLERK_DOMAINS} ${STRIPE_DOMAINS} ${STORAGE_DOMAINS} https://*.vercel-insights.com wss://*.clerk.com wss://*.clerk.accounts.dev`,
   `frame-src 'self' ${CLERK_DOMAINS} ${STRIPE_DOMAINS} https://challenges.cloudflare.com`,
   "worker-src 'self' blob:",
