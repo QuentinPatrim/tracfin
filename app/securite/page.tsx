@@ -14,6 +14,7 @@ import {
 import { HEBERGEURS_DONNEES, SOUS_TRAITANTS } from "@/lib/legal";
 import LegalFooter from "@/components/legal/LegalFooter";
 import KlarisLogo from "@/components/ui/KlarisLogo";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Sécurité & cadre réglementaire — Klaris",
@@ -23,14 +24,14 @@ export const metadata: Metadata = {
 
 export default function SecuritePage() {
   return (
-    <div className="min-h-screen bg-[#0b0b1a] text-white relative overflow-hidden">
+    <div className="klaris-public min-h-screen relative overflow-hidden">
       {/* Halos */}
       <div
         className="fixed pointer-events-none rounded-full"
         style={{
           top: -200, left: -100,
           width: 600, height: 600,
-          background: "radial-gradient(circle, rgba(124,58,237,0.22), transparent 70%)",
+          background: "radial-gradient(circle, var(--lp-orb-1), transparent 70%)",
           filter: "blur(70px)",
         }}
       />
@@ -39,22 +40,23 @@ export default function SecuritePage() {
         style={{
           top: "30%", right: -200,
           width: 500, height: 500,
-          background: "radial-gradient(circle, rgba(236,72,153,0.15), transparent 70%)",
+          background: "radial-gradient(circle, var(--lp-orb-2), transparent 70%)",
           filter: "blur(70px)",
         }}
       />
 
       {/* Header */}
-      <header className="relative z-10 border-b border-white/[0.06]">
+      <header className="relative z-10 border-b border-[color:var(--lp-border-1)]">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
             <KlarisLogo size={32} />
             <span className="font-bold tracking-tight text-[15px]">Klaris</span>
           </Link>
-          <nav className="flex items-center gap-5 text-[12.5px] text-white/60">
-            <Link href="/confiance" className="hover:text-white transition">Confiance</Link>
-            <Link href="/tarifs" className="hover:text-white transition">Tarifs</Link>
-            <Link href="/" className="hover:text-white transition">Accueil</Link>
+          <nav className="flex items-center gap-5 text-[12.5px] text-[color:var(--lp-text-3)]">
+            <Link href="/confiance" className="hover:text-[color:var(--lp-text)] transition">Confiance</Link>
+            <Link href="/tarifs" className="hover:text-[color:var(--lp-text)] transition">Tarifs</Link>
+            <Link href="/" className="hover:text-[color:var(--lp-text)] transition">Accueil</Link>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
@@ -63,13 +65,13 @@ export default function SecuritePage() {
         {/* Hero */}
         <section className="max-w-6xl mx-auto px-6 pt-16 md:pt-24 pb-12">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.10] text-[11px] uppercase tracking-widest text-white/70 mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--lp-surface-2)] border border-[color:var(--lp-border-2)] text-[11px] uppercase tracking-widest text-[color:var(--lp-text-3)] mb-6">
               <ShieldCheck width={13} height={13} /> Cadre réglementaire & certifications
             </div>
             <h1
               className="text-[40px] md:text-[56px] leading-[1.04] font-bold tracking-tight max-w-4xl mx-auto"
               style={{
-                background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.65) 100%)",
+                background: "var(--lp-heading)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 color: "transparent",
@@ -77,7 +79,7 @@ export default function SecuritePage() {
             >
               Klaris est-il certifié, agréé, réglementé ?
             </h1>
-            <p className="mt-6 text-[17px] md:text-[18px] text-white/65 leading-relaxed max-w-3xl mx-auto">
+            <p className="mt-6 text-[17px] md:text-[18px] text-[color:var(--lp-text-3)] leading-relaxed max-w-3xl mx-auto">
               Réponse honnête, sans détour. Klaris n'a besoin d'aucun agrément spécifique —
               aucun n'existe pour ce type d'outil. Voici pourquoi, et sur quoi repose
               concrètement la solidité juridique de la solution.
@@ -96,34 +98,34 @@ export default function SecuritePage() {
           </P>
 
           <div className="grid md:grid-cols-2 gap-4 mt-8">
-            <div className="rounded-2xl p-6 bg-white/[0.03] border border-white/[0.08]">
-              <div className="flex items-center gap-2 mb-3 text-[11px] uppercase tracking-widest text-emerald-300/80 font-semibold">
+            <div className="rounded-2xl p-6 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)]">
+              <div className="flex items-center gap-2 mb-3 text-[11px] uppercase tracking-widest text-[color:var(--lp-success)] font-semibold">
                 <BadgeCheck width={14} height={14} /> Qui est assujetti
               </div>
-              <ul className="space-y-2.5 text-[13.5px] text-white/75 leading-relaxed">
-                <li className="flex gap-2"><span className="text-emerald-300 mt-0.5">▸</span> <span><strong className="text-white">L'agent immobilier</strong> (votre métier) — DGCCRF</span></li>
-                <li className="flex gap-2"><span className="text-emerald-300 mt-0.5">▸</span> <span><strong className="text-white">Le notaire</strong> — Conseil supérieur du notariat</span></li>
-                <li className="flex gap-2"><span className="text-emerald-300 mt-0.5">▸</span> <span><strong className="text-white">La banque</strong> — ACPR / Banque de France</span></li>
-                <li className="flex gap-2"><span className="text-emerald-300 mt-0.5">▸</span> <span><strong className="text-white">L'expert-comptable</strong> — Ordre / DGCCRF</span></li>
+              <ul className="space-y-2.5 text-[13.5px] text-[color:var(--lp-text-3)] leading-relaxed">
+                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">L'agent immobilier</strong> (votre métier) — DGCCRF</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">Le notaire</strong> — Conseil supérieur du notariat</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">La banque</strong> — ACPR / Banque de France</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">L'expert-comptable</strong> — Ordre / DGCCRF</span></li>
               </ul>
-              <div className="mt-4 pt-4 border-t border-white/[0.06] text-[12px] text-white/55 leading-relaxed">
+              <div className="mt-4 pt-4 border-t border-[color:var(--lp-border-1)] text-[12px] text-[color:var(--lp-text-4)] leading-relaxed">
                 Ces professionnels doivent eux-mêmes appliquer L.561-1 et s. CMF, déclarer
                 leurs soupçons à TRACFIN, et conserver leurs dossiers 5 ans. Klaris les
                 aide à le faire, ne s'y substitue jamais.
               </div>
             </div>
 
-            <div className="rounded-2xl p-6 bg-white/[0.03] border border-white/[0.08]">
-              <div className="flex items-center gap-2 mb-3 text-[11px] uppercase tracking-widest text-violet-300/80 font-semibold">
+            <div className="rounded-2xl p-6 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)]">
+              <div className="flex items-center gap-2 mb-3 text-[11px] uppercase tracking-widest text-[color:var(--lp-accent-text)] font-semibold">
                 <Building2 width={14} height={14} /> Qui est Klaris
               </div>
-              <ul className="space-y-2.5 text-[13.5px] text-white/75 leading-relaxed">
-                <li className="flex gap-2"><span className="text-violet-300 mt-0.5">▸</span> <span><strong className="text-white">Éditeur de logiciel applicatif</strong> (code APE 5829C)</span></li>
-                <li className="flex gap-2"><span className="text-violet-300 mt-0.5">▸</span> <span><strong className="text-white">Prestataire B2B</strong> — fournit un outil, pas un service réglementé</span></li>
-                <li className="flex gap-2"><span className="text-violet-300 mt-0.5">▸</span> <span><strong className="text-white">Sous-traitant RGPD</strong> de ses clients (art. 28 RGPD)</span></li>
-                <li className="flex gap-2"><span className="text-violet-300 mt-0.5">▸</span> <span><strong className="text-white">Non-assujetti LCB-FT</strong> — hors champ L.561-2 CMF</span></li>
+              <ul className="space-y-2.5 text-[13.5px] text-[color:var(--lp-text-3)] leading-relaxed">
+                <li className="flex gap-2"><span className="text-[color:var(--lp-accent-text)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">Éditeur de logiciel applicatif</strong> (code APE 5829C)</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-accent-text)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">Prestataire B2B</strong> — fournit un outil, pas un service réglementé</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-accent-text)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">Sous-traitant RGPD</strong> de ses clients (art. 28 RGPD)</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-accent-text)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">Non-assujetti LCB-FT</strong> — hors champ L.561-2 CMF</span></li>
               </ul>
-              <div className="mt-4 pt-4 border-t border-white/[0.06] text-[12px] text-white/55 leading-relaxed">
+              <div className="mt-4 pt-4 border-t border-[color:var(--lp-border-1)] text-[12px] text-[color:var(--lp-text-4)] leading-relaxed">
                 Aucun texte (CMF, Décret 2018-284, lignes directrices DGCCRF) n'encadre
                 ou ne certifie les éditeurs RegTech. Aucun de nos concurrents
                 (AML Factory, Notilus, MyChoiseTech…) n'a d'agrément non plus.
@@ -190,8 +192,8 @@ export default function SecuritePage() {
             organismes indépendants. Voici leur tableau de bord de conformité.
           </P>
 
-          <div className="mt-8 rounded-2xl overflow-hidden border border-white/[0.08]">
-            <div className="grid grid-cols-[1.4fr_2fr_1.2fr] bg-white/[0.04] px-5 py-3 text-[10.5px] uppercase tracking-widest text-white/55 font-semibold">
+          <div className="mt-8 rounded-2xl overflow-hidden border border-[color:var(--lp-border-2)]">
+            <div className="grid grid-cols-[1.4fr_2fr_1.2fr] bg-[var(--lp-surface)] px-5 py-3 text-[10.5px] uppercase tracking-widest text-[color:var(--lp-text-4)] font-semibold">
               <div>Fournisseur</div>
               <div>Rôle dans la chaîne</div>
               <div className="text-right">Certifications</div>
@@ -201,21 +203,21 @@ export default function SecuritePage() {
                 key={h.nom}
                 className="grid grid-cols-[1.4fr_2fr_1.2fr] px-5 py-4 gap-4"
                 style={{
-                  background: i % 2 ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.04)",
-                  borderTop: "1px solid rgba(255,255,255,0.05)",
+                  background: i % 2 ? "var(--lp-surface)" : "var(--lp-surface-2)",
+                  borderTop: "1px solid var(--lp-border-1)",
                 }}
               >
                 <div>
-                  <div className="text-[13.5px] font-semibold text-white">{h.nom}</div>
-                  <div className="text-[11px] text-white/45 mt-0.5">{h.region}</div>
+                  <div className="text-[13.5px] font-semibold text-[color:var(--lp-text)]">{h.nom}</div>
+                  <div className="text-[11px] text-[color:var(--lp-text-4)] mt-0.5">{h.region}</div>
                 </div>
-                <div className="text-[12.5px] text-white/65 leading-relaxed">{h.role}</div>
-                <div className="text-[11.5px] text-white/70 text-right leading-relaxed">{h.certifications}</div>
+                <div className="text-[12.5px] text-[color:var(--lp-text-3)] leading-relaxed">{h.role}</div>
+                <div className="text-[11.5px] text-[color:var(--lp-text-3)] text-right leading-relaxed">{h.certifications}</div>
               </div>
             ))}
           </div>
 
-          <div className="mt-4 text-[12px] text-white/45 leading-relaxed max-w-3xl">
+          <div className="mt-4 text-[12px] text-[color:var(--lp-text-4)] leading-relaxed max-w-3xl">
             Note : ces certifications portent sur l'infrastructure, pas sur Klaris lui-même.
             Klaris hérite de leur niveau de sécurité par contrat (DPA art. 28 RGPD) et y
             ajoute ses propres mesures applicatives (chiffrement applicatif, contrôle
@@ -310,7 +312,7 @@ export default function SecuritePage() {
             </FAQ>
             <FAQ q="Êtes-vous conforme au RGPD ?">
               Oui. Nous tenons un registre des traitements (art. 30), nous fournissons un
-              DPA conforme à l'art. 28 (disponible sur demande à <a href="mailto:contact@klaris.fr" className="text-violet-300 hover:text-violet-200 underline">contact@klaris.fr</a>),
+              DPA conforme à l'art. 28 (disponible sur demande à <a href="mailto:contact@klaris.fr" className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline">contact@klaris.fr</a>),
               nos sous-traitants sont tous listés publiquement (Vercel, Neon, Scaleway, Clerk,
               Stripe), et les droits d'accès / rectification / effacement sont exerçables
               par e-mail. La conservation 5 ans des données KYC découle directement de
@@ -354,10 +356,10 @@ export default function SecuritePage() {
                 <div className="text-[10.5px] uppercase tracking-widest text-orange-300/85 font-semibold mb-2">
                   À savoir
                 </div>
-                <h3 className="text-[20px] md:text-[22px] font-bold tracking-tight text-white mb-3">
+                <h3 className="text-[20px] md:text-[22px] font-bold tracking-tight text-[color:var(--lp-text)] mb-3">
                   Méfiez-vous des promesses « certifié TRACFIN ».
                 </h3>
-                <p className="text-[13.5px] text-white/75 leading-relaxed">
+                <p className="text-[13.5px] text-[color:var(--lp-text-3)] leading-relaxed">
                   Si un éditeur RegTech vous affirme être « certifié TRACFIN », « agréé
                   DGCCRF » ou « approuvé ACPR », c'est <strong>factuellement faux</strong>{" "}
                   — ces certifications n'existent pas pour les éditeurs. Une telle
@@ -385,8 +387,8 @@ export default function SecuritePage() {
               href="mailto:contact@klaris.fr?subject=Demande%20DPA%20%2F%20Question%20conformit%C3%A9"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-[14px] text-white"
               style={{
-                background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-                boxShadow: "0 8px 24px rgba(124,58,237,0.40)",
+                background: "var(--lp-cta-grad)",
+                boxShadow: "var(--lp-cta-shadow)",
               }}
             >
               Demander le DPA
@@ -394,13 +396,13 @@ export default function SecuritePage() {
             </a>
             <Link
               href="/confiance"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-[14px] text-white/80 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.07] transition"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-[14px] text-[color:var(--lp-text-2)] bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] hover:bg-[var(--lp-surface-3)] transition"
             >
               Voir la cartographie des données
             </Link>
             <Link
               href="/legal/confidentialite"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-[14px] text-white/80 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.07] transition"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-[14px] text-[color:var(--lp-text-2)] bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] hover:bg-[var(--lp-surface-3)] transition"
             >
               Politique de confidentialité
             </Link>
@@ -417,7 +419,7 @@ export default function SecuritePage() {
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="inline-block px-2.5 py-1 rounded-md bg-white/[0.05] border border-white/[0.08] text-[10.5px] uppercase tracking-widest text-white/70 mb-4">
+    <div className="inline-block px-2.5 py-1 rounded-md bg-[var(--lp-surface-2)] border border-[color:var(--lp-border-2)] text-[10.5px] uppercase tracking-widest text-[color:var(--lp-text-3)] mb-4">
       {children}
     </div>
   );
@@ -428,7 +430,7 @@ function H2({ children }: { children: React.ReactNode }) {
     <h2
       className="text-[28px] md:text-[34px] leading-[1.1] font-bold tracking-tight"
       style={{
-        background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.75) 100%)",
+        background: "var(--lp-heading)",
         WebkitBackgroundClip: "text",
         backgroundClip: "text",
         color: "transparent",
@@ -440,7 +442,7 @@ function H2({ children }: { children: React.ReactNode }) {
 }
 
 function P({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <p className={`text-[15px] text-white/65 leading-relaxed ${className}`}>{children}</p>;
+  return <p className={`text-[15px] text-[color:var(--lp-text-3)] leading-relaxed ${className}`}>{children}</p>;
 }
 
 function Pillar({
@@ -455,11 +457,11 @@ function Pillar({
   text: string;
 }) {
   return (
-    <div className="rounded-2xl p-6 bg-white/[0.03] border border-white/[0.08] relative overflow-hidden">
+    <div className="rounded-2xl p-6 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] relative overflow-hidden">
       <div
         className="absolute top-3 right-4 text-[36px] font-bold tracking-tighter select-none pointer-events-none"
         style={{
-          background: "linear-gradient(135deg, rgba(124,58,237,0.25), rgba(236,72,153,0.10))",
+          background: "var(--lp-accent-grad)",
           WebkitBackgroundClip: "text",
           backgroundClip: "text",
           color: "transparent",
@@ -470,14 +472,15 @@ function Pillar({
       <div
         className="w-10 h-10 rounded-xl grid place-items-center mb-4"
         style={{
-          background: "linear-gradient(135deg, rgba(124,58,237,0.18), rgba(236,72,153,0.12))",
-          border: "1px solid rgba(124,58,237,0.25)",
+          background: "var(--lp-icon-bg)",
+          border: "1px solid var(--lp-icon-border)",
+          color: "var(--lp-icon-color)",
         }}
       >
-        <Icon width={16} height={16} className="text-violet-200" />
+        <Icon width={16} height={16} />
       </div>
-      <div className="font-semibold text-[15px] text-white mb-2">{title}</div>
-      <div className="text-[13px] text-white/65 leading-relaxed">{text}</div>
+      <div className="font-semibold text-[15px] text-[color:var(--lp-text)] mb-2">{title}</div>
+      <div className="text-[13px] text-[color:var(--lp-text-3)] leading-relaxed">{text}</div>
     </div>
   );
 }
@@ -493,13 +496,13 @@ function Phase({
 }) {
   const styles =
     status === "active"
-      ? { dot: "rgba(16,185,129,0.85)", ring: "rgba(16,185,129,0.30)", label: "rgb(110,231,183)" }
+      ? { dot: "var(--lp-success)", ring: "var(--lp-success-border)", label: "var(--lp-success)" }
       : status === "planned"
-      ? { dot: "rgba(124,58,237,0.85)", ring: "rgba(124,58,237,0.30)", label: "rgb(196,181,253)" }
-      : { dot: "rgba(255,255,255,0.30)", ring: "rgba(255,255,255,0.10)", label: "rgba(255,255,255,0.50)" };
+      ? { dot: "var(--lp-accent-text)", ring: "var(--lp-card-border-accent)", label: "var(--lp-accent-text)" }
+      : { dot: "var(--lp-text-4)", ring: "var(--lp-border-1)", label: "var(--lp-text-4)" };
 
   return (
-    <div className="rounded-2xl p-6 bg-white/[0.03] border border-white/[0.08]">
+    <div className="rounded-2xl p-6 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)]">
       <div className="flex items-center gap-2 mb-4">
         <div
           className="w-2.5 h-2.5 rounded-full"
@@ -512,10 +515,10 @@ function Phase({
           {label}
         </div>
       </div>
-      <ul className="space-y-2 text-[13px] text-white/75 leading-relaxed">
+      <ul className="space-y-2 text-[13px] text-[color:var(--lp-text-3)] leading-relaxed">
         {items.map((it) => (
           <li key={it} className="flex gap-2">
-            <span className="text-white/30 mt-0.5 shrink-0">▸</span>
+            <span className="text-[color:var(--lp-text-4)] mt-0.5 shrink-0">▸</span>
             <span>{it}</span>
           </li>
         ))}
@@ -526,17 +529,17 @@ function Phase({
 
 function FAQ({ q, children }: { q: string; children: React.ReactNode }) {
   return (
-    <details className="group rounded-xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
-      <summary className="px-5 py-4 cursor-pointer list-none flex items-center justify-between gap-4 hover:bg-white/[0.04] transition">
-        <span className="text-[14.5px] font-semibold text-white">{q}</span>
+    <details className="group rounded-xl border border-[color:var(--lp-border-2)] bg-[var(--lp-surface)] overflow-hidden">
+      <summary className="px-5 py-4 cursor-pointer list-none flex items-center justify-between gap-4 hover:bg-[var(--lp-surface)] transition">
+        <span className="text-[14.5px] font-semibold text-[color:var(--lp-text)]">{q}</span>
         <ExternalLink
           width={14}
           height={14}
-          className="text-white/40 shrink-0 group-open:rotate-45 transition-transform"
+          className="text-[color:var(--lp-text-4)] shrink-0 group-open:rotate-45 transition-transform"
           style={{ transform: "rotate(45deg)" }}
         />
       </summary>
-      <div className="px-5 pb-5 -mt-1 text-[13.5px] text-white/70 leading-relaxed">
+      <div className="px-5 pb-5 -mt-1 text-[13.5px] text-[color:var(--lp-text-3)] leading-relaxed">
         {children}
       </div>
     </details>

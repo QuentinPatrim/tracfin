@@ -1,5 +1,5 @@
 // components/landing/primitives.tsx — Primitives sobres réutilisables (fintech / legaltech)
-// Palette restreinte (violet/magenta + blanc). Aucun dégradé animé.
+// Palette « Iris » via tokens --lp-* (clair/sombre). Aucune couleur en dur.
 // Mobile-first natif (padding/typo qui s'adaptent).
 
 import type { ReactNode, ComponentType } from "react";
@@ -7,7 +7,14 @@ import type { ReactNode, ComponentType } from "react";
 /* ───────────────────── Eyebrow (étiquette de section) ───────────────────── */
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <div className="inline-block px-2.5 py-1 rounded-md bg-white/[0.05] border border-white/[0.10] text-[10.5px] uppercase tracking-widest text-white/70">
+    <div
+      className="inline-block px-2.5 py-1 rounded-md text-[10.5px] uppercase tracking-widest"
+      style={{
+        background: "var(--lp-surface-2)",
+        border: "1px solid var(--lp-border-2)",
+        color: "var(--lp-text-3)",
+      }}
+    >
       {children}
     </div>
   );
@@ -46,7 +53,7 @@ export function H1({ children, className = "" }: { children: ReactNode; classNam
     <h1
       className={`text-[34px] sm:text-[44px] md:text-[56px] lg:text-[64px] leading-[1.04] font-bold tracking-tight ${className}`}
       style={{
-        background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.72) 100%)",
+        background: "var(--lp-heading)",
         WebkitBackgroundClip: "text",
         backgroundClip: "text",
         color: "transparent",
@@ -62,7 +69,7 @@ export function H2({ children, className = "" }: { children: ReactNode; classNam
     <h2
       className={`text-[26px] sm:text-[32px] md:text-[38px] leading-[1.1] font-bold tracking-tight ${className}`}
       style={{
-        background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.75) 100%)",
+        background: "var(--lp-heading)",
         WebkitBackgroundClip: "text",
         backgroundClip: "text",
         color: "transparent",
@@ -75,7 +82,10 @@ export function H2({ children, className = "" }: { children: ReactNode; classNam
 
 export function H3({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <h3 className={`text-[17px] sm:text-[18px] font-semibold tracking-tight text-white ${className}`}>
+    <h3
+      className={`text-[17px] sm:text-[18px] font-semibold tracking-tight ${className}`}
+      style={{ color: "var(--lp-text)" }}
+    >
       {children}
     </h3>
   );
@@ -85,7 +95,10 @@ export function H3({ children, className = "" }: { children: ReactNode; classNam
 
 export function Lede({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <p className={`text-[15px] sm:text-[16px] md:text-[17px] text-white/65 leading-relaxed ${className}`}>
+    <p
+      className={`text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed ${className}`}
+      style={{ color: "var(--lp-text-3)" }}
+    >
       {children}
     </p>
   );
@@ -93,7 +106,10 @@ export function Lede({ children, className = "" }: { children: ReactNode; classN
 
 export function P({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <p className={`text-[13.5px] sm:text-[14px] text-white/65 leading-relaxed ${className}`}>
+    <p
+      className={`text-[13.5px] sm:text-[14px] leading-relaxed ${className}`}
+      style={{ color: "var(--lp-text-3)" }}
+    >
       {children}
     </p>
   );
@@ -101,7 +117,14 @@ export function P({ children, className = "" }: { children: ReactNode; className
 
 export function Mono({ children }: { children: ReactNode }) {
   return (
-    <span className="font-mono text-[11.5px] sm:text-[12px] text-violet-200 bg-white/[0.04] border border-white/[0.08] px-1.5 py-0.5 rounded">
+    <span
+      className="font-mono text-[11.5px] sm:text-[12px] px-1.5 py-0.5 rounded"
+      style={{
+        color: "var(--lp-accent-text)",
+        background: "var(--lp-surface)",
+        border: "1px solid var(--lp-border-1)",
+      }}
+    >
       {children}
     </span>
   );
@@ -149,12 +172,11 @@ export function Card({
     <div
       className={`rounded-2xl p-5 sm:p-6 border transition-all ${className}`}
       style={{
-        background: accent
-          ? "linear-gradient(180deg, rgba(124,58,237,0.06), rgba(255,255,255,0.02))"
-          : "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
+        background: accent ? "var(--lp-card-bg-accent)" : "var(--lp-card-bg)",
         backdropFilter: "blur(20px) saturate(160%)",
         WebkitBackdropFilter: "blur(20px) saturate(160%)",
-        borderColor: accent ? "rgba(124,58,237,0.22)" : "rgba(255,255,255,0.08)",
+        borderColor: accent ? "var(--lp-card-border-accent)" : "var(--lp-card-border)",
+        boxShadow: "var(--lp-card-shadow)",
       }}
     >
       {children}
@@ -165,24 +187,31 @@ export function Card({
 export function IconCircle({
   icon: Icon,
   size = "md",
+  tone = "violet",
 }: {
   icon: ComponentType<{ width?: number; height?: number; className?: string }>;
   size?: "sm" | "md" | "lg";
+  tone?: "violet" | "teal" | "pink";
 }) {
   const dim = { sm: 36, md: 44, lg: 52 }[size];
   const iconDim = { sm: 16, md: 18, lg: 22 }[size];
+  const toneVars = {
+    violet: { bg: "var(--lp-icon-bg)", border: "var(--lp-icon-border)", color: "var(--lp-icon-color)" },
+    teal: { bg: "var(--lp-icon-bg-teal)", border: "var(--lp-icon-border-teal)", color: "var(--lp-icon-color-teal)" },
+    pink: { bg: "var(--lp-icon-bg-pink)", border: "var(--lp-icon-border-pink)", color: "var(--lp-icon-color-pink)" },
+  }[tone];
   return (
     <div
       className="grid place-items-center rounded-xl shrink-0"
       style={{
         width: dim,
         height: dim,
-        background: "linear-gradient(135deg, rgba(124,58,237,0.20), rgba(236,72,153,0.12))",
-        border: "1px solid rgba(124,58,237,0.28)",
-        boxShadow: "0 4px 14px rgba(124,58,237,0.18), 0 1px 0 rgba(255,255,255,0.10) inset",
+        background: toneVars.bg,
+        border: `1px solid ${toneVars.border}`,
+        color: toneVars.color,
       }}
     >
-      <Icon width={iconDim} height={iconDim} className="text-violet-200" />
+      <Icon width={iconDim} height={iconDim} />
     </div>
   );
 }
@@ -205,15 +234,14 @@ export function CTA({ children, href, onClick, variant = "primary", size = "md",
 
   const styleByVariant: Record<"primary" | "ghost", React.CSSProperties> = {
     primary: {
-      background: "linear-gradient(135deg, #7c3aed, #ec4899)",
+      background: "var(--lp-cta-grad)",
       color: "white",
-      boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 10px 28px rgba(124,58,237,0.35), 0 4px 10px rgba(0,0,0,0.25)",
+      boxShadow: "var(--lp-cta-shadow)",
     },
     ghost: {
-      background: "rgba(255,255,255,0.04)",
-      color: "rgba(255,255,255,0.85)",
-      border: "1px solid rgba(255,255,255,0.10)",
-      boxShadow: "0 1px 0 rgba(255,255,255,0.08) inset",
+      background: "var(--lp-surface)",
+      color: "var(--lp-text-2)",
+      border: "1px solid var(--lp-border-2)",
     },
   };
 
@@ -240,12 +268,12 @@ export function LegalRef({ children }: { children: ReactNode }) {
     <span
       className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10.5px] uppercase tracking-widest font-medium align-middle"
       style={{
-        background: "rgba(236,72,153,0.08)",
-        border: "1px solid rgba(236,72,153,0.20)",
-        color: "#f9a8d4",
+        background: "var(--lp-legalref-bg)",
+        border: "1px solid var(--lp-legalref-border)",
+        color: "var(--lp-legalref-text)",
       }}
     >
-      <span className="w-1 h-1 rounded-full bg-pink-300" />
+      <span className="w-1 h-1 rounded-full" style={{ background: "currentColor" }} />
       {children}
     </span>
   );

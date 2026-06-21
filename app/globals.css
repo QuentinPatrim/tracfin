@@ -32,3 +32,148 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   SYSTÈME DE THÈME PUBLIC (landing + pages publiques) — palette « Iris »
+   Tokens --lp-* consommés UNIQUEMENT par les pages publiques (.klaris-public).
+   Le dashboard et le KYC n'y touchent pas → aucun impact hors périmètre.
+   Le thème est piloté par data-theme="light|dark" sur <html> (script anti-FOUC
+   dans app/layout.tsx). Défaut = préférence système.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ---- DARK (défaut) ---- */
+:root,
+:root[data-theme="dark"] {
+  --lp-bg: #07080F;
+  --lp-orb-1: rgba(109,94,246,0.20);
+  --lp-orb-2: rgba(236,72,153,0.15);
+
+  --lp-text: #FFFFFF;
+  --lp-text-2: rgba(255,255,255,0.82);
+  --lp-text-3: rgba(255,255,255,0.64);
+  --lp-text-4: rgba(255,255,255,0.46);
+
+  --lp-surface: rgba(255,255,255,0.04);
+  --lp-surface-2: rgba(255,255,255,0.06);
+  --lp-surface-3: rgba(255,255,255,0.09);
+
+  --lp-border-1: rgba(255,255,255,0.06);
+  --lp-border-2: rgba(255,255,255,0.10);
+  --lp-border-3: rgba(255,255,255,0.14);
+
+  --lp-card-bg: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+  --lp-card-border: rgba(255,255,255,0.09);
+  --lp-card-bg-accent: linear-gradient(180deg, rgba(109,94,246,0.10), rgba(255,255,255,0.02));
+  --lp-card-border-accent: rgba(109,94,246,0.24);
+  --lp-card-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
+
+  --lp-heading: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.72) 100%);
+  --lp-accent-grad: linear-gradient(135deg, #A78BFA 0%, #F0ABFC 100%);
+
+  --lp-accent: #6D5EF6;
+  --lp-accent-2: #EC4899;
+  --lp-accent-3: #14B8A6;
+  --lp-accent-text: #A78BFA;
+  --lp-accent-2-text: #F9A8D4;
+  --lp-accent-3-text: #5EEAD4;
+
+  --lp-cta-grad: linear-gradient(135deg, #6D5EF6, #EC4899);
+  --lp-cta-shadow: 0 1px 0 rgba(255,255,255,0.20) inset, 0 10px 28px rgba(109,94,246,0.35), 0 4px 10px rgba(0,0,0,0.25);
+
+  --lp-icon-bg: linear-gradient(135deg, rgba(109,94,246,0.20), rgba(236,72,153,0.12));
+  --lp-icon-border: rgba(109,94,246,0.28);
+  --lp-icon-color: #C4B5FD;
+  --lp-icon-bg-teal: linear-gradient(135deg, rgba(20,184,166,0.22), rgba(20,184,166,0.06));
+  --lp-icon-border-teal: rgba(20,184,166,0.32);
+  --lp-icon-color-teal: #5EEAD4;
+  --lp-icon-bg-pink: linear-gradient(135deg, rgba(236,72,153,0.22), rgba(236,72,153,0.06));
+  --lp-icon-border-pink: rgba(236,72,153,0.32);
+  --lp-icon-color-pink: #F9A8D4;
+
+  --lp-nav-bg: rgba(255,255,255,0.04);
+  --lp-nav-bg-scrolled: rgba(8,9,16,0.80);
+  --lp-nav-border: rgba(255,255,255,0.09);
+  --lp-nav-shadow-scrolled: 0 12px 32px -8px rgba(109,94,246,0.20), 0 1px 0 rgba(255,255,255,0.08) inset;
+
+  --lp-success: #34D399;
+  --lp-success-bg: rgba(52,211,153,0.15);
+  --lp-success-border: rgba(52,211,153,0.40);
+
+  --lp-legalref-bg: rgba(236,72,153,0.08);
+  --lp-legalref-border: rgba(236,72,153,0.20);
+  --lp-legalref-text: #F9A8D4;
+}
+
+:root[data-theme="dark"] .klaris-public { color-scheme: dark; }
+
+/* ---- LIGHT ---- */
+:root[data-theme="light"] {
+  --lp-bg: #F7F8FC;
+  --lp-orb-1: rgba(109,94,246,0.10);
+  --lp-orb-2: rgba(236,72,153,0.07);
+
+  --lp-text: #14162B;
+  --lp-text-2: #353A52;
+  --lp-text-3: #565C73;
+  --lp-text-4: #828799;
+
+  --lp-surface: rgba(20,22,43,0.035);
+  --lp-surface-2: rgba(20,22,43,0.06);
+  --lp-surface-3: rgba(20,22,43,0.09);
+
+  --lp-border-1: rgba(20,22,43,0.07);
+  --lp-border-2: rgba(20,22,43,0.11);
+  --lp-border-3: rgba(20,22,43,0.16);
+
+  --lp-card-bg: #FFFFFF;
+  --lp-card-border: rgba(20,22,43,0.09);
+  --lp-card-bg-accent: linear-gradient(180deg, rgba(109,94,246,0.07), #FFFFFF);
+  --lp-card-border-accent: rgba(109,94,246,0.30);
+  --lp-card-shadow: 0 1px 2px rgba(20,22,43,0.04), 0 8px 24px -12px rgba(20,22,43,0.12);
+
+  --lp-heading: linear-gradient(135deg, #14162B 0%, #4B4690 100%);
+  --lp-accent-grad: linear-gradient(135deg, #6D5EF6 0%, #DB2777 100%);
+
+  --lp-accent: #6D5EF6;
+  --lp-accent-2: #EC4899;
+  --lp-accent-3: #14B8A6;
+  --lp-accent-text: #5B46E0;
+  --lp-accent-2-text: #DB2777;
+  --lp-accent-3-text: #0D9488;
+
+  --lp-cta-grad: linear-gradient(135deg, #6D5EF6, #EC4899);
+  --lp-cta-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 26px rgba(109,94,246,0.28), 0 4px 12px rgba(20,22,43,0.12);
+
+  --lp-icon-bg: linear-gradient(135deg, rgba(109,94,246,0.12), rgba(236,72,153,0.08));
+  --lp-icon-border: rgba(109,94,246,0.22);
+  --lp-icon-color: #6D5EF6;
+  --lp-icon-bg-teal: linear-gradient(135deg, rgba(20,184,166,0.13), rgba(20,184,166,0.05));
+  --lp-icon-border-teal: rgba(20,184,166,0.26);
+  --lp-icon-color-teal: #0D9488;
+  --lp-icon-bg-pink: linear-gradient(135deg, rgba(236,72,153,0.13), rgba(236,72,153,0.05));
+  --lp-icon-border-pink: rgba(236,72,153,0.24);
+  --lp-icon-color-pink: #DB2777;
+
+  --lp-nav-bg: rgba(255,255,255,0.72);
+  --lp-nav-bg-scrolled: rgba(255,255,255,0.88);
+  --lp-nav-border: rgba(20,22,43,0.10);
+  --lp-nav-shadow-scrolled: 0 12px 32px -10px rgba(20,22,43,0.16), 0 1px 0 rgba(255,255,255,0.60) inset;
+
+  --lp-success: #059669;
+  --lp-success-bg: rgba(5,150,105,0.10);
+  --lp-success-border: rgba(5,150,105,0.30);
+
+  --lp-legalref-bg: rgba(236,72,153,0.08);
+  --lp-legalref-border: rgba(236,72,153,0.28);
+  --lp-legalref-text: #BE185D;
+}
+
+:root[data-theme="light"] .klaris-public { color-scheme: light; }
+
+/* Wrapper de page publique : fond + texte + police, transition douce de thème */
+.klaris-public {
+  background: var(--lp-bg);
+  color: var(--lp-text);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  transition: background-color .35s ease, color .35s ease;
+}

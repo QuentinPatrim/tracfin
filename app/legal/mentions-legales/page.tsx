@@ -32,7 +32,7 @@ export default function MentionsLegalesPage() {
             <tr><TH>TVA</TH><TD>{EDITEUR.tvaIntra}</TD></tr>
             <tr><TH>Adresse du siège</TH><TD>{EDITEUR.adresse}</TD></tr>
             <tr><TH>Téléphone</TH><TD>{EDITEUR.telephone}</TD></tr>
-            <tr><TH>Email</TH><TD><a href={`mailto:${EDITEUR.email}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-2">{EDITEUR.email}</a></TD></tr>
+            <tr><TH>Email</TH><TD><a href={`mailto:${EDITEUR.email}`} className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">{EDITEUR.email}</a></TD></tr>
             <tr><TH>Directeur de la publication</TH><TD>{EDITEUR.directeurPublication}</TD></tr>
             <tr><TH>Nom de domaine</TH><TD>{EDITEUR.siteUrl}</TD></tr>
           </tbody>
@@ -52,7 +52,7 @@ export default function MentionsLegalesPage() {
             <tr><TH>Siège social</TH><TD>{HEBERGEUR_SITE.adresse}</TD></tr>
             <tr><TH>Filiale européenne</TH><TD>{HEBERGEUR_SITE.filialeEU}</TD></tr>
             <tr><TH>Téléphone</TH><TD>{HEBERGEUR_SITE.telephone}</TD></tr>
-            <tr><TH>Site web</TH><TD><a href={HEBERGEUR_SITE.site} target="_blank" rel="noreferrer noopener" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">{HEBERGEUR_SITE.site}</a></TD></tr>
+            <tr><TH>Site web</TH><TD><a href={HEBERGEUR_SITE.site} target="_blank" rel="noreferrer noopener" className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">{HEBERGEUR_SITE.site}</a></TD></tr>
             <tr><TH>Région d'exécution</TH><TD>{HEBERGEUR_SITE.region}</TD></tr>
           </tbody>
         </TableWrap>
@@ -64,10 +64,10 @@ export default function MentionsLegalesPage() {
           hébergées exclusivement au sein de l'Union Européenne par les prestataires suivants :
         </P>
         {HEBERGEURS_DONNEES.map((h) => (
-          <div key={h.nom} className="rounded-xl p-4 my-3 bg-white/[0.03] border border-white/[0.08]">
-            <div className="font-semibold text-white text-[14px] mb-1">{h.nom}</div>
-            <div className="text-[12.5px] text-white/55 mb-2">{h.role}</div>
-            <div className="text-[13px] text-white/75 leading-relaxed space-y-1">
+          <div key={h.nom} className="rounded-xl p-4 my-3 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)]">
+            <div className="font-semibold text-[color:var(--lp-text)] text-[14px] mb-1">{h.nom}</div>
+            <div className="text-[12.5px] text-[color:var(--lp-text-4)] mb-2">{h.role}</div>
+            <div className="text-[13px] text-[color:var(--lp-text-3)] leading-relaxed space-y-1">
               <div><Strong>Localisation :</Strong> {h.region}</div>
               <div><Strong>Adresse :</Strong> {h.adresse}</div>
               {"filialeEU" in h && h.filialeEU && (
@@ -130,7 +130,7 @@ export default function MentionsLegalesPage() {
       <Section title="Contact">
         <P>
           Pour toute question relative au Service ou à ces mentions légales, vous pouvez nous
-          joindre à <a href={`mailto:${EDITEUR.email}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-2">{EDITEUR.email}</a>.
+          joindre à <a href={`mailto:${EDITEUR.email}`} className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">{EDITEUR.email}</a>.
         </P>
       </Section>
     </>

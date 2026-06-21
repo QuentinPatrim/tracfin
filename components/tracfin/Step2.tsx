@@ -12,6 +12,8 @@ interface Props {
   /** ID du dossier pour appeler /api/screening/sanctions. Si absent (création
    *  d'un dossier pas encore persisté), le screening n'est pas accessible. */
   dossierId?: string;
+  /** Criblage auto activé (clé OpenSanctions). Sinon → repli lien manuel. */
+  screeningEnabled?: boolean;
 }
 
 function PaysModal({ onClose }: { onClose: () => void }) {
@@ -86,7 +88,7 @@ function PaysModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function Step2({ form, set, dossierId }: Props) {
+export default function Step2({ form, set, dossierId, screeningEnabled = false }: Props) {
   const [showPays, setShowPays] = useState(false);
 
   return (
@@ -210,7 +212,7 @@ export default function Step2({ form, set, dossierId }: Props) {
 
       <Sect title="Sanctions & PPE" sub="Gates absolues — L561-10, L561-15">
         {/* Outils de screening pré-remplis avec le nom du client */}
-        <ScreeningTools form={form} set={set} dossierId={dossierId} />
+        <ScreeningTools form={form} set={set} dossierId={dossierId} screeningEnabled={screeningEnabled} />
 
         <BinaryField
           label="Personne sous gel des avoirs ?"
@@ -276,18 +278,69 @@ interface ScreeningResponse {
   suggestedGates: { d1: boolean; d2: boolean; reasoning: string[] };
 }
 
+/* ─── Repli criblage manuel (quand OpenSanctions n'est pas configuré) ───── */
+function ManualScreeningFallback({ name, hasName }: { name: string; hasName: boolean }) {
+  const openSanctions = `https://www.opensanctions.org/search/?q=${encodeURIComponent(name)}`;
+  return (
+    <div
+      className="rounded-xl p-5 mb-4"
+      style={{
+        background: "linear-gradient(180deg, rgba(168,85,247,0.08), rgba(99,102,241,0.04) 60%, rgba(255,255,255,0.02))",
+        border: "1px solid rgba(168,85,247,0.25)",
+      }}
+    >
+      <div className="text-[10px] font-bold uppercase tracking-[0.18em] mb-1.5" style={{ color: "#6d28d9" }}>
+        Vérification des sanctions internationales
+      </div>
+      <p className="text-[12px] leading-relaxed mb-3" style={{ color: "#475569" }}>
+        {hasName
+          ? <>Lancez une recherche pour <span className="font-semibold" style={{ color: "#0f172a" }}>«&nbsp;{name}&nbsp;»</span> sur les listes officielles agrégées (DGT Trésor · UE · ONU · OFAC · 200+ listes), puis renseignez les réponses ci-dessous.</>
+          : <>Renseignez le nom du client à l&apos;étape 1 pour activer la vérification.</>}
+      </p>
+      <a
+        href={hasName ? openSanctions : undefined}
+        target="_blank"
+        rel="noreferrer noopener"
+        aria-disabled={!hasName}
+        onClick={(e) => { if (!hasName) e.preventDefault(); }}
+        className="flex items-center justify-center gap-2.5 rounded-lg px-4 py-3 transition-all w-full"
+        style={{
+          background: hasName ? "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)" : "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.18)",
+          cursor: hasName ? "pointer" : "not-allowed",
+          opacity: hasName ? 1 : 0.5,
+          color: "white", fontWeight: 600, fontSize: 13, textDecoration: "none",
+        }}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+        {hasName ? "Vérifier sur OpenSanctions" : "Nom du client requis"}
+      </a>
+    </div>
+  );
+}
+
 function ScreeningTools({
   form,
   set,
   dossierId,
+  screeningEnabled = false,
 }: {
   form: DossierForm;
   set: <K extends keyof DossierForm>(key: K, value: DossierForm[K]) => void;
   dossierId?: string;
+  screeningEnabled?: boolean;
 }) {
   const cleanedName = form.nomPrenom.trim();
   const hasName = cleanedName.length >= 2;
   const canScreen = hasName && !!dossierId;
+
+  // ─── Repli : criblage automatique non activé (pas de clé OpenSanctions) ──
+  // On présente le lien manuel vers OpenSanctions — l'agent vérifie lui-même,
+  // comportement standard et conforme. Le criblage auto s'activera dès qu'une
+  // clé API sera configurée.
+  if (!screeningEnabled) {
+    return <ManualScreeningFallback name={cleanedName} hasName={hasName} />;
+  }
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

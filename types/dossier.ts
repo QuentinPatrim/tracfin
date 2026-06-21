@@ -75,6 +75,12 @@ export interface Dossier {
   // KYC workflow
   kyc_status: string | null;
 
+  // Soft-delete (archivage L.561-12-1)
+  archived_at: string | null;
+
+  // Multi-tenant (Vague 1)
+  org_id: string | null;
+
   // Timestamps
   created_at: string;
   updated_at: string;

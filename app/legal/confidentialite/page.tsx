@@ -30,11 +30,11 @@ export default function ConfidentialitePage() {
       <Section id="responsable" title="1. Responsable de traitement">
         <P>
           Le responsable du traitement de vos données est <Strong>{EDITEUR.raisonSociale}</Strong>,
-          éditeur du Service Klaris, dont l'identité complète figure sur la page <a href="/legal/mentions-legales" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">Mentions légales</a>.
+          éditeur du Service Klaris, dont l'identité complète figure sur la page <a href="/legal/mentions-legales" className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">Mentions légales</a>.
         </P>
         <P>
           Contact dédié à la protection des données :{" "}
-          <a href={`mailto:${EDITEUR.emailRgpd}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-2">{EDITEUR.emailRgpd}</a>.
+          <a href={`mailto:${EDITEUR.emailRgpd}`} className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">{EDITEUR.emailRgpd}</a>.
         </P>
         <Note>
           Compte tenu de sa taille et de la nature de ses traitements, l'éditeur n'a pas désigné
@@ -109,13 +109,13 @@ export default function ConfidentialitePage() {
             key={c.categorie}
             className="rounded-xl p-4 my-2.5 border"
             style={{
-              borderColor: c.important ? "rgba(236,72,153,0.35)" : "rgba(255,255,255,0.08)",
-              background: c.important ? "rgba(236,72,153,0.06)" : "rgba(255,255,255,0.03)",
+              borderColor: c.important ? "var(--lp-card-border-accent)" : "var(--lp-border-2)",
+              background: c.important ? "var(--lp-card-bg-accent)" : "var(--lp-surface)",
             }}
           >
-            <div className="font-semibold text-white text-[14px] mb-1">{c.categorie}</div>
-            <div className="text-[13.5px] text-white/85 mb-1.5"><Strong>Durée :</Strong> {c.duree}</div>
-            <div className="text-[12.5px] text-white/60">{c.base}</div>
+            <div className="font-semibold text-[color:var(--lp-text)] text-[14px] mb-1">{c.categorie}</div>
+            <div className="text-[13.5px] text-[color:var(--lp-text-2)] mb-1.5"><Strong>Durée :</Strong> {c.duree}</div>
+            <div className="text-[12.5px] text-[color:var(--lp-text-4)]">{c.base}</div>
           </div>
         ))}
         <Callout tone="legal" title="⚖️ Conservation 5 ans des données KYC — explication">
@@ -136,19 +136,19 @@ export default function ConfidentialitePage() {
           de sous-traitants, chacun lié par un contrat de traitement (DPA) conforme au RGPD :
         </P>
         {SOUS_TRAITANTS.map((s) => (
-          <div key={s.nom} className="rounded-xl p-4 my-2.5 bg-white/[0.03] border border-white/[0.08]">
+          <div key={s.nom} className="rounded-xl p-4 my-2.5 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)]">
             <div className="flex items-baseline justify-between gap-3 mb-1.5">
-              <div className="font-semibold text-white text-[14px]">{s.nom}</div>
+              <div className="font-semibold text-[color:var(--lp-text)] text-[14px]">{s.nom}</div>
               <a
                 href={s.site}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="text-[11px] text-violet-300 hover:text-violet-200 underline underline-offset-2 shrink-0"
+                className="text-[11px] text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2 shrink-0"
               >
                 {s.site.replace(/^https?:\/\//, "")} ↗
               </a>
             </div>
-            <div className="text-[13px] text-white/75 leading-relaxed space-y-1">
+            <div className="text-[13px] text-[color:var(--lp-text-3)] leading-relaxed space-y-1">
               <div><Strong>Finalité :</Strong> {s.finalite}</div>
               <div><Strong>Données traitées :</Strong> {s.donnees}</div>
               <div><Strong>Localisation :</Strong> {s.localisation}</div>

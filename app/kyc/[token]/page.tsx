@@ -3,6 +3,7 @@
 import { notFound } from "next/navigation";
 import { sql } from "@/lib/db";
 import KycPublicForm from "./Kycpublicform";
+import { FEATURES } from "@/lib/features";
 
 export const dynamic = "force-dynamic";
 
@@ -71,5 +72,5 @@ export default async function KycPublicPage({ params }: { params: Promise<{ toke
   const partie: "vendeur" | "acquereur" =
     dossierRows[0]?.partie === "vendeur" ? "vendeur" : "acquereur";
 
-  return <KycPublicForm token={token} dossierId={link.dossier_id} partie={partie} />;
+  return <KycPublicForm token={token} dossierId={link.dossier_id} partie={partie} pappersEnabled={FEATURES.pappers} />;
 }

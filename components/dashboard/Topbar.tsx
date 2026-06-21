@@ -8,9 +8,9 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import {
-  Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles, UserCog, ShieldAlert,
+  Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles, UserCog, ShieldAlert, Plug, UserCheck, Compass,
 } from "lucide-react";
-import { UserButton, OrganizationSwitcher } from "@clerk/nextjs";
+import { UserButton, OrganizationSwitcher, useAuth } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 
 interface SubInfo {
@@ -28,13 +28,16 @@ interface Props {
   newHref: string;
   canCreate: boolean;
   subscription: SubInfo;
-  currentScreen?: "dossiers" | "tarifs" | "cartographie";
+  currentScreen?: "dossiers" | "tarifs" | "cartographie" | "integrations" | "validations";
 }
 
 export default function Topbar({
   title, subtitle, query, onQueryChange, newHref, canCreate, subscription, currentScreen = "dossiers",
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
+  // Contexte org : la validation 4-yeux (correspondant LCB-FT) n'a de sens
+  // qu'en organisation. En compte perso, on masque l'onglet.
+  const { orgId } = useAuth();
 
   // ⌘K / Ctrl+K → focus search
   useEffect(() => {
@@ -61,21 +64,42 @@ export default function Topbar({
           <Link
             href="/dashboard"
             className={`topbar-v2-nav-link ${currentScreen === "dossiers" ? "active" : ""}`}
+            title="Vos clients et le suivi de leurs dossiers KYC (création, analyse, attestation)"
           >
             <Folder width={13} height={13} />
             <span>Dossiers</span>
           </Link>
           <Link
             href="/dashboard/cartographie"
+            data-tour="nav-cartographie"
             className={`topbar-v2-nav-link ${currentScreen === "cartographie" ? "active" : ""}`}
             title="Cartographie des risques L.561-4-1 — document à présenter en contrôle DGCCRF"
           >
             <ShieldAlert width={13} height={13} />
             <span>Cartographie</span>
           </Link>
+          {orgId && (
+            <Link
+              href="/dashboard/validations"
+              className={`topbar-v2-nav-link ${currentScreen === "validations" ? "active" : ""}`}
+              title="Validation des dossiers à risque par le correspondant LCB-FT (L.561-32)"
+            >
+              <UserCheck width={13} height={13} />
+              <span>Validations</span>
+            </Link>
+          )}
+          <Link
+            href="/dashboard/integrations"
+            className={`topbar-v2-nav-link ${currentScreen === "integrations" ? "active" : ""}`}
+            title="Connectez votre CRM (Hektor, Apimo…) pour automatiser la création des dossiers KYC"
+          >
+            <Plug width={13} height={13} />
+            <span>Intégrations</span>
+          </Link>
           <Link
             href="/abonnement"
             className="topbar-v2-nav-link"
+            title="Votre formule, vos factures et la gestion de l'abonnement"
           >
             <UserCog width={13} height={13} />
             <span>Abonnement</span>
@@ -83,6 +107,7 @@ export default function Topbar({
           <Link
             href="/tarifs"
             className={`topbar-v2-nav-link ${currentScreen === "tarifs" ? "active" : ""}`}
+            title="Comparer les formules Pro et Agence"
           >
             <CreditCard width={13} height={13} />
             <span>Tarifs</span>
@@ -106,6 +131,16 @@ export default function Topbar({
           />
           <button
             type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("klaris:start-tour"))}
+            className="topbar-v2-icon-btn"
+            aria-label="Revoir la visite guidée de l'interface"
+            title="Revoir la visite guidée"
+          >
+            <Compass width={15} height={15} />
+          </button>
+          <button
+            type="button"
+            data-tour="help"
             onClick={() => window.dispatchEvent(new CustomEvent("klaris:open-guide"))}
             className="topbar-v2-icon-btn"
             aria-label="Ouvrir le guide LCB-FT"
@@ -137,7 +172,7 @@ export default function Topbar({
         </div>
 
         <div className="topbar-v2-tools">
-          <div className="search">
+          <div className="search" data-tour="search">
             <span className="search-ico"><Search width={14} height={14} /></span>
             <input
               ref={inputRef}
@@ -149,6 +184,7 @@ export default function Topbar({
           </div>
           <Link
             href={newHref}
+            data-tour="new-dossier"
             className={`btn-grad ${canCreate ? "" : "locked"}`}
             title={canCreate ? "Créer un nouveau dossier" : "Souscrivez pour créer de nouveaux dossiers"}
           >

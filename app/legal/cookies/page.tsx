@@ -49,7 +49,7 @@ export default function CookiesPage() {
           <tbody>
             {COOKIES.map((c) => (
               <tr key={c.nom}>
-                <TD><code className="text-[12.5px] text-violet-200 font-mono">{c.nom}</code></TD>
+                <TD><code className="text-[12.5px] text-[color:var(--lp-accent-text)] font-mono">{c.nom}</code></TD>
                 <TD>{c.emetteur}</TD>
                 <TD>{c.finalite}</TD>
                 <TD>{c.duree}</TD>
@@ -86,18 +86,18 @@ export default function CookiesPage() {
           impossible la connexion au Service.
         </P>
         <P>Liens directs vers la documentation des principaux navigateurs :</P>
-        <ul className="list-disc pl-6 text-[14px] text-white/75 leading-relaxed space-y-1">
-          <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noreferrer noopener" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">Google Chrome</a></li>
-          <li><a href="https://support.mozilla.org/fr/kb/protection-renforcee-contre-pistage-firefox-ordinateur" target="_blank" rel="noreferrer noopener" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">Mozilla Firefox</a></li>
-          <li><a href="https://support.apple.com/fr-fr/guide/safari/sfri11471/mac" target="_blank" rel="noreferrer noopener" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">Apple Safari</a></li>
-          <li><a href="https://support.microsoft.com/fr-fr/microsoft-edge" target="_blank" rel="noreferrer noopener" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">Microsoft Edge</a></li>
+        <ul className="list-disc pl-6 text-[14px] text-[color:var(--lp-text-3)] leading-relaxed space-y-1">
+          <li><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noreferrer noopener" className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">Google Chrome</a></li>
+          <li><a href="https://support.mozilla.org/fr/kb/protection-renforcee-contre-pistage-firefox-ordinateur" target="_blank" rel="noreferrer noopener" className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">Mozilla Firefox</a></li>
+          <li><a href="https://support.apple.com/fr-fr/guide/safari/sfri11471/mac" target="_blank" rel="noreferrer noopener" className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">Apple Safari</a></li>
+          <li><a href="https://support.microsoft.com/fr-fr/microsoft-edge" target="_blank" rel="noreferrer noopener" className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">Microsoft Edge</a></li>
         </ul>
       </Section>
 
       <Section title="5. Contact">
         <P>
           Pour toute question relative à cette politique cookies :{" "}
-          <a href={`mailto:${EDITEUR.emailRgpd}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-2">{EDITEUR.emailRgpd}</a>.
+          <a href={`mailto:${EDITEUR.emailRgpd}`} className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">{EDITEUR.emailRgpd}</a>.
         </P>
       </Section>
     </>

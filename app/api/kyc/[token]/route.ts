@@ -9,6 +9,7 @@ import {
 } from "@/lib/kyc";
 import { logAudit } from "@/lib/audit";
 import { enforceRateLimit, ipFromRequest } from "@/lib/ratelimit";
+import { enqueueOutboundEvent } from "@/lib/outbound";
 
 export async function POST(req: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -29,10 +30,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     return NextResponse.json({ error: "JSON invalide" }, { status: 400 });
   }
 
-  // Vérifie le token (on lit org_id pour le propager sur kyc_responses + audit)
+  // Vérifie le token (on lit org_id + user_id pour propagation + webhook sortant)
   const links = (await sql`
-    SELECT id, dossier_id, org_id, status, expires_at FROM kyc_links WHERE token = ${token} LIMIT 1
-  `) as unknown as Array<{ id: string; dossier_id: string; org_id: string | null; status: string; expires_at: string }>;
+    SELECT id, dossier_id, user_id, org_id, status, expires_at FROM kyc_links WHERE token = ${token} LIMIT 1
+  `) as unknown as Array<{ id: string; dossier_id: string; user_id: string; org_id: string | null; status: string; expires_at: string }>;
 
   if (links.length === 0) return NextResponse.json({ error: "Lien invalide" }, { status: 404 });
   const link = links[0];
@@ -160,6 +161,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
       consentement_rgpd_version: MENTION_CNIL_VERSION,
     },
     req,
+  });
+
+  // Webhook sortant → CRM : le KYC vient d'être reçu. user_id = propriétaire du lien.
+  await enqueueOutboundEvent({
+    dossierId: link.dossier_id,
+    userId: link.user_id,
+    orgId: link.org_id,
+    eventType: "dossier.kyc_received",
   });
 
   return NextResponse.json({ ok: true });

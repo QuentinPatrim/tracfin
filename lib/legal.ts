@@ -114,6 +114,40 @@ export const SOUS_TRAITANTS = [
 ] as const;
 
 /* ============================================================
+   SOUS-TRAITANTS PRÉVUS (à activer — pas encore en service)
+   ⚠️ NE PAS publier tant que la fonctionnalité n'est pas activée (clé API posée
+   + DPA signé). Quand tu actives une de ces intégrations, DÉPLACE l'entrée
+   correspondante dans SOUS_TRAITANTS ci-dessus → elle apparaîtra automatiquement
+   sur les pages publiques et le compteur se mettra à jour tout seul.
+   ============================================================ */
+export const SOUS_TRAITANTS_PREVUS = [
+  {
+    nom: "OpenSanctions (Open Knowledge, Berlin)",
+    finalite: "Criblage du client contre les listes de sanctions et de PPE (DGT, UE, ONU, OFAC…)",
+    donnees: "Nom, date de naissance, nationalité du client transmis pour interrogation.",
+    localisation: "🇩🇪 Berlin, Allemagne (UE)",
+    duree: "Résultat conservé par Klaris 5 ans (L.561-12-1 CMF).",
+    site: "https://www.opensanctions.org",
+  },
+  {
+    nom: "Pappers (France)",
+    finalite: "Récupération RNE/INPI pour pré-remplir le KYC des personnes morales",
+    donnees: "Numéro SIREN transmis ; en retour, données publiques de l'entreprise.",
+    localisation: "🇫🇷 France (UE)",
+    duree: "Snapshot conservé dans le dossier 5 ans (L.561-12-1 CMF).",
+    site: "https://www.pappers.fr",
+  },
+  {
+    nom: "Yousign SAS",
+    finalite: "Signature électronique eIDAS des attestations LCB-FT",
+    donnees: "Attestation complète + identité/email du signataire.",
+    localisation: "🇫🇷 Caen, France (UE)",
+    duree: "Document signé rapatrié et conservé par Klaris 5 ans.",
+    site: "https://yousign.com",
+  },
+] as const;
+
+/* ============================================================
    DURÉES DE CONSERVATION (art. 5.1.e RGPD)
    ============================================================ */
 export interface ConservationEntry {

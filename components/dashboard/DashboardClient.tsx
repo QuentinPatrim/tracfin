@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -15,6 +15,9 @@ import Topbar from "./Topbar";
 import KpiRow from "./KpiRow";
 import DocumentsList from "./DocumentsList";
 import OnboardingGuide from "./OnboardingGuide";
+import GuidedTour, { type TourStep } from "./GuidedTour";
+import ClientJourneyFrame from "./ClientJourneyFrame";
+import { DEMO_DOSSIERS, DEMO_COUNTS, DEMO_FILES, DEMO_DEFAULT_SELECTED } from "./demoData";
 import DashboardFooter from "./DashboardFooter";
 import { EmptyState } from "./primitives";
 import { FolderPlus, BookOpen } from "lucide-react";
@@ -85,18 +88,129 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export default function DashboardClient({ dossiers, counts, archivedCount = 0, pendingAlertIds = [], canCreate, filesByDossier, showGuide, subscription }: Props) {
-  const alertSet = useMemo(() => new Set(pendingAlertIds), [pendingAlertIds]);
+// ─── Visite guidée cinématique ──────────────────────────────────────────
+// ACTE 1 : le tableau de bord, rempli de dossiers fictifs (mode démonstration),
+//          parcouru en spotlight.
+// ACTE 2 : le parcours client (ce que voit le client qui remplit le KYC), via
+//          une maquette téléphone.
+const TOUR_STEPS: TourStep[] = [
+  {
+    eyebrow: "Bienvenue",
+    title: "Découvrez Klaris en situation 👋",
+    body: "Le temps de cette visite, on a rempli votre tableau de bord avec des dossiers d'exemple (fictifs) pour vous montrer l'app comme si vous l'utilisiez déjà. Vous pouvez passer à tout moment.",
+  },
+  {
+    selector: ".topbar-v2-nav",
+    eyebrow: "Navigation",
+    title: "Vos onglets, en bref",
+    body: "Dossiers — vos clients et leur suivi KYC. Cartographie — la synthèse des risques de votre portefeuille. Intégrations — votre CRM. Abonnement & Tarifs — votre formule. (Survolez un onglet pour un rappel.)",
+    important: "Cartographie est le document que la DGCCRF demande en premier lors d'un contrôle. Pensez à l'exporter régulièrement.",
+  },
+  {
+    selector: ".kpi-row",
+    eyebrow: "Vue d'ensemble",
+    title: "Vos indicateurs en un coup d'œil",
+    body: "Total, Conformes, Vigilance, Critique : le pouls de votre portefeuille, mis à jour en temps réel. Ici, 2 dossiers conformes, 1 en vigilance, 2 critiques.",
+    important: "La colonne Critique regroupe examen renforcé et interdiction. Ces dossiers imposent une déclaration de soupçon à TRACFIN sous 48 heures.",
+  },
+  {
+    selector: ".list-card",
+    eyebrow: "Vos dossiers",
+    title: "Chaque dossier, son niveau de vigilance",
+    body: "Le niveau est calculé automatiquement (algorithme Klaris v2, art. L.561-1 et s.). Voyez Nadia Benali en examen renforcé, Holding Varteg en interdiction, et Julien Mercier encore en attente de son KYC. Cliquez un dossier pour l'ouvrir.",
+    important: "Les dossiers critiques apparaissent aussi en haut, en rouge : ils demandent une action immédiate.",
+  },
+  {
+    selector: ".preview",
+    eyebrow: "Le détail d'un dossier",
+    title: "Tout est réuni à droite",
+    body: "Verdict, pièces justificatives transmises par le client, et les exports : attestation PDF, fiche KYC, et le dossier complet en ZIP — prêts pour un contrôle.",
+    important: "L'attestation horodatée (et signée) est votre preuve opposable. Générez-la pour chaque dossier traité.",
+  },
+  {
+    selector: '[data-tour="new-dossier"]',
+    eyebrow: "Créer un dossier",
+    title: "Pour démarrer un vrai client",
+    body: "« Nouveau dossier » lance un client : personne physique ou morale, vendeur ou acquéreur. Klaris pré-configure le KYC adapté et génère le lien sécurisé.",
+    important: "Le rôle vendeur / acquéreur conditionne les contrôles exigés (origine des fonds, paiement…). Vérifiez-le dès la création.",
+  },
+  // ─── ACTE 2 : le parcours client (le VRAI formulaire, en démo) ─────
+  {
+    scene: <ClientJourneyFrame step={1} />,
+    eyebrow: "Côté client · 1/5",
+    title: "Ce que voit votre client",
+    body: "Vous lui envoyez un lien sécurisé (email, SMS, WhatsApp). Il l'ouvre sur son téléphone, sans créer de compte. Voici l'écran réel — il renseigne d'abord son identité.",
+  },
+  {
+    scene: <ClientJourneyFrame step={3} />,
+    eyebrow: "Côté client · 2/5",
+    title: "Sa situation : PPE & résidence fiscale",
+    body: "Le client indique s'il est une personne politiquement exposée (ou un proche), et son pays de résidence fiscale.",
+    important: "Une PPE déclenche automatiquement une vigilance renforcée dans le scoring.",
+  },
+  {
+    scene: <ClientJourneyFrame step={4} />,
+    eyebrow: "Côté client · 3/5",
+    title: "L'origine des fonds",
+    body: "Provenance de l'argent, montant de l'opération, mode de paiement — le cœur de l'analyse LCB-FT.",
+    important: "L'origine des fonds est le point le plus scruté en contrôle. Exigez des justificatifs probants.",
+  },
+  {
+    scene: <ClientJourneyFrame step={5} />,
+    eyebrow: "Côté client · 4/5",
+    title: "Ses justificatifs",
+    body: "Pièce d'identité, justificatif de domicile, origine des fonds… déposés en photo depuis le téléphone, chiffrés à l'arrivée.",
+    important: "Vérifiez que la pièce d'identité est en cours de validité et lisible.",
+  },
+  {
+    scene: <ClientJourneyFrame step={6} />,
+    eyebrow: "Côté client · 5/5",
+    title: "Il valide et envoie",
+    body: "Récapitulatif, consentement RGPD, envoi. Dès cet instant, le dossier revient dans VOTRE tableau de bord — déjà analysé et scoré automatiquement.",
+  },
+  {
+    eyebrow: "À vous de jouer",
+    title: "Créez votre premier vrai dossier",
+    body: "Vous avez tout vu. Trois réflexes à garder : conservation 5 ans, vigilance constante, et déclaration sous 48 h pour les cas critiques. Les dossiers d'exemple vont disparaître — place à vos vrais clients.",
+  },
+];
+
+export default function DashboardClient({
+  dossiers: realDossiers,
+  counts: realCounts,
+  archivedCount = 0,
+  pendingAlertIds = [],
+  canCreate,
+  filesByDossier: realFilesByDossier,
+  showGuide,
+  subscription,
+}: Props) {
+  // ─── Mode démonstration (pendant la visite guidée) ───────────────────
+  // Quand actif, on superpose des dossiers fictifs pour montrer l'app "pleine".
+  const [demoMode, setDemoMode] = useState(false);
+  const dossiers = demoMode ? DEMO_DOSSIERS : realDossiers;
+  const counts = demoMode ? DEMO_COUNTS : realCounts;
+  const filesByDossier = demoMode ? DEMO_FILES : realFilesByDossier;
+
+  const alertSet = useMemo(() => new Set(demoMode ? [] : pendingAlertIds), [demoMode, pendingAlertIds]);
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterKey>("all");
 
   // ─── Guide pédagogique LCB-FT ────────────────────────────────────────
-  const [guideOpen, setGuideOpen] = useState(showGuide);
+  // N'auto-ouvre PLUS : à la 1ʳᵉ visite, c'est la visite guidée de l'interface
+  // (GuidedTour) qui s'affiche. Le guide reste accessible via l'icône "?".
+  const [guideOpen, setGuideOpen] = useState(false);
   useEffect(() => {
     const onOpen = () => setGuideOpen(true);
     window.addEventListener("klaris:open-guide", onOpen);
     return () => window.removeEventListener("klaris:open-guide", onOpen);
+  }, []);
+
+  // Marque la 1ʳᵉ expérience comme vue (réutilise le flag serveur seen_guide_at,
+  // cross-device, pas de migration). Appelé à la fin / au skip de la visite.
+  const markFirstRunSeen = useCallback(() => {
+    fetch("/api/onboarding/seen", { method: "POST" }).catch(() => {});
   }, []);
 
   // ─── Marches à suivre terminées (synchronisation localStorage) ───────
@@ -199,7 +313,7 @@ export default function DashboardClient({ dossiers, counts, archivedCount = 0, p
 
       <div className="screen dossiers-screen">
         {counts.total === 0 ? (
-          <div style={{ paddingTop: 24, paddingBottom: 24 }}>
+          <div style={{ paddingTop: 24, paddingBottom: 24 }} data-tour="empty-cta">
             <EmptyState
               icon={FolderPlus}
               eyebrow="Premier pas"
@@ -411,11 +525,44 @@ export default function DashboardClient({ dossiers, counts, archivedCount = 0, p
         />
       )}
 
-      {/* ─── Guide pédagogique LCB-FT (1ère visite ou bouton "?" sidebar) ─── */}
+      {/* ─── Guide pédagogique LCB-FT (ouvert à la demande via "?") ─── */}
       <OnboardingGuide
         open={guideOpen}
         onClose={() => setGuideOpen(false)}
         onComplete={() => setGuideOpen(false)}
+      />
+
+      {/* ─── Bannière "Mode démonstration" (au-dessus du voile du tuto) ─── */}
+      {demoMode && (
+        <div
+          style={{
+            position: "fixed", top: 10, left: "50%", transform: "translateX(-50%)",
+            zIndex: 9999, pointerEvents: "none",
+            background: "linear-gradient(135deg, #7c3aed, #ec4899)", color: "white",
+            fontSize: 11.5, fontWeight: 700, letterSpacing: "0.04em",
+            padding: "6px 14px", borderRadius: 999,
+            boxShadow: "0 8px 24px -6px rgba(124,58,237,0.6)",
+          }}
+        >
+          ✦ Mode démonstration — données fictives
+        </div>
+      )}
+
+      {/* ─── Visite guidée cinématique (1ʳᵉ visite + relance manuelle) ─── */}
+      <GuidedTour
+        steps={TOUR_STEPS}
+        autoStart={showGuide}
+        onStart={() => {
+          setDemoMode(true);
+          setQuery("");
+          setFilter("all");
+          setSelectedId(DEMO_DEFAULT_SELECTED);
+        }}
+        onFinish={() => {
+          setDemoMode(false);
+          setSelectedId(null);
+          markFirstRunSeen();
+        }}
       />
     </>
   );

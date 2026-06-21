@@ -9,6 +9,7 @@ import {
 import { HEBERGEURS_DONNEES, SOUS_TRAITANTS, CONSERVATION } from "@/lib/legal";
 import LegalFooter from "@/components/legal/LegalFooter";
 import KlarisLogo from "@/components/ui/KlarisLogo";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Confiance & souveraineté — Klaris",
@@ -17,14 +18,14 @@ export const metadata: Metadata = {
 
 export default function ConfiancePage() {
   return (
-    <div className="min-h-screen bg-[#0b0b1a] text-white relative overflow-hidden">
+    <div className="klaris-public min-h-screen relative overflow-hidden">
       {/* Halos */}
       <div
         className="fixed pointer-events-none rounded-full"
         style={{
           top: -200, left: -100,
           width: 600, height: 600,
-          background: "radial-gradient(circle, rgba(124,58,237,0.22), transparent 70%)",
+          background: "radial-gradient(circle, var(--lp-orb-1), transparent 70%)",
           filter: "blur(70px)",
         }}
       />
@@ -33,22 +34,23 @@ export default function ConfiancePage() {
         style={{
           top: "30%", right: -200,
           width: 500, height: 500,
-          background: "radial-gradient(circle, rgba(236,72,153,0.15), transparent 70%)",
+          background: "radial-gradient(circle, var(--lp-orb-2), transparent 70%)",
           filter: "blur(70px)",
         }}
       />
 
       {/* Header */}
-      <header className="relative z-10 border-b border-white/[0.06]">
+      <header className="relative z-10 border-b border-[color:var(--lp-border-1)]">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
             <KlarisLogo size={32} />
             <span className="font-bold tracking-tight text-[15px]">Klaris</span>
           </Link>
-          <nav className="flex items-center gap-5 text-[12.5px] text-white/60">
-            <Link href="/securite" className="hover:text-white transition">Sécurité</Link>
-            <Link href="/tarifs" className="hover:text-white transition">Tarifs</Link>
-            <Link href="/" className="hover:text-white transition">Accueil</Link>
+          <nav className="flex items-center gap-5 text-[12.5px] text-[color:var(--lp-text-3)]">
+            <Link href="/securite" className="hover:text-[color:var(--lp-text)] transition">Sécurité</Link>
+            <Link href="/tarifs" className="hover:text-[color:var(--lp-text)] transition">Tarifs</Link>
+            <Link href="/" className="hover:text-[color:var(--lp-text)] transition">Accueil</Link>
+            <ThemeToggle />
           </nav>
         </div>
       </header>
@@ -57,13 +59,13 @@ export default function ConfiancePage() {
         {/* Hero */}
         <section className="max-w-6xl mx-auto px-6 pt-16 md:pt-24 pb-12">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.10] text-[11px] uppercase tracking-widest text-white/70 mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--lp-surface-2)] border border-[color:var(--lp-border-2)] text-[11px] uppercase tracking-widest text-[color:var(--lp-text-3)] mb-6">
               <span>🇪🇺</span> <span>Souveraineté · Transparence · Conformité</span>
             </div>
             <h1
               className="text-[44px] md:text-[60px] leading-[1.02] font-bold tracking-tight max-w-4xl mx-auto"
               style={{
-                background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.65) 100%)",
+                background: "var(--lp-heading)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 color: "transparent",
@@ -71,7 +73,7 @@ export default function ConfiancePage() {
             >
               Vos dossiers méritent un coffre-fort, pas un cloud lointain.
             </h1>
-            <p className="mt-6 text-[17px] md:text-[18px] text-white/65 leading-relaxed max-w-3xl mx-auto">
+            <p className="mt-6 text-[17px] md:text-[18px] text-[color:var(--lp-text-3)] leading-relaxed max-w-3xl mx-auto">
               Klaris a été conçu pour traiter ce qui se fait de plus sensible : l'identité de vos
               clients, leurs documents personnels, et vos analyses de soupçon TRACFIN. Nous
               traitons cette responsabilité avec la même rigueur que la loi vous impose à vous.
@@ -87,19 +89,20 @@ export default function ConfiancePage() {
             ].map((p) => (
               <div
                 key={p.title}
-                className="rounded-2xl p-6 bg-white/[0.03] border border-white/[0.08] backdrop-blur"
+                className="rounded-2xl p-6 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] backdrop-blur"
               >
                 <div
                   className="w-11 h-11 rounded-xl grid place-items-center mb-3"
                   style={{
-                    background: "linear-gradient(135deg, rgba(124,58,237,0.20), rgba(236,72,153,0.15))",
-                    border: "1px solid rgba(124,58,237,0.30)",
+                    background: "var(--lp-icon-bg)",
+                    border: "1px solid var(--lp-icon-border)",
+                    color: "var(--lp-icon-color)",
                   }}
                 >
-                  <p.icon width={18} height={18} className="text-violet-200" />
+                  <p.icon width={18} height={18} />
                 </div>
-                <div className="font-semibold text-[15px] text-white mb-1.5">{p.title}</div>
-                <div className="text-[13px] text-white/60 leading-relaxed">{p.text}</div>
+                <div className="font-semibold text-[15px] text-[color:var(--lp-text)] mb-1.5">{p.title}</div>
+                <div className="text-[13px] text-[color:var(--lp-text-3)] leading-relaxed">{p.text}</div>
               </div>
             ))}
           </div>
@@ -118,32 +121,38 @@ export default function ConfiancePage() {
             {HEBERGEURS_DONNEES.map((h) => (
               <div
                 key={h.nom}
-                className="rounded-2xl p-6 bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/[0.08]"
+                className="rounded-2xl p-6 border"
+                style={{
+                  background: "var(--lp-card-bg)",
+                  borderColor: "var(--lp-card-border)",
+                  boxShadow: "var(--lp-card-shadow)",
+                }}
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div
                     className="w-10 h-10 rounded-xl grid place-items-center"
                     style={{
-                      background: "linear-gradient(135deg, rgba(16,185,129,0.20), rgba(59,130,246,0.15))",
-                      border: "1px solid rgba(16,185,129,0.30)",
+                      background: "var(--lp-success-bg)",
+                      border: "1px solid var(--lp-success-border)",
+                      color: "var(--lp-success)",
                     }}
                   >
                     {h.nom.startsWith("Neon") ? (
-                      <Database width={17} height={17} className="text-emerald-300" />
+                      <Database width={17} height={17} />
                     ) : (
-                      <Server width={17} height={17} className="text-emerald-300" />
+                      <Server width={17} height={17} />
                     )}
                   </div>
                   <div>
-                    <div className="font-semibold text-[15px] text-white">{h.nom}</div>
-                    <div className="text-[11.5px] text-white/45 uppercase tracking-widest">{h.region}</div>
+                    <div className="font-semibold text-[15px] text-[color:var(--lp-text)]">{h.nom}</div>
+                    <div className="text-[11.5px] text-[color:var(--lp-text-4)] uppercase tracking-widest">{h.region}</div>
                   </div>
                 </div>
-                <div className="text-[13px] text-white/70 leading-relaxed mb-3">{h.role}</div>
-                <div className="text-[11.5px] text-white/50 leading-relaxed pt-3 border-t border-white/[0.06]">
-                  <div className="mb-1"><span className="text-white/65 font-medium">Certifications :</span> {h.certifications}</div>
-                  <div><span className="text-white/65 font-medium">Site officiel :</span>{" "}
-                    <a href={h.site} target="_blank" rel="noreferrer noopener" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">{h.site.replace(/^https?:\/\//, "")}</a>
+                <div className="text-[13px] text-[color:var(--lp-text-3)] leading-relaxed mb-3">{h.role}</div>
+                <div className="text-[11.5px] text-[color:var(--lp-text-4)] leading-relaxed pt-3 border-t border-[color:var(--lp-border-1)]">
+                  <div className="mb-1"><span className="text-[color:var(--lp-text-3)] font-medium">Certifications :</span> {h.certifications}</div>
+                  <div><span className="text-[color:var(--lp-text-3)] font-medium">Site officiel :</span>{" "}
+                    <a href={h.site} target="_blank" rel="noreferrer noopener" className="text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2">{h.site.replace(/^https?:\/\//, "")}</a>
                   </div>
                 </div>
               </div>
@@ -185,7 +194,7 @@ export default function ConfiancePage() {
             <Commitment
               icon={FileText}
               title="Sous-traitants 100% publics"
-              text="Nous publions la liste exhaustive de nos sous-traitants (Clerk, Neon, Scaleway, Stripe, Vercel) avec leur rôle, leur localisation et leur certification. Aucun tiers caché."
+              text={`Nous publions la liste exhaustive et à jour de nos ${SOUS_TRAITANTS.length} sous-traitants (détaillée ci-dessous) avec leur rôle, leur localisation et leur certification. Aucun tiers caché.`}
             />
           </div>
         </section>
@@ -199,14 +208,14 @@ export default function ConfiancePage() {
             l'exécution du contrat, soit par une obligation légale incompressible.
           </P>
 
-          <div className="mt-8 rounded-2xl overflow-hidden border border-white/[0.08]">
+          <div className="mt-8 rounded-2xl overflow-hidden border border-[color:var(--lp-border-2)]">
             {CONSERVATION.map((c, i) => (
               <div
                 key={c.categorie}
                 className="p-5"
                 style={{
-                  background: c.important ? "rgba(236,72,153,0.06)" : (i % 2 ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.04)"),
-                  borderTop: i > 0 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                  background: c.important ? "var(--lp-card-bg-accent)" : (i % 2 ? "var(--lp-surface)" : "var(--lp-surface-2)"),
+                  borderTop: i > 0 ? "1px solid var(--lp-border-1)" : "none",
                 }}
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
@@ -214,13 +223,13 @@ export default function ConfiancePage() {
                     <Clock
                       width={16}
                       height={16}
-                      className={c.important ? "text-pink-300" : "text-white/40"}
+                      className={c.important ? "text-[color:var(--lp-accent-2-text)]" : "text-[color:var(--lp-text-4)]"}
                     />
-                    <div className="font-medium text-[14px] text-white">{c.categorie}</div>
+                    <div className="font-medium text-[14px] text-[color:var(--lp-text)]">{c.categorie}</div>
                   </div>
-                  <div className="text-[13px] text-white/85 font-medium md:w-72 md:shrink-0">{c.duree}</div>
+                  <div className="text-[13px] text-[color:var(--lp-text-2)] font-medium md:w-72 md:shrink-0">{c.duree}</div>
                 </div>
-                <div className="mt-2 ml-[28px] text-[12px] text-white/55 leading-relaxed">
+                <div className="mt-2 ml-[28px] text-[12px] text-[color:var(--lp-text-4)] leading-relaxed">
                   {c.base}
                 </div>
               </div>
@@ -242,21 +251,21 @@ export default function ConfiancePage() {
             {SOUS_TRAITANTS.map((s) => (
               <div
                 key={s.nom}
-                className="rounded-xl p-5 bg-white/[0.03] border border-white/[0.08]"
+                className="rounded-xl p-5 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)]"
               >
                 <div className="flex items-baseline justify-between gap-3 mb-2">
-                  <div className="font-semibold text-[14px] text-white">{s.nom}</div>
+                  <div className="font-semibold text-[14px] text-[color:var(--lp-text)]">{s.nom}</div>
                   <a
                     href={s.site}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="text-[10.5px] text-violet-300 hover:text-violet-200 underline underline-offset-2 shrink-0"
+                    className="text-[10.5px] text-[color:var(--lp-accent-text)] hover:text-[color:var(--lp-accent-text)] underline underline-offset-2 shrink-0"
                   >
                     {s.site.replace(/^https?:\/\//, "")} ↗
                   </a>
                 </div>
-                <div className="text-[12.5px] text-white/65 leading-relaxed mb-2">{s.finalite}</div>
-                <div className="text-[11.5px] text-white/45 leading-relaxed">{s.localisation}</div>
+                <div className="text-[12.5px] text-[color:var(--lp-text-3)] leading-relaxed mb-2">{s.finalite}</div>
+                <div className="text-[11.5px] text-[color:var(--lp-text-4)] leading-relaxed">{s.localisation}</div>
               </div>
             ))}
           </div>
@@ -267,7 +276,14 @@ export default function ConfiancePage() {
           <Eyebrow>Architecture technique</Eyebrow>
           <H2>Comment ça fonctionne sous le capot ?</H2>
 
-          <div className="mt-8 rounded-2xl p-6 md:p-8 bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/[0.08]">
+          <div
+            className="mt-8 rounded-2xl p-6 md:p-8 border"
+            style={{
+              background: "var(--lp-card-bg)",
+              borderColor: "var(--lp-card-border)",
+              boxShadow: "var(--lp-card-shadow)",
+            }}
+          >
             <div className="grid md:grid-cols-3 gap-6">
               <ArchBlock
                 icon={Cpu}
@@ -302,8 +318,8 @@ export default function ConfiancePage() {
               href="mailto:contact@klaris.fr"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-[14px] text-white"
               style={{
-                background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-                boxShadow: "0 8px 24px rgba(124,58,237,0.40)",
+                background: "var(--lp-cta-grad)",
+                boxShadow: "var(--lp-cta-shadow)",
               }}
             >
               Nous écrire
@@ -311,7 +327,7 @@ export default function ConfiancePage() {
             </a>
             <Link
               href="/legal/confidentialite"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-[14px] text-white/80 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.07] transition"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-[14px] text-[color:var(--lp-text-2)] bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] hover:bg-[var(--lp-surface-3)] transition"
             >
               Lire la politique de confidentialité
             </Link>
@@ -328,7 +344,7 @@ export default function ConfiancePage() {
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="inline-block px-2.5 py-1 rounded-md bg-white/[0.05] border border-white/[0.08] text-[10.5px] uppercase tracking-widest text-white/70 mb-4">
+    <div className="inline-block px-2.5 py-1 rounded-md bg-[var(--lp-surface-2)] border border-[color:var(--lp-border-2)] text-[10.5px] uppercase tracking-widest text-[color:var(--lp-text-3)] mb-4">
       {children}
     </div>
   );
@@ -339,7 +355,7 @@ function H2({ children }: { children: React.ReactNode }) {
     <h2
       className="text-[28px] md:text-[34px] leading-[1.1] font-bold tracking-tight"
       style={{
-        background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.75) 100%)",
+        background: "var(--lp-heading)",
         WebkitBackgroundClip: "text",
         backgroundClip: "text",
         color: "transparent",
@@ -351,7 +367,7 @@ function H2({ children }: { children: React.ReactNode }) {
 }
 
 function P({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <p className={`text-[15px] text-white/65 leading-relaxed ${className}`}>{children}</p>;
+  return <p className={`text-[15px] text-[color:var(--lp-text-3)] leading-relaxed ${className}`}>{children}</p>;
 }
 
 function Commitment({
@@ -364,20 +380,21 @@ function Commitment({
   text: string;
 }) {
   return (
-    <div className="rounded-xl p-5 bg-white/[0.03] border border-white/[0.08]">
+    <div className="rounded-xl p-5 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)]">
       <div className="flex items-start gap-3">
         <div
           className="w-9 h-9 rounded-lg grid place-items-center shrink-0"
           style={{
-            background: "linear-gradient(135deg, rgba(124,58,237,0.18), rgba(236,72,153,0.12))",
-            border: "1px solid rgba(124,58,237,0.25)",
+            background: "var(--lp-icon-bg)",
+            border: "1px solid var(--lp-icon-border)",
+            color: "var(--lp-icon-color)",
           }}
         >
-          <Icon width={15} height={15} className="text-violet-200" />
+          <Icon width={15} height={15} />
         </div>
         <div>
-          <div className="font-semibold text-[14px] text-white mb-1">{title}</div>
-          <div className="text-[13px] text-white/65 leading-relaxed">{text}</div>
+          <div className="font-semibold text-[14px] text-[color:var(--lp-text)] mb-1">{title}</div>
+          <div className="text-[13px] text-[color:var(--lp-text-3)] leading-relaxed">{text}</div>
         </div>
       </div>
     </div>
@@ -398,14 +415,15 @@ function ArchBlock({
       <div
         className="w-11 h-11 rounded-xl grid place-items-center mb-3"
         style={{
-          background: "linear-gradient(135deg, rgba(124,58,237,0.20), rgba(236,72,153,0.15))",
-          border: "1px solid rgba(124,58,237,0.30)",
+          background: "var(--lp-icon-bg)",
+          border: "1px solid var(--lp-icon-border)",
+          color: "var(--lp-icon-color)",
         }}
       >
-        <Icon width={18} height={18} className="text-violet-200" />
+        <Icon width={18} height={18} />
       </div>
-      <div className="font-semibold text-[14px] text-white mb-1.5">{title}</div>
-      <div className="text-[13px] text-white/65 leading-relaxed">{text}</div>
+      <div className="font-semibold text-[14px] text-[color:var(--lp-text)] mb-1.5">{title}</div>
+      <div className="text-[13px] text-[color:var(--lp-text-3)] leading-relaxed">{text}</div>
     </div>
   );
 }

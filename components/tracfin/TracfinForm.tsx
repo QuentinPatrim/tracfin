@@ -15,9 +15,11 @@ interface Props {
   initialData?: Partial<DossierForm>;
   dossierId?: string;
   hasKyc?: boolean;
+  /** Criblage sanctions automatique activé (clé OpenSanctions présente). */
+  screeningEnabled?: boolean;
 }
 
-export default function TracfinForm({ initialData, dossierId, hasKyc = false }: Props) {
+export default function TracfinForm({ initialData, dossierId, hasKyc = false, screeningEnabled = false }: Props) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [anim, setAnim] = useState(false);
@@ -253,7 +255,7 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false }: 
 
           <div className="transition-all duration-200" style={{ opacity: anim ? 0 : 1, transform: anim ? "translateY(8px)" : "translateY(0)" }}>
             {step === 0 && <Step1 form={form} set={set} />}
-            {step === 1 && <Step2 form={form} set={set} dossierId={dossierId} />}
+            {step === 1 && <Step2 form={form} set={set} dossierId={dossierId} screeningEnabled={screeningEnabled} />}
             {step === 2 && <Step3 form={form} set={set} score={score} />}
           </div>
         </div>

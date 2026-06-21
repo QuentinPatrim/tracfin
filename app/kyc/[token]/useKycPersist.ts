@@ -50,6 +50,7 @@ export function useKycPersist(
   setForm: (updater: (f: KycForm) => KycForm) => void,
   step: number,
   setStep: (n: number) => void,
+  disabled = false,
 ) {
   const key = `${STORAGE_PREFIX}${token}`;
   const [hydrated, setHydrated] = useState(false);
@@ -58,6 +59,7 @@ export function useKycPersist(
 
   // ─── Hydratation au mount ─────────────────────────────────────────────
   useEffect(() => {
+    if (disabled) { setHydrated(true); return; } // mode démo : pas de localStorage
     try {
       const raw = localStorage.getItem(key);
       if (!raw) { setHydrated(true); return; }
@@ -81,7 +83,7 @@ export function useKycPersist(
 
   // ─── Sauvegarde debounced à chaque changement ─────────────────────────
   useEffect(() => {
-    if (!hydrated) return;
+    if (disabled || !hydrated) return;
     if (writeTimer.current) window.clearTimeout(writeTimer.current);
     writeTimer.current = window.setTimeout(() => {
       try {

@@ -57,11 +57,11 @@ function EmailMockup() {
     <div
       className="relative w-full max-w-[360px] rounded-2xl overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid rgba(124,58,237,0.18)",
-        boxShadow: "0 1px 0 rgba(255,255,255,0.10) inset, 0 24px 60px -20px rgba(124,58,237,0.35), 0 8px 20px -8px rgba(0,0,0,0.40)",
+        // Maquette « écran email » — volontairement sombre et OPAQUE pour tenir
+        // sur la landing en mode clair comme sombre (capture produit).
+        background: "linear-gradient(180deg, #12131F, #0C0D17)",
+        border: "1px solid rgba(124,58,237,0.30)",
+        boxShadow: "0 1px 0 rgba(255,255,255,0.10) inset, 0 24px 60px -20px rgba(109,94,246,0.35), 0 8px 20px -8px rgba(0,0,0,0.40)",
       }}
     >
       {/* Top bar email */}
@@ -300,8 +300,8 @@ function ArrowConnector() {
   return (
     <div className="flex items-center gap-2 px-3 py-2 rounded-full"
       style={{
-        background: "rgba(255,255,255,0.04)",
-        border: "1px solid rgba(124,58,237,0.20)",
+        background: "rgba(20,21,34,0.92)",
+        border: "1px solid rgba(124,58,237,0.30)",
         backdropFilter: "blur(10px)",
       }}
     >
@@ -338,23 +338,25 @@ function BenefitChip({
     <div
       className="rounded-xl p-4 flex items-start gap-3"
       style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-        border: "1px solid rgba(124,58,237,0.18)",
+        background: "var(--lp-card-bg)",
+        border: "1px solid var(--lp-card-border)",
+        boxShadow: "var(--lp-card-shadow)",
         backdropFilter: "blur(12px)",
       }}
     >
       <div
         className="w-9 h-9 rounded-lg grid place-items-center shrink-0"
         style={{
-          background: "linear-gradient(135deg, rgba(124,58,237,0.20), rgba(236,72,153,0.10))",
-          border: "1px solid rgba(124,58,237,0.30)",
+          background: "var(--lp-icon-bg)",
+          border: "1px solid var(--lp-icon-border)",
+          color: "var(--lp-icon-color)",
         }}
       >
-        <Icon width={15} height={15} className="text-violet-200" />
+        <Icon width={15} height={15} />
       </div>
       <div className="min-w-0">
-        <div className="text-[14px] font-bold text-white leading-tight mb-0.5">{title}</div>
-        <div className="text-[12px] text-white/60 leading-snug">{desc}</div>
+        <div className="text-[14px] font-bold leading-tight mb-0.5" style={{ color: "var(--lp-text)" }}>{title}</div>
+        <div className="text-[12px] leading-snug" style={{ color: "var(--lp-text-3)" }}>{desc}</div>
       </div>
     </div>
   );

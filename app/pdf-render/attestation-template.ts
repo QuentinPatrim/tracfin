@@ -49,10 +49,31 @@ interface BuildAttestationOpts {
   dossierId: string;
   hash: string;
   generatedAt: string;
+  /** Si true, ajoute une page 5 avec une zone de signature eIDAS (Yousign). */
+  forSignature?: boolean;
 }
 
+// ─── Géométrie de la zone de signature (page 5, eIDAS) ───────────────────
+// Position ABSOLUE sur la feuille A4 (origine top-left). Le champ de signature
+// Yousign doit être placé EXACTEMENT au même endroit → on partage ces valeurs.
+// Conversion mm → points PDF : pt = mm × 72 / 25.4.
+const MM_TO_PT = 72 / 25.4;
+export const SIGNATURE_FIELD_GEOMETRY = {
+  page: 5,                                    // 1-indexé
+  leftMm: 30,
+  topMm: 132,
+  widthMm: 75,
+  heightMm: 38,
+  // Valeurs en points PDF (arrondies) pour l'API Yousign.
+  get x() { return Math.round(this.leftMm * MM_TO_PT); },
+  get y() { return Math.round(this.topMm * MM_TO_PT); },
+  get width() { return Math.round(this.widthMm * MM_TO_PT); },
+  get height() { return Math.round(this.heightMm * MM_TO_PT); },
+};
+
 export function buildAttestationHtml(opts: BuildAttestationOpts): string {
-  const { form, score, dossierId, hash, generatedAt } = opts;
+  const { form, score, dossierId, hash, generatedAt, forSignature = false } = opts;
+  const totalPages = forSignature ? 5 : 4;
   const variant = niveauVariant(score.niveau);
   const cfg = NIVEAU_CFG[score.niveau];
   const niveauNum = (["vigilance_standard", "vigilance_renforcee", "examen_renforce", "interdiction"] as const).indexOf(score.niveau) + 1;
@@ -256,7 +277,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     </div>
   </section>
 
-  ${footerHtml(1, 4)}
+  ${footerHtml(1, totalPages)}
 </article>
 
 <!-- =================== PAGE 2 — DÉTAIL DES CRITÈRES =================== -->
@@ -308,7 +329,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     </div>
   </section>` : ""}
 
-  ${footerHtml(2, 4)}
+  ${footerHtml(2, totalPages)}
 </article>
 
 <!-- =================== PAGE 3 — ANALYSE TRANSACTION + COMMENTAIRES =================== -->
@@ -381,7 +402,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     </div>` : ""}
   </section>` : ""}
 
-  ${footerHtml(3, 4)}
+  ${footerHtml(3, totalPages)}
 </article>
 
 <!-- =================== PAGE 4 — RECO + VALIDATIONS + DÉCLARATION =================== -->
@@ -473,8 +494,46 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
     </div>
   </section>
 
-  ${footerHtml(4, 4, true)}
+  ${footerHtml(4, totalPages, true)}
 </article>
+
+${forSignature ? `
+<!-- =================== PAGE 5 — SIGNATURE ÉLECTRONIQUE eIDAS =================== -->
+<article class="page">
+  ${headerHtml("Attestation · signature")}
+
+  <section class="section" style="margin-top:14px">
+    <div class="section-head">
+      <span class="num">${hasPpePrecisions ? (hasJustifFonds || hasJustifPrix ? "09" : "08") : (hasJustifFonds || hasJustifPrix ? "08" : "07")}</span>
+      <span class="ttl">Signature électronique</span>
+      <span class="accent"></span>
+    </div>
+    <div class="decl">
+      <p>
+        En signant ci-dessous, le responsable LCB-FT désigné atteste de l'exactitude
+        des éléments figurant dans la présente attestation et de la réalisation des
+        diligences requises au titre des articles L.561-1 et suivants du Code monétaire
+        et financier. La signature est apposée par voie électronique conformément au
+        règlement <b>eIDAS (UE n° 910/2014)</b> et bénéficie à ce titre d'une présomption
+        de fiabilité ainsi que d'une force probante opposable.
+      </p>
+    </div>
+  </section>
+
+  <!-- Zone de signature à position absolue — calée sur SIGNATURE_FIELD_GEOMETRY.
+       Le champ Yousign est placé EXACTEMENT à ces coordonnées (mm → pt). -->
+  <div style="position:absolute; left:${SIGNATURE_FIELD_GEOMETRY.leftMm}mm; top:${SIGNATURE_FIELD_GEOMETRY.topMm}mm; width:${SIGNATURE_FIELD_GEOMETRY.widthMm}mm; height:${SIGNATURE_FIELD_GEOMETRY.heightMm}mm; border:1.5px dashed #b7a8e0; border-radius:8px; background:linear-gradient(135deg, rgba(124,58,237,.04), rgba(236,72,153,.04)); display:flex; align-items:center; justify-content:center;">
+    <span style="font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:#9d8fc4; font-weight:600;">Signature du responsable LCB-FT</span>
+  </div>
+
+  <!-- Légende sous la zone -->
+  <div style="position:absolute; left:${SIGNATURE_FIELD_GEOMETRY.leftMm}mm; top:${SIGNATURE_FIELD_GEOMETRY.topMm + SIGNATURE_FIELD_GEOMETRY.heightMm + 3}mm; width:${SIGNATURE_FIELD_GEOMETRY.widthMm}mm; font-size:8px; color:#9d8fc4; text-align:center;">
+    Signé électroniquement via Yousign · eIDAS (UE 910/2014)
+  </div>
+
+  ${footerHtml(5, totalPages, true)}
+</article>
+` : ""}
 
 </body>
 </html>`;

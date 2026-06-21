@@ -47,7 +47,20 @@
       "Bash(cd \"/c/Users/quent/Desktop/tracfin\" && grep -rE \"orgId|orgRole|orgSlug\" node_modules/@clerk/nextjs/dist/types/server/*.d.ts 2>/dev/null | head -5)",
       "Bash(cd \"/c/Users/quent/Desktop/tracfin\" && find node_modules/@clerk/nextjs -name \"*.d.ts\" 2>/dev/null | head -10 && echo \"---\" && grep -l \"orgId\" node_modules/@clerk/backend/dist/*.d.ts 2>/dev/null | head -3)",
       "Bash(cd \"/c/Users/quent/Desktop/tracfin\" && grep -rn \"\\\\.query\\(\" node_modules/@neondatabase/serverless/types/*.d.ts node_modules/@neondatabase/serverless/dist/*.d.ts 2>/dev/null | head -10)",
-      "Bash(cd \"/c/Users/quent/Desktop/tracfin\" && find node_modules/@neondatabase -name \"*.d.ts\" 2>/dev/null | head -5)"
+      "Bash(cd \"/c/Users/quent/Desktop/tracfin\" && find node_modules/@neondatabase -name \"*.d.ts\" 2>/dev/null | head -5)",
+      "Bash(node --experimental-strip-types -e \"import\\('./app/pdf-render/attestation-template.ts'\\).then\\(m => { const g = m.SIGNATURE_FIELD_GEOMETRY; console.log\\('page', g.page, '| x', g.x, '| y', g.y, '| w', g.width, '| h', g.height\\); }\\)\")",
+      "Bash(node -e \"const M=72/25.4; const g={leftMm:30,topMm:132,widthMm:75,heightMm:38}; console.log\\('A4=595x842pt | x',Math.round\\(g.leftMm*M\\),'y',Math.round\\(g.topMm*M\\),'w',Math.round\\(g.widthMm*M\\),'h',Math.round\\(g.heightMm*M\\),'| y+h',Math.round\\(\\(g.topMm+g.heightMm\\)*M\\)\\)\")",
+      "Bash(cd \"/c/Users/quent/Desktop/tracfin\" && echo \"=== Claims '5 sous-traitants' / exhaustive ===\" && grep -rn \"5 sous-traitants\\\\|exhaustive\\\\|Pas un tiers\" app/ components/ 2>/dev/null | grep -v node_modules; echo \"\"; echo \"=== import-time throws \\(env vars\\) ===\" && grep -rn \"throw new Error\" lib/db.ts lib/storage.ts 2>/dev/null; echo \"\"; echo \"=== SOUS_TRAITANTS usage ===\" && grep -rln \"SOUS_TRAITANTS\\\\|HEBERGEURS_DONNEES\" app/ components/ 2>/dev/null | grep -v node_modules)",
+      "Bash(npx next *)",
+      "Bash(echo \"tsc_exit=$?\")",
+      "Bash(echo \"build_exit=$?\")",
+      "Bash(grep -n \"className=\\\\\"kpi-row\\\\\"\\\\|className={\\\\`kpi-row\\\\|kpi-row\\\\|return \\(\" components/dashboard/KpiRow.tsx)",
+      "Bash(cd \"/c/Users/quent/Desktop/tracfin\" && rm -f app/dashboard/loading.tsx && echo \"✓ loading.tsx supprimé \\(plus de flash de spinner\\)\")",
+      "Bash(node --experimental-strip-types _migration/test-tour-placement.mjs)",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "Bash(stat -c '%y  %n' app/globals.css)",
+      "Bash(ls -l --time-style=full-iso .next/dev/static/chunks/*globals*.css)"
     ]
   }
 }

@@ -26,6 +26,7 @@ import {
   type BeneficiaireEffectif,
 } from "@/lib/kyc";
 import FileUpload from "@/components/kyc/Fileupload";
+import { buildDemoKycForm } from "@/lib/demo-kyc";
 import Stepper from "./Stepper";
 import StepFooter from "./StepFooter";
 import { useKycPersist } from "./useKycPersist";
@@ -36,6 +37,13 @@ interface Props {
   token: string;
   dossierId: string;
   partie: Partie;
+  /** Pré-remplissage INPI/Pappers activé (clé API présente côté serveur). */
+  pappersEnabled?: boolean;
+  /** Mode démonstration (tutoriel) : pré-rempli, aucun appel réseau, aucune
+   *  sauvegarde, étape pilotée de l'extérieur. Le flux réel n'est PAS affecté. */
+  demo?: boolean;
+  /** En mode démo, l'étape affichée est pilotée par le parent (le film). */
+  controlledStep?: number;
 }
 
 /* ─────────── Étapes du wizard ─────────── */
@@ -188,22 +196,26 @@ function Selectt<T extends { value: string; label: string }>({ value, options, o
    COMPOSANT PRINCIPAL
    ═══════════════════════════════════════════════════════════════ */
 
-export default function KycPublicForm({ token, dossierId, partie }: Props) {
+export default function KycPublicForm({ token, dossierId, partie, pappersEnabled = false, demo = false, controlledStep }: Props) {
   const isVendeur = partie === "vendeur";
   const isAcquereur = partie === "acquereur";
-  const [form, setForm] = useState<KycForm>(initialKycForm);
+  const [form, setForm] = useState<KycForm>(() => (demo ? buildDemoKycForm(partie) : initialKycForm));
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [cnilOpen, setCnilOpen] = useState(false);
 
-  // Auto-save localStorage
+  // En mode démo, l'étape visible est pilotée par le parent (le film tutoriel).
+  const displayStep = demo && controlledStep != null ? controlledStep : step;
+
+  // Auto-save localStorage (désactivé en mode démo).
   const { restoredAt, clear: clearPersist } = useKycPersist(
     token,
     form,
     setForm,
     step,
     setStep,
+    demo,
   );
 
   const set = useCallback(<K extends keyof KycForm>(k: K, v: KycForm[K]) => {
@@ -399,11 +411,11 @@ export default function KycPublicForm({ token, dossierId, partie }: Props) {
     >
       <BackgroundHalos />
 
-      <Stepper steps={STEPS as unknown as Array<{ key: string; label: string }>} current={step} onJumpBack={jumpTo} />
+      <Stepper steps={STEPS as unknown as Array<{ key: string; label: string }>} current={displayStep} onJumpBack={demo ? () => {} : jumpTo} />
 
       <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 py-6">
         {/* Bandeau "saisie restaurée" */}
-        {restoredAt && step === 0 && (
+        {restoredAt && displayStep === 0 && (
           <div
             className="mb-5 rounded-xl p-3 flex items-center gap-2.5 border"
             style={{
@@ -420,25 +432,28 @@ export default function KycPublicForm({ token, dossierId, partie }: Props) {
         )}
 
         {/* ÉTAPES */}
-        {step === 0 && <Step0_Vous form={form} set={set} cnilOpen={cnilOpen} setCnilOpen={setCnilOpen} isVendeur={isVendeur} />}
-        {step === 1 && <Step1_Identite form={form} set={set} isMorale={isMorale} token={token} />}
-        {step === 2 && <Step2_Piece form={form} set={set} isMorale={isMorale} />}
-        {step === 3 && <Step3_Situation form={form} set={set} isMorale={isMorale} />}
-        {step === 4 && <Step4_Operation form={form} set={set} isVendeur={isVendeur} />}
-        {step === 5 && <Step5_Pieces form={form} set={set} dossierId={dossierId} token={token} isMorale={isMorale} />}
-        {step === 6 && <Step6_Recap form={form} set={set} jumpTo={jumpTo} isVendeur={isVendeur} />}
+        {displayStep === 0 && <Step0_Vous form={form} set={set} cnilOpen={cnilOpen} setCnilOpen={setCnilOpen} isVendeur={isVendeur} />}
+        {displayStep === 1 && <Step1_Identite form={form} set={set} isMorale={isMorale} token={token} pappersEnabled={pappersEnabled} />}
+        {displayStep === 2 && <Step2_Piece form={form} set={set} isMorale={isMorale} />}
+        {displayStep === 3 && <Step3_Situation form={form} set={set} isMorale={isMorale} />}
+        {displayStep === 4 && <Step4_Operation form={form} set={set} isVendeur={isVendeur} />}
+        {displayStep === 5 && <Step5_Pieces form={form} set={set} dossierId={dossierId} token={token} isMorale={isMorale} />}
+        {displayStep === 6 && <Step6_Recap form={form} set={set} jumpTo={jumpTo} isVendeur={isVendeur} />}
       </div>
 
-      <StepFooter
-        isFirst={step === 0}
-        isLast={step === TOTAL_STEPS - 1}
-        canProceed={validation.ok}
-        submitting={submitting}
-        validationMessage={validation.msg}
-        onPrev={goPrev}
-        onNext={goNext}
-        onSubmit={submit}
-      />
+      {/* Barre de navigation — masquée en mode démo (le film pilote les étapes) */}
+      {!demo && (
+        <StepFooter
+          isFirst={step === 0}
+          isLast={step === TOTAL_STEPS - 1}
+          canProceed={validation.ok}
+          submitting={submitting}
+          validationMessage={validation.msg}
+          onPrev={goPrev}
+          onNext={goNext}
+          onSubmit={submit}
+        />
+      )}
     </div>
   );
 }
@@ -568,7 +583,7 @@ function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
 }
 
 /* ─── ÉTAPE 1 : Identité ─── */
-function Step1_Identite({ form, set, isMorale, token }: { form: KycForm; set: Setter; isMorale: boolean; token: string }) {
+function Step1_Identite({ form, set, isMorale, token, pappersEnabled }: { form: KycForm; set: Setter; isMorale: boolean; token: string; pappersEnabled: boolean }) {
   return (
     <Section
       title={isMorale ? "La société" : "Votre identité"}
@@ -643,7 +658,7 @@ function Step1_Identite({ form, set, isMorale, token }: { form: KycForm; set: Se
             />
           </Field>
 
-          <PappersLookupButton form={form} set={set} token={token} />
+          {pappersEnabled && <PappersLookupButton form={form} set={set} token={token} />}
 
           <Field label="Date de constitution">
             <input

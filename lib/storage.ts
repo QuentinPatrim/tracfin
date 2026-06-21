@@ -90,6 +90,42 @@ export async function uploadFile(
   return { key, size: file.size, sha256, contentType: file.type };
 }
 
+/**
+ * Upload d'un Buffer déjà en mémoire (contrairement à uploadFile qui prend un
+ * File depuis un FormData). Utilisé pour stocker des documents générés/reçus
+ * côté serveur — typiquement le PDF signé renvoyé par Yousign, ou un export.
+ *
+ * Pas de validation MIME : la source est de confiance (notre propre génération
+ * ou un fournisseur authentifié). Le SHA-256 est calculé et stocké en metadata.
+ */
+export async function uploadBuffer(
+  buffer: Buffer,
+  dossierId: string,
+  ext: string,
+  contentType: string,
+  prefix = "",
+): Promise<UploadResult> {
+  if (buffer.length === 0) throw new UploadError("Buffer vide");
+
+  const sha256 = createHash("sha256").update(buffer).digest("hex");
+  const safeExt = ext.replace(/[^a-z0-9]/gi, "").slice(0, 8) || "bin";
+  const namePart = prefix ? `${prefix}-` : "";
+  const key = `${dossierId}/${namePart}${Date.now()}-${randomUUID()}.${safeExt}`;
+
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: BUCKET,
+      Key: key,
+      Body: buffer,
+      ContentType: contentType,
+      ServerSideEncryption: "AES256",
+      Metadata: { sha256 },
+    }),
+  );
+
+  return { key, size: buffer.length, sha256, contentType };
+}
+
 export async function getFileStream(key: string) {
   const res = await s3.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
   if (!res.Body) throw new Error("Fichier introuvable");

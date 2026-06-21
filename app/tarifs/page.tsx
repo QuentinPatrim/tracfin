@@ -169,22 +169,21 @@ export default function TarifsPage() {
 
   return (
     <div
-      className="min-h-screen text-white relative overflow-x-hidden"
-      style={{ background: "#06070D", fontFamily: "Inter, sans-serif" }}
+      className="klaris-public min-h-screen relative overflow-x-hidden"
     >
       {/* Orbes ambiants */}
       <div className="fixed pointer-events-none rounded-full" style={{
         width: 800, height: 800, top: -250, left: -180, zIndex: 0, filter: "blur(110px)",
-        background: "radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%)",
+        background: "radial-gradient(circle, var(--lp-orb-1) 0%, transparent 70%)",
       }} />
       <div className="fixed pointer-events-none rounded-full" style={{
         width: 700, height: 700, bottom: -200, right: -150, zIndex: 0, filter: "blur(110px)",
-        background: "radial-gradient(circle, rgba(236,72,153,0.18) 0%, transparent 70%)",
+        background: "radial-gradient(circle, var(--lp-orb-2) 0%, transparent 70%)",
       }} />
       <div className="fixed pointer-events-none rounded-full" style={{
         width: 500, height: 500, top: "40%", left: "50%", zIndex: 0, filter: "blur(110px)",
         transform: "translate(-50%, -50%)",
-        background: "radial-gradient(circle, rgba(168,85,247,0.20) 0%, transparent 70%)",
+        background: "radial-gradient(circle, var(--lp-orb-1) 0%, transparent 70%)",
       }} />
 
       <FloatingNav />
@@ -195,16 +194,16 @@ export default function TarifsPage() {
           <div
             className="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full"
             style={{
-              background: "linear-gradient(135deg, rgba(16,185,129,0.18), rgba(52,211,153,0.10))",
+              background: "var(--lp-success-bg)",
               backdropFilter: "blur(20px)",
-              boxShadow: "0 0 0 1px rgba(16,185,129,0.40), 0 1px 0 rgba(255,255,255,0.10) inset, 0 0 28px -4px rgba(16,185,129,0.40)",
+              boxShadow: "0 0 0 1px var(--lp-success-border), 0 1px 0 rgba(255,255,255,0.10) inset, 0 0 28px -4px rgba(16,185,129,0.40)",
             }}
           >
             <span
               className="w-2 h-2 rounded-full"
               style={{ background: "#10B981", boxShadow: "0 0 0 4px rgba(16,185,129,0.30)" }}
             />
-            <span className="text-[12px] font-bold tracking-[0.14em] uppercase text-emerald-300">
+            <span className="text-[12px] font-bold tracking-[0.14em] uppercase text-[color:var(--lp-success)]">
               14 jours gratuits · annulable en 1 clic
             </span>
           </div>
@@ -222,8 +221,8 @@ export default function TarifsPage() {
             </span>
             .
           </h1>
-          <p className="text-white/65 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
-            <strong className="text-white">Aucun prélèvement pendant 14 jours.</strong>{" "}
+          <p className="text-[color:var(--lp-text-3)] text-base md:text-lg leading-relaxed max-w-xl mx-auto">
+            <strong className="text-[color:var(--lp-text)]">Aucun prélèvement pendant 14 jours.</strong>{" "}
             Vous pouvez annuler à tout moment avant la fin de l'essai — vous ne serez pas débité.
           </p>
         </div>
@@ -233,15 +232,15 @@ export default function TarifsPage() {
           <div
             className="inline-flex p-1 rounded-full"
             style={{
-              background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+              background: "var(--lp-surface-2)",
               backdropFilter: "blur(20px)",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.10) inset",
+              boxShadow: "0 0 0 1px var(--lp-border-2), 0 1px 0 rgba(255,255,255,0.10) inset",
             }}
           >
             <button
               onClick={() => setPeriod("monthly")}
               className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all ${
-                period === "monthly" ? "bg-white text-slate-950 shadow-lg" : "text-white/60 hover:text-white"
+                period === "monthly" ? "bg-white text-slate-950 shadow-lg" : "text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)]"
               }`}
             >
               Mensuel
@@ -249,13 +248,13 @@ export default function TarifsPage() {
             <button
               onClick={() => setPeriod("yearly")}
               className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all flex items-center gap-2 ${
-                period === "yearly" ? "bg-white text-slate-950 shadow-lg" : "text-white/60 hover:text-white"
+                period === "yearly" ? "bg-white text-slate-950 shadow-lg" : "text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)]"
               }`}
             >
               Annuel
               <span
                 className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${
-                  period === "yearly" ? "bg-emerald-500/15 text-emerald-700" : "bg-emerald-500/10 text-emerald-400"
+                  period === "yearly" ? "bg-[var(--lp-success-bg)] text-[color:var(--lp-success)]" : "bg-[var(--lp-success-bg)] text-[color:var(--lp-success)]"
                 }`}
               >
                 -20%
@@ -270,15 +269,15 @@ export default function TarifsPage() {
             className="max-w-4xl mx-auto mb-4 rounded-xl px-4 py-2.5 flex items-center justify-center gap-2 flex-wrap text-[12px]"
             style={{
               background: isOrgContext
-                ? "linear-gradient(135deg, rgba(16,185,129,0.10), rgba(52,211,153,0.04))"
-                : "linear-gradient(135deg, rgba(124,58,237,0.10), rgba(168,85,247,0.04))",
-              border: `1px solid ${isOrgContext ? "rgba(16,185,129,0.25)" : "rgba(124,58,237,0.25)"}`,
+                ? "var(--lp-success-bg)"
+                : "var(--lp-card-bg-accent)",
+              border: `1px solid ${isOrgContext ? "var(--lp-success-border)" : "var(--lp-card-border-accent)"}`,
             }}
           >
-            {isOrgContext ? <Building2 className="w-3.5 h-3.5 text-emerald-300" /> : <User className="w-3.5 h-3.5 text-violet-300" />}
-            <span className="text-white/85">
+            {isOrgContext ? <Building2 className="w-3.5 h-3.5 text-[color:var(--lp-success)]" /> : <User className="w-3.5 h-3.5 text-[color:var(--lp-accent-text)]" />}
+            <span className="text-[color:var(--lp-text-2)]">
               Vous souscrivez en contexte{" "}
-              <strong className={isOrgContext ? "text-emerald-300" : "text-violet-300"}>
+              <strong className={isOrgContext ? "text-[color:var(--lp-success)]" : "text-[color:var(--lp-accent-text)]"}>
                 {isOrgContext ? "organisation" : "personnel"}
               </strong>
               .{" "}
@@ -294,17 +293,17 @@ export default function TarifsPage() {
           <div
             className="max-w-4xl mx-auto mb-6 rounded-2xl px-5 py-4 flex items-center justify-between gap-4 flex-wrap"
             style={{
-              background: "linear-gradient(135deg, rgba(16,185,129,0.12), rgba(52,211,153,0.06))",
-              border: "1px solid rgba(16,185,129,0.30)",
+              background: "var(--lp-success-bg)",
+              border: "1px solid var(--lp-success-border)",
             }}
           >
             <div className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#10B981", boxShadow: "0 0 0 4px rgba(16,185,129,0.20)" }} />
               <div>
-                <div className="text-[11px] font-bold tracking-widest uppercase text-emerald-300">
+                <div className="text-[11px] font-bold tracking-widest uppercase text-[color:var(--lp-success)]">
                   {status.state === "trialing" ? "Essai gratuit en cours" : "Abonnement actif"}
                 </div>
-                <div className="text-sm text-white/80">
+                <div className="text-sm text-[color:var(--lp-text-2)]">
                   {status.state === "trialing"
                     ? `${status.daysLeft} jour${(status.daysLeft ?? 0) > 1 ? "s" : ""} restant${(status.daysLeft ?? 0) > 1 ? "s" : ""} dans votre essai`
                     : `Plan ${currentPlanKey === "pro" ? "Pro" : "Agence"}${status.plan?.endsWith("yearly") ? " · annuel" : " · mensuel"}`}
@@ -315,8 +314,8 @@ export default function TarifsPage() {
               <button
                 onClick={handlePortal}
                 disabled={loading === "portal"}
-                className="px-4 py-2 rounded-full text-[12px] font-bold text-emerald-300 hover:text-emerald-200 transition flex items-center gap-2"
-                style={{ background: "rgba(16,185,129,0.10)", border: "1px solid rgba(16,185,129,0.35)" }}
+                className="px-4 py-2 rounded-full text-[12px] font-bold text-[color:var(--lp-success)] hover:text-[color:var(--lp-success)] transition flex items-center gap-2"
+                style={{ background: "var(--lp-success-bg)", border: "1px solid var(--lp-success-border)" }}
               >
                 <Settings className="w-3.5 h-3.5" />
                 {loading === "portal" ? "Redirection…" : "Gérer mon abonnement"}
@@ -386,8 +385,8 @@ export default function TarifsPage() {
           <div
             className="max-w-4xl mx-auto mt-8 rounded-2xl p-5 sm:p-6"
             style={{
-              background: "linear-gradient(135deg, rgba(16,185,129,0.06), rgba(52,211,153,0.03))",
-              border: "1px solid rgba(16,185,129,0.20)",
+              background: "var(--lp-success-bg)",
+              border: "1px solid var(--lp-success-border)",
             }}
           >
             <div className="grid sm:grid-cols-3 gap-5">
@@ -476,7 +475,7 @@ function PlanCard({
     <div
       className="relative rounded-3xl p-8"
       style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+        background: "var(--lp-card-bg)",
         backdropFilter: "blur(28px) saturate(180%)",
         WebkitBackdropFilter: "blur(28px) saturate(180%)",
         boxShadow: popular
@@ -487,7 +486,7 @@ function PlanCard({
               "0 12px 30px -8px rgba(0,0,0,0.5)",
             ].join(", ")
           : [
-              "0 0 0 1px rgba(255,255,255,0.08)",
+              "0 0 0 1px var(--lp-border-2)",
               "0 1px 0 rgba(255,255,255,0.10) inset",
               "0 20px 40px -12px rgba(0,0,0,0.4)",
             ].join(", "),
@@ -525,15 +524,15 @@ function PlanCard({
       )}
 
       <div className="relative">
-        <div className="mb-1 text-[11px] font-bold tracking-[0.18em] uppercase text-white/50">{name}</div>
-        <p className="text-white/40 text-sm mb-6">{tagline}</p>
+        <div className="mb-1 text-[11px] font-bold tracking-[0.18em] uppercase text-[color:var(--lp-text-4)]">{name}</div>
+        <p className="text-[color:var(--lp-text-4)] text-sm mb-6">{tagline}</p>
 
         <div className="flex items-baseline gap-1 mb-1">
           <span className="text-5xl font-extrabold tracking-tight">{price}€</span>
-          <span className="text-white/40 text-sm">/mois</span>
+          <span className="text-[color:var(--lp-text-4)] text-sm">/mois</span>
         </div>
         {period === "yearly" ? (
-          <div className="text-[11px] text-emerald-400 font-semibold mb-6">
+          <div className="text-[11px] text-[color:var(--lp-success)] font-semibold mb-6">
             Soit {price * 12}€/an, économisez {(priceMonthly - priceYearly) * 12}€
           </div>
         ) : (
@@ -547,13 +546,13 @@ function PlanCard({
           style={
             isCurrent
               ? {
-                  background: "rgba(16,185,129,0.15)",
-                  color: "#34D399",
-                  boxShadow: "0 0 0 1px rgba(16,185,129,0.40), 0 1px 0 rgba(255,255,255,0.10) inset",
+                  background: "var(--lp-success-bg)",
+                  color: "var(--lp-success)",
+                  boxShadow: "0 0 0 1px var(--lp-success-border), 0 1px 0 rgba(255,255,255,0.10) inset",
                 }
               : popular
               ? {
-                  background: "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)",
+                  background: "var(--lp-cta-grad)",
                   backgroundSize: "200% 200%",
                   animation: "gradShift 6s ease infinite",
                   color: "white",
@@ -569,9 +568,9 @@ function PlanCard({
         </button>
 
         {/* Sous-texte explicatif : selon le contexte */}
-        <div className="text-center text-[11px] mb-6 leading-snug" style={{ color: "rgba(255,255,255,0.50)" }}>
+        <div className="text-center text-[11px] mb-6 leading-snug" style={{ color: "var(--lp-text-4)" }}>
           {isCurrent ? (
-            <span style={{ color: "rgba(52,211,153,0.85)" }}>✓ Vous êtes sur ce plan</span>
+            <span style={{ color: "var(--lp-success)" }}>✓ Vous êtes sur ce plan</span>
           ) : isUpgrade ? (
             <span>Prorata Stripe appliqué · pas de double facturation</span>
           ) : (
@@ -581,7 +580,7 @@ function PlanCard({
 
         <ul className="space-y-3">
           {features.map((f) => (
-            <li key={f} className="flex items-start gap-3 text-[13px] text-white/70">
+            <li key={f} className="flex items-start gap-3 text-[13px] text-[color:var(--lp-text-3)]">
               <div
                 className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5"
                 style={
@@ -612,11 +611,11 @@ function PlanCard({
 function BillingStep({ step, title, desc }: { step: string; title: string; desc: string }) {
   return (
     <div className="text-center sm:text-left">
-      <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-emerald-300/85 mb-1.5">
+      <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-[color:var(--lp-success)] mb-1.5">
         {step}
       </div>
-      <div className="text-[15px] font-bold text-white mb-1">{title}</div>
-      <div className="text-[12.5px] text-white/55 leading-relaxed">{desc}</div>
+      <div className="text-[15px] font-bold text-[color:var(--lp-text)] mb-1">{title}</div>
+      <div className="text-[12.5px] text-[color:var(--lp-text-3)] leading-relaxed">{desc}</div>
     </div>
   );
 }
@@ -626,16 +625,16 @@ function FaqItem({ q, a }: { q: string; a: string }) {
     <details
       className="group rounded-2xl overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
+        background: "var(--lp-card-bg)",
         backdropFilter: "blur(20px)",
-        boxShadow: "0 0 0 1px rgba(255,255,255,0.06), 0 1px 0 rgba(255,255,255,0.08) inset",
+        boxShadow: "0 0 0 1px var(--lp-border-1), 0 1px 0 rgba(255,255,255,0.08) inset",
       }}
     >
-      <summary className="cursor-pointer px-6 py-5 font-bold text-[15px] tracking-tight flex items-center justify-between hover:bg-white/[0.03] transition list-none">
+      <summary className="cursor-pointer px-6 py-5 font-bold text-[15px] tracking-tight flex items-center justify-between hover:bg-[var(--lp-surface)] transition list-none">
         {q}
-        <span className="text-white/40 group-open:rotate-45 transition-transform text-2xl leading-none ml-4">+</span>
+        <span className="text-[color:var(--lp-text-4)] group-open:rotate-45 transition-transform text-2xl leading-none ml-4">+</span>
       </summary>
-      <div className="px-6 pb-5 text-white/55 text-[14px] leading-relaxed">{a}</div>
+      <div className="px-6 pb-5 text-[color:var(--lp-text-3)] text-[14px] leading-relaxed">{a}</div>
     </details>
   );
 }

@@ -57,12 +57,14 @@ const csp = [
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self' https://checkout.stripe.com",
-  "frame-ancestors 'none'",
+  // 'self' (et non 'none') pour autoriser notre propre iframe (tutoriel : aperçu
+  // du parcours client via /kyc/demo). Le cross-origin reste bloqué (clickjacking).
+  "frame-ancestors 'self'",
 ].join("; ");
 
 const securityHeaders = [
   { key: "Content-Security-Policy", value: csp },
-  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   // HSTS — appliqué par Vercel en prod aussi, on durcit ici.

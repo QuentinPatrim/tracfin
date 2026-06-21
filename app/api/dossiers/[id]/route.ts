@@ -5,6 +5,7 @@ import { sql } from "@/lib/db";
 import { computeScore, type DossierForm } from "@/lib/tracfin";
 import { logAudit } from "@/lib/audit";
 import { getScope, findScopedDossier } from "@/lib/scope";
+import { enqueueOutboundEvent } from "@/lib/outbound";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -92,6 +93,15 @@ export async function PATCH(req: Request, { params }: RouteParams) {
     action: "dossier.update",
     metadata: { niveau: score.niveau, algo_version: score.algoVersion },
     req,
+  });
+
+  // Webhook sortant → CRM : nouveau verdict de vigilance disponible.
+  await enqueueOutboundEvent({
+    dossierId: id,
+    userId: scope.userId,
+    orgId: scope.orgId,
+    eventType: "dossier.scored",
+    extra: { niveau: score.niveau },
   });
 
   return NextResponse.json({ id: rows[0].id });

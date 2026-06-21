@@ -24,7 +24,22 @@ export type AuditAction =
   | "screening.alert"             // nouvelle correspondance détectée en re-screening
   | "cartography.view"            // consultation cartographie L.561-4-1
   | "cartography.export"          // export PDF cartographie pour contrôle DGCCRF
-  | "pappers.lookup";             // appel INPI/Pappers pour récupérer données PM
+  | "pappers.lookup"              // appel INPI/Pappers pour récupérer données PM
+  | "declaration.create"          // création d'une déclaration de soupçon (DS)
+  | "declaration.update"          // mise à jour des faits / pièces
+  | "declaration.submit"          // export pour soumission ERMES
+  | "declaration.acknowledge"     // n° d'AR ERMES saisi après soumission
+  | "integration.create"          // clé API CRM générée
+  | "integration.revoke"          // clé API désactivée
+  | "integration.webhook"         // appel webhook entrant authentifié
+  | "signature.initiate"          // demande de signature eIDAS envoyée (Yousign)
+  | "signature.signed"            // attestation signée par le signataire
+  | "signature.declined"          // signature refusée / expirée
+  | "correspondant.designate"     // désignation d'un correspondant LCB-FT (L.561-32)
+  | "correspondant.remove"        // retrait d'un correspondant
+  | "validation.request"          // demande de validation 4-yeux d'un dossier à risque
+  | "validation.approve"          // correspondant valide la décision de l'agent
+  | "validation.reject";          // correspondant rejette / renvoie pour révision
 
 export interface LogAuditParams {
   /** ID Clerk de l'agent. NULL pour les actions client public (KYC, upload via token). */

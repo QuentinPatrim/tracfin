@@ -10,6 +10,10 @@ import { rowToForm as dossierRowToForm } from "@/lib/dossier";
 import { listDossierFiles, type KycFilesRow } from "@/lib/dossier-files";
 import DossierPieces from "@/components/dashboard/DossierPieces";
 import MarcheASuivre from "@/components/dashboard/MarcheASuivre";
+import DeclarationSection from "@/components/dashboard/DeclarationSection";
+import SignatureSection from "@/components/dashboard/SignatureSection";
+import ValidationSection from "@/components/dashboard/ValidationSection";
+import { FEATURES } from "@/lib/features";
 import KycClientSummary, { type KycSummaryData } from "@/components/dashboard/KycClientSummary";
 import type { BeneficiaireEffectif } from "@/lib/kyc";
 
@@ -298,9 +302,23 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
             partie={dossier.partie === "vendeur" ? "vendeur" : "acquereur"}
             mode="full"
           />
+          <ValidationSection
+            dossierId={id}
+            niveau={niveauEffectif}
+            isArchived={!!dossier.archived_at}
+          />
+          <DeclarationSection
+            dossierId={id}
+            niveau={niveauEffectif}
+            isArchived={!!dossier.archived_at}
+          />
         </div>
       )}
-      <TracfinForm initialData={rowToForm(dossier, kyc)} dossierId={id} hasKyc />
+
+      <div style={{ maxWidth: 768, margin: "0 auto", padding: "0 24px" }}>
+        <SignatureSection dossierId={id} isArchived={!!dossier.archived_at} enabled={FEATURES.signature} />
+      </div>
+      <TracfinForm initialData={rowToForm(dossier, kyc)} dossierId={id} hasKyc screeningEnabled={FEATURES.screening} />
     </div>
   );
 }

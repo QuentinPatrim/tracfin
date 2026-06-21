@@ -1,4 +1,5 @@
 // components/landing/FloatingNav.tsx — Nav flottante (mobile-first, menu hamburger)
+// Palette « Iris » via tokens --lp-* (clair/sombre) + bascule de thème.
 
 "use client";
 
@@ -7,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Play, Menu, X } from "lucide-react";
 import { useClerk, useAuth, UserButton } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import DemoModal from "./DemoModal";
 
 const NAV_LINKS = [
@@ -58,19 +60,17 @@ export default function FloatingNav() {
         <div
           className="relative flex items-center justify-between px-2.5 sm:px-3 py-2 rounded-full transition-all duration-300"
           style={{
-            background: scrolled ? "rgba(7,8,15,0.78)" : "rgba(255,255,255,0.04)",
+            background: scrolled ? "var(--lp-nav-bg-scrolled)" : "var(--lp-nav-bg)",
             backdropFilter: "blur(24px) saturate(180%)",
             WebkitBackdropFilter: "blur(24px) saturate(180%)",
-            border: scrolled ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(255,255,255,0.06)",
-            boxShadow: scrolled
-              ? "0 12px 32px -8px rgba(124,58,237,0.20), 0 1px 0 rgba(255,255,255,0.08) inset"
-              : "0 6px 24px -8px rgba(124,58,237,0.12), 0 1px 0 rgba(255,255,255,0.06) inset",
+            border: "1px solid var(--lp-nav-border)",
+            boxShadow: scrolled ? "var(--lp-nav-shadow-scrolled)" : "0 1px 0 var(--lp-border-1) inset",
           }}
         >
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 pl-1.5 sm:pl-2 pr-2 group">
             <KlarisLogo size={24} />
-            <span className="text-[14.5px] font-bold tracking-tight">Klaris</span>
+            <span className="text-[14.5px] font-bold tracking-tight" style={{ color: "var(--lp-text)" }}>Klaris</span>
           </Link>
 
           {/* Liens desktop */}
@@ -79,7 +79,7 @@ export default function FloatingNav() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="text-[12.5px] font-medium text-white/65 hover:text-white px-3 py-1.5 rounded-full hover:bg-white/[0.05] transition"
+                className="text-[12.5px] font-medium px-3 py-1.5 rounded-full transition text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)] hover:bg-[var(--lp-surface-2)]"
               >
                 {l.label}
               </Link>
@@ -92,11 +92,13 @@ export default function FloatingNav() {
               adblock…), l'utilisateur doit toujours avoir un chemin vers la page
               de connexion. Si déjà connecté, openSignIn redirige vers /dashboard. */}
           <div className="flex items-center gap-1.5 pr-1">
+            <ThemeToggle />
+
             {(!isLoaded || !isSignedIn) && (
               <>
                 <button
                   onClick={() => openSignIn({ fallbackRedirectUrl: "/dashboard" })}
-                  className="hidden sm:block text-[12.5px] font-medium text-white/70 hover:text-white px-3 py-1.5 rounded-full hover:bg-white/[0.05] transition"
+                  className="hidden sm:block text-[12.5px] font-medium px-3 py-1.5 rounded-full transition text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)] hover:bg-[var(--lp-surface-2)]"
                 >
                   Connexion
                 </button>
@@ -128,7 +130,8 @@ export default function FloatingNav() {
             {/* Bouton menu mobile */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden ml-0.5 grid place-items-center w-9 h-9 rounded-full bg-white/[0.04] border border-white/[0.10] text-white/80 hover:bg-white/[0.08] transition"
+              className="lg:hidden ml-0.5 grid place-items-center w-9 h-9 rounded-full transition text-[color:var(--lp-text-2)] hover:bg-[var(--lp-surface-3)]"
+              style={{ background: "var(--lp-surface)", border: "1px solid var(--lp-border-2)" }}
               aria-label="Ouvrir le menu"
             >
               <Menu width={16} height={16} />
@@ -152,8 +155,8 @@ export default function FloatingNav() {
 }
 
 const pillStyle: React.CSSProperties = {
-  background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-  boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 18px rgba(124,58,237,0.35)",
+  background: "var(--lp-cta-grad)",
+  boxShadow: "var(--lp-cta-shadow)",
 };
 
 function MobileMenu({
@@ -174,25 +177,29 @@ function MobileMenu({
       onClick={onClose}
       className="fixed inset-0 z-[60] lg:hidden"
       style={{
-        background: "rgba(7,8,15,0.92)",
+        background: "var(--lp-bg)",
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
       }}
     >
       <div onClick={(e) => e.stopPropagation()} className="h-full flex flex-col">
         {/* Top bar du menu */}
-        <div className="flex items-center justify-between p-4 border-b border-white/[0.06]">
+        <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: "var(--lp-border-1)" }}>
           <Link href="/" onClick={onClose} className="flex items-center gap-2">
             <KlarisLogo size={24} />
-            <span className="text-[14.5px] font-bold tracking-tight text-white">Klaris</span>
+            <span className="text-[14.5px] font-bold tracking-tight" style={{ color: "var(--lp-text)" }}>Klaris</span>
           </Link>
-          <button
-            onClick={onClose}
-            className="grid place-items-center w-9 h-9 rounded-full bg-white/[0.04] border border-white/[0.10] text-white/80"
-            aria-label="Fermer"
-          >
-            <X width={16} height={16} />
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={onClose}
+              className="grid place-items-center w-9 h-9 rounded-full transition text-[color:var(--lp-text-2)]"
+              style={{ background: "var(--lp-surface)", border: "1px solid var(--lp-border-2)" }}
+              aria-label="Fermer"
+            >
+              <X width={16} height={16} />
+            </button>
+          </div>
         </div>
 
         {/* Liens */}
@@ -202,7 +209,7 @@ function MobileMenu({
               key={l.href}
               href={l.href}
               onClick={onClose}
-              className="block px-4 py-3.5 rounded-xl text-[15px] font-medium text-white/85 hover:bg-white/[0.06] border border-transparent hover:border-white/[0.08] transition"
+              className="block px-4 py-3.5 rounded-xl text-[15px] font-medium transition text-[color:var(--lp-text-2)] hover:bg-[var(--lp-surface-2)]"
             >
               {l.label}
             </Link>
@@ -210,7 +217,7 @@ function MobileMenu({
         </nav>
 
         {/* CTAs en bas */}
-        <div className="p-4 border-t border-white/[0.06] flex flex-col gap-2.5">
+        <div className="p-4 border-t flex flex-col gap-2.5" style={{ borderColor: "var(--lp-border-1)" }}>
           {!isSignedIn ? (
             <>
               <button
@@ -223,13 +230,14 @@ function MobileMenu({
               </button>
               <button
                 onClick={onSignUp}
-                className="w-full text-[14px] font-medium text-white/85 px-5 py-3 rounded-xl bg-white/[0.04] border border-white/[0.10]"
+                className="w-full text-[14px] font-medium px-5 py-3 rounded-xl text-[color:var(--lp-text-2)]"
+                style={{ background: "var(--lp-surface)", border: "1px solid var(--lp-border-2)" }}
               >
                 Essayer gratuitement
               </button>
               <button
                 onClick={onSignIn}
-                className="w-full text-[13px] font-medium text-white/55 px-5 py-2 rounded-xl"
+                className="w-full text-[13px] font-medium px-5 py-2 rounded-xl text-[color:var(--lp-text-4)]"
               >
                 Déjà un compte ? Se connecter
               </button>

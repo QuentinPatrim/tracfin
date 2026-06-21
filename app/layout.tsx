@@ -28,8 +28,17 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="fr" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <html lang="fr" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
         <body>
+          {/* Thème public clair/sombre appliqué avant le premier rendu (anti-FOUC).
+              Défaut = préférence système ; sinon choix mémorisé. N'affecte que les
+              pages publiques (.klaris-public) ; le dashboard reste inchangé. */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "(function(){try{var t=localStorage.getItem('klaris-theme');var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;var r=(t==='light'||t==='dark')?t:(d?'dark':'light');document.documentElement.setAttribute('data-theme',r);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();",
+            }}
+          />
           {children}
           <CookieNotice />
         </body>
