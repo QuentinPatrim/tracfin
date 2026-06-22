@@ -180,12 +180,12 @@ export default function ConfidentialitePage() {
         </P>
         <div className="grid sm:grid-cols-2 gap-2 my-3">
           {DROITS_RGPD.map((d) => (
-            <div key={d.code} className="rounded-lg p-3 bg-white/[0.03] border border-white/[0.08]">
+            <div key={d.code} className="rounded-lg p-3" style={{ background: "var(--lp-surface)", border: "1px solid var(--lp-border-2)" }}>
               <div className="flex items-baseline gap-2 mb-1">
-                <span className="text-[13px] font-semibold text-white">Droit {d.code.toLowerCase()}</span>
-                <span className="text-[10.5px] text-white/40 uppercase tracking-widest">{d.article}</span>
+                <span className="text-[13px] font-semibold text-[color:var(--lp-text)]">Droit {d.code.toLowerCase()}</span>
+                <span className="text-[10.5px] uppercase tracking-widest text-[color:var(--lp-text-4)]">{d.article}</span>
               </div>
-              <div className="text-[12.5px] text-white/70 leading-relaxed">{d.description}</div>
+              <div className="text-[12.5px] leading-relaxed text-[color:var(--lp-text-3)]">{d.description}</div>
             </div>
           ))}
         </div>
