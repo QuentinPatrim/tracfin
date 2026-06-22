@@ -4,12 +4,16 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Play, Menu, X } from "lucide-react";
 import { useClerk, useAuth, UserButton } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import DemoModal from "./DemoModal";
+
+// Démo cinématique chargée à la demande (≈1500 lignes + animations) : exclue du
+// bundle initial de chaque page publique, tirée seulement à l'ouverture.
+const DemoModal = dynamic(() => import("./DemoModal"), { ssr: false });
 
 const NAV_LINKS = [
   { href: "/#understand", label: "Comprendre" },
@@ -50,11 +54,13 @@ export default function FloatingNav() {
 
   return (
     <>
-      <DemoModal
-        open={demoOpen}
-        onClose={() => setDemoOpen(false)}
-        onCta={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}
-      />
+      {demoOpen && (
+        <DemoModal
+          open={demoOpen}
+          onClose={() => setDemoOpen(false)}
+          onCta={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}
+        />
+      )}
 
       <nav className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] max-w-5xl">
         <div
