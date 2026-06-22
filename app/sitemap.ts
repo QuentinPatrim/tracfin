@@ -9,6 +9,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes: Array<{ path: string; priority: number }> = [
     { path: "", priority: 1.0 },
     { path: "/tarifs", priority: 0.9 },
+    { path: "/guides", priority: 0.8 },
+    { path: "/guides/decret-tracfin-2026", priority: 0.7 },
     { path: "/confiance", priority: 0.7 },
     { path: "/securite", priority: 0.7 },
     { path: "/legal/mentions-legales", priority: 0.3 },

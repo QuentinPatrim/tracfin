@@ -19,6 +19,7 @@ const NAV_LINKS = [
   { href: "/#understand", label: "Comprendre" },
   { href: "/#features", label: "Fonctionnalités" },
   { href: "/#how", label: "Comment ça marche" },
+  { href: "/guides", label: "Guides" },
   { href: "/confiance", label: "Confiance" },
   { href: "/tarifs", label: "Tarifs" },
 ];
