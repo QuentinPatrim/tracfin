@@ -35,6 +35,8 @@ const isPublicRoute = createRouteMatcher([
   "/abonnement",
   "/confiance",
   "/securite",
+  "/guides",
+  "/guides/(.*)",
   "/legal/(.*)",
   // Auth Clerk (sign-in / sign-up hébergés par Clerk via routes catch-all)
   "/sign-in(.*)",
