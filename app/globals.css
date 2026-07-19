@@ -20,12 +20,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* NB : l'ancien `@media (prefers-color-scheme: dark)` du boilerplate a été retiré.
+   Il passait la couleur de texte du body en quasi-blanc dès que le SYSTÈME de
+   l'utilisateur était en sombre — rendant illisibles les zones claires (dashboard,
+   textarea de déclaration…) qui héritaient du body. Le thème sombre des pages
+   publiques/KYC est géré explicitement via data-theme + .klaris-public/.kyc-app. */
 
 body {
   background: var(--background);

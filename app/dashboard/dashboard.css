@@ -1,5 +1,13 @@
 /* app/dashboard/dashboard.css — Klaris Dashboard (light avec profondeur + glassmorphism) */
 
+/* Le dashboard est light-only : on force la couleur de texte de base et le
+   color-scheme, pour qu'aucun élément (textarea, input…) n'hérite d'un thème
+   sombre du système / du body. */
+.dashboard-root {
+  color: #0f172a;
+  color-scheme: light;
+}
+
 :root {
   /* Accents */
   --k-accent:        #7c3aed;

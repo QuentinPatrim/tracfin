@@ -18,6 +18,7 @@
 import { sql } from "@/lib/db";
 import type { Niveau, AlgoLogEntry } from "@/lib/tracfin";
 import { NIVEAU_CFG, RISK_LABELS } from "@/lib/tracfin";
+import { humanLabel } from "@/lib/labels";
 import type { Dossier } from "@/types/dossier";
 import { listDossierFiles, type DossierFile, type KycFilesRow } from "@/lib/dossier-files";
 
@@ -234,7 +235,8 @@ export async function buildDeclarationDraft(dossierId: string): Promise<Declarat
       dateNaissance: kyc?.date_naissance ?? dossier.date_naissance,
       lieuNaissance: kyc?.lieu_naissance ?? dossier.lieu_naissance,
       nationalite: kyc?.nationalite ?? dossier.nationalite,
-      paysResidenceFiscale: kyc?.pays_residence_fiscale ?? dossier.residence_fiscale,
+      // Libellé humain (jamais de code interne type "green_fr" dans un document)
+      paysResidenceFiscale: humanLabel("pays", kyc?.pays_residence_fiscale ?? dossier.residence_fiscale),
       adresse: kyc?.adresse ?? dossier.adresse,
       profession: kyc?.profession ?? dossier.profession,
       ...(isMorale ? {
@@ -246,16 +248,18 @@ export async function buildDeclarationDraft(dossierId: string): Promise<Declarat
     },
     beneficiairesEffectifs: be,
     operation: {
-      typeBien: kyc?.type_bien ?? dossier.type_bien,
+      // Tous résolus en libellés humains — le PDF/l'UI ne doivent jamais montrer
+      // un code interne ("green_virement", "epargne", "red_offshore"…).
+      typeBien: humanLabel("typeBien", kyc?.type_bien ?? dossier.type_bien),
       lieuBien: kyc?.lieu_bien ?? dossier.lieu_bien,
       montantEur: kyc?.montant_operation
         ? Number(kyc.montant_operation.replace(/\s/g, "")) || null
         : dossier.montant_transaction
           ? Number(String(dossier.montant_transaction).replace(/\s/g, "")) || null
           : null,
-      origineFonds: kyc?.origine_fonds ?? dossier.origine_fonds,
-      modePaiement: kyc?.mode_paiement ?? dossier.mode_paiement,
-      montageFinancier: kyc?.mode_financement ?? dossier.montage_financier,
+      origineFonds: humanLabel("origineFonds", kyc?.origine_fonds ?? dossier.origine_fonds),
+      modePaiement: humanLabel("modePaiement", kyc?.mode_paiement ?? dossier.mode_paiement),
+      montageFinancier: humanLabel("montageFinancier", kyc?.mode_financement ?? dossier.montage_financier),
     },
     indices,
     pieces,
@@ -295,13 +299,19 @@ function buildExpose(params: {
     lines.push("");
   }
 
-  // Indices structurés
+  // Indices structurés — texte sobre et professionnel (pas d'emoji ni de jargon
+  // interne : ce texte part tel quel dans le PDF joint à la déclaration ERMES).
   if (indices.length > 0) {
-    lines.push("**Indices ayant fondé le soupçon :**");
+    lines.push("Indices ayant fondé le soupçon :");
     lines.push("");
     indices.forEach((idx, i) => {
-      const sev = idx.severite === "gate" ? "🔴 GATE" : idx.severite === "rouge" ? "🔴" : "🟠";
-      lines.push(`${i + 1}. ${sev} ${idx.description}`);
+      const sev =
+        idx.severite === "gate"
+          ? "Critère bloquant"
+          : idx.severite === "rouge"
+            ? "Critère critique"
+            : "Signal de vigilance";
+      lines.push(`${i + 1}. ${sev} — ${idx.description}`);
     });
     lines.push("");
   }
@@ -314,11 +324,10 @@ function buildExpose(params: {
   return lines.join("\n");
 }
 
-// Helper local — résolution d'un code en label si on en a un.
+// Helper local — tournure en prose pour le type de bien dans l'exposé.
 function labelOrCode(key: string, code: string): string {
-  // Importing OPTIONS would create a circular dep risk; we keep simple here.
-  // Mapping minimaliste pour les labels les plus utiles dans l'exposé.
-  const fallback: Record<string, string> = {
+  void key;
+  const prose: Record<string, string> = {
     green_residentiel_principal: "une acquisition de résidence principale",
     green_residentiel_secondaire: "une acquisition de résidence secondaire",
     green_locatif: "un investissement locatif",
@@ -327,7 +336,8 @@ function labelOrCode(key: string, code: string): string {
     orange_sci: "une acquisition via SCI / holding",
     orange_multilots: "une acquisition multi-lots",
   };
-  return fallback[code] ?? `une opération de type "${code}"`;
+  // Repli : libellé du référentiel (jamais le code brut).
+  return prose[code] ?? `une opération de type « ${humanLabel("typeBien", code) ?? code} »`;
 }
 
 /** Helper d'export pour l'UI : libellés des types d'indices. */

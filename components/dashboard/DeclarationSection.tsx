@@ -356,6 +356,7 @@ function DeclarationCard({
               lineHeight: 1.55,
               resize: "vertical",
               background: "#FAF8FE",
+              color: "#0f172a",
             }}
           />
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>

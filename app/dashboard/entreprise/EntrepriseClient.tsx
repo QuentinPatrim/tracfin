@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft, Building2, Search, Loader2, Check, ShieldAlert, ShieldCheck,
-  Users, Landmark, PenLine, AlertTriangle, Plus, X,
+  Users, Landmark, PenLine, AlertTriangle, Plus, X, FileDown,
 } from "lucide-react";
 import type { RegistryResult } from "@/lib/entreprise";
 import {
@@ -394,11 +394,20 @@ export default function EntrepriseClient() {
             </div>
 
             {/* Enregistrer */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
               <button onClick={save} disabled={saving || !dirty} style={btnPrimary(saving || !dirty)}>
                 {saving ? <Loader2 size={14} className="animate-spin" /> : savedFlash ? <Check size={14} /> : null}
                 {savedFlash ? "Enregistré" : "Enregistrer le profil"}
               </button>
+              {profile && (
+                <a
+                  href="/api/entreprise/fiche-pdf"
+                  title={dirty ? "Le PDF reflète la dernière version enregistrée" : "Fiche entreprise & classification des risques (L.561-4-1)"}
+                  style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "10px 16px", borderRadius: 10, border: "1px solid rgba(124,58,237,0.30)", background: "rgba(124,58,237,0.06)", color: "#6d28d9", fontSize: 13, fontWeight: 700, textDecoration: "none" }}
+                >
+                  <FileDown size={14} /> Exporter la fiche (PDF)
+                </a>
+              )}
               {profile && (
                 <button onClick={() => { setDraft(null); setResults(null); setQuery(""); }} style={{ fontSize: 12.5, color: "#64748b", background: "none", border: "none", cursor: "pointer" }}>
                   Changer d&apos;entreprise
