@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft, Building2, Search, Loader2, Check, ShieldAlert, ShieldCheck,
-  Users, Landmark, PenLine, AlertTriangle,
+  Users, Landmark, PenLine, AlertTriangle, Plus, X,
 } from "lucide-react";
 import type { RegistryResult } from "@/lib/entreprise";
 import {
@@ -124,6 +124,47 @@ export default function EntrepriseClient() {
     if (!draft) return;
     const cur = draft[field];
     setDraft({ ...draft, [field]: cur.includes(key) ? cur.filter((k) => k !== key) : [...cur, key] });
+    setDirty(true);
+  };
+
+  /* ── Édition des dirigeants ── */
+  const setDirigeant = (i: number, field: "nom" | "qualite", value: string) => {
+    if (!draft) return;
+    const next = draft.dirigeants.map((d, j) => (j === i ? { ...d, [field]: value } : d));
+    setDraft({ ...draft, dirigeants: next });
+    setDirty(true);
+  };
+  const addDirigeant = () => {
+    if (!draft) return;
+    setDraft({ ...draft, dirigeants: [...draft.dirigeants, { nom: "", qualite: "" }] });
+    setDirty(true);
+  };
+  const removeDirigeant = (i: number) => {
+    if (!draft) return;
+    setDraft({ ...draft, dirigeants: draft.dirigeants.filter((_, j) => j !== i) });
+    setDirty(true);
+  };
+
+  /* ── Édition du chiffre d'affaires ── */
+  const setFinance = (i: number, field: "annee" | "ca", value: string) => {
+    if (!draft) return;
+    const next = draft.finances.map((f, j) => {
+      if (j !== i) return f;
+      if (field === "annee") return { ...f, annee: value.replace(/[^\d]/g, "").slice(0, 4) };
+      const n = parseInt(value.replace(/[^\d]/g, ""), 10);
+      return { ...f, ca: isNaN(n) ? null : n };
+    });
+    setDraft({ ...draft, finances: next });
+    setDirty(true);
+  };
+  const addFinance = () => {
+    if (!draft) return;
+    setDraft({ ...draft, finances: [{ annee: "", ca: null, resultatNet: null }, ...draft.finances] });
+    setDirty(true);
+  };
+  const removeFinance = (i: number) => {
+    if (!draft) return;
+    setDraft({ ...draft, finances: draft.finances.filter((_, j) => j !== i) });
     setDirty(true);
   };
 
@@ -268,30 +309,75 @@ export default function EntrepriseClient() {
                 <Field label="Adresse" full><ReadOnly>{draft.adresse || "—"}</ReadOnly></Field>
               </div>
 
-              {draft.dirigeants.length > 0 && (
-                <>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#94a3b8", margin: "14px 0 6px" }}>Dirigeants</div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {draft.dirigeants.map((d, i) => (
-                      <span key={i} style={{ fontSize: 12, padding: "4px 10px", borderRadius: 999, background: "rgba(15,23,42,0.04)", border: "1px solid rgba(15,23,42,0.08)", color: "#334155" }}>
-                        <strong>{d.nom}</strong>{d.qualite ? ` · ${d.qualite}` : ""}
-                      </span>
-                    ))}
-                  </div>
-                </>
+              {/* Dirigeants — pré-remplis depuis le registre, entièrement éditables */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "14px 0 6px" }}>
+                <span style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#94a3b8" }}>Dirigeants</span>
+                <button onClick={addDirigeant} style={addBtn()}>
+                  <Plus size={11} /> Ajouter
+                </button>
+              </div>
+              {draft.dirigeants.length === 0 ? (
+                <p style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Aucun dirigeant renseigné.</p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {draft.dirigeants.map((d, i) => (
+                    <div key={i} style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      <input
+                        value={d.nom}
+                        onChange={(e) => setDirigeant(i, "nom", e.target.value)}
+                        placeholder="Nom et prénom"
+                        style={{ ...inputStyle(), flex: 1.2 }}
+                      />
+                      <input
+                        value={d.qualite}
+                        onChange={(e) => setDirigeant(i, "qualite", e.target.value)}
+                        placeholder="Fonction (Gérant, Président…)"
+                        style={{ ...inputStyle(), flex: 1 }}
+                      />
+                      <button onClick={() => removeDirigeant(i)} aria-label="Supprimer ce dirigeant" style={delBtn()}>
+                        <X size={13} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               )}
 
-              {draft.finances.length > 0 && (
-                <>
-                  <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#94a3b8", margin: "14px 0 6px" }}>Chiffre d&apos;affaires publié</div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {draft.finances.map((f) => (
-                      <span key={f.annee} style={{ fontSize: 12, padding: "4px 10px", borderRadius: 8, background: "rgba(16,185,129,0.07)", border: "1px solid rgba(16,185,129,0.22)", color: "#047857" }}>
-                        {f.annee} : {f.ca != null ? fmtEuro(f.ca) : "n.c."}
+              {/* Chiffre d'affaires — valeurs publiées éditables + saisie manuelle */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "14px 0 6px" }}>
+                <span style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#94a3b8" }}>Chiffre d&apos;affaires</span>
+                <button onClick={addFinance} style={addBtn()}>
+                  <Plus size={11} /> Ajouter une année
+                </button>
+              </div>
+              {draft.finances.length === 0 ? (
+                <p style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Aucun CA renseigné (non publié au registre).</p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {draft.finances.map((f, i) => (
+                    <div key={i} style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      <input
+                        value={f.annee}
+                        onChange={(e) => setFinance(i, "annee", e.target.value)}
+                        placeholder="Année"
+                        inputMode="numeric"
+                        style={{ ...inputStyle(), width: 74, flex: "none", textAlign: "center" }}
+                      />
+                      <input
+                        value={f.ca != null ? new Intl.NumberFormat("fr-FR").format(f.ca) : ""}
+                        onChange={(e) => setFinance(i, "ca", e.target.value)}
+                        placeholder="CA en € (ex. 450 000)"
+                        inputMode="numeric"
+                        style={{ ...inputStyle(), flex: 1 }}
+                      />
+                      <span style={{ fontSize: 11.5, color: "#047857", minWidth: 86, textAlign: "right" }}>
+                        {f.ca != null ? fmtEuro(f.ca) : "—"}
                       </span>
-                    ))}
-                  </div>
-                </>
+                      <button onClick={() => removeFinance(i)} aria-label="Supprimer cette année" style={delBtn()}>
+                        <X size={13} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
 
@@ -389,6 +475,21 @@ function btnPrimary(disabled: boolean): React.CSSProperties {
 
 function inputStyle(): React.CSSProperties {
   return { width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid rgba(15,23,42,0.14)", fontSize: 13, color: "#0f172a", background: "#fff", outline: "none" };
+}
+
+function addBtn(): React.CSSProperties {
+  return {
+    display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 9px", borderRadius: 999,
+    border: "1px solid rgba(124,58,237,0.25)", background: "rgba(124,58,237,0.06)",
+    color: "#6d28d9", fontSize: 11, fontWeight: 700, cursor: "pointer",
+  };
+}
+
+function delBtn(): React.CSSProperties {
+  return {
+    width: 28, height: 28, borderRadius: 8, flexShrink: 0, display: "grid", placeItems: "center",
+    border: "1px solid rgba(15,23,42,0.10)", background: "#fff", color: "#94a3b8", cursor: "pointer",
+  };
 }
 
 function SectionTitle({ icon: Icon, title, hint }: { icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>; title: string; hint?: string }) {
