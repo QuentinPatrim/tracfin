@@ -12,6 +12,7 @@ import {
   ChevronRight, AlertTriangle, Send, ExternalLink, Package, Check,
 } from "lucide-react";
 import Topbar from "./Topbar";
+import EntrepriseBanner from "./EntrepriseBanner";
 import KpiRow from "./KpiRow";
 import DocumentsList from "./DocumentsList";
 import OnboardingGuide from "./OnboardingGuide";
@@ -310,6 +311,9 @@ export default function DashboardClient({
         subscription={subscription}
         currentScreen="dossiers"
       />
+
+      {/* Onboarding : invite à configurer le profil de conformité (tant qu'absent) */}
+      <EntrepriseBanner />
 
       <div className="screen dossiers-screen">
         {counts.total === 0 ? (

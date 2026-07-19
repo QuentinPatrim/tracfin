@@ -8,7 +8,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import {
-  Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles, UserCog, ShieldAlert, Plug, UserCheck, Compass,
+  Search, Plus, Lock, ShieldCheck, Folder, CreditCard, HelpCircle, Sparkles, UserCog, ShieldAlert, Plug, UserCheck, Compass, Building2,
 } from "lucide-react";
 import { UserButton, OrganizationSwitcher, useAuth } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
@@ -28,7 +28,7 @@ interface Props {
   newHref: string;
   canCreate: boolean;
   subscription: SubInfo;
-  currentScreen?: "dossiers" | "tarifs" | "cartographie" | "integrations" | "validations";
+  currentScreen?: "dossiers" | "tarifs" | "cartographie" | "integrations" | "validations" | "entreprise";
 }
 
 export default function Topbar({
@@ -88,6 +88,14 @@ export default function Topbar({
               <span>Validations</span>
             </Link>
           )}
+          <Link
+            href="/dashboard/entreprise"
+            className={`topbar-v2-nav-link ${currentScreen === "entreprise" ? "active" : ""}`}
+            title="Votre profil de conformité : identité registre, activités, obligations, points de vigilance"
+          >
+            <Building2 width={13} height={13} />
+            <span>Entreprise</span>
+          </Link>
           <Link
             href="/dashboard/integrations"
             className={`topbar-v2-nav-link ${currentScreen === "integrations" ? "active" : ""}`}
