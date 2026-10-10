@@ -42,3 +42,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# réglages locaux Claude Code (peuvent contenir des commandes avec identifiants)
+.claude/settings.local.json
+
+# clerk configuration (can include secrets)
+/.clerk/

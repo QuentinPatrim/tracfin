@@ -35,7 +35,7 @@ export default function LandingPage() {
 
       {/* ───────── HERO ───────── */}
       <section className="relative max-w-7xl mx-auto px-5 sm:px-6 pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr,1fr] gap-10 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-12 items-center">
           <div className="relative z-10">
             <Eyebrow>Conformité LCB-FT · Souveraineté UE</Eyebrow>
 

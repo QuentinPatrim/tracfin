@@ -65,7 +65,10 @@ export default clerkMiddleware(async (auth, req) => {
   // (URL Vercel auto-générée, apex sans www…) sont redirigées 308 vers
   // CANONICAL_HOST. Évite les boucles de cookies Clerk.
   const host = req.headers.get("host") ?? "";
-  const isProd = process.env.NODE_ENV === "production";
+  // VERCEL_ENV vaut "production" uniquement pour le déploiement de prod ; les
+  // previews de branche valent "preview" et doivent rester consultables sur leur
+  // URL *.vercel.app (sinon on regarde la prod en croyant voir la preview).
+  const isProd = (process.env.VERCEL_ENV ?? process.env.NODE_ENV) === "production";
   if (isProd && isNonCanonicalHost(host)) {
     const url = new URL(req.url);
     url.host = CANONICAL_HOST;
