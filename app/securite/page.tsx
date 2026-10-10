@@ -49,7 +49,7 @@ export default function SecuritePage() {
       <header className="relative z-10 border-b border-[color:var(--lp-border-1)]">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <KlarisLogo size={32} flat />
+            <KlarisLogo size={32} />
             <span className="font-bold tracking-tight text-[15px]">Klaris</span>
           </Link>
           <nav className="flex items-center gap-5 text-[12.5px] text-[color:var(--lp-text-3)]">

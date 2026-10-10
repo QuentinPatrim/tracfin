@@ -1,5 +1,6 @@
 // app/opengraph-image.tsx — Carte de partage social (générée à la volée, next/og)
-// Identité « Papier & encre » : champ d'encre, logo en aplat, échelle de vigilance.
+// Identité « Papier & encre », palette Iris : indigo nuit, lueur violet / rose,
+// logo en dégradé, échelle de vigilance.
 
 import { ImageResponse } from "next/og";
 
@@ -26,7 +27,9 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "68px 76px",
-          backgroundColor: "#1E1657",
+          backgroundColor: "#110E30",
+          backgroundImage:
+            "radial-gradient(1100px 520px at 96% 0%, rgba(236,72,153,0.34), transparent), radial-gradient(1000px 620px at 0% 100%, rgba(109,94,246,0.52), transparent)",
           fontFamily: "sans-serif",
         }}
       >
@@ -40,7 +43,7 @@ export default function OpengraphImage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "#5B46E0",
+              backgroundImage: "linear-gradient(135deg, #7C3AED, #A855F7 55%, #EC4899)",
               color: "#fff",
               fontSize: 36,
               fontWeight: 800,

@@ -82,7 +82,7 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
       <header className="kl-nav" data-solid={!scrolled ? "false" : onField ? "field" : "true"} data-over={over}>
         <div className="kl-wrap flex items-center justify-between gap-3 h-16">
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Klaris, accueil">
-            <KlarisLogo size={28} flat />
+            <KlarisLogo size={28} />
             <span className="kl-display text-[1.25rem]" style={{ lineHeight: 1 }}>Klaris</span>
           </Link>
 
@@ -180,7 +180,7 @@ function MobileMenu({
     >
       <div className="kl-wrap flex items-center justify-between h-16 shrink-0">
         <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
-          <KlarisLogo size={28} flat />
+          <KlarisLogo size={28} />
           <span className="kl-display text-[1.25rem]" style={{ lineHeight: 1 }}>Klaris</span>
         </Link>
         <div className="flex items-center gap-1">

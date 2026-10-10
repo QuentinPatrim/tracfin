@@ -32,7 +32,7 @@ export default function Stepper({ steps, current, onJumpBack }: Props) {
         {/* Brand + position */}
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
-            <KlarisLogo size={28} flat />
+            <KlarisLogo size={28} />
             <div className="text-[14px] font-bold tracking-tight" style={{ color: "var(--lp-text)" }}>Klaris</div>
           </div>
           <div className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--lp-text-4)" }}>

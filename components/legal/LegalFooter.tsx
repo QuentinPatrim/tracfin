@@ -40,7 +40,7 @@ export default function LegalFooter() {
       <div className="kl-wrap grid gap-10 py-12 md:grid-cols-[minmax(0,1.2fr)_minmax(0,2fr)] md:gap-16">
         <div>
           <div className="flex items-center gap-2.5">
-            <KlarisLogo size={28} flat />
+            <KlarisLogo size={28} />
             <span className="kl-display text-[1.25rem]" style={{ lineHeight: 1, color: "var(--lp-text)" }}>
               Klaris
             </span>

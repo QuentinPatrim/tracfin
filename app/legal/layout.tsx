@@ -37,7 +37,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
       <header className="relative z-10 border-b" style={{ borderColor: "var(--lp-border-1)" }}>
         <div className="max-w-4xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <KlarisLogo size={32} flat />
+            <KlarisLogo size={32} />
             <span className="font-bold tracking-tight text-[15px]" style={{ color: "var(--lp-text)" }}>
               Klaris
             </span>
