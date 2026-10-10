@@ -12,7 +12,8 @@ Klaris s'adresse à des professionnels de l'immobilier, pas à des startups. Le 
 parle donc leur langue visuelle :
 
 - **Le document, pas la carte à icône.** On montre la vraie attestation
-  (`/pdf-render/attestation/demo`) et le vrai formulaire client (`/kyc/demo`).
+  (`/pdf-render/attestation/demo`) et le vrai formulaire client (`/kyc/demo`),
+  mis en scène au défilement.
 - **L'échelle de vigilance** reprend la grammaire de l'étiquette énergie. C'est la
   signature du site. Elle n'apparaît que là où elle a un sens (niveau d'un dossier).
 - **Papier et encre.** Fond clair par défaut, un seul accent (le violet Klaris) en
@@ -61,11 +62,29 @@ Règles :
 
 ## Mouvement
 
-- Une seule animation orchestrée, à l'arrivée sur la page d'accueil (`.kl-enter`).
-- Interface sous 300 ms, courbe `--kl-ease-out`.
-- Retour au clic : `transform: scale(0.97)` sur `:active`.
-- Survol dans `@media (hover: hover)` uniquement.
-- `prefers-reduced-motion` est respecté globalement.
+Le mouvement raconte le produit, il ne décore pas.
+
+- **Haut de page : une séquence au défilement** (`components/landing/ScrollStory.tsx`).
+  La scène est épinglée pendant cinq hauteurs d'écran. Le téléphone, posé en
+  perspective, se redresse et vient vers nous ; on entre dans le vrai formulaire
+  client, dont les étapes avancent avec le défilement ; l'étiquette de vigilance se
+  construit ; l'attestation se relève et l'étiquette vient s'y coller. Ce sont les
+  quatre étapes du produit, dans l'ordre.
+- **Sous la séquence : un geste par section** (`components/landing/ScrollFx.tsx` et
+  le bloc « Effets liés au défilement » de `globals.css`). Les barres de l'échelle
+  se déploient, les lignes du tableau s'inscrivent une à une, le champ d'encre de
+  l'hébergement s'ouvre d'un panneau vers la pleine largeur. Pas d'apparition
+  identique plaquée sur tout.
+- **Règles** :
+  - le défilement n'est jamais détourné : la page suit le doigt, la scène suit la page ;
+  - seuls `transform`, `opacity` et `clip-path` sont animés ;
+  - le texte est toujours dans le DOM et lisible sans JavaScript ;
+  - `prefers-reduced-motion` : la séquence n'est pas épinglée et s'affiche à plat,
+    les effets de section sont désactivés ;
+  - interface (boutons, survols) sous 300 ms, courbe `--kl-ease-out`, retour au clic
+    par `scale(0.97)`, survol dans `@media (hover: hover)`.
+- Pour régler la séquence : les fenêtres de chaque légende sont dans `CAPTIONS`, les
+  étapes du formulaire dans `formStep()`, la longueur dans `LENGTH_VH`.
 
 ## Textes
 
@@ -81,7 +100,7 @@ Règles :
 
 - Variables et classes `.kl-*` : `app/globals.css` (dans `@layer components`, pour
   qu'un utilitaire Tailwind posé sur l'élément garde le dernier mot).
-- Page d'accueil : `app/page.tsx`.
+- Page d'accueil : `app/page.tsx`. Haut de page animé : `components/landing/ScrollStory.tsx`.
 - Échelle de vigilance : `components/landing/VigilanceScale.tsx`. Ses textes
   décrivent les règles de `lib/tracfin.ts` : si le moteur change, ils changent aussi.
 - Navigation : `components/landing/FloatingNav.tsx`. Pied de page :

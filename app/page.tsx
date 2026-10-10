@@ -2,8 +2,8 @@
 //
 // Identité « Papier & encre » :
 //  - un champ d'encre violette pour le hero et l'hébergement, du papier pour le reste ;
-//  - le vrai document (attestation) et le vrai formulaire client, plutôt que des
-//    cartes à icône ;
+//  - un haut de page animé au défilement (ScrollStory) qui raconte les quatre étapes
+//    avec le vrai formulaire client et la vraie attestation ;
 //  - l'échelle de vigilance, dans la grammaire de l'étiquette énergie, comme signature ;
 //  - chaque article cité est un lien vers le texte officiel (components/landing/LegalRef).
 // Règles de fond : chiffres sourcés uniquement, Klaris « aide à être conforme » et ne
@@ -16,12 +16,10 @@ import { useClerk, useAuth } from "@clerk/nextjs";
 import { Play } from "lucide-react";
 import FloatingNav from "@/components/landing/FloatingNav";
 import LegalFooter from "@/components/legal/LegalFooter";
-import EnvoiLienSection from "@/components/landing/sections/EnvoiLienSection";
-import PdfPreviewFrame from "@/components/landing/PdfPreviewFrame";
+import ScrollStory from "@/components/landing/ScrollStory";
+import ScrollFx from "@/components/landing/ScrollFx";
 import LegalRef from "@/components/landing/LegalRef";
-import { VigilanceMini, VigilanceExplorer } from "@/components/landing/VigilanceScale";
-
-const delay = (ms: number) => ({ "--d": `${ms}ms` }) as React.CSSProperties;
+import { VigilanceExplorer } from "@/components/landing/VigilanceScale";
 
 export default function LandingPage() {
   const { openSignUp, openSignIn } = useClerk();
@@ -33,81 +31,21 @@ export default function LandingPage() {
   return (
     <div className="klaris-public min-h-screen">
       <FloatingNav over="field" />
+      <ScrollFx />
 
       <main>
-        {/* ───────── HERO : le dossier, tel qu'il sort de Klaris ───────── */}
-        <section className="kl-field relative">
-          <div className="kl-wrap grid grid-cols-1 gap-12 pt-28 sm:pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,33rem)] lg:gap-14 lg:pt-36">
-            <div className="pb-2 lg:pb-24">
-              <h1 className="kl-display kl-h1 kl-enter">
-                Vos dossiers LCB-FT en ordre, sans stress.
-              </h1>
-              <p className="kl-lede kl-enter mt-6" style={delay(70)}>
-                Klaris aide les agences immobilières à identifier leurs clients, évaluer le
-                niveau de vigilance et conserver les pièces cinq ans. Le jour d&apos;un contrôle,
-                tout est déjà au même endroit.
-              </p>
-
-              <div className="kl-enter mt-9 flex flex-wrap items-center gap-3" style={delay(140)}>
-                {isSignedIn ? (
-                  <Link href="/dashboard" className="kl-btn kl-btn--onfield">
-                    Mon tableau de bord
-                  </Link>
-                ) : (
-                  <button type="button" onClick={signUp} className="kl-btn kl-btn--onfield">
-                    Essayer 14 jours gratuits
-                  </button>
-                )}
-                {/* Démo guidée : toujours accessible (connecté ou non) */}
-                <button type="button" onClick={openDemo} className="kl-btn kl-btn--ghost">
-                  <Play width={13} height={13} fill="currentColor" strokeWidth={0} />
-                  Voir la démo guidée
-                </button>
-              </div>
-
-              <p
-                className="kl-enter mt-5 text-[0.9rem]"
-                style={{ ...delay(200), color: "var(--kl-on-field-2)" }}
-              >
-                Aucun prélèvement avant le 14ᵉ jour.
-                {!isSignedIn && (
-                  <>
-                    {" "}Déjà un compte ?{" "}
-                    <button
-                      type="button"
-                      onClick={() => openSignIn({ fallbackRedirectUrl: "/dashboard" })}
-                      className="kl-link"
-                    >
-                      Se connecter
-                    </button>
-                  </>
-                )}
-              </p>
-            </div>
-
-            {/* Le VRAI document remis en cas de contrôle, rendu par le gabarit PDF de
-                l'application. La vignette reprend le niveau affiché sur l'attestation. */}
-            <div className="kl-enter relative self-end" style={delay(220)}>
-              <PdfPreviewFrame maxVisible={560}>
-                <div className="absolute -bottom-7 left-3 z-10 lg:-bottom-9 lg:-left-20">
-                  <VigilanceMini level={1} />
-                </div>
-              </PdfPreviewFrame>
-            </div>
-          </div>
-        </section>
-
-        <p className="kl-wrap pt-12 text-[0.8rem] lg:pt-4" style={{ color: "var(--lp-text-4)" }}>
-          Document généré par Klaris à partir d&apos;un dossier fictif (« Camille Rousseau »).
-        </p>
-
-        {/* ───────── FONCTIONNEMENT : le parcours client + les 4 étapes ───────── */}
-        <EnvoiLienSection />
+        {/* ───────── HAUT DE PAGE ANIMÉ : titre, puis les 4 étapes au défilement ───────── */}
+        <ScrollStory
+          isSignedIn={!!isSignedIn}
+          onSignUp={signUp}
+          onSignIn={() => openSignIn({ fallbackRedirectUrl: "/dashboard" })}
+          onDemo={openDemo}
+        />
 
         {/* ───────── VIGILANCE : l'échelle, signature du produit ───────── */}
         <section id="vigilance" className="kl-section kl-section--white">
           <div className="kl-wrap">
-            <div className="max-w-[46rem]">
+            <div className="fx-head max-w-[46rem]" data-fx="">
               <h2 className="kl-display kl-h2">
                 Chaque dossier reçoit un niveau de vigilance, lisible comme une étiquette énergie.
               </h2>
@@ -116,7 +54,7 @@ export default function LandingPage() {
                 à chaque niveau. La décision reste la vôtre, et elle est tracée.
               </p>
             </div>
-            <div className="mt-12 sm:mt-14">
+            <div className="fx-bars mt-12 sm:mt-14" data-fx="" data-fx-span="0.6">
               <VigilanceExplorer />
             </div>
           </div>
@@ -125,13 +63,13 @@ export default function LandingPage() {
         {/* ───────── OBLIGATIONS : ce que la loi demande, ce que fait Klaris ───────── */}
         <section id="features" className="kl-section">
           <div className="kl-wrap">
-            <div className="max-w-[44rem]">
+            <div className="fx-head max-w-[44rem]" data-fx="">
               <h2 className="kl-display kl-h2">
                 Ce que la loi vous demande, et ce que Klaris prend en charge.
               </h2>
             </div>
 
-            <table className="kl-table mt-10 sm:mt-12">
+            <table className="kl-table fx-rows mt-10 sm:mt-12" data-fx="" data-fx-span="0.7">
               <thead>
                 <tr>
                   <th scope="col">Votre obligation</th>
@@ -155,11 +93,11 @@ export default function LandingPage() {
         {/* ───────── COMPRENDRE : la LCB-FT sans jargon ───────── */}
         <section id="understand" className="kl-section kl-section--white">
           <div className="kl-wrap">
-            <div className="max-w-[44rem]">
+            <div className="fx-head max-w-[44rem]" data-fx="">
               <h2 className="kl-display kl-h2">La LCB-FT en trois questions.</h2>
             </div>
 
-            <div className="mt-10 grid grid-cols-1 gap-10 sm:mt-12 md:grid-cols-3 md:gap-12">
+            <div className="fx-cols mt-10 grid grid-cols-1 gap-10 sm:mt-12 md:grid-cols-3 md:gap-12" data-fx="" data-fx-span="0.6">
               <div>
                 <h3 className="kl-display kl-h3">De quoi parle-t-on ?</h3>
                 <p className="kl-body mt-3">
@@ -197,7 +135,7 @@ export default function LandingPage() {
         </section>
 
         {/* ───────── HÉBERGEMENT : où sont les dossiers ───────── */}
-        <section className="kl-field kl-section">
+        <section className="kl-field kl-section fx-open" data-fx="" data-fx-span="0.75">
           <div className="kl-wrap grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-20">
             <div>
               <h2 className="kl-display kl-h2">
@@ -237,7 +175,7 @@ export default function LandingPage() {
         <section className="kl-section">
           <div className="kl-wrap">
             <div className="max-w-[56rem]">
-              <h2 className="kl-display kl-h1">Essayez Klaris sur votre prochain dossier.</h2>
+              <h2 className="kl-display kl-h1 fx-zoom" data-fx="" data-fx-span="0.45">Essayez Klaris sur votre prochain dossier.</h2>
               <p className="kl-lede mt-5">
                 14 jours gratuits, aucun prélèvement avant le 14ᵉ jour, sans engagement.
               </p>

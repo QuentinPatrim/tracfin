@@ -374,18 +374,8 @@ body {
   .kl-nav__icon:active { transform: scale(0.94); }
   @media (hover: hover) { .kl-nav__icon:hover { background: color-mix(in srgb, currentColor 10%, transparent); } }
 
-  /* Feuille de papier + onglets de dossier */
+  /* Feuille de papier */
   .kl-sheet { background: var(--kl-sheet); border-radius: var(--kl-r-paper); box-shadow: var(--kl-sheet-shadow); overflow: hidden; position: relative; }
-  .kl-tabs { display: flex; gap: 2px; padding-left: 14px; position: relative; z-index: 1; }
-  .kl-tab {
-    font-size: 0.82rem; font-weight: 600; padding: 0.6rem 1rem 0.55rem;
-    border-radius: 8px 8px 0 0; cursor: pointer;
-    background: rgba(244,242,255,0.14); color: var(--kl-on-field-2);
-    transition: background-color 160ms ease, color 160ms ease, transform 160ms var(--kl-ease-out);
-    transform: translateY(3px);
-  }
-  .kl-tab[aria-selected="true"] { background: var(--kl-sheet); color: #17123A; transform: translateY(0); }
-  @media (hover: hover) { .kl-tab[aria-selected="false"]:hover { background: rgba(244,242,255,0.24); color: var(--kl-on-field); } }
 
   /* ── Étiquette de vigilance (grammaire de l'étiquette énergie) ── */
   .kl-scale { display: grid; gap: 6px; }
@@ -425,27 +415,9 @@ body {
     clip-path: polygon(0.95rem 0, 100% 0, 100% 100%, 0.95rem 100%, 0 50%);
     animation: kl-point 260ms var(--kl-ease-out) both;
   }
-  @keyframes kl-point { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
-  .kl-scale--mini .kl-scale__bar { min-height: 1.45rem; font-size: 0.72rem; padding: 0.15rem 1.2rem 0.15rem 0.5rem; clip-path: polygon(0 0, calc(100% - 0.7rem) 0, 100% 50%, calc(100% - 0.7rem) 100%, 0 100%); }
-  .kl-scale--mini .kl-scale__bar[data-on="false"] { opacity: 0.28; }
-  .kl-scale--mini { gap: 3px; }
+  @keyframes kl-point { from { transform: translateX(12px); } to { transform: none; } }
 
-  /* Vignette « niveau du dossier » posée sur le document du hero */
-  .kl-sticker {
-    background: var(--kl-sheet); color: #17123A; border-radius: var(--kl-r-paper);
-    box-shadow: 0 1px 0 rgba(23,18,58,0.06), 0 22px 40px -22px rgba(10,6,40,0.70);
-    padding: 0.85rem 0.9rem 0.9rem; width: 13.5rem;
-  }
 
-  /* Étapes : une vraie séquence, donc numérotée */
-  .kl-steps { counter-reset: kl-step; display: grid; gap: 1.75rem; }
-  @media (min-width: 900px) { .kl-steps { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
-  .kl-step { counter-increment: kl-step; position: relative; padding-top: 1.1rem; border-top: 2px solid var(--lp-text); }
-  .kl-step::before {
-    content: counter(kl-step); display: block; margin-bottom: 0.6rem;
-    font-family: var(--font-display), system-ui, sans-serif; font-variation-settings: "wdth" 88;
-    font-weight: 800; font-size: 1.6rem; line-height: 1; color: var(--lp-accent-text);
-  }
 
   /* Tableau obligations → Klaris → texte */
   .kl-table { width: 100%; border-collapse: collapse; }
@@ -474,15 +446,132 @@ body {
 
   /* Entrée du hero : un seul moment orchestré, au chargement. */
   @keyframes kl-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-  @keyframes kl-grow { from { transform: scaleX(0.3); } to { transform: none; } }
   .kl-enter { animation: kl-rise 520ms var(--kl-ease-out) both; animation-delay: var(--d, 0ms); }
-  .kl-enter-bars .kl-scale__bar { transform-origin: left center; animation: kl-grow 460ms var(--kl-ease-out) backwards; }
-  .kl-enter-bars .kl-scale__bar:nth-child(1) { animation-delay: 520ms; }
-  .kl-enter-bars .kl-scale__bar:nth-child(2) { animation-delay: 575ms; }
-  .kl-enter-bars .kl-scale__bar:nth-child(3) { animation-delay: 630ms; }
-  .kl-enter-bars .kl-scale__bar:nth-child(4) { animation-delay: 685ms; }
 
   /* Changement de niveau : le panneau de détail se met à jour sans à-coup. */
   @keyframes kl-swap { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .kl-swap { animation: kl-swap 220ms var(--kl-ease-out) both; }
+
+  /* ══ Haut de page animé au défilement (components/landing/ScrollStory.tsx) ══
+     La scène est épinglée (position: sticky) pendant que la section, plus haute
+     que l'écran, défile. Le moteur JS écrit transform et opacity sur les objets.
+     data-mode : "pending" avant montage, "live" animé, "static" si l'utilisateur
+     demande moins d'animations (tout est alors affiché à plat, sans épinglage). */
+  .st { position: relative; }
+  .st-stage { position: relative; height: 100svh; overflow: hidden; }
+  .st[data-mode="live"] .st-stage { position: sticky; top: 0; }
+  .st-inner { position: relative; z-index: 2; height: 100%; display: grid; grid-template-columns: minmax(0, 1fr); pointer-events: none; }
+  .st-inner :is(a, button) { pointer-events: auto; }
+  .st-text { align-self: start; padding-top: 5.75rem; }
+  .st-copy { will-change: transform, opacity; }
+  .st-copy .kl-h1 { font-size: clamp(2.35rem, 1.2rem + 5.2vw, 4.6rem); }
+  .st-caps { list-style: none; margin: 0; padding: 0; position: absolute; left: 1rem; right: 1rem; bottom: 0.9rem; }
+  .st-cap {
+    position: absolute; left: 0; right: 0; bottom: 0; opacity: 0; visibility: hidden; will-change: transform, opacity;
+    display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.7rem; align-items: baseline;
+    padding: 1rem 1.1rem 1.1rem; border-radius: 14px;
+    background: var(--kl-field-2); border: 1px solid var(--kl-on-field-line);
+    box-shadow: 0 22px 44px -20px rgba(0, 0, 0, 0.65);
+  }
+  .st-cap__n { font-size: 1.5rem; line-height: 1; color: #B4A8FF; }
+  .st-cap__t { font-size: 1.4rem; line-height: 1.1; }
+  .st-cap__p { grid-column: 1 / -1; margin-top: 0.45rem; font-size: 0.95rem; line-height: 1.5; color: var(--kl-on-field-2); }
+  .st-cap__cta { grid-column: 1 / -1; margin-top: 0.9rem; justify-self: start; }
+  .st-slot { display: none; }
+
+  .st-objs { position: absolute; inset: 0; z-index: 1; pointer-events: none; perspective: 1500px; perspective-origin: 50% 46%; }
+  .st[data-mode="live"] .st-objs { animation: kl-rise 700ms var(--kl-ease-out) 180ms both; }
+  /* Pas de will-change ici : le navigateur doit pouvoir re-dessiner le contenu à la
+     bonne résolution quand un objet est agrandi (sinon le formulaire devient flou). */
+  .st-obj { position: absolute; left: 0; top: 0; opacity: 0; visibility: hidden; transform-origin: 50% 50%; }
+  .st-phone { padding: 8px; border-radius: 48px; background: #0E0B20; box-shadow: 0 60px 90px -40px rgba(5, 2, 30, 0.85), 0 24px 40px -24px rgba(5, 2, 30, 0.6); }
+  .st-phone__screen { border-radius: 40px; overflow: hidden; background: #fff; }
+  .st-sheet { border-radius: 6px; box-shadow: 0 60px 90px -40px rgba(5, 2, 30, 0.85), 0 24px 40px -24px rgba(5, 2, 30, 0.55); }
+  .st-label { background: #fff; color: #17123A; border-radius: 8px; padding: 1.2rem 1.25rem 1.4rem; box-shadow: 0 40px 70px -34px rgba(5, 2, 30, 0.85), 0 14px 26px -16px rgba(5, 2, 30, 0.5); }
+  .st-label__k { font-size: 0.9rem; color: #6F6A8A; }
+  .st-label__v { font-size: 1.65rem; line-height: 1.1; margin-top: 0.15rem; }
+  .st-label__bars { margin-top: 1rem; gap: 6px; }
+  .st-label .kl-scale__row .kl-scale__bar { min-height: 2.6rem; font-size: 0.92rem; padding-left: 0.85rem; transform-origin: left center; transition: none; white-space: nowrap; }
+  .st-label .kl-scale__row .kl-scale__bar[data-level="1"] { --w: 62%; }
+  .st-label .kl-scale__row .kl-scale__bar[data-level="2"] { --w: 72%; }
+  .st-label .kl-scale__row .kl-scale__bar[data-level="3"] { --w: 82%; }
+  .st-label .kl-scale__row .kl-scale__bar[data-level="4"] { --w: 92%; }
+  .st-label .kl-scale__pointer { height: 2.6rem; font-size: 1.2rem; background: #17123A; color: #fff; animation: none; }
+
+  @media (min-width: 1024px) {
+    .st-inner { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: 3.5rem; }
+    .st-text { position: relative; align-self: center; padding-top: 4rem; }
+    .st-slot { display: block; height: 100%; }
+    .st-caps { inset: 0; left: 0; right: 0; bottom: 0; }
+    .st-cap {
+      top: 50%; bottom: auto; translate: 0 -45%; display: block;
+      padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
+    }
+    .st-cap__n { display: block; font-size: 5.25rem; line-height: 0.9; }
+    .st-cap__t { margin-top: 1.1rem; font-size: clamp(2.4rem, 1rem + 3vw, 3.9rem); line-height: 1.03; }
+    .st-cap__p { margin-top: 1.1rem; font-size: 1.19rem; line-height: 1.55; max-width: 30rem; }
+    .st-cap__cta { margin-top: 1.75rem; }
+  }
+
+  /* Animations réduites : pas d'épinglage, pas de mouvement, tout est lisible à plat. */
+  .st[data-mode="static"] .st-stage { height: auto; overflow: visible; padding-bottom: 4rem; }
+  .st[data-mode="static"] .st-text { padding-top: 7rem; }
+  .st[data-mode="static"] .st-inner { height: auto; }
+  .st[data-mode="static"] .st-caps { position: static; display: grid; gap: 1rem; margin-top: 2.5rem; }
+  .st[data-mode="static"] .st-cap { position: static; opacity: 1; visibility: visible; translate: none; }
+  .st[data-mode="static"] .st-slot { display: none; }
+  .st[data-mode="static"] .st-objs { position: static; perspective: none; display: flex; justify-content: center; padding-top: 2.5rem; }
+  .st[data-mode="static"] .st-obj { position: static; opacity: 1; visibility: visible; }
+  .st[data-mode="static"] .st-phone { zoom: 0.72; }
+  .st[data-mode="static"] :is(.st-sheet, .st-label) { display: none; }
+  @media (min-width: 1024px) {
+    .st[data-mode="static"] .st-inner { grid-template-columns: minmax(0, 1fr); }
+    .st[data-mode="static"] .st-cap { display: grid; }
+  }
+
+  /* Barre de navigation posée sur un champ d'encre (accueil) */
+  .kl-nav[data-solid="field"] { color: var(--kl-on-field); background: color-mix(in srgb, var(--kl-field) 88%, transparent); border-bottom-color: var(--kl-on-field-line); backdrop-filter: saturate(140%) blur(10px); -webkit-backdrop-filter: saturate(140%) blur(10px); }
+
+  /* ══ Effets liés au défilement (components/landing/ScrollFx.tsx) ══
+     --fx va de 0 à 1 pendant que l'élément marqué data-fx entre dans l'écran.
+     Défaut : 1 (tout affiché), donc rien ne dépend du JavaScript pour être lisible.
+     Chaque section a son propre geste, lié à ce qu'elle montre. */
+  [data-fx] { --fx: 1; }
+  .fx-item { --t: clamp(0, calc(var(--fx) * var(--fx-k, 2.2) - var(--i, 0) * 0.3), 1); }
+
+  /* Titres de section : montent légèrement, une seule fois visible. */
+  .fx-head { opacity: clamp(0, calc(var(--fx) * 1.6), 1); transform: translate3d(0, calc((1 - var(--fx)) * 26px), 0); }
+
+  /* Échelle de vigilance : les barres se déploient l'une après l'autre. */
+  .fx-bars .kl-scale__row { --t: clamp(0, calc(var(--fx) * 2.4 - var(--i, 0) * 0.3), 1); }
+  .fx-bars .kl-scale__row:nth-child(2) { --i: 1; }
+  .fx-bars .kl-scale__row:nth-child(3) { --i: 2; }
+  .fx-bars .kl-scale__row:nth-child(4) { --i: 3; }
+  .fx-bars .kl-scale__bar { transform-origin: left center; transform: scaleX(calc(0.18 + 0.82 * var(--t))); }
+  .fx-bars .kl-scale__bar > span { opacity: clamp(0, calc(var(--t) * 4 - 3), 1); }
+  .fx-bars .kl-scale__pointer { opacity: clamp(0, calc(var(--fx) * 6 - 4.6), 1); }
+  .fx-fade { opacity: clamp(0, calc(var(--fx) * 2.2 - 0.9), 1); transform: translate3d(0, calc((1 - clamp(0, calc(var(--fx) * 2.2 - 0.9), 1)) * 22px), 0); }
+
+  /* Tableau des obligations : les lignes s'inscrivent une à une, filet d'abord. */
+  .fx-rows tbody tr { --t: clamp(0, calc(var(--fx) * 3 - var(--i, 0) * 0.42), 1); opacity: var(--t); transform: translate3d(0, calc((1 - var(--t)) * 20px), 0); }
+  .fx-rows tbody tr:nth-child(2) { --i: 1; }
+  .fx-rows tbody tr:nth-child(3) { --i: 2; }
+  .fx-rows tbody tr:nth-child(4) { --i: 3; }
+  .fx-rows tbody tr:nth-child(5) { --i: 4; }
+
+  /* Hébergement : le champ d'encre s'ouvre, d'un panneau vers la pleine largeur. */
+  .fx-open { clip-path: inset(calc((1 - var(--fx)) * 3.5rem) calc((1 - var(--fx)) * 7%) 0 round calc((1 - var(--fx)) * 2rem)); }
+  .fx-open .kl-facts > div { --t: clamp(0, calc(var(--fx) * 3.4 - 1.5 - var(--i, 0) * 0.28), 1); opacity: var(--t); transform: translate3d(0, calc((1 - var(--t)) * 18px), 0); }
+  .fx-open .kl-facts > div:nth-child(2) { --i: 1; }
+  .fx-open .kl-facts > div:nth-child(3) { --i: 2; }
+  .fx-open .kl-facts > div:nth-child(4) { --i: 3; }
+
+  /* Appel final : le titre vient vers nous. */
+  .fx-zoom { opacity: clamp(0, calc(var(--fx) * 1.5), 1); transform: scale(calc(0.9 + 0.1 * var(--fx))); transform-origin: left center; }
+
+  /* Trois questions : les colonnes arrivent l'une après l'autre. */
+  .fx-cols > * { --t: clamp(0, calc(var(--fx) * 2.6 - var(--i, 0) * 0.45), 1); opacity: var(--t); transform: translate3d(0, calc((1 - var(--t)) * 22px), 0); }
+  .fx-cols > *:nth-child(2) { --i: 1; }
+  .fx-cols > *:nth-child(3) { --i: 2; }
 }
+

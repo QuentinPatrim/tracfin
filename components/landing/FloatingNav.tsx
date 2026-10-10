@@ -32,12 +32,24 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
   const [demoOpen, setDemoOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Sur l'accueil, la barre repose sur le champ d'encre du haut de page : elle garde
+  // son texte clair tant que cette section (marquée data-nav-field) passe dessous.
+  const [overField, setOverField] = useState(over === "field");
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const field = over === "field" ? document.querySelector<HTMLElement>("[data-nav-field]") : null;
+    const onScroll = () => {
+      setScrolled(window.scrollY > 12);
+      if (field) setOverField(field.getBoundingClientRect().bottom > 64);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [over]);
 
   // Évènement global « ouvrir la démo » (déclenchable depuis le hero / le CTA final)
   useEffect(() => {
@@ -55,7 +67,7 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
   }, [mobileOpen]);
 
   const signedIn = isLoaded && isSignedIn;
-  const onField = over === "field" && !scrolled;
+  const onField = over === "field" && overField;
 
   return (
     <>
@@ -67,7 +79,7 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
         />
       )}
 
-      <header className="kl-nav" data-solid={scrolled ? "true" : "false"} data-over={over}>
+      <header className="kl-nav" data-solid={!scrolled ? "false" : onField ? "field" : "true"} data-over={over}>
         <div className="kl-wrap flex items-center justify-between gap-3 h-16">
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Klaris, accueil">
             <KlarisLogo size={28} flat />

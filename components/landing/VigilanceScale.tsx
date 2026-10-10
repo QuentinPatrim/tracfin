@@ -4,9 +4,9 @@
 // (lib/tracfin.ts → NIVEAU_CFG) présentés dans la grammaire de l'étiquette
 // énergie, que tout professionnel de l'immobilier lit au premier coup d'œil.
 //
-// Deux formes :
-//  - <VigilanceMini level={n} /> : vignette statique (posée sur l'attestation du hero)
-//  - <VigilanceExplorer />       : échelle interactive (section « Vigilance »)
+// <VigilanceExplorer /> : échelle interactive (section « Vigilance »).
+// La même échelle apparaît, animée, dans le haut de page (ScrollStory), qui
+// réutilise LEVELS.
 //
 // Les déclencheurs décrits ici reprennent les règles réelles de computeScore()
 // dans lib/tracfin.ts. Si le moteur change, ce texte doit changer avec lui.
@@ -73,32 +73,6 @@ export const LEVELS = [
     refLabel: "Code monétaire et financier, art. L.562-4 (gel des avoirs)",
   },
 ] as const;
-
-/* ── Vignette statique ─────────────────────────────────────────────────── */
-export function VigilanceMini({ level = 1 }: { level?: 1 | 2 | 3 | 4 }) {
-  const current = LEVELS[level - 1];
-  return (
-    <div className="kl-sticker">
-      <div className="text-[0.72rem] font-medium" style={{ color: "#6F6A8A" }}>
-        Niveau de vigilance du dossier
-      </div>
-      <div className="kl-display mt-0.5 text-[1.05rem]" style={{ lineHeight: 1.15 }}>
-        {current.name}
-      </div>
-      <div
-        className="kl-scale kl-scale--mini kl-enter-bars mt-2.5"
-        role="img"
-        aria-label={`Niveau ${level} sur 4 : ${current.name}`}
-      >
-        {LEVELS.map((l) => (
-          <div key={l.n} className="kl-scale__bar" data-level={l.n} data-on={l.n === level ? "true" : "false"}>
-            <span className="kl-scale__n" style={{ fontSize: "0.8rem" }}>{l.n}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 /* ── Échelle interactive ───────────────────────────────────────────────── */
 export function VigilanceExplorer() {
