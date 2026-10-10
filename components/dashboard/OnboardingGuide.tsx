@@ -277,17 +277,17 @@ const SLIDES = [
       <Eyebrow color="#7C3AED">Module 01 · Contexte</Eyebrow>
       <H1>D'où vient la LCB-FT ?</H1>
       <P>
-        La lutte contre le blanchiment est un effort <strong>mondial</strong>, coordonné depuis 35 ans.
-        Les agents immobiliers y sont intégrés en France depuis 2004.
+        La lutte contre le blanchiment est un effort <strong>mondial</strong>, coordonné depuis 1989.
+        Les professionnels de l'immobilier y sont assujettis en France depuis 1998.
       </P>
       <Timeline items={[
         { year: "1989", color: "#7C3AED", title: "Création du GAFI", desc: "Groupe d'Action Financière, organisme international piloté par le G7 pour fixer les standards anti-blanchiment." },
         { year: "1991", color: "#7C3AED", title: "1ʳᵉ directive UE", desc: "Premier cadre européen contre l'utilisation du système financier aux fins de blanchiment." },
+        { year: "1998", color: "#A855F7", title: "Professionnels de l'immobilier assujettis", desc: "Vous êtes intégré au dispositif. Aujourd'hui : article L.561-2 8° du Code monétaire et financier." },
         { year: "2001", color: "#A855F7", title: "Post 11-Septembre", desc: "Renforcement mondial pour lutter contre le financement du terrorisme (CFT)." },
-        { year: "2004", color: "#A855F7", title: "Agents immobiliers assujettis", desc: "Article L.561-2 17° du Code monétaire et financier : vous êtes intégré au dispositif." },
-        { year: "2018", color: "#EC4899", title: "5ᵉ directive UE", desc: "Registre des bénéficiaires effectifs (RBE), PPE étendue à l'entourage." },
-        { year: "2020", color: "#EC4899", title: "6ᵉ directive UE", desc: "Harmonisation des sanctions pénales contre le blanchiment dans toute l'UE." },
-        { year: "2024", color: "#F43F5E", title: "Paquet AML 2024", desc: "Règlement (UE) 2024/1624 + création de l'AMLA (autorité européenne unique). Application progressive jusqu'en 2027." },
+        { year: "2018", color: "#EC4899", title: "5ᵉ directive UE", desc: "Directive (UE) 2018/843 : elle modifie la 4ᵉ directive (UE) 2015/849, qui a posé le principe des registres des bénéficiaires effectifs." },
+        { year: "2020", color: "#EC4899", title: "Directive (UE) 2018/1673", desc: "Lutte contre le blanchiment au moyen du droit pénal, à transposer au plus tard le 3 décembre 2020." },
+        { year: "2024", color: "#F43F5E", title: "Paquet AML 2024", desc: "Règlement (UE) 2024/1624, directive (UE) 2024/1640 et création de l'AMLA (autorité européenne). Le règlement est applicable à partir du 10 juillet 2027." },
       ]} />
     </div>
   ),
@@ -302,9 +302,8 @@ const SLIDES = [
         montages, biens facilement revendables. Vous êtes en <strong>première ligne</strong>.
       </P>
       <Stats items={[
-        { value: "15%", label: "des sommes blanchies en France passent par l'immobilier", src: "Rapport TRACFIN 2023" },
-        { value: "2004", label: "année où vous êtes devenus assujettis", src: "Art. L.561-2 17° CMF" },
-        { value: "5 ans", label: "obligation de conservation des dossiers KYC", src: "Art. L.561-12-1 CMF" },
+        { value: "1998", label: "année où vous êtes devenus assujettis", src: "Tracfin, brochure immobilier 2026 · Art. L.561-2 8° CMF" },
+        { value: "5 ans", label: "obligation de conservation des dossiers KYC", src: "Art. L.561-12 CMF" },
       ]} />
       <Callout color="#7C3AED" icon={<ShieldCheck width={18} height={18} />}>
         <strong>Votre mission :</strong> être les « yeux et oreilles » de Bercy <em>avant</em> que l'argent
@@ -328,7 +327,7 @@ const SLIDES = [
           color: "#7C3AED",
           icon: <CheckCircle2 width={18} height={18} />,
           title: "Identifier votre client",
-          desc: "Pièce d'identité + justif de domicile (PP) ou Kbis + statuts + bénéficiaire effectif (PM ≥ 25 % capital).",
+          desc: "Pièce d'identité + justif de domicile (PP) ou Kbis + statuts + bénéficiaire effectif (PM : plus de 25 % du capital ou des droits de vote).",
           ref: "L.561-5",
         },
         {
@@ -345,23 +344,23 @@ const SLIDES = [
           icon: <FileWarning width={18} height={18} />,
           title: "Conserver 5 ans",
           desc: "Tous les documents et pièces conservés 5 ans après la fin de la relation d'affaires. Klaris s'en charge automatiquement.",
-          ref: "L.561-12-1",
+          ref: "L.561-12",
         },
         {
           n: "04",
           color: "#F43F5E",
           icon: <Scale width={18} height={18} />,
           title: "Désigner un déclarant",
-          desc: "Nommer un correspondant et un déclarant TRACFIN pour votre agence, et les enregistrer auprès du service TRACFIN.",
-          ref: "L.561-30",
+          desc: "Désigner un déclarant (R.561-23) et un correspondant (R.561-24) TRACFIN pour votre agence. Leur identité est communiquée à TRACFIN par un document joint à la première déclaration.",
+          ref: "R.561-23 et R.561-24",
         },
         {
           n: "05",
           color: "#7C3AED",
           icon: <BookOpen width={18} height={18} />,
           title: "Former vos équipes",
-          desc: "Procédures internes écrites + sensibilisation régulière des collaborateurs aux risques LCB-FT.",
-          ref: "L.561-32",
+          desc: "Formation à l'embauche puis régulière des collaborateurs qui participent à la LCB-FT (D.561-38-1-1), en complément des procédures internes (L.561-32).",
+          ref: "L.561-34",
         },
       ]} />
     </div>
@@ -373,7 +372,7 @@ const SLIDES = [
       <Eyebrow color="#7C3AED">Module 04 · Réflexes</Eyebrow>
       <H1>Les 4 niveaux Klaris : que faire ?</H1>
       <P>
-        Klaris analyse chaque dossier sur 13 critères réglementaires et vous indique le niveau de
+        Klaris analyse chaque dossier sur 12 critères et vous indique le niveau de
         vigilance à appliquer. Voici les actions concrètes pour chaque cas :
       </P>
       <LevelRows items={[
@@ -388,7 +387,7 @@ const SLIDES = [
           color: "#d97706", bgColor: "#fffbeb", bdColor: "#fde68a",
           dot: "🟠",
           name: "Vigilance renforcée",
-          ref: "CMF L.561-10",
+          ref: "CMF L.561-10 et L.561-10-1",
           action: "Collecter des justificatifs additionnels (origine fonds, RBE détaillé). Faire valider par le correspondant LCB-FT avant signature.",
         },
         {
@@ -402,8 +401,8 @@ const SLIDES = [
           color: "#0f172a", bgColor: "#f3f4f6", bdColor: "#9ca3af",
           dot: "⚫",
           name: "Interdiction & déclaration",
-          ref: "CMF L.561-15 + Règl. (UE) 2024/1624",
-          action: "Refus de relation d'affaires. Déclaration de soupçon TRACFIN obligatoire via ERMES sous 48 h.",
+          ref: "CMF L.562-4 (gel des avoirs) · L.561-8",
+          action: "Refus de relation d'affaires. Déclaration de soupçon à TRACFIN via ERMES, avant l'exécution de l'opération ou sans délai si elle a déjà été réalisée (L.561-15, L.561-16).",
         },
       ]} />
     </div>
@@ -417,24 +416,25 @@ const SLIDES = [
       <P>
         L'autorité de contrôle pour les agents immobiliers est la <strong>DGCCRF</strong>
         (Direction générale de la concurrence, consommation et répression des fraudes).
-        Les manquements peuvent cumuler sanctions disciplinaires, pécuniaires et pénales.
+        Les sanctions administratives sont prononcées par la <strong>Commission nationale des sanctions</strong>.
+        Le blanchiment est par ailleurs une infraction pénale.
       </P>
       <SanctionCards items={[
         {
           color: "#d97706", icon: <FileWarning width={18} height={18} />,
-          title: "Disciplinaire",
-          items: ["Avertissement", "Blâme", "Mise sous astreinte"],
-          ref: "Art. L.561-36 CMF",
+          title: "Administrative",
+          items: ["Avertissement", "Blâme", "Interdiction temporaire d'exercice (5 ans au plus)", "Retrait de la carte professionnelle"],
+          ref: "Art. L.561-40 CMF",
         },
         {
           color: "#dc2626", icon: <Scale width={18} height={18} />,
           title: "Pécuniaire",
           items: [
-            "Jusqu'à 1 M€ (personne physique)",
-            "Jusqu'à 5 M€ ou 10 % du CA annuel (personne morale)",
-            "Interdiction temporaire d'exercer",
+            "Jusqu'à 5 M€, ou le double de l'avantage retiré du manquement",
+            "À la place ou en plus des sanctions administratives",
+            "Dirigeants et salariés impliqués peuvent aussi être sanctionnés",
           ],
-          ref: "Art. L.561-36-3 CMF",
+          ref: "Art. L.561-40 CMF",
         },
         {
           color: "#0f172a", icon: <Gavel width={18} height={18} />,
@@ -465,11 +465,11 @@ const SLIDES = [
         À chaque dossier, l'application applique automatiquement les bons réflexes réglementaires.
       </P>
       <FeaturesList items={[
-        { icon: "🔍", text: "Scoring automatique sur 13 critères CMF v2 (algorithme reproductible et auditable)" },
+        { icon: "🔍", text: "Scoring automatique sur 12 critères (moteur Klaris v2, reproductible et auditable)" },
         { icon: "🔒", text: "Pièces conservées 5 ans, chiffrées (TLS 1.3 + AES-256), hébergées en France (Scaleway Paris)" },
-        { icon: "📄", text: "PDF Attestation + Fiche KYC signés avec hash SHA-256, prêts à archiver" },
-        { icon: "🌍", text: "Liens directs vers les outils officiels : Open Sanctions + ERMES TRACFIN" },
-        { icon: "⚖️", text: "Mentions légales (L.561-1+, L.561-10, L.561-12-1, L.561-15) automatiquement intégrées aux PDFs" },
+        { icon: "📄", text: "PDF Attestation + Fiche KYC avec empreinte SHA-256, prêts à archiver" },
+        { icon: "🌍", text: "Liens directs vers ERMES (plateforme de TRACFIN) et vers Open Sanctions (outil de criblage)" },
+        { icon: "⚖️", text: "Mentions légales (L.561-1+, L.561-10, L.561-12, L.561-15) automatiquement intégrées aux PDFs" },
       ]} />
       <Note style={{ marginTop: 28 }}>
         Vous pouvez relancer ce guide à tout moment via le bouton <strong>?</strong> en bas de la barre latérale.

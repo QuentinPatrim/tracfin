@@ -128,9 +128,9 @@ export function buildDeclarationHtml(params: BuildParams): string {
 
   ${draft.niveau === "interdiction" ? `
   <div class="urgency">
-    <strong>⚠ Niveau de vigilance : INTERDICTION (L.561-15)</strong> — la relation d&apos;affaires
+    <strong>⚠ Niveau de vigilance : INTERDICTION (L.562-4 · L.561-8)</strong> — la relation d&apos;affaires
     a été refusée ou doit être interrompue. La déclaration de soupçon est obligatoire.
-    Délai légal de soumission à TRACFIN : <strong>48 heures</strong> à compter de la détection.
+    La déclaration à TRACFIN se fait <strong>avant l&apos;exécution de l&apos;opération</strong>, ou sans délai si elle a déjà été réalisée (L.561-16).
   </div>
   ` : `
   <div class="urgency">
@@ -239,7 +239,7 @@ export function buildDeclarationHtml(params: BuildParams): string {
   <!-- Mention légale -->
   <div class="legal">
     <strong>Confidentialité et protection du déclarant.</strong>
-    Cette déclaration est strictement confidentielle (Art. L.561-19 CMF).
+    Cette déclaration est strictement confidentielle (Art. L.561-18 CMF).
     L&apos;identité du déclarant est protégée par la loi. Le client déclaré ne peut
     être informé qu&apos;une déclaration a été faite (interdiction de tipping-off).
     Le présent document est destiné exclusivement à TRACFIN et aux contrôles légaux.

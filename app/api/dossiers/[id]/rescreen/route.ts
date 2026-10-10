@@ -111,7 +111,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   // Si l'agent a CONFIRMÉ le hit (vrai positif), il devrait aussi avoir mis à jour
   // les gates D1/D2 sur le dossier. On ne le fait pas automatiquement — c'est une
-  // décision opposable, le PATCH /api/dossiers/[id] reste la voie nominale.
+  // décision tracée, le PATCH /api/dossiers/[id] reste la voie nominale.
   await sql`SELECT 1`; // no-op : reserved for future state updates
 
   return NextResponse.json({ ok: true, acknowledged: true, decision });

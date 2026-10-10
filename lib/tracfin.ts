@@ -1,15 +1,16 @@
 // lib/tracfin.ts — Scoring LCB-FT v2 (algo_version="v2")
-// Référentiel : CMF L561-1 et suivants, Décret 2018-284, Règl. (UE) 2024/1624,
-// Lignes directrices DGCCRF/TRACFIN secteur immobilier.
+// Référentiel : CMF L561-1 et suivants, Décret 2018-284,
+// Lignes directrices conjointes DGCCRF–Tracfin secteur immobilier (6 novembre 2018).
+// (Le règlement (UE) 2024/1624 n'est applicable qu'à partir du 10 juillet 2027.)
 
 export type Risk = "green" | "orange" | "red";
 
-// ─── Niveaux de vigilance v2 — labels CMF officiels ──────────────────────
+// ─── Niveaux de vigilance v2 — échelle Klaris, fondée sur le CMF ─────────
 export type Niveau =
   | "vigilance_standard"   // L561-5 à L561-8
-  | "vigilance_renforcee"  // L561-10
+  | "vigilance_renforcee"  // L561-10 et L561-10-1
   | "examen_renforce"      // L561-10-2
-  | "interdiction";        // L561-15 + Règl. (UE) 2024/1624
+  | "interdiction";        // L562-4 (gel des avoirs) · L561-8
 
 export const NIVEAU_CFG: Record<Niveau, {
   label: string;
@@ -27,11 +28,11 @@ export const NIVEAU_CFG: Record<Niveau, {
     bg: "rgba(52,211,153,0.08)",
     border: "rgba(52,211,153,0.3)",
     glow: "rgba(52,211,153,0.12)",
-    action: "Traiter normalement. Archivage 5 ans (L561-12-1).",
+    action: "Traiter normalement. Archivage 5 ans (L561-12).",
   },
   vigilance_renforcee: {
     label: "Vigilance renforcée requise",
-    ref: "CMF L561-10",
+    ref: "CMF L561-10 et L561-10-1",
     color: "#FB923C",
     bg: "rgba(251,146,60,0.08)",
     border: "rgba(251,146,60,0.3)",
@@ -49,12 +50,12 @@ export const NIVEAU_CFG: Record<Niveau, {
   },
   interdiction: {
     label: "Interdiction & déclaration",
-    ref: "CMF L561-15 + Règl. (UE) 2024/1624",
+    ref: "CMF L562-4 (gel des avoirs) · L561-8",
     color: "#1F2937",
     bg: "rgba(31,41,55,0.10)",
     border: "rgba(31,41,55,0.40)",
     glow: "rgba(220,38,38,0.20)",
-    action: "Refus de relation d'affaires. Déclaration de soupçon TRACFIN sous 48h.",
+    action: "Refus de relation d'affaires. Déclaration de soupçon à TRACFIN avant l'exécution de l'opération, ou sans délai si elle a déjà été réalisée (L561-16).",
   },
 };
 
@@ -127,8 +128,8 @@ export const OPTIONS: Record<string, Option[]> = {
   ],
   // Reclassement (mai 2026) : l'investissement locatif et le terrain agricole
   // ne sont PAS listés comme typologies à risque par les lignes directrices DGCCRF
-  // / TRACFIN pour le secteur immobilier (cf. Lignes directrices DGCCRF 2023,
-  // Annexe "typologies"). Les classer en vigilance créait des faux positifs
+  // / TRACFIN pour le secteur immobilier (cf. Lignes directrices conjointes
+  // DGCCRF–Tracfin, 6 novembre 2018). Les classer en vigilance créait des faux positifs
   // décrédibilisant le scoring et noyait les vrais signaux.
   // Restent en vigilance les seules typologies explicitement reconnues :
   //   - SCI / holding (opacité potentielle des bénéficiaires effectifs)
@@ -206,7 +207,7 @@ export const PPE_LIEN_LABELS: Record<PpeLien, string> = {
 
 // ─── Rôle dans la transaction immobilière (vendeur ou acquéreur) ──────
 // L'agent immobilier est soumis à la vigilance LCB-FT vis-à-vis des 2 parties
-// (Décret 2018-284, lignes directrices DGCCRF). Les critères évalués différent
+// (Décret 2018-284, lignes directrices DGCCRF–Tracfin). Les critères évalués différent
 // néanmoins selon le rôle (cf. CRITERES_NON_PERTINENTS).
 export type Partie = "vendeur" | "acquereur";
 
@@ -308,7 +309,7 @@ export const initialForm: DossierForm = {
   responsableLCBFT: "",
 };
 
-// ─── Algo log : trace opposable (preuve d'audit) ─────────────────────────
+// ─── Algo log : trace horodatée (journal d'audit) ────────────────────────
 export interface AlgoLogEntry {
   critere: string;
   valeur: string;
@@ -364,7 +365,7 @@ function motifFor(key: string, val: string): string {
   return opt ? `${RISK_LABELS[key]} : ${opt.label}` : RISK_LABELS[key] ?? key;
 }
 
-// ─── Le scoring v2 — opposable, déterministe, traçable ──────────────────
+// ─── Le scoring v2 — déterministe, versionné, traçable ──────────────────
 export function computeScore(form: DossierForm): ScoreResult {
   const risks: Record<string, Risk | null> = {};
   for (const c of RISK_CRITERES) {

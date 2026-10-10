@@ -13,8 +13,8 @@
 // une fenêtre temporelle pour produire le document que le contrôleur DGCCRF
 // (ou l'autorité de tutelle équivalente) demande en premier lors d'un contrôle.
 //
-// Lignes directrices DGCCRF secteur immobilier (2023) précisent : la cartographie
-// doit être revue ANNUELLEMENT et tenir compte des cas concrets rencontrés.
+// Les lignes directrices conjointes DGCCRF–Tracfin (6 novembre 2018) précisent que
+// l'évaluation et la classification des risques sont actualisées régulièrement.
 
 import { sql } from "@/lib/db";
 import type { Scope } from "@/lib/scope";
@@ -195,7 +195,7 @@ interface DossierRow {
 
 /**
  * Calcule la cartographie complète pour le scope donné.
- * Fenêtre par défaut : 12 derniers mois (révision annuelle DGCCRF).
+ * Fenêtre par défaut : 12 derniers mois.
  */
 export async function computeCartography(scope: Scope, monthsWindow = 12): Promise<Cartography> {
   const now = new Date();

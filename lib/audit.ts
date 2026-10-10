@@ -1,4 +1,4 @@
-// lib/audit.ts — Trace opposable des actions (table audit_events)
+// lib/audit.ts — Trace horodatée des actions (table audit_events)
 //
 // Toute mutation côté agent ou côté client public doit appeler logAudit() pour
 // laisser une trace horodatée (qui, quoi, sur quel dossier, depuis quelle IP).

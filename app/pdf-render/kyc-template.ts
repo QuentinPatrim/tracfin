@@ -184,7 +184,7 @@ export function buildKycHtml(opts: BuildKycOpts): string {
       <h1 class="doc-title">Fiche Know Your<br/>Customer (KYC)</h1>
       <div class="doc-sub">Déclarations et informations recueillies auprès du client lors de l'entrée en relation, en qualité de <b>${escapeHtml(roleLabel.toLowerCase())}</b>. Données chiffrées (TLS 1.3 + AES-256), hébergées en France.</div>
     </div>
-    <div class="stamp"><span class="pulse"></span>Vérifié par Klaris</div>
+    <div class="stamp"><span class="pulse"></span>Généré par Klaris</div>
   </div>
 
   <section class="verdict ${allRequiredOk ? "ok" : "warn"}">
@@ -363,7 +363,7 @@ export function buildKycHtml(opts: BuildKycOpts): string {
       <span class="accent"></span>
     </div>
     <div class="decl">
-      <p><b>Information sur le traitement des données personnelles</b> — Le client a pris connaissance de la finalité du traitement (obligations LCB-FT, art. L.561-1 et s. CMF), de la base légale (obligation légale), de la durée de conservation (5 ans, art. L.561-12-1 CMF), de l'hébergement en France et en Union Européenne, et de ses droits d'accès, rectification, opposition (limitée par l'obligation légale) et réclamation auprès de la CNIL.</p>
+      <p><b>Information sur le traitement des données personnelles</b> — Le client a pris connaissance de la finalité du traitement (obligations LCB-FT, art. L.561-1 et s. CMF), de la base légale (obligation légale), de la durée de conservation (5 ans, art. L.561-12 CMF), de l'hébergement en France et en Union Européenne, et de ses droits d'accès, rectification, opposition (limitée par l'obligation légale) et réclamation auprès de la CNIL.</p>
       <div class="sig">
         <div>
           <div class="k">Consentement</div>

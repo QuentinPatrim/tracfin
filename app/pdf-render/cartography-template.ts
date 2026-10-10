@@ -144,7 +144,7 @@ export function buildCartographyHtml(params: BuildParams): string {
 
   <h1>Cartographie des risques BC/FT</h1>
   <div class="subtitle">
-    Document opposable au titre de l&apos;article <strong>L.561-4-1 du Code monétaire et financier</strong>.
+    Document établi au titre de l&apos;article <strong>L.561-4-1 du Code monétaire et financier</strong>.
     Période couverte : <strong>${fmtRange(carto.rangeStart, carto.rangeEnd)}</strong>.
   </div>
 
@@ -180,9 +180,9 @@ export function buildCartographyHtml(params: BuildParams): string {
     </thead>
     <tbody>
       ${niveauRow("Vigilance standard (L.561-5)", carto.niveau.vigilance_standard, "badge-green")}
-      ${niveauRow("Vigilance renforcée (L.561-10)", carto.niveau.vigilance_renforcee, "badge-amber")}
+      ${niveauRow("Vigilance renforcée (L.561-10 et L.561-10-1)", carto.niveau.vigilance_renforcee, "badge-amber")}
       ${niveauRow("Examen renforcé (L.561-10-2)", carto.niveau.examen_renforce, "badge-red")}
-      ${niveauRow("Interdiction (L.561-15)", carto.niveau.interdiction, "badge-black")}
+      ${niveauRow("Interdiction (L.562-4 · L.561-8)", carto.niveau.interdiction, "badge-black")}
     </tbody>
   </table>
 
@@ -258,8 +258,8 @@ export function buildCartographyHtml(params: BuildParams): string {
     Les pays sont rapportés contre la liste grise/noire GAFI maintenue à jour dans l&apos;application.
     Les classifications s&apos;appuient sur l&apos;algorithme propriétaire Klaris v2, déterministe et versionné — chaque verdict est figé dans un snapshot immuable au moment de l&apos;émission de l&apos;attestation correspondante.
     La traçabilité des actions de l&apos;agent (création, modification, transition de niveau, émission d&apos;attestation, screening sanctions) est conservée dans un journal d&apos;audit horodaté inaltérable.
-    Conformément aux lignes directrices DGCCRF (secteur immobilier, édition 2023), la cartographie doit faire l&apos;objet d&apos;une révision <strong>annuelle</strong> minimum,
-    ainsi qu&apos;à chaque évolution significative de l&apos;activité ou du cadre réglementaire (transposition d&apos;une directive UE, mise à jour des listes GAFI, etc.).
+    Selon les lignes directrices conjointes DGCCRF–Tracfin (secteur immobilier, 6 novembre 2018), l&apos;évaluation et la classification des risques sont actualisées <strong>régulièrement</strong>.
+    Klaris recommande de revoir la cartographie à chaque évolution significative de l&apos;activité ou du cadre réglementaire (transposition d&apos;une directive UE, mise à jour des listes GAFI, etc.).
   </div>
 
   <footer class="footer">

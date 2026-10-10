@@ -1,6 +1,6 @@
 // app/dashboard/archives/page.tsx — Dossiers archivés (lecture seule)
 //
-// Les dossiers KYC archivés ne peuvent pas être modifiés (CMF L.561-12-1 :
+// Les dossiers KYC archivés ne peuvent pas être modifiés (CMF L.561-12 :
 // preuve à conserver 5 ans). Cette page liste ces dossiers en lecture seule.
 // La consultation détaillée d'un dossier archivé reste possible — le serveur
 // refuse les mutations (PATCH renvoie 409).
@@ -107,7 +107,7 @@ export default async function ArchivesPage() {
             </h1>
             <p style={{ color: "#64748b", fontSize: 13.5, marginTop: 6, lineHeight: 1.5, maxWidth: 720 }}>
               {rows.length === 0 ? (
-                <>Aucun dossier archivé. Les dossiers que vous archiverez apparaîtront ici en lecture seule, conservés <strong>5 ans</strong> conformément à l&apos;art. <strong>L.561-12-1 du CMF</strong>.</>
+                <>Aucun dossier archivé. Les dossiers que vous archiverez apparaîtront ici en lecture seule, conservés <strong>5 ans</strong> conformément à l&apos;art. <strong>L.561-12 du CMF</strong>.</>
               ) : (
                 <>{rows.length} dossier{rows.length > 1 ? "s" : ""} archivé{rows.length > 1 ? "s" : ""}. Lecture seule — les pièces, attestations et journal d&apos;audit sont conservés <strong>5 ans</strong> à compter de l&apos;archivage et restent consultables en cas de contrôle DGCCRF.</>
               )}
@@ -195,7 +195,7 @@ export default async function ArchivesPage() {
               }}
             >
               <strong style={{ color: "#6d28d9" }}>Ce que dit la loi.</strong>{" "}
-              L&apos;art. <strong>L.561-12-1 du CMF</strong> impose la conservation des pièces et données du KYC pendant <strong>5 ans</strong> à compter de la fin de la relation d&apos;affaires. Klaris bloque toute modification et conserve l&apos;intégralité du dossier (pièces, attestations, journal d&apos;audit) jusqu&apos;à expiration du délai légal. Aucune action n&apos;est requise de votre côté.
+              L&apos;art. <strong>L.561-12 du CMF</strong> impose la conservation des pièces et données du KYC pendant <strong>5 ans</strong> à compter de la fin de la relation d&apos;affaires. Klaris bloque toute modification et conserve l&apos;intégralité du dossier (pièces, attestations, journal d&apos;audit) jusqu&apos;à expiration du délai légal. Aucune action n&apos;est requise de votre côté.
             </div>
           </div>
         </main>

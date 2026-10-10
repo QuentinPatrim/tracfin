@@ -84,7 +84,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     const generatedAt = new Date().toISOString();
     const kyc = kycRows[0];
 
-    // ─── 1) Attestation PDF (snapshot opposable depuis lib/attestation) ──
+    // ─── 1) Attestation PDF (snapshot figé depuis lib/attestation) ──
     const formForAtt = rowToForm(dossier);
     const score = computeScore(formForAtt);
     const snapshot = await getOrCreateAttestation({

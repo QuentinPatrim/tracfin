@@ -20,7 +20,7 @@ const RISK_LIGHT: Record<Risk, { color: string; bg: string; border: string; labe
 
 interface StatusLight { color: string; bg: string; border: string; title: string; sub: string; }
 const STATUS_LIGHT: Record<StatutKey, StatusLight> = {
-  valid:    { color: "#047857", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.30)", title: "Vigilance standard — Conforme", sub: "Traiter normalement. Archivage 5 ans (L561-12-1)." },
+  valid:    { color: "#047857", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.30)", title: "Vigilance standard — Conforme", sub: "Traiter normalement. Archivage 5 ans (L561-12)." },
   vigilance:{ color: "#b45309", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
   stop:     { color: "#b45309", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
   critical: { color: "#b91c1c", bg: "rgba(220,38,38,0.08)", border: "rgba(220,38,38,0.30)", title: "Examen renforcé", sub: "Suspension immédiate de la transaction. Délibération formalisée." },

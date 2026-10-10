@@ -111,7 +111,7 @@ const TOUR_STEPS: TourStep[] = [
     eyebrow: "Vue d'ensemble",
     title: "Vos indicateurs en un coup d'œil",
     body: "Total, Conformes, Vigilance, Critique : le pouls de votre portefeuille, mis à jour en temps réel. Ici, 2 dossiers conformes, 1 en vigilance, 2 critiques.",
-    important: "La colonne Critique regroupe examen renforcé et interdiction. Ces dossiers imposent une déclaration de soupçon à TRACFIN sous 48 heures.",
+    important: "La colonne Critique regroupe examen renforcé et interdiction. Ces dossiers appellent une déclaration de soupçon à TRACFIN, à faire avant l'exécution de l'opération ou sans délai si elle a déjà été réalisée.",
   },
   {
     selector: ".list-card",
@@ -125,7 +125,7 @@ const TOUR_STEPS: TourStep[] = [
     eyebrow: "Le détail d'un dossier",
     title: "Tout est réuni à droite",
     body: "Verdict, pièces justificatives transmises par le client, et les exports : attestation PDF, fiche KYC, et le dossier complet en ZIP — prêts pour un contrôle.",
-    important: "L'attestation horodatée (et signée) est votre preuve opposable. Générez-la pour chaque dossier traité.",
+    important: "L'attestation horodatée (et signée) documente vos diligences. Générez-la pour chaque dossier traité.",
   },
   {
     selector: '[data-tour="new-dossier"]',
@@ -139,7 +139,7 @@ const TOUR_STEPS: TourStep[] = [
     scene: <ClientJourneyFrame step={1} />,
     eyebrow: "Côté client · 1/5",
     title: "Ce que voit votre client",
-    body: "Vous lui envoyez un lien sécurisé (email, SMS, WhatsApp). Il l'ouvre sur son téléphone, sans créer de compte. Voici l'écran réel — il renseigne d'abord son identité.",
+    body: "Vous lui envoyez un lien sécurisé (e-mail ou WhatsApp). Il l'ouvre sur son téléphone, sans créer de compte. Voici l'écran réel — il renseigne d'abord son identité.",
   },
   {
     scene: <ClientJourneyFrame step={3} />,
@@ -171,7 +171,7 @@ const TOUR_STEPS: TourStep[] = [
   {
     eyebrow: "À vous de jouer",
     title: "Créez votre premier vrai dossier",
-    body: "Vous avez tout vu. Trois réflexes à garder : conservation 5 ans, vigilance constante, et déclaration sous 48 h pour les cas critiques. Les dossiers d'exemple vont disparaître — place à vos vrais clients.",
+    body: "Vous avez tout vu. Trois réflexes à garder : conservation 5 ans, vigilance constante, et déclaration à TRACFIN avant l'opération pour les cas critiques. Les dossiers d'exemple vont disparaître — place à vos vrais clients.",
   },
 ];
 
@@ -240,7 +240,7 @@ export default function DashboardClient({
   }, [dossiers]);
   const [selectedId, setSelectedId] = useState<string | null>(defaultSelected);
 
-  // État d'archivage (soft-delete conforme L.561-12-1 : conservation 5 ans)
+  // État d'archivage (soft-delete conforme L.561-12 : conservation 5 ans)
   const [confirmArchive, setConfirmArchive] = useState<DossierItem | null>(null);
   const [archiving, setArchiving] = useState(false);
 
@@ -403,7 +403,7 @@ export default function DashboardClient({
                     textDecoration: "none",
                     whiteSpace: "nowrap",
                   }}
-                  title="Dossiers archivés (lecture seule, conservés 5 ans — L.561-12-1 CMF)"
+                  title="Dossiers archivés (lecture seule, conservés 5 ans — L.561-12 CMF)"
                 >
                   <Archive width={12} height={12} />
                   Archives <span style={{ opacity: 0.7 }}>· {archivedCount}</span>
@@ -572,9 +572,9 @@ export default function DashboardClient({
  *
  * Le bouton "Supprimer" historique a été remplacé par "Archiver" : la
  * suppression physique d'un dossier KYC reçu serait non conforme à l'obligation
- * de conservation 5 ans (CMF L.561-12-1). L'archivage retire le dossier de la
+ * de conservation 5 ans (CMF L.561-12). L'archivage retire le dossier de la
  * liste active, mais les pièces, l'audit log et l'attestation restent
- * consultables et opposables jusqu'à l'expiration légale.
+ * consultables jusqu'à l'expiration légale.
  */
 function ConfirmArchiveModal({
   dossier, onConfirm, onCancel, loading,
@@ -643,7 +643,7 @@ function ConfirmArchiveModal({
             lineHeight: 1.5,
           }}
         >
-          <strong style={{ color: "#047857" }}>✓ Action conforme L.561-12-1 CMF.</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
+          <strong style={{ color: "#047857" }}>✓ Action conforme L.561-12 CMF.</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
         </div>
 
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
@@ -873,7 +873,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
           onClick={onAskArchive}
           className="ghost-btn small block"
           style={{ justifyContent: "center", color: "#6d28d9", borderColor: "rgba(124,58,237,0.20)" }}
-          title="Retire le dossier de la liste active. Conservation 5 ans (L.561-12-1)."
+          title="Retire le dossier de la liste active. Conservation 5 ans (L.561-12)."
         >
           <Archive width={12} height={12} />
           Archiver le dossier

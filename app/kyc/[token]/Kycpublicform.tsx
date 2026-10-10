@@ -397,7 +397,7 @@ export default function KycPublicForm({ token, dossierId, partie, pappersEnabled
           </p>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] text-[11px] uppercase tracking-widest text-[color:var(--lp-text-4)]">
             <Lock className="w-3 h-3" />
-            Données conservées 5 ans (L.561-12-1 CMF)
+            Données conservées 5 ans (L.561-12 CMF)
           </div>
         </div>
       </div>
@@ -570,9 +570,9 @@ function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
         {cnilOpen && (
           <div className="px-4 pb-4 text-[12.5px] text-[color:var(--lp-text-3)] leading-relaxed space-y-2.5 border-t border-[color:var(--lp-border-1)] pt-3">
             <p><strong className="text-[color:var(--lp-text)]">Finalité</strong> — Obligations LCB-FT (CMF L.561-1 et suiv.).</p>
-            <p><strong className="text-[color:var(--lp-text)]">Hébergement</strong> — France (Paris) et UE (Frankfurt). Aucun transfert hors UE.</p>
+            <p><strong className="text-[color:var(--lp-text)]">Hébergement</strong> — Votre fiche et vos pièces sont hébergées en France (Paris) et dans l'Union européenne (Francfort).</p>
             <p><strong className="text-[color:var(--lp-text)]">Sécurité</strong> — Chiffrement TLS 1.3 + AES-256, accès journalisés.</p>
-            <p><strong className="text-[color:var(--lp-text)]">Conservation</strong> — 5 ans à compter de la fin de la relation (art. L.561-12-1 CMF).</p>
+            <p><strong className="text-[color:var(--lp-text)]">Conservation</strong> — 5 ans à compter de la fin de la relation (art. L.561-12 CMF).</p>
             <p><strong className="text-[color:var(--lp-text)]">Vos droits</strong> — Accès, rectification, opposition (limité par l'obligation légale), réclamation CNIL.</p>
             <p className="text-[11px] text-[color:var(--lp-text-4)] pt-1">Version : {MENTION_CNIL_VERSION}</p>
           </div>

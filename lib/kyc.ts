@@ -227,8 +227,8 @@ export const FORME_JURIDIQUE_OPTIONS = [
 ];
 
 export const TYPE_CONTROLE_BE_OPTIONS = [
-  { value: "capital", label: "Détention de capital ≥ 25 %" },
-  { value: "vote", label: "Détention de droits de vote ≥ 25 %" },
+  { value: "capital", label: "Détention de plus de 25 % du capital" },
+  { value: "vote", label: "Détention de plus de 25 % des droits de vote" },
   { value: "controle_effectif", label: "Contrôle effectif (autre moyen)" },
 ];
 

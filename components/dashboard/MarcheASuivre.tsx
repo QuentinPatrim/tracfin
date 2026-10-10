@@ -109,7 +109,7 @@ function buildWizard(
         icon: AlertTriangle,
         headline: "Vigilance renforcée requise",
         intro: `Le dossier de ${safeName} présente des indicateurs nécessitant une analyse approfondie. Suivez ces étapes dans l'ordre.`,
-        cmfRef: "CMF L.561-10",
+        cmfRef: "CMF L.561-10 et L.561-10-1",
         steps: [
           {
             title: "Demander les pièces complémentaires au client",
@@ -134,7 +134,7 @@ Cordialement,
           },
           {
             title: "Renseigner votre analyse du risque",
-            subtitle: "Décrivez en quelques lignes pourquoi le dossier reste acceptable (ou pas). Cette note est conservée et opposable en cas de contrôle.",
+            subtitle: "Décrivez en quelques lignes pourquoi le dossier reste acceptable (ou pas). Cette note est conservée, horodatée, et peut être présentée en cas de contrôle.",
             action: {
               kind: "note",
               placeholder: noteOrigine,
@@ -150,7 +150,7 @@ Cordialement,
               body:
 `Bonjour,
 
-Je sollicite ton avis sur le dossier ${safeName} qui présente un niveau de vigilance renforcée (CMF L.561-10).
+Je sollicite ton avis sur le dossier ${safeName} qui présente un niveau de vigilance renforcée (CMF L.561-10 et L.561-10-1).
 
 Tu trouveras en pièce jointe l'attestation Klaris (téléchargeable depuis le dashboard) ainsi que mon analyse du risque.
 
@@ -257,12 +257,12 @@ Cordialement,
         tone: "crit",
         icon: ShieldOff,
         headline: "Interdiction & déclaration TRACFIN",
-        intro: `Le dossier de ${safeName} présente une suspicion sérieuse de blanchiment ou financement du terrorisme. Refus immédiat de la relation et déclaration à TRACFIN sous 48h.`,
-        cmfRef: "CMF L.561-15, L.561-19, L.561-22",
+        intro: `Le dossier de ${safeName} présente une suspicion sérieuse de blanchiment ou financement du terrorisme. Refus immédiat de la relation et déclaration à TRACFIN avant l'exécution de l'opération, ou sans délai si elle a déjà été réalisée.`,
+        cmfRef: "CMF L.562-4 (gel des avoirs) · L.561-8 · déclaration : L.561-15, L.561-16",
         steps: [
           {
             title: "Refuser la relation d'affaires (sans en révéler la raison)",
-            subtitle: "Ne dites JAMAIS au client que vous le déclarez à TRACFIN — c'est un délit (L.561-19, 22 500 € d'amende). Invoquez une raison commerciale neutre.",
+            subtitle: "Ne dites JAMAIS au client que vous le déclarez à TRACFIN — c'est interdit (L.561-18) et puni de 22 500 € d'amende (L.574-1). Invoquez une raison commerciale neutre.",
             action: {
               kind: "mailto",
               subject: `[${ref}] Décision concernant votre dossier`,

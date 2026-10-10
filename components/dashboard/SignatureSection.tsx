@@ -130,11 +130,11 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
               ? "Attestation signée électroniquement"
               : isPending
                 ? "Signature en cours…"
-                : "Renforcer la force probante de l'attestation"}
+                : "Faire signer l'attestation par le responsable LCB-FT"}
           </h2>
           <p style={{ fontSize: 12.5, color: "#64748b", margin: "4px 0 0", lineHeight: 1.5 }}>
             {isSigned
-              ? `Signée par ${latest?.signer_name}${latest?.signed_at ? ` le ${new Date(latest.signed_at).toLocaleDateString("fr-FR")}` : ""}. Document opposable au sens du règlement eIDAS (UE 910/2014).`
+              ? `Signée par ${latest?.signer_name}${latest?.signed_at ? ` le ${new Date(latest.signed_at).toLocaleDateString("fr-FR")}` : ""}. Signature électronique au sens du règlement eIDAS (UE n° 910/2014).`
               : isPending
                 ? "Le signataire a reçu le document. Cette section se met à jour automatiquement une fois la signature apposée."
                 : "Faites signer l'attestation par le responsable LCB-FT via Yousign (prestataire de confiance qualifié eIDAS). Le PDF signé est conservé avec le dossier."}

@@ -1,7 +1,7 @@
 // app/pdf-render/attestation-template.ts — Attestation LCB-FT exhaustive (4 pages A4)
 // Affiche TOUS les éléments du dossier : critères + triggers + commentaires
 // (justifFonds, justifPrix), PPE étendue, dates de détection, gel d'avoirs,
-// sanctions, validations. Conforme exigence DGCCRF/ACPR (traçabilité opposable).
+// sanctions, validations. Objectif : traçabilité horodatée des diligences.
 
 import {
   OPTIONS, RISK_LABELS, NIVEAU_CFG, PPE_LIEN_LABELS,
@@ -236,9 +236,9 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
   <div class="title-row">
     <div>
       <h1 class="doc-title">Attestation de Conformité<br/>LCB-FT</h1>
-      <div class="doc-sub">Évaluation des risques de blanchiment de capitaux et de financement du terrorisme — analyse algorithmique opposable sur ${rows.length} critères (CMF L.561-1 et suivants). Client analysé en qualité de <b>${escapeHtml(roleLabel.toLowerCase())}</b>.</div>
+      <div class="doc-sub">Évaluation des risques de blanchiment de capitaux et de financement du terrorisme — analyse algorithmique documentée sur ${rows.length} critères (CMF L.561-1 et suivants). Client analysé en qualité de <b>${escapeHtml(roleLabel.toLowerCase())}</b>.</div>
     </div>
-    <div class="stamp"><span class="pulse"></span>Vérifié par Klaris</div>
+    <div class="stamp"><span class="pulse"></span>Généré par Klaris</div>
   </div>
 
   <section class="verdict ${variant}">
@@ -419,7 +419,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
       <div class="label">Action requise</div>
       <p>${escapeHtml(cfg.action)}</p>
       <div class="stat-row">
-        ${(score.niveau === "examen_renforce" || score.niveau === "interdiction") ? '<div class="stat">Délai légal · <b>48h (DS TRACFIN)</b></div>' : ''}
+        ${(score.niveau === "examen_renforce" || score.niveau === "interdiction") ? '<div class="stat">DS TRACFIN · <b>avant l’opération, ou sans délai si déjà réalisée (L.561-16)</b></div>' : ''}
         <div class="stat">Référence interne · <b>${escapeHtml(recoRef)}</b></div>
         <div class="stat">Niveau · <b>${escapeHtml(verdictTitle)}</b></div>
         <div class="stat">CMF · <b>${escapeHtml(cfg.ref)}</b></div>
@@ -475,14 +475,15 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
       <p>
         La présente attestation est délivrée sur la base de l'analyse algorithmique Klaris ${escapeHtml(score.algoVersion.toUpperCase())},
         appliquant les obligations LCB-FT prévues aux articles L.561-1 et suivants du Code monétaire et
-        financier, ainsi que les recommandations DGCCRF / TRACFIN pour le secteur immobilier.
+        financier, ainsi que les lignes directrices conjointes DGCCRF–Tracfin pour le secteur immobilier
+        (6 novembre 2018).
         Elle ne se substitue pas à l'analyse personnelle du professionnel assujetti, qui demeure
         seul responsable des décisions d'entrée en relation d'affaires.
       </p>
       <p style="margin-top:8px">
         Cette attestation et les pièces justificatives associées sont conservées <b>5 ans à compter de la fin
-        de la relation d'affaires</b> (art. L.561-12-1 CMF), dans une infrastructure souveraine européenne
-        chiffrée (TLS 1.3 + AES-256). Toute reproduction non autorisée est interdite.
+        de la relation d'affaires</b> (art. L.561-12 CMF), dans une infrastructure hébergée en Union européenne
+        et chiffrée (TLS 1.3 + AES-256). Toute reproduction non autorisée est interdite.
       </p>
       <div class="sig">
         <div>
@@ -513,9 +514,8 @@ ${forSignature ? `
         En signant ci-dessous, le responsable LCB-FT désigné atteste de l'exactitude
         des éléments figurant dans la présente attestation et de la réalisation des
         diligences requises au titre des articles L.561-1 et suivants du Code monétaire
-        et financier. La signature est apposée par voie électronique conformément au
-        règlement <b>eIDAS (UE n° 910/2014)</b> et bénéficie à ce titre d'une présomption
-        de fiabilité ainsi que d'une force probante opposable.
+        et financier. La signature est apposée par voie électronique, au sens du
+        règlement <b>eIDAS (UE n° 910/2014)</b>.
       </p>
     </div>
   </section>

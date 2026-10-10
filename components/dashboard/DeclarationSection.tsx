@@ -126,7 +126,7 @@ export default function DeclarationSection({ dossierId, niveau, isArchived }: Pr
           </h2>
           <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0", lineHeight: 1.5 }}>
             {niveau === "interdiction"
-              ? "Délai légal : 48 heures à compter de la détection. Klaris pré-remplit le dossier ERMES avec toutes les données déjà saisies."
+              ? "La déclaration se fait avant l'exécution de l'opération, ou sans délai si elle a déjà été réalisée (CMF L.561-16). Klaris pré-remplit le dossier ERMES avec toutes les données déjà saisies."
               : "Si vos vérifications complémentaires n'ont pas levé le soupçon, vous devez déclarer à TRACFIN. Klaris prépare le dossier pour vous."}
           </p>
         </div>

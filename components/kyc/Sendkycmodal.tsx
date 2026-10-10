@@ -76,7 +76,7 @@ export default function SendKycModal({ dossierId, nomPrenom, onClose }: Props) {
             <h2 className="text-xl font-bold mb-2 tracking-tight">Envoyer une fiche KYC</h2>
             <p className="text-white/60 text-sm leading-relaxed mb-6">
               Un lien unique sécurisé sera généré pour <span className="text-white font-medium">{nomPrenom}</span>.
-              Vous pourrez le partager par email, WhatsApp ou SMS. Le client n'aura pas besoin de créer un compte.
+              Vous pourrez le partager par e-mail ou WhatsApp, ou copier le lien. Le client n'aura pas besoin de créer un compte.
             </p>
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-4 mb-6 text-xs text-white/50 leading-relaxed">
               <div className="text-[10px] uppercase tracking-widest text-white/40 mb-2 font-bold">Bon à savoir</div>

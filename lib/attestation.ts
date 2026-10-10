@@ -1,4 +1,4 @@
-// lib/attestation.ts — Snapshot opposable d'une attestation LCB-FT
+// lib/attestation.ts — Snapshot figé et horodaté d'une attestation LCB-FT
 //
 // Quand on émet un PDF d'attestation, on FIGE le verdict (form + score) dans une
 // table immuable. Le PDF est ensuite généré à partir de cette ligne. Si l'algo

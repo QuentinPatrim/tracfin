@@ -9,7 +9,7 @@
 // les tests. En prod cible : clé payante avec quotas commerciaux.
 //
 // Conformité : le résultat brut est stocké dans screening_runs.response → preuve
-// opposable que la vérification a été faite à la date X, avec quels datasets.
+// horodatée que la vérification a été faite à la date X, avec quels datasets.
 
 /** Schéma OpenSanctions (un sous-ensemble de FollowTheMoney). */
 export type SanctionSchema = "Person" | "Organization" | "Company";

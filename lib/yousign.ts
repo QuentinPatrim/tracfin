@@ -2,7 +2,7 @@
 //
 // Yousign est un prestataire de service de confiance qualifié eIDAS (UE 910/2014),
 // français. On l'utilise pour faire signer électroniquement les attestations LCB-FT
-// par le responsable désigné → force probante opposable (vs simple hash interne).
+// par le responsable désigné (signature électronique simple, en complément du hash interne).
 //
 // Flux v3 :
 //   1. POST /signature_requests            → crée la demande (draft)

@@ -210,7 +210,7 @@ export default function Step2({ form, set, dossierId, screeningEnabled = false }
         </Field>
       </Sect>
 
-      <Sect title="Sanctions & PPE" sub="Gates absolues — L561-10, L561-15">
+      <Sect title="Sanctions & PPE" sub="Gel des avoirs (L562-4) · PPE (L561-10 1°)">
         {/* Outils de screening pré-remplis avec le nom du client */}
         <ScreeningTools form={form} set={set} dossierId={dossierId} screeningEnabled={screeningEnabled} />
 

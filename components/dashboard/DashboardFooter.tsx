@@ -22,7 +22,7 @@ export default function DashboardFooter() {
             </span>
           </div>
           <p className="text-[12px] max-w-xs leading-relaxed" style={{ color: "#64748b" }}>
-            Conformité LCB-FT pour les professionnels assujettis. Hébergement souverain UE.
+            Conformité LCB-FT pour les professionnels assujettis. Hébergement en Union européenne.
           </p>
           <div
             className="mt-3 inline-flex items-center gap-2 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-md"
@@ -37,7 +37,7 @@ export default function DashboardFooter() {
         </div>
 
         <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 text-[12.5px]">
-          <FooterLink href="/confiance">Confiance & souveraineté</FooterLink>
+          <FooterLink href="/confiance">Nos engagements</FooterLink>
           <FooterLink href="/legal/mentions-legales">Mentions légales</FooterLink>
           <FooterLink href="/legal/confidentialite">Confidentialité</FooterLink>
           <FooterLink href="/legal/cgv">CGV</FooterLink>

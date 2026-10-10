@@ -95,7 +95,7 @@ export default function CartographyClient({ carto }: Props) {
             Cartographie des risques
           </h1>
           <p style={{ color: "#64748b", fontSize: 13.5, marginTop: 6, lineHeight: 1.5, maxWidth: 640 }}>
-            Synthèse opposable des risques BC/FT du portefeuille — {fmtRange(carto.rangeStart, carto.rangeEnd)}.
+            Synthèse des risques BC/FT du portefeuille — {fmtRange(carto.rangeStart, carto.rangeEnd)}.
             Document à présenter en première intention lors d&apos;un contrôle DGCCRF (art. <strong>L.561-4-1 du CMF</strong>).
           </p>
         </div>
@@ -298,7 +298,7 @@ export default function CartographyClient({ carto }: Props) {
         Cette cartographie est générée automatiquement à partir des dossiers KYC ayant été instruits dans Klaris sur la période indiquée.
         Les pays sont rapportés contre la liste grise/noire GAFI maintenue dans l&apos;application.
         Les critères de classification s&apos;appuient sur l&apos;algorithme propriétaire Klaris v2, versionné et déterministe (cf. attestations).
-        La révision de la cartographie est recommandée <strong>annuellement</strong> (lignes directrices DGCCRF 2023 - secteur immobilier).
+        Les lignes directrices conjointes DGCCRF–Tracfin (6 novembre 2018) prévoient une actualisation <strong>régulière</strong> de l&apos;évaluation des risques.
       </div>
     </div>
   );

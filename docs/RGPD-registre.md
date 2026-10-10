@@ -57,7 +57,7 @@ Klaris édite un SaaS d'aide à la conformité LCB-FT. Deux types de traitements
 | Catégories de données | Identité, pièces d'identité (CNI, passeport), justificatif de domicile, justificatif de revenus, origine des fonds, exposition PPE, scoring algorithmique |
 | Destinataires | Pro utilisateur (responsable), Klaris (sous-traitant), Neon (stockage structuré), Scaleway (pièces) |
 | Transferts hors UE | **Non** — Neon Frankfurt 🇩🇪, Scaleway Paris 🇫🇷. Tous dans l'UE. |
-| Durée de conservation | 5 ans après fin de la relation d'affaires (art. L.561-12-1 CMF) |
+| Durée de conservation | 5 ans après fin de la relation d'affaires (art. L.561-12 CMF) |
 | Mesures de sécurité | TLS 1.3, AES-256 at-rest, scoping par dossier, accès admin journalisé, journal d'audit horodaté de toutes les actions |
 
 ### 3a. Sous-traitances PRÉVUES (à activer — pas encore en service)
@@ -68,7 +68,7 @@ Klaris édite un SaaS d'aide à la conformité LCB-FT. Deux types de traitements
 |---|---|---|---|
 | **Criblage sanctions (OpenSanctions, 🇩🇪)** | Nom, date de naissance, nationalité | Vérification contre listes DGT/UE/ONU/OFAC (L.561-10) | DPA + clé API + ajout liste publique |
 | **Pré-remplissage entreprise (Pappers, 🇫🇷)** | Numéro SIREN | Récupération RNE/INPI (KYC personnes morales) | DPA + clé API + ajout liste publique |
-| **Signature électronique (Yousign, 🇫🇷)** | Attestation + identité/email du signataire | Signature eIDAS opposable | DPA + clé API + ajout liste publique |
+| **Signature électronique (Yousign, 🇫🇷)** | Attestation + identité/email du signataire | Signature électronique eIDAS | DPA + clé API + ajout liste publique |
 
 > **Flux CRM configurés par le client** : si un professionnel connecte son propre CRM (webhooks), Klaris transmet à l'URL qu'il configure les changements de statut des dossiers. Ce destinataire est choisi par le client, qui en est alors **responsable de traitement** ; Klaris agit sur instruction. Appels signés (HMAC).
 

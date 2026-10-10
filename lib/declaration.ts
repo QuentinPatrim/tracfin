@@ -1,8 +1,9 @@
 // lib/declaration.ts — Pré-remplissage d'une déclaration de soupçon TRACFIN
 //
 // L'article L.561-15 du Code monétaire et financier impose à l'assujetti de
-// déclarer à TRACFIN, sous 48 heures, toute opération relative à une somme
-// suspectée de provenir d'une infraction ou de financer le terrorisme.
+// déclarer à TRACFIN toute opération relative à une somme suspectée de provenir
+// d'une infraction ou de financer le terrorisme. La déclaration se fait avant
+// l'exécution de l'opération, ou sans délai si elle a déjà été réalisée (L.561-16).
 //
 // Klaris connaît déjà tout ce que TRACFIN demande : identité du déclaré,
 // indices ayant déclenché le soupçon (algo_log.triggers), pièces, screening.

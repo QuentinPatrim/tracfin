@@ -107,9 +107,9 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   return NextResponse.json({ id: rows[0].id });
 }
 
-// DELETE = archive (soft-delete). Obligation de conservation 5 ans (CMF L.561-12-1) :
+// DELETE = archive (soft-delete). Obligation de conservation 5 ans (CMF L.561-12) :
 // on ne peut PAS supprimer physiquement un dossier dont le KYC a été reçu — les pièces
-// et le verdict sont des preuves opposables à fournir en contrôle DGCCRF.
+// et le verdict sont des éléments horodatés à présenter en cas de contrôle DGCCRF.
 // Le nettoyage réel (created_at + 5 ans) est fait par un job séparé.
 export async function DELETE(req: Request, { params }: RouteParams) {
   const scope = await getScope();
