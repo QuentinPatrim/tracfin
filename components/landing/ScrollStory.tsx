@@ -349,8 +349,14 @@ export default function ScrollStory({
             <ol className="st-caps">
               {CAPTIONS.map((c, i) => (
                 <li key={c.title} ref={(el) => { capRefs.current[i] = el; }} className="st-cap">
-                  <span className="st-cap__n kl-display" aria-hidden="true">{i + 1}</span>
+                  {/* « 2/4 » : on sait toujours où l'on en est, et que la séquence a une fin. */}
+                  <span className="st-cap__n kl-display" aria-hidden="true">
+                    {i + 1}<span className="st-cap__of">/{CAPTIONS.length}</span>
+                  </span>
                   <h2 className="kl-display st-cap__t">{c.title}</h2>
+                  {i < CAPTIONS.length - 1 && (
+                    <a href="#vigilance" className="st-cap__skip">Passer<span className="st-cap__skip-long"> la présentation</span></a>
+                  )}
                   <p className="st-cap__p">{c.text}</p>
                   {i === CAPTIONS.length - 1 && !isSignedIn && (
                     <button type="button" onClick={onSignUp} className="kl-btn kl-btn--onfield st-cap__cta">
