@@ -36,7 +36,7 @@ const SLIDES: Slide[] = [
   {
     id: "report",
     step: "03",
-    title: "Attestation PDF conforme, prête en un clic",
+    title: "Attestation PDF horodatée, prête en un clic",
     Component: ReportMockup,
     variant: "pdf",
   },

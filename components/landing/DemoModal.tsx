@@ -31,35 +31,35 @@ const STEPS: Step[] = [
   {
     num: "01",
     title: "Vous créez le dossier de Claire",
-    caption: "5 champs. 8 secondes. Le dossier est créé, le lien KYC est généré et prêt à partir.",
+    caption: "Quelques champs suffisent. Le dossier est créé, le lien KYC est généré et prêt à partir.",
     durationMs: 6500,
     Mockup: Step1_Create,
   },
   {
     num: "02",
     title: "Le lien KYC part chez Claire",
-    caption: "Email, SMS ou WhatsApp — Claire n'a aucune app à installer, aucun compte à créer.",
+    caption: "E-mail ou WhatsApp — Claire n'a aucune app à installer, aucun compte à créer.",
     durationMs: 5500,
     Mockup: Step2_Send,
   },
   {
     num: "03",
     title: "Claire remplit sur son téléphone",
-    caption: "82 % des clients finaux utilisent leur mobile. Le formulaire est pensé pour eux.",
+    caption: "Le formulaire est conçu d'abord pour le téléphone : Claire le remplit sans rien installer.",
     durationMs: 7500,
     Mockup: Step3_Mobile,
   },
   {
     num: "04",
     title: "Klaris analyse et score",
-    caption: "L'algorithme Klaris v2 évalue 4 niveaux de vigilance selon le CMF. Verdict en quelques secondes.",
+    caption: "Le moteur Klaris v2 classe le dossier sur 4 niveaux Klaris, fondés sur le CMF. Verdict en quelques secondes.",
     durationMs: 6500,
     Mockup: Step4_Score,
   },
   {
     num: "05",
     title: "L'attestation est prête",
-    caption: "PDF horodaté, signé SHA-256, opposable en cas de contrôle DGCCRF, ACPR ou Ordre.",
+    caption: "PDF horodaté, avec empreinte SHA-256, à présenter en cas de contrôle.",
     durationMs: 6000,
     Mockup: Step5_Attestation,
   },
@@ -938,7 +938,7 @@ function Step4_Score({ active }: { active: boolean }) {
     { icon: ShieldCheck, label: "Profil PPE", sub: "Aucune exposition politique" },
   ];
 
-  // 4 niveaux dans l'ordre du CMF — l'algorithme va "balayer" pour choisir
+  // 4 niveaux Klaris (fondés sur le CMF) — l'algorithme va "balayer" pour choisir
   const niveaux = [
     {
       key: "standard",
@@ -951,7 +951,7 @@ function Step4_Score({ active }: { active: boolean }) {
     {
       key: "renforcee",
       label: "Vigilance renforcée",
-      ref: "L.561-10",
+      ref: "L.561-10 et L.561-10-1",
       color: "#fb923c",
       bgGlow: "rgba(251,146,60,0.10)",
       action: "Justificatifs additionnels requis.",
@@ -967,10 +967,10 @@ function Step4_Score({ active }: { active: boolean }) {
     {
       key: "interdiction",
       label: "Interdiction & déclaration",
-      ref: "L.561-15 + Règl. (UE) 2024/1624",
+      ref: "L.562-4 (gel des avoirs) · L.561-8",
       color: "#7c3aed",
       bgGlow: "rgba(124,58,237,0.12)",
-      action: "Refus + déclaration TRACFIN sous 48h.",
+      action: "Refus. Déclaration à TRACFIN avant l'exécution de l'opération.",
     },
   ];
 
@@ -1046,7 +1046,7 @@ function Step4_Score({ active }: { active: boolean }) {
 
         {/* Section décision 4 niveaux */}
         <div className="text-[9px] uppercase tracking-widest text-white/45 font-semibold mt-1 flex items-center gap-1.5">
-          <span>Décision · 4 niveaux CMF</span>
+          <span>Décision · 4 niveaux Klaris, fondés sur le CMF</span>
           {phase >= 4 && <CheckCircle2 width={10} height={10} className="text-emerald-400 ml-auto" />}
         </div>
 
@@ -1240,7 +1240,7 @@ function Step5_Attestation({ active }: { active: boolean }) {
         <div className="text-[11px] uppercase tracking-widest text-white/40">Sortie finale</div>
         <div className="text-[15px] font-bold text-white leading-tight">Attestation prête.</div>
         <div className="text-[11.5px] text-white/55 leading-relaxed">
-          PDF horodaté, hash SHA-256, archivé 5 ans. Opposable en cas de contrôle.
+          PDF horodaté, empreinte SHA-256, archivé 5 ans. À présenter en cas de contrôle.
         </div>
       </div>
 
@@ -1376,7 +1376,7 @@ function Step5_Attestation({ active }: { active: boolean }) {
               <span className="font-mono text-slate-700 ml-auto">{hashTyped || "·"}</span>
             </div>
 
-            {/* Stamp "Certifié" qui s'applique en bas-droit du PDF */}
+            {/* Tampon « Horodaté » qui s'applique en bas-droit du PDF */}
             {hashTyped.length >= 5 && (
               <div
                 className="absolute top-1/2 right-3 pointer-events-none"
@@ -1395,7 +1395,7 @@ function Step5_Attestation({ active }: { active: boolean }) {
                 >
                   <BadgeCheck width={11} height={11} style={{ color: "#7c3aed" }} />
                   <span className="text-[8px] font-bold uppercase tracking-[0.18em]" style={{ color: "#7c3aed" }}>
-                    Certifié
+                    Horodaté
                   </span>
                 </div>
               </div>

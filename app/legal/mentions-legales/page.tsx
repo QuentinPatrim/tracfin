@@ -60,8 +60,9 @@ export default function MentionsLegalesPage() {
 
       <Section title="Hébergement des données utilisateurs">
         <P>
-          Les données traitées par le Service (comptes, dossiers, pièces justificatives KYC) sont
-          hébergées exclusivement au sein de l'Union Européenne par les prestataires suivants :
+          Les dossiers et les pièces justificatives KYC traités par le Service sont hébergés au
+          sein de l'Union Européenne par les prestataires suivants. Les données de compte (e-mail,
+          nom) sont traitées par Clerk Inc., société américaine (voir la politique de confidentialité).
         </P>
         {HEBERGEURS_DONNEES.map((h) => (
           <div key={h.nom} className="rounded-xl p-4 my-3 bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)]">

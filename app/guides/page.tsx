@@ -31,9 +31,9 @@ const GUIDES: GuideMeta[] = [
   {
     href: "/guides/decret-tracfin-2026",
     tag: "Réglementation",
-    title: "Décret TRACFIN du 24 avril 2026 : ce qui change pour les agences",
+    title: "Décret n° 2026-310 du 24 avril 2026 : la formation LCB-FT, ce qui change pour les agences",
     excerpt:
-      "Le décret renforce l'obligation de formation LCB-FT (transaction, gestion, syndic). Obligations concrètes, preuves à conserver, sanctions DGCCRF.",
+      "Le décret précise l'obligation de formation LCB-FT de tous les professionnels assujettis, dont les agents immobiliers. Ce que dit le texte, ce qu'il faut conserver, qui sanctionne.",
   },
 ];
 

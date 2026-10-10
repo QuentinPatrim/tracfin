@@ -20,10 +20,11 @@ export default function ConfidentialitePage() {
       />
 
       <Callout tone="info" title="L'essentiel en 30 secondes">
-        Klaris stocke ses données <Strong>exclusivement dans l'Union Européenne</Strong> (Francfort
-        & Paris). Nous ne consultons jamais le contenu des dossiers KYC de nos utilisateurs sauf
+        Les fiches et les pièces KYC sont hébergées <Strong>dans l'Union Européenne</Strong> (Francfort
+        & Paris). Les données de compte (e-mail, nom) passent par Clerk, société américaine (voir
+        section 6). Nous ne consultons jamais le contenu des dossiers KYC de nos utilisateurs sauf
         obligation judiciaire. Les données KYC sont conservées <Strong>5 ans</Strong> conformément
-        à l'art. L.561-12-1 du Code monétaire et financier — cette obligation prime sur le droit
+        à l'art. L.561-12 du Code monétaire et financier — cette obligation prime sur le droit
         à l'effacement.
       </Callout>
 
@@ -119,7 +120,7 @@ export default function ConfidentialitePage() {
           </div>
         ))}
         <Callout tone="legal" title="⚖️ Conservation 5 ans des données KYC — explication">
-          L'article L.561-12-1 du Code monétaire et financier impose aux professionnels assujettis
+          L'article L.561-12 du Code monétaire et financier impose aux professionnels assujettis
           à la LCB-FT de conserver les documents d'identification, les pièces justificatives et
           les analyses de risque pendant <Strong>5 années à compter de la fin de la relation
           d'affaires</Strong>. Cette obligation légale prime sur le droit à l'effacement prévu à
@@ -164,8 +165,10 @@ export default function ConfidentialitePage() {
           sont hébergées <Strong>au sein de l'Union Européenne</Strong> — Francfort et Paris.
         </P>
         <P>
-          Seul un sous-traitant a son siège hors UE : <Strong>Clerk Inc.</Strong> (États-Unis),
-          que nous utilisons pour l'authentification. Le transfert est encadré par les{" "}
+          Trois de nos sous-traitants sont des sociétés américaines : <Strong>Clerk Inc.</Strong>,
+          Neon Inc. et Vercel Inc. Neon et Vercel traitent les données depuis l'Union européenne
+          (localisations indiquées en section 5). Clerk, que nous utilisons pour l'authentification,
+          traite les données de compte aux États-Unis. Ce transfert est encadré par les{" "}
           <Strong>Clauses Contractuelles Types</Strong> de la Commission européenne (décision
           2021/914), complétées par les engagements du Data Privacy Framework (décision
           d'adéquation 2023/1795 du 10 juillet 2023). Les données transférées sont strictement

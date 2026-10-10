@@ -44,7 +44,7 @@ export const HEBERGEUR_SITE = {
 } as const;
 
 /* ============================================================
-   HÉBERGEURS DES DONNÉES (le cœur de la souveraineté Klaris)
+   HÉBERGEURS DES DONNÉES (hébergement en Union européenne)
    ============================================================ */
 export const HEBERGEURS_DONNEES = [
   {
@@ -62,7 +62,7 @@ export const HEBERGEURS_DONNEES = [
     region: "🇫🇷 Paris, France (région fr-par)",
     adresse: "8 rue de la Ville l'Évêque, 75008 Paris, France",
     site: "https://www.scaleway.com",
-    certifications: "ISO 27001, ISO 27017, ISO 27018, HDS, SOC 2, hébergeur français souverain",
+    certifications: "ISO 27001, HDS",
   },
 ] as const;
 
@@ -84,7 +84,7 @@ export const SOUS_TRAITANTS = [
     finalite: "Hébergement de la base de données PostgreSQL",
     donnees: "Toutes les données structurées du service (hors fichiers)",
     localisation: "🇩🇪 Francfort, Allemagne (UE)",
-    duree: "Pendant toute la durée du compte + 5 ans après dernier dossier KYC (obligation L.561-12-1 CMF)",
+    duree: "Pendant toute la durée du compte + 5 ans après dernier dossier KYC (obligation L.561-12 CMF)",
     site: "https://neon.tech",
   },
   {
@@ -92,7 +92,7 @@ export const SOUS_TRAITANTS = [
     finalite: "Stockage des pièces justificatives KYC (CNI, justificatifs de domicile, etc.)",
     donnees: "Fichiers téléversés par les clients finaux dans le formulaire KYC",
     localisation: "🇫🇷 Paris, France (UE)",
-    duree: "5 ans après la fin de la relation d'affaires (obligation L.561-12-1 CMF)",
+    duree: "5 ans après la fin de la relation d'affaires (obligation L.561-12 CMF)",
     site: "https://www.scaleway.com",
   },
   {
@@ -126,7 +126,7 @@ export const SOUS_TRAITANTS_PREVUS = [
     finalite: "Criblage du client contre les listes de sanctions et de PPE (DGT, UE, ONU, OFAC…)",
     donnees: "Nom, date de naissance, nationalité du client transmis pour interrogation.",
     localisation: "🇩🇪 Berlin, Allemagne (UE)",
-    duree: "Résultat conservé par Klaris 5 ans (L.561-12-1 CMF).",
+    duree: "Résultat conservé par Klaris 5 ans (L.561-12 CMF).",
     site: "https://www.opensanctions.org",
   },
   {
@@ -134,7 +134,7 @@ export const SOUS_TRAITANTS_PREVUS = [
     finalite: "Récupération RNE/INPI pour pré-remplir le KYC des personnes morales",
     donnees: "Numéro SIREN transmis ; en retour, données publiques de l'entreprise.",
     localisation: "🇫🇷 France (UE)",
-    duree: "Snapshot conservé dans le dossier 5 ans (L.561-12-1 CMF).",
+    duree: "Snapshot conservé dans le dossier 5 ans (L.561-12 CMF).",
     site: "https://www.pappers.fr",
   },
   {
@@ -166,7 +166,7 @@ export const CONSERVATION: readonly ConservationEntry[] = [
   {
     categorie: "Données KYC des clients finaux (identité, pièces, scoring, attestations)",
     duree: "5 ans après la fin de la relation d'affaires",
-    base: "Obligation légale — art. L.561-12-1 du Code monétaire et financier (LCB-FT). Cette durée prime sur le droit à l'effacement.",
+    base: "Obligation légale — art. L.561-12 du Code monétaire et financier (LCB-FT). Cette durée prime sur le droit à l'effacement.",
     important: true,
   },
   {

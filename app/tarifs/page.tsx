@@ -443,7 +443,7 @@ export default function TarifsPage() {
             />
             <FaqItem
               q="Mes données sont-elles vraiment sécurisées ?"
-              a="Oui. Toutes les données sont hébergées en Europe (Scaleway Paris + Neon Frankfurt), chiffrées au repos (AES-256) et en transit (TLS 1.3). Conforme RGPD. Voir la page /securite pour le détail des certifications."
+              a="Les fiches et les pièces de vos clients sont hébergées dans l'Union européenne (Scaleway Paris + Neon Francfort), chiffrées au repos (AES-256) et en transit (TLS 1.3). Vos données de compte (e-mail, nom) passent par Clerk, société américaine. Conforme RGPD. Voir la page /securite pour le détail des certifications."
             />
             <FaqItem
               q="Comment fonctionne la limite de 15 dossiers du plan Pro ?"

@@ -71,9 +71,9 @@ export default function CGUPage() {
           <LI>Créer des dossiers d'identification client (KYC) via un formulaire structuré</LI>
           <LI>Transmettre un lien unique à son client pour qu'il complète sa fiche en autonomie</LI>
           <LI>Obtenir un score de risque LCB-FT automatisé selon l'algorithme propriétaire Klaris v2</LI>
-          <LI>Générer des attestations et fiches KYC au format PDF, signées et horodatées</LI>
+          <LI>Générer des attestations et fiches KYC au format PDF, horodatées, avec empreinte SHA-256</LI>
           <LI>Conserver les pièces justificatives au sein de l'Union Européenne</LI>
-          <LI>Bénéficier d'un guide pédagogique sur la LCB-FT et de liens vers les outils officiels (ERMES TRACFIN, Open Sanctions)</LI>
+          <LI>Bénéficier d'un guide pédagogique sur la LCB-FT et de liens vers ERMES (plateforme de TRACFIN) et vers Open Sanctions (outil de criblage)</LI>
         </List>
       </Section>
 
@@ -100,7 +100,7 @@ export default function CGUPage() {
           <LI>Utiliser le Service conformément à sa destination et aux lois applicables</LI>
           <LI>Ne pas tenter de contourner les mécanismes de sécurité, ni d'accéder à des données qui ne lui appartiennent pas</LI>
           <LI>Ne pas utiliser le Service pour des finalités illicites, frauduleuses, ou portant atteinte aux droits de tiers</LI>
-          <LI>Conserver les données KYC de ses clients pendant <Strong>5 ans après la fin de la relation d'affaires</Strong> (art. L.561-12-1 CMF)</LI>
+          <LI>Conserver les données KYC de ses clients pendant <Strong>5 ans après la fin de la relation d'affaires</Strong> (art. L.561-12 CMF)</LI>
           <LI>Informer ses clients finaux de l'utilisation de Klaris dans son traitement (information RGPD à fournir au moment de la collecte)</LI>
         </List>
       </Section>

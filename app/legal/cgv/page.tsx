@@ -120,7 +120,7 @@ export default function CGVPage() {
         <List>
           <LI>L'accès aux fonctionnalités de création de nouveaux dossiers est immédiatement suspendu</LI>
           <LI>Le Client dispose de <Strong>30 jours</Strong> pour exporter ses dossiers existants au format PDF + ZIP</LI>
-          <LI>Au-delà des 30 jours, les données du compte sont supprimées <Strong>à l'exception des données KYC</Strong> qui restent conservées pendant 5 ans conformément à l'art. L.561-12-1 CMF</LI>
+          <LI>Au-delà des 30 jours, les données du compte sont supprimées <Strong>à l'exception des données KYC</Strong> qui restent conservées pendant 5 ans conformément à l'art. L.561-12 CMF</LI>
         </List>
         <Callout tone="legal" title="Conservation 5 ans des données KYC">
           La résiliation de l'abonnement Klaris ne libère pas le Client de son obligation légale

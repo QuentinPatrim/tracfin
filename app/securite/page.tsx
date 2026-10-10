@@ -19,7 +19,7 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 export const metadata: Metadata = {
   title: "Sécurité & cadre réglementaire — Klaris",
   description:
-    "Statut juridique de Klaris, conformité RGPD, certifications de la chaîne de sous-traitance, opposabilité de l'attestation LCB-FT. Réponses factuelles à toutes les questions de conformité.",
+    "Statut juridique de Klaris, conformité RGPD, certifications de la chaîne de sous-traitance, portée de l'attestation LCB-FT. Réponses factuelles à toutes les questions de conformité.",
 };
 
 export default function SecuritePage() {
@@ -104,9 +104,9 @@ export default function SecuritePage() {
               </div>
               <ul className="space-y-2.5 text-[13.5px] text-[color:var(--lp-text-3)] leading-relaxed">
                 <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">L'agent immobilier</strong> (votre métier) — DGCCRF</span></li>
-                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">Le notaire</strong> — Conseil supérieur du notariat</span></li>
-                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">La banque</strong> — ACPR / Banque de France</span></li>
-                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">L'expert-comptable</strong> — Ordre / DGCCRF</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">Le notaire</strong> — chambres des notaires</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">La banque</strong> — ACPR</span></li>
+                <li className="flex gap-2"><span className="text-[color:var(--lp-success)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">L'expert-comptable</strong> — Ordre des experts-comptables</span></li>
               </ul>
               <div className="mt-4 pt-4 border-t border-[color:var(--lp-border-1)] text-[12px] text-[color:var(--lp-text-4)] leading-relaxed">
                 Ces professionnels doivent eux-mêmes appliquer L.561-1 et s. CMF, déclarer
@@ -126,7 +126,7 @@ export default function SecuritePage() {
                 <li className="flex gap-2"><span className="text-[color:var(--lp-accent-text)] mt-0.5">▸</span> <span><strong className="text-[color:var(--lp-text)]">Non-assujetti LCB-FT</strong> — hors champ L.561-2 CMF</span></li>
               </ul>
               <div className="mt-4 pt-4 border-t border-[color:var(--lp-border-1)] text-[12px] text-[color:var(--lp-text-4)] leading-relaxed">
-                Aucun texte (CMF, Décret 2018-284, lignes directrices DGCCRF) n'encadre
+                Aucun texte (CMF, Décret 2018-284, lignes directrices DGCCRF–Tracfin) n'encadre
                 ou ne certifie les éditeurs RegTech. Aucun de nos concurrents
                 (AML Factory, Notilus, MyChoiseTech…) n'a d'agrément non plus.
               </div>
@@ -140,7 +140,7 @@ export default function SecuritePage() {
           <H2>Sur quoi repose vraiment la crédibilité de Klaris ?</H2>
           <P className="mt-3 max-w-3xl">
             À défaut d'agrément (qui n'existe pas), notre crédibilité juridique repose
-            sur cinq piliers concrets, vérifiables et opposables.
+            sur six piliers concrets et vérifiables.
           </P>
 
           <div className="grid md:grid-cols-2 gap-3 mt-8">
@@ -148,7 +148,7 @@ export default function SecuritePage() {
               n="01"
               icon={ScrollText}
               title="Sources légales citées dans l'app"
-              text="Chaque verdict d'attestation cite les articles précis : CMF L.561-1 à L.561-22, Décret 2018-284, lignes directrices DGCCRF 2023. Lors d'un contrôle, vos décisions sont rattachables au texte exact qui les fonde."
+              text="Chaque attestation cite ses références : articles L.561-1 et suivants du Code monétaire et financier, et lignes directrices conjointes DGCCRF–Tracfin pour le secteur immobilier (6 novembre 2018). Lors d'un contrôle, vos décisions sont rattachables aux textes qui les fondent."
             />
             <Pillar
               n="02"
@@ -160,13 +160,13 @@ export default function SecuritePage() {
               n="03"
               icon={Lock}
               title="Chaîne d'hébergement certifiée"
-              text="Données structurées hébergées par Neon (SOC 2 Type II, ISO 27001). Pièces justificatives par Scaleway France (ISO 27001/27017/27018, HDS, SOC 2). Chiffrement AES-256 au repos, TLS 1.3 en transit."
+              text="Données structurées hébergées par Neon (SOC 2 Type II, ISO 27001). Pièces justificatives par Scaleway France (ISO 27001, HDS). Chiffrement AES-256 au repos, TLS 1.3 en transit."
             />
             <Pillar
               n="04"
               icon={FileCheck}
-              title="Conservation conforme L.561-12-1 CMF"
-              text="Conservation des KYC 5 ans à compter de la fin de la relation d'affaires, comme la loi vous l'impose. Klaris vous garantit la disponibilité de la preuve en cas de contrôle DGCCRF, jusqu'au délai légal."
+              title="Conservation 5 ans (L.561-12 CMF)"
+              text="Conservation des KYC 5 ans à compter de la fin de la relation d'affaires, comme la loi vous l'impose. Klaris vous aide à garder ces pièces disponibles en cas de contrôle DGCCRF, jusqu'au terme légal."
             />
             <Pillar
               n="05"
@@ -242,9 +242,9 @@ export default function SecuritePage() {
               items={[
                 "Conformité RGPD documentée",
                 "DPA disponible sur demande",
-                "Hébergement souverain (Paris + Francfort)",
-                "Algorithme versionné & opposable",
-                "Sous-traitants certifiés SOC 2 / ISO 27001",
+                "Hébergement en Union européenne (Paris + Francfort)",
+                "Algorithme versionné & traçable",
+                "Hébergeurs des données certifiés ISO 27001 (Neon, Scaleway)",
               ]}
             />
             <Phase
@@ -296,16 +296,16 @@ export default function SecuritePage() {
             </FAQ>
             <FAQ q="Quelle est la base légale de l'attestation Klaris ?">
               L'attestation est délivrée sur la base de l'analyse algorithmique Klaris,
-              appliquant les articles L.561-1 et s. du Code monétaire et financier, le
-              Décret 2018-284, et les lignes directrices DGCCRF 2023 pour le secteur
-              immobilier. Elle est <strong>opposable</strong> mais{" "}
+              appliquant les articles L.561-1 et suivants du Code monétaire et financier et
+              les lignes directrices conjointes DGCCRF–Tracfin pour le secteur immobilier
+              (6 novembre 2018). Elle <strong>documente vos diligences</strong> mais{" "}
               <strong>ne se substitue pas</strong> à votre analyse personnelle — vous restez
               le décideur final.
             </FAQ>
             <FAQ q="Vos données sont-elles certifiées ISO 27001 ?">
               L'infrastructure qui héberge vos données l'est : Neon (base PostgreSQL) est
-              certifié SOC 2 Type II et ISO 27001, Scaleway (pièces) est certifié ISO 27001,
-              ISO 27017, ISO 27018 et HDS. Klaris hérite par contrat de ce niveau de sécurité
+              certifié SOC 2 Type II et ISO 27001, Scaleway (pièces) est certifié ISO 27001
+              et HDS. Klaris hérite par contrat de ce niveau de sécurité
               (DPA art. 28 RGPD). Klaris lui-même n'est pas (encore) certifié ISO 27001 en
               tant qu'éditeur — c'est une trajectoire visée lorsque le volume de clients
               enterprise le justifiera.
@@ -316,13 +316,14 @@ export default function SecuritePage() {
               nos sous-traitants sont tous listés publiquement (Vercel, Neon, Scaleway, Clerk,
               Stripe), et les droits d'accès / rectification / effacement sont exerçables
               par e-mail. La conservation 5 ans des données KYC découle directement de
-              l'art. L.561-12-1 CMF (obligation légale qui prime sur le droit à l'effacement).
+              l'art. L.561-12 CMF (obligation légale qui prime sur le droit à l'effacement).
             </FAQ>
             <FAQ q="Et en cas de contrôle DGCCRF chez moi ?">
-              L'export ZIP (attestation PDF + fiche KYC PDF + toutes les pièces) couvre
-              l'intégralité de ce que la DGCCRF peut vous demander : identité du client,
-              analyse de risque motivée, pièces justificatives, hash SHA-256 d'intégrité,
-              et conservation 5 ans documentée. Vous présentez ce ZIP, vous êtes en règle.
+              L'export ZIP (attestation PDF + fiche KYC PDF + toutes les pièces) rassemble
+              les éléments du dossier client : identité, analyse de risque motivée, pièces
+              justificatives, empreinte SHA-256 d'intégrité, et conservation 5 ans documentée.
+              Un contrôle porte aussi sur votre évaluation des risques, vos procédures internes
+              et la formation de vos équipes : le ZIP ne les remplace pas.
             </FAQ>
             <FAQ q="Que se passe-t-il en cas de faille de sécurité ?">
               Notification CNIL sous 72h (art. 33 RGPD), notification individuelle des
@@ -363,8 +364,8 @@ export default function SecuritePage() {
                   Si un éditeur RegTech vous affirme être « certifié TRACFIN », « agréé
                   DGCCRF » ou « approuvé ACPR », c'est <strong>factuellement faux</strong>{" "}
                   — ces certifications n'existent pas pour les éditeurs. Une telle
-                  affirmation relève de la pratique commerciale trompeuse (art. L.121-1 du
-                  Code de la consommation, 2 ans d'emprisonnement et 300 000 € d'amende).
+                  affirmation relève de la pratique commerciale trompeuse (art. L.121-2 et L.132-2 du
+                  Code de la consommation : 2 ans d'emprisonnement et 300 000 € d'amende).
                   Chez Klaris, nous préférons la précision juridique à la promesse
                   marketing creuse.
                 </p>

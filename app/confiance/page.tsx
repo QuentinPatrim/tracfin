@@ -1,4 +1,4 @@
-// app/confiance/page.tsx — Page "Confiance & Souveraineté" (argument commercial fort)
+// app/confiance/page.tsx — Page "Nos engagements" (confiance & hébergement en Union européenne)
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -12,8 +12,8 @@ import KlarisLogo from "@/components/ui/KlarisLogo";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export const metadata: Metadata = {
-  title: "Confiance & souveraineté — Klaris",
-  description: "Comment Klaris protège vos données : hébergement souverain UE (Francfort + Paris), chiffrement, accès admin minimal, conformité RGPD et LCB-FT.",
+  title: "Nos engagements — Klaris",
+  description: "Comment Klaris protège vos données : hébergement en Union européenne (Francfort + Paris), chiffrement, accès admin minimal, conformité RGPD et LCB-FT.",
 };
 
 export default function ConfiancePage() {
@@ -60,7 +60,7 @@ export default function ConfiancePage() {
         <section className="max-w-6xl mx-auto px-6 pt-16 md:pt-24 pb-12">
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--lp-surface-2)] border border-[color:var(--lp-border-2)] text-[11px] uppercase tracking-widest text-[color:var(--lp-text-3)] mb-6">
-              <span>🇪🇺</span> <span>Souveraineté · Transparence · Conformité</span>
+              <span>🇪🇺</span> <span>Hébergement en Union européenne · Transparence</span>
             </div>
             <h1
               className="text-[44px] md:text-[60px] leading-[1.02] font-bold tracking-tight max-w-4xl mx-auto"
@@ -83,7 +83,7 @@ export default function ConfiancePage() {
           {/* Trois piliers */}
           <div className="grid sm:grid-cols-3 gap-4 mt-14">
             {[
-              { icon: MapPin, title: "100% Union Européenne", text: "Vos données ne quittent jamais le sol européen. Postgres en Allemagne, fichiers en France." },
+              { icon: MapPin, title: "Hébergé en Union européenne", text: "Les fiches et les pièces de vos clients sont hébergées dans l'Union européenne : base de données en Allemagne, fichiers en France. Vos données de compte (e-mail, nom) passent par Clerk, société américaine." },
               { icon: Lock, title: "Chiffré de bout en bout", text: "TLS 1.3 en transit, AES-256 au repos. Aucun accès en clair, même par nous." },
               { icon: EyeOff, title: "Accès admin minimal", text: "Nous ne consultons jamais vos dossiers clients sauf demande explicite ou obligation judiciaire." },
             ].map((p) => (
@@ -113,8 +113,8 @@ export default function ConfiancePage() {
           <Eyebrow>Cartographie des données</Eyebrow>
           <H2>Où vivent exactement vos données ?</H2>
           <P className="mt-3 max-w-3xl">
-            La souveraineté ne se déclare pas, elle se prouve. Voici la liste précise et publique
-            des infrastructures qui hébergent vos données — vous pouvez vérifier chacune.
+            Voici la liste précise et publique des infrastructures qui hébergent vos données —
+            vous pouvez vérifier chacune.
           </P>
 
           <div className="grid md:grid-cols-2 gap-4 mt-8">
@@ -178,8 +178,8 @@ export default function ConfiancePage() {
             />
             <Commitment
               icon={MapPin}
-              title="Aucun transfert hors UE des données KYC"
-              text="Vos dossiers et pièces ne quittent jamais l'Union Européenne. Seul Clerk (auth) est aux États-Unis sous Clauses Contractuelles Types, et ne traite que vos identifiants de session — jamais les KYC."
+              title="Fiches et pièces hébergées dans l'Union européenne"
+              text="Les fiches et les pièces de vos clients sont hébergées dans l'Union européenne (Francfort et Paris). Vos données de compte (e-mail, nom) sont traitées par Clerk, société américaine, sous Clauses Contractuelles Types — Clerk ne traite pas les KYC. Neon Inc. et Vercel Inc. sont également des sociétés américaines : leur rôle et leur localisation figurent dans la liste ci-dessous."
             />
             <Commitment
               icon={Archive}
@@ -188,8 +188,8 @@ export default function ConfiancePage() {
             />
             <Commitment
               icon={Scale}
-              title="Conservation 5 ans = votre garantie"
-              text="L'art. L.561-12-1 du CMF nous oblige à conserver les KYC 5 ans après la fin de la relation. C'est aussi votre meilleure protection en cas de contrôle de votre autorité de tutelle."
+              title="Conservation 5 ans"
+              text="L'art. L.561-12 du CMF vous impose, en tant que professionnel assujetti, de conserver les documents KYC 5 ans après la fin de la relation d'affaires. Klaris les garde disponibles pendant cette durée, pour le jour où votre autorité de contrôle vous les demande."
             />
             <Commitment
               icon={FileText}
