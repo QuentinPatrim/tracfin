@@ -25,6 +25,8 @@ export default function KycPhonePreview() {
       if (e?.data?.type === "klaris-demo-ready") setReady(true);
     };
     window.addEventListener("message", onMsg);
+    // Si l'iframe était prête avant nous, son signal est déjà passé : on le redemande.
+    iframeRef.current?.contentWindow?.postMessage({ type: "klaris-demo-ping" }, "*");
     return () => window.removeEventListener("message", onMsg);
   }, []);
 

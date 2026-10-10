@@ -15,6 +15,9 @@ export default function CookieNotice() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Pas de bandeau dans une page embarquée (aperçu du formulaire client dans le
+    // téléphone de la page d'accueil) : c'est la page hôte qui l'affiche.
+    if (window.self !== window.top) return;
     try {
       const seen = localStorage.getItem(STORAGE_KEY);
       if (seen !== STORAGE_VERSION) {

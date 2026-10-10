@@ -8,7 +8,7 @@ export default function NotFound() {
     <div className="klaris-public min-h-screen flex items-center justify-center p-6">
       <div className="text-center max-w-md">
         <div className="flex justify-center mb-6">
-          <KlarisLogo size={44} />
+          <KlarisLogo size={44} flat />
         </div>
         <div
           className="inline-block px-2.5 py-1 rounded-md text-[10.5px] uppercase tracking-widest mb-5"

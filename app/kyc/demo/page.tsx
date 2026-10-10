@@ -25,10 +25,23 @@ export default function DemoKycPage() {
         document.documentElement.setAttribute("data-theme", e.data.theme);
       }
     };
+    // Le parent peut s'être monté APRÈS nous et avoir raté notre signal « prêt » :
+    // il envoie alors un « ping » auquel on répond. Sans ça, l'aperçu restait bloqué
+    // sur son indicateur de chargement quand l'iframe se chargeait la première.
+    const announce = () => {
+      try { window.parent?.postMessage({ type: "klaris-demo-ready" }, "*"); } catch { /* noop */ }
+    };
+    const onPing = (e: MessageEvent) => {
+      if (e?.data?.type === "klaris-demo-ping") announce();
+    };
     window.addEventListener("message", onMsg);
+    window.addEventListener("message", onPing);
     // Signale au parent (le film) qu'on est prêt à recevoir l'étape + le thème.
-    try { window.parent?.postMessage({ type: "klaris-demo-ready" }, "*"); } catch { /* noop */ }
-    return () => window.removeEventListener("message", onMsg);
+    announce();
+    return () => {
+      window.removeEventListener("message", onMsg);
+      window.removeEventListener("message", onPing);
+    };
   }, []);
 
   return (
