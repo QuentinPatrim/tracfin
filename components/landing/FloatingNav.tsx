@@ -1,5 +1,7 @@
-// components/landing/FloatingNav.tsx — Nav flottante (mobile-first, menu hamburger)
-// Palette « Iris » via tokens --lp-* (clair/sombre) + bascule de thème.
+// components/landing/FloatingNav.tsx — Barre de navigation du site public
+// Identité « Papier & encre » : barre pleine largeur, transparente en haut de page,
+// pleine au défilement. Sur la page d'accueil elle repose sur le champ d'encre du
+// hero (prop over="field") : le texte est clair tant qu'on n'a pas défilé.
 
 "use client";
 
@@ -11,20 +13,19 @@ import { useClerk, useAuth, UserButton } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
-// Démo cinématique chargée à la demande (≈1500 lignes + animations) : exclue du
+// Démo guidée chargée à la demande (≈1500 lignes + animations) : exclue du
 // bundle initial de chaque page publique, tirée seulement à l'ouverture.
 const DemoModal = dynamic(() => import("./DemoModal"), { ssr: false });
 
 const NAV_LINKS = [
-  { href: "/#understand", label: "Comprendre" },
-  { href: "/#features", label: "Fonctionnalités" },
-  { href: "/#how", label: "Comment ça marche" },
+  { href: "/#how", label: "Fonctionnement" },
+  { href: "/#vigilance", label: "Vigilance" },
   { href: "/guides", label: "Guides" },
   { href: "/confiance", label: "Confiance" },
   { href: "/tarifs", label: "Tarifs" },
 ];
 
-export default function FloatingNav() {
+export default function FloatingNav({ over = "paper" }: { over?: "paper" | "field" }) {
   const { openSignIn, openSignUp } = useClerk();
   const { isSignedIn, isLoaded } = useAuth();
   const [scrolled, setScrolled] = useState(false);
@@ -32,26 +33,29 @@ export default function FloatingNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Évènement global "ouvrir la démo" (déclenchable depuis le hero/carrousel)
+  // Évènement global « ouvrir la démo » (déclenchable depuis le hero / le CTA final)
   useEffect(() => {
     const open = () => setDemoOpen(true);
     window.addEventListener("klaris:open-demo", open);
     return () => window.removeEventListener("klaris:open-demo", open);
   }, []);
 
-  // Lock scroll quand menu mobile ouvert
+  // Verrouille le défilement quand le menu mobile est ouvert
   useEffect(() => {
     if (!mobileOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = prev; };
   }, [mobileOpen]);
+
+  const signedIn = isLoaded && isSignedIn;
+  const onField = over === "field" && !scrolled;
 
   return (
     <>
@@ -63,91 +67,71 @@ export default function FloatingNav() {
         />
       )}
 
-      <nav className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] max-w-5xl">
-        <div
-          className="relative flex items-center justify-between px-2.5 sm:px-3 py-2 rounded-full transition-all duration-300"
-          style={{
-            background: scrolled ? "var(--lp-nav-bg-scrolled)" : "var(--lp-nav-bg)",
-            backdropFilter: "blur(24px) saturate(180%)",
-            WebkitBackdropFilter: "blur(24px) saturate(180%)",
-            border: "1px solid var(--lp-nav-border)",
-            boxShadow: scrolled ? "var(--lp-nav-shadow-scrolled)" : "0 1px 0 var(--lp-border-1) inset",
-          }}
-        >
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 pl-1.5 sm:pl-2 pr-2 group">
-            <KlarisLogo size={24} />
-            <span className="text-[14.5px] font-bold tracking-tight" style={{ color: "var(--lp-text)" }}>Klaris</span>
+      <header className="kl-nav" data-solid={scrolled ? "true" : "false"} data-over={over}>
+        <div className="kl-wrap flex items-center justify-between gap-3 h-16">
+          <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Klaris, accueil">
+            <KlarisLogo size={28} flat />
+            <span className="kl-display text-[1.25rem]" style={{ lineHeight: 1 }}>Klaris</span>
           </Link>
 
-          {/* Liens desktop */}
-          <div className="hidden lg:flex items-center gap-0.5">
+          <nav className="hidden lg:flex items-center gap-0.5" aria-label="Navigation principale">
             {NAV_LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-[12.5px] font-medium px-3 py-1.5 rounded-full transition text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)] hover:bg-[var(--lp-surface-2)]"
-              >
+              <Link key={l.href} href={l.href} className="kl-nav__link">
                 {l.label}
               </Link>
             ))}
-          </div>
+          </nav>
 
-          {/* Actions à droite —
-              Le bouton "Connexion" est rendu INCONDITIONNELLEMENT (pas de gate
-              sur isLoaded) : même si Clerk lag ou plante en silence (CSP, réseau,
-              adblock…), l'utilisateur doit toujours avoir un chemin vers la page
-              de connexion. Si déjà connecté, openSignIn redirige vers /dashboard. */}
-          <div className="flex items-center gap-1.5 pr-1">
+          {/* Le bouton « Connexion » est rendu sans attendre Clerk (pas de gate sur
+              isLoaded) : même si Clerk tarde ou échoue en silence (CSP, réseau,
+              bloqueur…), l'utilisateur garde un chemin vers la connexion. */}
+          <div className="flex items-center gap-1">
             <ThemeToggle />
 
-            {(!isLoaded || !isSignedIn) && (
+            {!signedIn && (
               <>
                 <button
+                  type="button"
                   onClick={() => openSignIn({ fallbackRedirectUrl: "/dashboard" })}
-                  className="hidden sm:block text-[12.5px] font-medium px-3 py-1.5 rounded-full transition text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)] hover:bg-[var(--lp-surface-2)]"
+                  className="kl-nav__link hidden sm:block"
                 >
                   Connexion
                 </button>
                 <button
-                  onClick={() => setDemoOpen(true)}
-                  className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-white px-3.5 py-2 rounded-full transition-transform hover:scale-[1.02]"
-                  style={pillStyle}
+                  type="button"
+                  onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}
+                  className={`kl-btn kl-btn--sm ml-1 ${onField ? "kl-btn--onfield" : "kl-btn--primary"}`}
                 >
-                  <Play className="w-3 h-3" fill="currentColor" strokeWidth={0} />
-                  <span className="hidden sm:inline">Voir la démo</span>
-                  <span className="sm:hidden">Démo</span>
+                  <span className="hidden sm:inline">Essayer gratuitement</span>
+                  <span className="sm:hidden">Essai gratuit</span>
                 </button>
               </>
             )}
 
-            {isLoaded && isSignedIn && (
+            {signedIn && (
               <>
                 <Link
                   href="/dashboard"
-                  className="text-[12.5px] font-semibold text-white px-3.5 py-2 rounded-full transition-transform hover:scale-[1.02]"
-                  style={pillStyle}
+                  className={`kl-btn kl-btn--sm ml-1 ${onField ? "kl-btn--onfield" : "kl-btn--primary"}`}
                 >
-                  Dashboard
+                  Tableau de bord
                 </Link>
                 <UserButton />
               </>
             )}
 
-            {/* Bouton menu mobile */}
             <button
+              type="button"
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden ml-0.5 grid place-items-center w-9 h-9 rounded-full transition text-[color:var(--lp-text-2)] hover:bg-[var(--lp-surface-3)]"
-              style={{ background: "var(--lp-surface)", border: "1px solid var(--lp-border-2)" }}
+              className="kl-nav__icon lg:hidden"
               aria-label="Ouvrir le menu"
             >
-              <Menu width={16} height={16} />
+              <Menu width={20} height={20} />
             </button>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Menu mobile plein écran */}
       {mobileOpen && (
         <MobileMenu
           onClose={() => setMobileOpen(false)}
@@ -160,11 +144,6 @@ export default function FloatingNav() {
     </>
   );
 }
-
-const pillStyle: React.CSSProperties = {
-  background: "var(--lp-cta-grad)",
-  boxShadow: "var(--lp-cta-shadow)",
-};
 
 function MobileMenu({
   onClose,
@@ -181,85 +160,58 @@ function MobileMenu({
 }) {
   return (
     <div
-      onClick={onClose}
-      className="fixed inset-0 z-[60] lg:hidden"
-      style={{
-        background: "var(--lp-bg)",
-        backdropFilter: "blur(20px) saturate(180%)",
-        WebkitBackdropFilter: "blur(20px) saturate(180%)",
-      }}
+      className="fixed inset-0 z-[60] lg:hidden flex flex-col"
+      style={{ background: "var(--lp-bg)", color: "var(--lp-text)" }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menu"
     >
-      <div onClick={(e) => e.stopPropagation()} className="h-full flex flex-col">
-        {/* Top bar du menu */}
-        <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: "var(--lp-border-1)" }}>
-          <Link href="/" onClick={onClose} className="flex items-center gap-2">
-            <KlarisLogo size={24} />
-            <span className="text-[14.5px] font-bold tracking-tight" style={{ color: "var(--lp-text)" }}>Klaris</span>
+      <div className="kl-wrap flex items-center justify-between h-16 shrink-0">
+        <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
+          <KlarisLogo size={28} flat />
+          <span className="kl-display text-[1.25rem]" style={{ lineHeight: 1 }}>Klaris</span>
+        </Link>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <button type="button" onClick={onClose} className="kl-nav__icon" aria-label="Fermer le menu">
+            <X width={20} height={20} />
+          </button>
+        </div>
+      </div>
+
+      <nav className="kl-wrap flex-1 pt-6 flex flex-col" aria-label="Navigation principale">
+        {NAV_LINKS.map((l) => (
+          <Link
+            key={l.href}
+            href={l.href}
+            onClick={onClose}
+            className="kl-display py-4 text-[1.75rem] border-b"
+            style={{ borderColor: "var(--lp-border-2)" }}
+          >
+            {l.label}
           </Link>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <button
-              onClick={onClose}
-              className="grid place-items-center w-9 h-9 rounded-full transition text-[color:var(--lp-text-2)]"
-              style={{ background: "var(--lp-surface)", border: "1px solid var(--lp-border-2)" }}
-              aria-label="Fermer"
-            >
-              <X width={16} height={16} />
+        ))}
+      </nav>
+
+      <div className="kl-wrap pb-6 pt-4 flex flex-col gap-3 shrink-0">
+        {!isSignedIn ? (
+          <>
+            <button type="button" onClick={onSignUp} className="kl-btn kl-btn--primary w-full">
+              Essayer 14 jours gratuits
             </button>
-          </div>
-        </div>
-
-        {/* Liens */}
-        <nav className="flex-1 px-4 py-6 flex flex-col gap-1">
-          {NAV_LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={onClose}
-              className="block px-4 py-3.5 rounded-xl text-[15px] font-medium transition text-[color:var(--lp-text-2)] hover:bg-[var(--lp-surface-2)]"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* CTAs en bas */}
-        <div className="p-4 border-t flex flex-col gap-2.5" style={{ borderColor: "var(--lp-border-1)" }}>
-          {!isSignedIn ? (
-            <>
-              <button
-                onClick={onOpenDemo}
-                className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-semibold text-white px-5 py-3.5 rounded-xl"
-                style={pillStyle}
-              >
-                <Play className="w-3.5 h-3.5" fill="currentColor" strokeWidth={0} />
-                Voir la démo
-              </button>
-              <button
-                onClick={onSignUp}
-                className="w-full text-[14px] font-medium px-5 py-3 rounded-xl text-[color:var(--lp-text-2)]"
-                style={{ background: "var(--lp-surface)", border: "1px solid var(--lp-border-2)" }}
-              >
-                Essayer gratuitement
-              </button>
-              <button
-                onClick={onSignIn}
-                className="w-full text-[13px] font-medium px-5 py-2 rounded-xl text-[color:var(--lp-text-4)]"
-              >
-                Déjà un compte ? Se connecter
-              </button>
-            </>
-          ) : (
-            <Link
-              href="/dashboard"
-              onClick={onClose}
-              className="w-full inline-flex items-center justify-center gap-2 text-[14px] font-semibold text-white px-5 py-3.5 rounded-xl"
-              style={pillStyle}
-            >
-              Mon dashboard
-            </Link>
-          )}
-        </div>
+            <button type="button" onClick={onOpenDemo} className="kl-btn kl-btn--ghost w-full">
+              <Play width={13} height={13} fill="currentColor" strokeWidth={0} />
+              Voir la démo guidée
+            </button>
+            <button type="button" onClick={onSignIn} className="py-2 text-[0.95rem]" style={{ color: "var(--lp-text-3)" }}>
+              Déjà un compte ? <span className="kl-link">Se connecter</span>
+            </button>
+          </>
+        ) : (
+          <Link href="/dashboard" onClick={onClose} className="kl-btn kl-btn--primary w-full">
+            Mon tableau de bord
+          </Link>
+        )}
       </div>
     </div>
   );

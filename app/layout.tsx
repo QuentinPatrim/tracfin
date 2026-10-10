@@ -1,5 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Inter, JetBrains_Mono, Bricolage_Grotesque } from 'next/font/google'
 import './globals.css'
 import type { Metadata } from 'next'
 import CookieNotice from '@/components/legal/CookieNotice'
@@ -7,6 +7,15 @@ import CookieNotice from '@/components/legal/CookieNotice'
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap',
+})
+
+// Police de titres du site public (identité « Papier & encre »). Variable :
+// l'axe wdth permet de l'étroitiser légèrement (cf. .kl-display dans globals.css).
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  axes: ['opsz', 'wdth'],
+  variable: '--font-display',
   display: 'swap',
 })
 
@@ -18,7 +27,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://klaris-app.fr'
 const SITE_DESC =
-  'Klaris est la plateforme française de conformité LCB-FT pour les professionnels assujettis. Fiches KYC sécurisées, scoring de risque automatique, conservation 5 ans, attestations opposables. Hébergement souverain UE, conforme RGPD.'
+  'Klaris aide les agences immobilières à tenir leurs dossiers LCB-FT : fiche client remplie en ligne, niveau de vigilance, conservation cinq ans, attestation horodatée. Dossiers hébergés en Union européenne.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -27,7 +36,7 @@ export const metadata: Metadata = {
   applicationName: 'Klaris',
   keywords: [
     'LCB-FT', 'KYC', 'conformité', 'agent immobilier', 'TRACFIN', 'DGCCRF',
-    'attestation de conformité', 'lutte anti-blanchiment', 'vigilance', 'RGPD', 'souveraineté',
+    'attestation', 'lutte anti-blanchiment', 'vigilance', 'RGPD',
   ],
   authors: [{ name: 'Klaris' }],
   creator: 'Klaris',
@@ -60,7 +69,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="fr" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <html lang="fr" className={`${inter.variable} ${jetbrainsMono.variable} ${bricolage.variable}`} suppressHydrationWarning>
         <body>
           {/* Thème public clair/sombre appliqué avant le premier rendu (anti-FOUC).
               Défaut = préférence système ; sinon choix mémorisé. N'affecte que les
@@ -68,7 +77,7 @@ export default function RootLayout({
           <script
             dangerouslySetInnerHTML={{
               __html:
-                "(function(){try{var t=localStorage.getItem('klaris-theme');var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;var r=(t==='light'||t==='dark')?t:(d?'dark':'light');document.documentElement.setAttribute('data-theme',r);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();",
+                "(function(){try{var t=localStorage.getItem('klaris-theme');var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;var r=(t==='light'||t==='dark')?t:(d?'dark':'light');document.documentElement.setAttribute('data-theme',r);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();",
             }}
           />
           {/* Données structurées (SEO / rich results) */}

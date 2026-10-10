@@ -39,12 +39,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       onClick={toggle}
       aria-label={isLight ? "Passer en mode sombre" : "Passer en mode clair"}
       title={isLight ? "Mode sombre" : "Mode clair"}
-      className={`grid place-items-center w-9 h-9 rounded-full transition ${className}`}
-      style={{
-        background: "var(--lp-surface)",
-        border: "1px solid var(--lp-border-2)",
-        color: "var(--lp-text-3)",
-      }}
+      className={`kl-nav__icon ${className}`}
     >
       {/* Avant montage (theme === null) : icône neutre pour éviter le flash */}
       {theme === null ? (

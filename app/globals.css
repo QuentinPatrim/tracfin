@@ -34,167 +34,198 @@ body {
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   SYSTÈME DE THÈME PUBLIC (landing + pages publiques) — palette « Iris »
-   Tokens --lp-* consommés UNIQUEMENT par les pages publiques (.klaris-public).
-   Le dashboard et le KYC n'y touchent pas → aucun impact hors périmètre.
+   SYSTÈME DE THÈME PUBLIC (site + formulaire client) — identité « Papier & encre »
+   Tokens --lp-* consommés UNIQUEMENT par les pages publiques (.klaris-public) et
+   le formulaire client (.kyc-app). Le tableau de bord n'y touche pas.
    Le thème est piloté par data-theme="light|dark" sur <html> (script anti-FOUC
    dans app/layout.tsx). Défaut = préférence système.
+
+   Principes :
+   - un seul accent, le violet Klaris, en aplat (plus de dégradé, plus de verre) ;
+   - fond papier clair par défaut, champs pleins en encre violette pour rythmer ;
+   - les seules autres couleurs sont celles de l'échelle de vigilance (--kl-v1…4),
+     qui portent un sens et ne servent jamais de décor.
+   Les tokens --lp-heading / --lp-accent-grad / --lp-cta-grad restent des
+   « gradients » à une seule couleur : les pages qui les utilisent en
+   background-clip continuent de fonctionner, sans dégradé.
    ════════════════════════════════════════════════════════════════════════ */
 
-/* ---- DARK (défaut) ---- */
+/* ---- CLAIR (identité de référence) ---- */
 :root,
-:root[data-theme="dark"] {
-  --lp-bg: #07080F;
-  --lp-orb-1: rgba(109,94,246,0.20);
-  --lp-orb-2: rgba(236,72,153,0.15);
-
-  --lp-text: #FFFFFF;
-  --lp-text-2: rgba(255,255,255,0.82);
-  --lp-text-3: rgba(255,255,255,0.64);
-  --lp-text-4: rgba(255,255,255,0.46);
-
-  --lp-surface: rgba(255,255,255,0.04);
-  --lp-surface-2: rgba(255,255,255,0.06);
-  --lp-surface-3: rgba(255,255,255,0.09);
-
-  --lp-border-1: rgba(255,255,255,0.06);
-  --lp-border-2: rgba(255,255,255,0.10);
-  --lp-border-3: rgba(255,255,255,0.14);
-
-  --lp-card-bg: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
-  --lp-card-border: rgba(255,255,255,0.09);
-  --lp-card-bg-accent: linear-gradient(180deg, rgba(109,94,246,0.10), rgba(255,255,255,0.02));
-  --lp-card-border-accent: rgba(109,94,246,0.24);
-  --lp-card-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
-
-  --lp-heading: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.72) 100%);
-  --lp-accent-grad: linear-gradient(135deg, #A78BFA 0%, #F0ABFC 100%);
-
-  --lp-accent: #6D5EF6;
-  --lp-accent-2: #EC4899;
-  --lp-accent-3: #14B8A6;
-  --lp-accent-text: #A78BFA;
-  --lp-accent-2-text: #F9A8D4;
-  --lp-accent-3-text: #5EEAD4;
-
-  --lp-cta-grad: linear-gradient(135deg, #6D5EF6, #EC4899);
-  --lp-cta-shadow: 0 1px 0 rgba(255,255,255,0.20) inset, 0 10px 28px rgba(109,94,246,0.35), 0 4px 10px rgba(0,0,0,0.25);
-
-  --lp-icon-bg: linear-gradient(135deg, rgba(109,94,246,0.20), rgba(236,72,153,0.12));
-  --lp-icon-border: rgba(109,94,246,0.28);
-  --lp-icon-color: #C4B5FD;
-  --lp-icon-bg-teal: linear-gradient(135deg, rgba(20,184,166,0.22), rgba(20,184,166,0.06));
-  --lp-icon-border-teal: rgba(20,184,166,0.32);
-  --lp-icon-color-teal: #5EEAD4;
-  --lp-icon-bg-pink: linear-gradient(135deg, rgba(236,72,153,0.22), rgba(236,72,153,0.06));
-  --lp-icon-border-pink: rgba(236,72,153,0.32);
-  --lp-icon-color-pink: #F9A8D4;
-
-  --lp-nav-bg: rgba(255,255,255,0.04);
-  --lp-nav-bg-scrolled: rgba(8,9,16,0.80);
-  --lp-nav-border: rgba(255,255,255,0.09);
-  --lp-nav-shadow-scrolled: 0 12px 32px -8px rgba(109,94,246,0.20), 0 1px 0 rgba(255,255,255,0.08) inset;
-
-  --lp-success: #34D399;
-  --lp-success-bg: rgba(52,211,153,0.15);
-  --lp-success-border: rgba(52,211,153,0.40);
-
-  --lp-danger: #F87171;
-  --lp-danger-bg: rgba(248,113,113,0.12);
-  --lp-danger-border: rgba(248,113,113,0.35);
-
-  --lp-warn: #FBBF24;
-  --lp-warn-bg: rgba(251,191,36,0.12);
-  --lp-warn-border: rgba(251,191,36,0.35);
-
-  /* Champs de formulaire (KYC) */
-  --lp-input-bg: rgba(255,255,255,0.05);
-  --lp-input-border: rgba(255,255,255,0.12);
-
-  --lp-legalref-bg: rgba(236,72,153,0.08);
-  --lp-legalref-border: rgba(236,72,153,0.20);
-  --lp-legalref-text: #F9A8D4;
-}
-
-:root[data-theme="dark"] .klaris-public,
-:root[data-theme="dark"] .kyc-app { color-scheme: dark; }
-
-/* ---- LIGHT ---- */
 :root[data-theme="light"] {
-  --lp-bg: #F7F8FC;
-  --lp-orb-1: rgba(109,94,246,0.10);
-  --lp-orb-2: rgba(236,72,153,0.07);
+  --lp-bg: #F6F5FA;
+  --lp-orb-1: transparent;
+  --lp-orb-2: transparent;
 
-  --lp-text: #14162B;
-  --lp-text-2: #353A52;
-  --lp-text-3: #565C73;
-  --lp-text-4: #828799;
+  --lp-text: #17123A;
+  --lp-text-2: #2E2952;
+  --lp-text-3: #55506F;
+  --lp-text-4: #6F6A8A;
 
-  --lp-surface: rgba(20,22,43,0.035);
-  --lp-surface-2: rgba(20,22,43,0.06);
-  --lp-surface-3: rgba(20,22,43,0.09);
+  --lp-surface: rgba(23,18,58,0.04);
+  --lp-surface-2: rgba(23,18,58,0.07);
+  --lp-surface-3: rgba(23,18,58,0.10);
 
-  --lp-border-1: rgba(20,22,43,0.07);
-  --lp-border-2: rgba(20,22,43,0.11);
-  --lp-border-3: rgba(20,22,43,0.16);
+  --lp-border-1: rgba(23,18,58,0.09);
+  --lp-border-2: rgba(23,18,58,0.15);
+  --lp-border-3: rgba(23,18,58,0.24);
 
   --lp-card-bg: #FFFFFF;
-  --lp-card-border: rgba(20,22,43,0.09);
-  --lp-card-bg-accent: linear-gradient(180deg, rgba(109,94,246,0.07), #FFFFFF);
-  --lp-card-border-accent: rgba(109,94,246,0.30);
-  --lp-card-shadow: 0 1px 2px rgba(20,22,43,0.04), 0 8px 24px -12px rgba(20,22,43,0.12);
+  --lp-card-border: rgba(23,18,58,0.11);
+  --lp-card-bg-accent: #EEEBFC;
+  --lp-card-border-accent: rgba(91,70,224,0.38);
+  --lp-card-shadow: 0 1px 0 rgba(23,18,58,0.04), 0 14px 28px -20px rgba(29,21,82,0.30);
 
-  --lp-heading: linear-gradient(135deg, #14162B 0%, #4B4690 100%);
-  --lp-accent-grad: linear-gradient(135deg, #6D5EF6 0%, #DB2777 100%);
+  --lp-heading: linear-gradient(#17123A, #17123A);
+  --lp-accent-grad: linear-gradient(#4A36C9, #4A36C9);
 
-  --lp-accent: #6D5EF6;
-  --lp-accent-2: #EC4899;
-  --lp-accent-3: #14B8A6;
-  --lp-accent-text: #5B46E0;
-  --lp-accent-2-text: #DB2777;
-  --lp-accent-3-text: #0D9488;
+  --lp-accent: #5B46E0;
+  --lp-accent-2: #5B46E0;
+  --lp-accent-3: #5B46E0;
+  --lp-accent-text: #4A36C9;
+  --lp-accent-2-text: #4A36C9;
+  --lp-accent-3-text: #4A36C9;
 
-  --lp-cta-grad: linear-gradient(135deg, #6D5EF6, #EC4899);
-  --lp-cta-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 26px rgba(109,94,246,0.28), 0 4px 12px rgba(20,22,43,0.12);
+  --lp-cta-grad: linear-gradient(#5B46E0, #5B46E0);
+  --lp-cta-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 10px 20px -10px rgba(60,40,180,0.60);
 
-  --lp-icon-bg: linear-gradient(135deg, rgba(109,94,246,0.12), rgba(236,72,153,0.08));
-  --lp-icon-border: rgba(109,94,246,0.22);
-  --lp-icon-color: #6D5EF6;
-  --lp-icon-bg-teal: linear-gradient(135deg, rgba(20,184,166,0.13), rgba(20,184,166,0.05));
-  --lp-icon-border-teal: rgba(20,184,166,0.26);
-  --lp-icon-color-teal: #0D9488;
-  --lp-icon-bg-pink: linear-gradient(135deg, rgba(236,72,153,0.13), rgba(236,72,153,0.05));
-  --lp-icon-border-pink: rgba(236,72,153,0.24);
-  --lp-icon-color-pink: #DB2777;
+  --lp-icon-bg: #EEEBFC;
+  --lp-icon-border: transparent;
+  --lp-icon-color: #4A36C9;
+  --lp-icon-bg-teal: #EEEBFC;
+  --lp-icon-border-teal: transparent;
+  --lp-icon-color-teal: #4A36C9;
+  --lp-icon-bg-pink: #EEEBFC;
+  --lp-icon-border-pink: transparent;
+  --lp-icon-color-pink: #4A36C9;
 
-  --lp-nav-bg: rgba(255,255,255,0.72);
-  --lp-nav-bg-scrolled: rgba(255,255,255,0.88);
-  --lp-nav-border: rgba(20,22,43,0.10);
-  --lp-nav-shadow-scrolled: 0 12px 32px -10px rgba(20,22,43,0.16), 0 1px 0 rgba(255,255,255,0.60) inset;
+  --lp-nav-bg: rgba(246,245,250,0.92);
+  --lp-nav-bg-scrolled: rgba(246,245,250,0.96);
+  --lp-nav-border: rgba(23,18,58,0.10);
+  --lp-nav-shadow-scrolled: 0 10px 24px -18px rgba(29,21,82,0.45);
 
-  --lp-success: #059669;
-  --lp-success-bg: rgba(5,150,105,0.10);
-  --lp-success-border: rgba(5,150,105,0.30);
+  --lp-success: #177A52;
+  --lp-success-bg: rgba(30,158,106,0.12);
+  --lp-success-border: rgba(30,158,106,0.34);
 
-  --lp-danger: #DC2626;
-  --lp-danger-bg: rgba(220,38,38,0.08);
-  --lp-danger-border: rgba(220,38,38,0.28);
+  --lp-danger: #B42A26;
+  --lp-danger-bg: rgba(197,48,44,0.09);
+  --lp-danger-border: rgba(197,48,44,0.30);
 
-  --lp-warn: #B45309;
-  --lp-warn-bg: rgba(245,158,11,0.10);
-  --lp-warn-border: rgba(245,158,11,0.32);
+  --lp-warn: #8F5A00;
+  --lp-warn-bg: rgba(227,160,8,0.14);
+  --lp-warn-border: rgba(227,160,8,0.40);
 
   /* Champs de formulaire (KYC) */
   --lp-input-bg: #FFFFFF;
-  --lp-input-border: rgba(20,22,43,0.16);
+  --lp-input-border: rgba(23,18,58,0.20);
 
-  --lp-legalref-bg: rgba(236,72,153,0.08);
-  --lp-legalref-border: rgba(236,72,153,0.28);
-  --lp-legalref-text: #BE185D;
+  --lp-legalref-bg: transparent;
+  --lp-legalref-border: rgba(23,18,58,0.18);
+  --lp-legalref-text: #55506F;
+
+  /* ── Tokens propres à la nouvelle identité ── */
+  --kl-field: #1E1657;            /* champ d'encre : hero, bandeaux pleins */
+  --kl-field-2: #2A2070;          /* relief sur champ d'encre */
+  --kl-on-field: #F4F2FF;
+  --kl-on-field-2: rgba(244,242,255,0.76);
+  --kl-on-field-line: rgba(244,242,255,0.18);
+  --kl-sheet: #FFFFFF;            /* feuille de papier (documents) */
+  --kl-sheet-shadow: 0 1px 0 rgba(23,18,58,0.05), 0 30px 60px -30px rgba(10,6,40,0.55), 0 12px 24px -16px rgba(10,6,40,0.35);
+  --kl-v1: #1E9E6A;               /* vigilance standard */
+  --kl-v2: #E3A008;               /* vigilance renforcée */
+  --kl-v3: #DD6B20;               /* examen renforcé */
+  --kl-v4: #C5302C;               /* interdiction */
 }
 
 :root[data-theme="light"] .klaris-public,
 :root[data-theme="light"] .kyc-app { color-scheme: light; }
+
+/* ---- SOMBRE (encre partout) ---- */
+:root[data-theme="dark"] {
+  --lp-bg: #120E2E;
+
+  --lp-text: #F4F2FF;
+  --lp-text-2: rgba(244,242,255,0.88);
+  --lp-text-3: rgba(244,242,255,0.70);
+  --lp-text-4: rgba(244,242,255,0.58);
+
+  --lp-surface: rgba(244,242,255,0.05);
+  --lp-surface-2: rgba(244,242,255,0.08);
+  --lp-surface-3: rgba(244,242,255,0.12);
+
+  --lp-border-1: rgba(244,242,255,0.09);
+  --lp-border-2: rgba(244,242,255,0.15);
+  --lp-border-3: rgba(244,242,255,0.24);
+
+  --lp-card-bg: #1B1642;
+  --lp-card-border: rgba(244,242,255,0.11);
+  --lp-card-bg-accent: #281F66;
+  --lp-card-border-accent: rgba(160,146,255,0.45);
+  --lp-card-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
+
+  --lp-heading: linear-gradient(#F4F2FF, #F4F2FF);
+  --lp-accent-grad: linear-gradient(#B4A8FF, #B4A8FF);
+
+  --lp-accent: #8F7FFF;
+  --lp-accent-2: #8F7FFF;
+  --lp-accent-3: #8F7FFF;
+  --lp-accent-text: #B4A8FF;
+  --lp-accent-2-text: #B4A8FF;
+  --lp-accent-3-text: #B4A8FF;
+
+  --lp-cta-grad: linear-gradient(#6D5EF6, #6D5EF6);
+  --lp-cta-shadow: 0 1px 0 rgba(255,255,255,0.20) inset, 0 10px 22px -10px rgba(0,0,0,0.60);
+
+  --lp-icon-bg: #281F66;
+  --lp-icon-border: transparent;
+  --lp-icon-color: #B4A8FF;
+  --lp-icon-bg-teal: #281F66;
+  --lp-icon-border-teal: transparent;
+  --lp-icon-color-teal: #B4A8FF;
+  --lp-icon-bg-pink: #281F66;
+  --lp-icon-border-pink: transparent;
+  --lp-icon-color-pink: #B4A8FF;
+
+  --lp-nav-bg: rgba(18,14,46,0.90);
+  --lp-nav-bg-scrolled: rgba(18,14,46,0.96);
+  --lp-nav-border: rgba(244,242,255,0.11);
+  --lp-nav-shadow-scrolled: 0 10px 24px -16px rgba(0,0,0,0.70);
+
+  --lp-success: #4FD3A0;
+  --lp-success-bg: rgba(79,211,160,0.14);
+  --lp-success-border: rgba(79,211,160,0.38);
+
+  --lp-danger: #FF8A84;
+  --lp-danger-bg: rgba(255,138,132,0.12);
+  --lp-danger-border: rgba(255,138,132,0.36);
+
+  --lp-warn: #F5C451;
+  --lp-warn-bg: rgba(245,196,81,0.13);
+  --lp-warn-border: rgba(245,196,81,0.36);
+
+  --lp-input-bg: rgba(244,242,255,0.06);
+  --lp-input-border: rgba(244,242,255,0.18);
+
+  --lp-legalref-bg: transparent;
+  --lp-legalref-border: rgba(244,242,255,0.22);
+  --lp-legalref-text: rgba(244,242,255,0.70);
+
+  --kl-field: #1E1657;
+  --kl-field-2: #2A2070;
+  --kl-on-field: #F4F2FF;
+  --kl-on-field-2: rgba(244,242,255,0.76);
+  --kl-on-field-line: rgba(244,242,255,0.18);
+  --kl-sheet: #FFFFFF;
+  --kl-sheet-shadow: 0 30px 60px -30px rgba(0,0,0,0.75), 0 12px 24px -16px rgba(0,0,0,0.55);
+  --kl-v1: #2DB37E;
+  --kl-v2: #EDB02A;
+  --kl-v3: #EC7C36;
+  --kl-v4: #E0504B;
+}
+
+:root[data-theme="dark"] .klaris-public,
+:root[data-theme="dark"] .kyc-app { color-scheme: dark; }
 
 /* Wrapper de page publique : fond + texte + police, transition douce de thème */
 .klaris-public,
@@ -222,4 +253,236 @@ body {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   IDENTITÉ « PAPIER & ENCRE » — composants du site public (classes .kl-*)
+   Règles de mouvement (cf. skill Emil Kowalski) : ease-out marqué, interface
+   sous 300 ms, retour au clic par scale(0.97), survol uniquement au pointeur.
+   Le tout vit dans @layer components : un utilitaire Tailwind posé sur l'élément
+   (lg:hidden, mt-6…) garde donc toujours le dernier mot.
+   ════════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+  .klaris-public,
+  .kyc-app {
+    --kl-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --kl-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --kl-r-paper: 4px;   /* feuilles et documents : coins presque vifs */
+    --kl-r-ctl: 10px;    /* boutons, champs */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .klaris-public ::selection,
+  .kyc-app ::selection { background: var(--lp-accent); color: #fff; }
+
+  .klaris-public :focus-visible,
+  .kyc-app :focus-visible { outline-color: var(--lp-accent); }
+  .klaris-public .kl-field :focus-visible { outline-color: #fff; }
+
+  /* Tous les grands titres du site public prennent la police de titres, y compris
+     sur les pages qui n'utilisent pas encore les classes .kl-* (tarifs, confiance,
+     sécurité, guides, pages légales). La démo guidée (boîte de dialogue) garde la
+     sienne. */
+  .klaris-public :is(h1, h2):not([role="dialog"] *) {
+    font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+    font-variation-settings: "wdth" 90;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+
+  /* Titres : Bricolage Grotesque, légèrement étroitisé, sans dégradé. */
+  .kl-display {
+    font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+    font-variation-settings: "wdth" 90;
+    font-weight: 700;
+    letter-spacing: -0.012em;
+    line-height: 1.03;
+    text-wrap: balance;
+  }
+  .kl-h1 { font-size: clamp(2.5rem, 1.3rem + 4.6vw, 4.5rem); }
+  .kl-h1--xl { font-size: clamp(2.6rem, 1.2rem + 5.4vw, 5.25rem); }
+  .kl-h2 { font-size: clamp(1.9rem, 1.25rem + 2.4vw, 3rem); line-height: 1.05; }
+  .kl-h3 { font-size: 1.25rem; line-height: 1.2; letter-spacing: -0.012em; font-weight: 650; }
+  .kl-lede { font-size: clamp(1.02rem, 0.96rem + 0.3vw, 1.19rem); line-height: 1.55; color: var(--lp-text-3); max-width: 60ch; text-wrap: pretty; }
+  .kl-body { font-size: 0.97rem; line-height: 1.6; color: var(--lp-text-3); text-wrap: pretty; }
+  .kl-num { font-variant-numeric: tabular-nums; }
+
+  /* Sections */
+  .kl-wrap { width: 100%; max-width: 76rem; margin-inline: auto; padding-inline: 1.25rem; }
+  @media (min-width: 640px) { .kl-wrap { padding-inline: 2rem; } }
+  .kl-section { padding-block: clamp(4rem, 2.5rem + 6vw, 7.5rem); }
+  .kl-section--white { background: var(--lp-card-bg); }
+  .kl-field { background: var(--kl-field); color: var(--kl-on-field); }
+  .kl-field .kl-lede, .kl-field .kl-body { color: var(--kl-on-field-2); }
+
+  /* Boutons */
+  .kl-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 3rem; padding: 0 1.35rem;
+    border-radius: var(--kl-r-ctl); border: 1px solid transparent;
+    font-size: 0.97rem; font-weight: 600; line-height: 1; white-space: nowrap;
+    cursor: pointer; user-select: none;
+    transition: transform 160ms var(--kl-ease-out), background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+  }
+  .kl-btn:active { transform: scale(0.97); }
+  .kl-btn--sm { min-height: 2.5rem; padding: 0 1rem; font-size: 0.9rem; }
+  .kl-btn--primary { background: var(--lp-accent); color: #fff; box-shadow: var(--lp-cta-shadow); }
+  :root[data-theme="dark"] .kl-btn--primary { background: #6D5EF6; }
+  .kl-btn--onfield { background: #fff; color: #1E1657; box-shadow: 0 14px 28px -16px rgba(0,0,0,0.6); }
+  .kl-btn--ghost { background: transparent; color: var(--lp-text); border-color: var(--lp-border-3); }
+  .kl-field .kl-btn--ghost { color: var(--kl-on-field); border-color: rgba(244,242,255,0.34); }
+  @media (hover: hover) {
+    .kl-btn--primary:hover { background: #4A36C9; }
+    :root[data-theme="dark"] .kl-btn--primary:hover { background: #7C6EFA; }
+    .kl-btn--onfield:hover { background: #EEEBFC; }
+    .kl-btn--ghost:hover { background: var(--lp-surface-2); }
+    .kl-field .kl-btn--ghost:hover { background: rgba(244,242,255,0.10); }
+  }
+  .kl-link {
+    color: var(--lp-accent-text); font-weight: 600;
+    text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.22em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    transition: text-decoration-color 160ms ease;
+  }
+  .kl-field .kl-link { color: var(--kl-on-field); }
+  @media (hover: hover) { .kl-link:hover { text-decoration-color: currentColor; } }
+
+  /* Référence d'article : un vrai lien vers le texte, pas une pastille. */
+  .kl-ref {
+    font-size: 0.82rem; color: var(--lp-text-4); white-space: nowrap;
+    text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em;
+    text-decoration-color: var(--lp-border-3);
+    transition: color 160ms ease, text-decoration-color 160ms ease;
+  }
+  span.kl-ref { text-decoration: none; }
+  @media (hover: hover) { a.kl-ref:hover { color: var(--lp-accent-text); text-decoration-color: currentColor; } }
+  .kl-field .kl-ref { color: var(--kl-on-field-2); text-decoration-color: var(--kl-on-field-line); }
+
+  /* Barre de navigation */
+  .kl-nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease, color 220ms ease;
+    border-bottom: 1px solid transparent; color: var(--lp-text);
+  }
+  .kl-nav[data-solid="true"] { background: var(--lp-nav-bg-scrolled); border-bottom-color: var(--lp-nav-border); box-shadow: var(--lp-nav-shadow-scrolled); backdrop-filter: saturate(140%) blur(10px); -webkit-backdrop-filter: saturate(140%) blur(10px); }
+  .kl-nav[data-solid="false"][data-over="field"] { color: var(--kl-on-field); }
+  .kl-nav__link { font-size: 0.9rem; font-weight: 500; padding: 0.5rem 0.7rem; border-radius: 8px; opacity: 0.82; transition: opacity 160ms ease, background-color 160ms ease; }
+  @media (hover: hover) { .kl-nav__link:hover { opacity: 1; background: color-mix(in srgb, currentColor 9%, transparent); } }
+  .kl-nav__icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 8px; color: inherit; transition: background-color 160ms ease, transform 160ms var(--kl-ease-out); }
+  .kl-nav__icon:active { transform: scale(0.94); }
+  @media (hover: hover) { .kl-nav__icon:hover { background: color-mix(in srgb, currentColor 10%, transparent); } }
+
+  /* Feuille de papier + onglets de dossier */
+  .kl-sheet { background: var(--kl-sheet); border-radius: var(--kl-r-paper); box-shadow: var(--kl-sheet-shadow); overflow: hidden; position: relative; }
+  .kl-tabs { display: flex; gap: 2px; padding-left: 14px; position: relative; z-index: 1; }
+  .kl-tab {
+    font-size: 0.82rem; font-weight: 600; padding: 0.6rem 1rem 0.55rem;
+    border-radius: 8px 8px 0 0; cursor: pointer;
+    background: rgba(244,242,255,0.14); color: var(--kl-on-field-2);
+    transition: background-color 160ms ease, color 160ms ease, transform 160ms var(--kl-ease-out);
+    transform: translateY(3px);
+  }
+  .kl-tab[aria-selected="true"] { background: var(--kl-sheet); color: #17123A; transform: translateY(0); }
+  @media (hover: hover) { .kl-tab[aria-selected="false"]:hover { background: rgba(244,242,255,0.24); color: var(--kl-on-field); } }
+
+  /* ── Étiquette de vigilance (grammaire de l'étiquette énergie) ── */
+  .kl-scale { display: grid; gap: 6px; }
+  .kl-scale__bar {
+    --w: 60%;
+    position: relative; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    width: var(--w); min-height: 2.6rem; padding: 0.35rem 1.9rem 0.35rem 0.85rem;
+    color: #fff; font-weight: 650; font-size: 0.92rem; line-height: 1.15; text-align: left;
+    background: var(--c);
+    clip-path: polygon(0 0, calc(100% - 1.15rem) 0, 100% 50%, calc(100% - 1.15rem) 100%, 0 100%);
+    transition: width 320ms var(--kl-ease-out), filter 160ms ease, opacity 160ms ease;
+  }
+  .kl-scale__bar[data-level="1"] { --c: var(--kl-v1); --w: 58%; }
+  .kl-scale__bar[data-level="2"] { --c: var(--kl-v2); --w: 72%; color: #2A1D00; }
+  .kl-scale__bar[data-level="3"] { --c: var(--kl-v3); --w: 86%; }
+  .kl-scale__bar[data-level="4"] { --c: var(--kl-v4); --w: 100%; }
+  .kl-scale__n { font-family: var(--font-display), system-ui, sans-serif; font-variation-settings: "wdth" 88; font-weight: 800; font-size: 1.15rem; opacity: 0.9; }
+  .kl-scale__row { display: flex; align-items: center; gap: 0.6rem; }
+  @media (min-width: 1024px) {
+    .kl-scale__row .kl-scale__bar { min-height: 3.35rem; font-size: 1.04rem; padding-left: 1.1rem; }
+    .kl-scale__row .kl-scale__pointer { height: 3.35rem; font-size: 1.4rem; }
+    .kl-scale:has(.kl-scale__row) { gap: 8px; }
+  }
+  .kl-scale__row .kl-scale__bar[data-level="1"] { --w: 52%; }
+  .kl-scale__row .kl-scale__bar[data-level="2"] { --w: 62%; }
+  .kl-scale__row .kl-scale__bar[data-level="3"] { --w: 72%; }
+  .kl-scale__row .kl-scale__bar[data-level="4"] { --w: 82%; }
+  button.kl-scale__bar { cursor: pointer; flex: none; }
+  button.kl-scale__bar[aria-pressed="false"] { filter: saturate(0.85); }
+  @media (hover: hover) { button.kl-scale__bar[aria-pressed="false"]:hover { filter: brightness(1.06); } }
+  button.kl-scale__bar:active { filter: brightness(0.94); }
+  /* Repère du niveau choisi : la flèche sombre de l'étiquette énergie. */
+  .kl-scale__pointer {
+    flex: none; display: grid; place-items: center; min-width: 3.1rem; height: 2.6rem; padding: 0 0.7rem 0 1.25rem;
+    background: var(--lp-text); color: var(--lp-bg);
+    font-family: var(--font-display), system-ui, sans-serif; font-variation-settings: "wdth" 90; font-weight: 800; font-size: 1.2rem;
+    clip-path: polygon(0.95rem 0, 100% 0, 100% 100%, 0.95rem 100%, 0 50%);
+    animation: kl-point 260ms var(--kl-ease-out) both;
+  }
+  @keyframes kl-point { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
+  .kl-scale--mini .kl-scale__bar { min-height: 1.45rem; font-size: 0.72rem; padding: 0.15rem 1.2rem 0.15rem 0.5rem; clip-path: polygon(0 0, calc(100% - 0.7rem) 0, 100% 50%, calc(100% - 0.7rem) 100%, 0 100%); }
+  .kl-scale--mini .kl-scale__bar[data-on="false"] { opacity: 0.28; }
+  .kl-scale--mini { gap: 3px; }
+
+  /* Vignette « niveau du dossier » posée sur le document du hero */
+  .kl-sticker {
+    background: var(--kl-sheet); color: #17123A; border-radius: var(--kl-r-paper);
+    box-shadow: 0 1px 0 rgba(23,18,58,0.06), 0 22px 40px -22px rgba(10,6,40,0.70);
+    padding: 0.85rem 0.9rem 0.9rem; width: 13.5rem;
+  }
+
+  /* Étapes : une vraie séquence, donc numérotée */
+  .kl-steps { counter-reset: kl-step; display: grid; gap: 1.75rem; }
+  @media (min-width: 900px) { .kl-steps { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+  .kl-step { counter-increment: kl-step; position: relative; padding-top: 1.1rem; border-top: 2px solid var(--lp-text); }
+  .kl-step::before {
+    content: counter(kl-step); display: block; margin-bottom: 0.6rem;
+    font-family: var(--font-display), system-ui, sans-serif; font-variation-settings: "wdth" 88;
+    font-weight: 800; font-size: 1.6rem; line-height: 1; color: var(--lp-accent-text);
+  }
+
+  /* Tableau obligations → Klaris → texte */
+  .kl-table { width: 100%; border-collapse: collapse; }
+  .kl-table th { text-align: left; font-size: 0.82rem; font-weight: 600; color: var(--lp-text-4); padding: 0 1.25rem 0.75rem 0; }
+  .kl-table td { vertical-align: top; padding: 1.35rem 1.25rem 1.35rem 0; border-top: 1px solid var(--lp-border-2); }
+  .kl-table tr > :last-child { padding-right: 0; }
+  .kl-table td:first-child { font-family: var(--font-display), system-ui, sans-serif; font-variation-settings: "wdth" 88; font-weight: 650; font-size: 1.15rem; letter-spacing: -0.012em; line-height: 1.2; color: var(--lp-text); width: 30%; }
+  .kl-table td:nth-child(2) { color: var(--lp-text-3); line-height: 1.55; font-size: 0.97rem; }
+  .kl-table td:last-child { width: 9.5rem; text-align: right; }
+  @media (max-width: 760px) {
+    .kl-table thead { display: none; }
+    .kl-table, .kl-table tbody, .kl-table tr, .kl-table td { display: block; width: 100% !important; }
+    .kl-table tr { padding-block: 1.25rem; border-top: 1px solid var(--lp-border-2); }
+    .kl-table td { padding: 0; border: 0; text-align: left !important; }
+    .kl-table td + td { margin-top: 0.5rem; }
+  }
+
+  /* Liste de faits : terme fort + explication, séparés par un filet */
+  .kl-facts { display: grid; gap: 0; }
+  .kl-facts > div { padding-block: 1.1rem; border-top: 1px solid var(--lp-border-2); }
+  .kl-field .kl-facts > div { border-top-color: var(--kl-on-field-line); }
+  .kl-facts dt { font-weight: 650; color: var(--lp-text); font-size: 1rem; }
+  .kl-field .kl-facts dt { color: var(--kl-on-field); }
+  .kl-facts dd { margin-top: 0.3rem; color: var(--lp-text-3); font-size: 0.94rem; line-height: 1.55; }
+  .kl-field .kl-facts dd { color: var(--kl-on-field-2); }
+
+  /* Entrée du hero : un seul moment orchestré, au chargement. */
+  @keyframes kl-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes kl-grow { from { transform: scaleX(0.3); } to { transform: none; } }
+  .kl-enter { animation: kl-rise 520ms var(--kl-ease-out) both; animation-delay: var(--d, 0ms); }
+  .kl-enter-bars .kl-scale__bar { transform-origin: left center; animation: kl-grow 460ms var(--kl-ease-out) backwards; }
+  .kl-enter-bars .kl-scale__bar:nth-child(1) { animation-delay: 520ms; }
+  .kl-enter-bars .kl-scale__bar:nth-child(2) { animation-delay: 575ms; }
+  .kl-enter-bars .kl-scale__bar:nth-child(3) { animation-delay: 630ms; }
+  .kl-enter-bars .kl-scale__bar:nth-child(4) { animation-delay: 685ms; }
+
+  /* Changement de niveau : le panneau de détail se met à jour sans à-coup. */
+  @keyframes kl-swap { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .kl-swap { animation: kl-swap 220ms var(--kl-ease-out) both; }
 }

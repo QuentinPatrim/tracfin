@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from "react";
 
 const IFRAME_W = 384;
 const IFRAME_H = 760;
-const SCALE = 0.62;
+const SCALE = 0.72;
 const STEP_COUNT = 5;     // on fait défiler les premières étapes (identité → pièces)
 const STEP_MS = 3400;
 
@@ -63,13 +63,13 @@ export default function KycPhonePreview() {
         width: visW + 16,
         padding: 8,
         borderRadius: 38,
-        background: "linear-gradient(180deg, #15131f, #0b0712)",
-        boxShadow: "0 30px 70px -22px rgba(109,94,246,0.55), 0 0 0 1px rgba(109,94,246,0.22), 0 1px 0 rgba(255,255,255,0.10) inset",
+        background: "#0E0B20",
+        boxShadow: "0 36px 60px -30px rgba(10,6,40,0.60), 0 14px 26px -16px rgba(10,6,40,0.40)",
         position: "relative",
       }}
     >
       {/* encoche */}
-      <div style={{ position: "absolute", top: 8, left: "50%", transform: "translateX(-50%)", width: 74, height: 16, background: "#0b0712", borderRadius: "0 0 12px 12px", zIndex: 2 }} />
+      <div style={{ position: "absolute", top: 8, left: "50%", transform: "translateX(-50%)", width: 74, height: 16, background: "#0E0B20", borderRadius: "0 0 12px 12px", zIndex: 2 }} />
       <div
         style={{
           width: visW,
@@ -100,7 +100,7 @@ export default function KycPhonePreview() {
             <div
               style={{
                 width: 30, height: 30, borderRadius: "50%",
-                border: "3px solid rgba(167,139,250,0.25)", borderTopColor: "#a78bfa",
+                border: "3px solid rgba(180,168,255,0.25)", borderTopColor: "#B4A8FF",
                 animation: "klaris-spin 0.7s linear infinite",
               }}
             />

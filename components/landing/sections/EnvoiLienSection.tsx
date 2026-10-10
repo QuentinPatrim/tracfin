@@ -1,209 +1,106 @@
-// components/landing/sections/EnvoiLienSection.tsx — Section "Envoi du lien KYC"
+// components/landing/sections/EnvoiLienSection.tsx — Section « Fonctionnement »
 //
-// Spotlight sur le différenciateur produit : votre client n'installe rien, ne crée
-// pas de compte, reçoit juste un lien et remplit sur son téléphone en 5 min.
-// Le téléphone affiche le VRAI formulaire client (/kyc/demo), pas une maquette.
+// Le différenciateur produit : le client n'installe rien et ne crée pas de compte.
+// Il reçoit un lien et remplit sa fiche sur son téléphone. Le téléphone affiche le
+// VRAI formulaire client (/kyc/demo), pas une maquette. En dessous, les quatre
+// étapes côté professionnel : c'est une vraie séquence, donc elle est numérotée.
 
-import {
-  Mail, Smartphone, Send, Check, Lock, Zap, ShieldCheck, ArrowRight,
-} from "lucide-react";
-import { Section, SectionHeader } from "@/components/landing/primitives";
 import KycPhonePreview from "@/components/landing/KycPhonePreview";
+
+const STEPS = [
+  {
+    title: "Créez le dossier",
+    text: "Le nom du client, personne physique ou société. Klaris prépare la fiche adaptée.",
+  },
+  {
+    title: "Envoyez le lien",
+    text: "Par e-mail ou WhatsApp. Votre client remplit seul, depuis son téléphone.",
+  },
+  {
+    title: "Recevez le niveau de vigilance",
+    text: "À la réception, Klaris classe le dossier et range les pièces avec la fiche.",
+  },
+  {
+    title: "Exportez l'attestation",
+    text: "Attestation, fiche client et pièces dans une seule archive, prête à être présentée.",
+  },
+];
 
 export default function EnvoiLienSection() {
   return (
-    <Section maxWidth="6xl">
-      <SectionHeader
-        eyebrow="Expérience client"
-        title={<>Votre client remplit en 5 minutes,<br className="hidden sm:block" /> depuis son téléphone.</>}
-        desc="Pas d'application à installer. Pas de compte à créer. Pas de mot de passe à mémoriser. Vous envoyez un lien sécurisé en 30 secondes, votre client clique et complète. Klaris réceptionne automatiquement."
-      />
+    <section id="how" className="kl-section">
+      <div className="kl-wrap">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+          <div>
+            <h2 className="kl-display kl-h2">
+              Votre client remplit sa fiche en quelques minutes, depuis son téléphone.
+            </h2>
+            <p className="kl-lede mt-5">
+              Vous envoyez un lien sécurisé. Il clique, complète, joint ses pièces. Vous
+              recevez le dossier rangé, sans relance ni ressaisie.
+            </p>
 
-      {/* Bloc visuel : email côté agent → téléphone côté client (vrai formulaire) */}
-      <div className="relative mt-8 sm:mt-10 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-5">
-        <EmailMockup />
-        <ArrowConnector />
-        <KycPhonePreview />
-      </div>
+            <dl className="kl-facts mt-8 max-w-[34rem]">
+              <div>
+                <dt>Rien à installer</dt>
+                <dd>Pas d&apos;application, pas de compte, pas de mot de passe pour votre client.</dd>
+              </div>
+              <div>
+                <dt>Le canal qu&apos;il utilise déjà</dt>
+                <dd>Le lien part par e-mail ou WhatsApp depuis votre tableau de bord. Vous pouvez aussi le copier.</dd>
+              </div>
+              <div>
+                <dt>Un lien qui expire</dt>
+                <dd>Chaque lien est unique et valable 30 jours.</dd>
+              </div>
+            </dl>
+          </div>
 
-      {/* Bénéfices clés sous le visuel */}
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
-        <BenefitChip
-          icon={Zap}
-          title="30 secondes"
-          desc="pour envoyer le lien depuis Klaris"
-        />
-        <BenefitChip
-          icon={Smartphone}
-          title="Mobile-first"
-          desc="le formulaire est optimisé téléphone"
-        />
-        <BenefitChip
-          icon={ShieldCheck}
-          title="Pas de compte"
-          desc="aucun mot de passe pour votre client"
-        />
+          {/* Le message reçu, puis le vrai formulaire dans le téléphone */}
+          <div className="relative mx-auto w-full max-w-[32rem] lg:mx-0 lg:ml-auto">
+            <MessageSheet />
+            <div className="relative z-10 -mt-6 flex justify-end pr-2 sm:-mt-24 sm:pr-6">
+              <KycPhonePreview />
+            </div>
+          </div>
+        </div>
+
+        <ol className="kl-steps mt-16 sm:mt-24">
+          {STEPS.map((s) => (
+            <li key={s.title} className="kl-step">
+              <h3 className="kl-display kl-h3">{s.title}</h3>
+              <p className="kl-body mt-2">{s.text}</p>
+            </li>
+          ))}
+        </ol>
       </div>
-    </Section>
+    </section>
   );
 }
 
-/* ───────────────────────────────────────────────────────────────
-   Mockup — Email envoyé depuis Klaris (côté agent) — thémé clair/sombre
-   ─────────────────────────────────────────────────────────────── */
-
-function EmailMockup() {
+/* Le message tel que le client le reçoit (exemple fictif). */
+function MessageSheet() {
   return (
     <div
-      className="relative w-full max-w-[360px] rounded-2xl overflow-hidden"
-      style={{
-        background: "var(--lp-card-bg)",
-        border: "1px solid var(--lp-card-border)",
-        boxShadow: "var(--lp-card-shadow), 0 24px 60px -20px rgba(109,94,246,0.25)",
-      }}
+      className="kl-sheet w-full max-w-[22rem] p-5"
+      style={{ color: "#17123A", boxShadow: "0 1px 0 rgba(23,18,58,0.05), 0 26px 44px -30px rgba(29,21,82,0.50)" }}
+      aria-label="Exemple du message reçu par le client"
     >
-      {/* Top bar email */}
+      <div className="text-[0.78rem]" style={{ color: "#6F6A8A" }}>
+        À : camille.rousseau@example.com
+      </div>
+      <div className="mt-1 text-[0.95rem] font-semibold leading-snug">
+        Vérification d&apos;identité pour votre projet
+      </div>
+      <p className="mt-3 text-[0.86rem] leading-relaxed" style={{ color: "#55506F" }}>
+        Bonjour Camille, dans le cadre de votre projet, merci de compléter votre fiche
+        en suivant le lien sécurisé ci-dessous.
+      </p>
       <div
-        className="flex items-center gap-2 px-4 py-2.5"
-        style={{ borderBottom: "1px solid var(--lp-border-1)" }}
+        className="mt-3 rounded-md px-3 py-2.5 text-[0.82rem] font-semibold"
+        style={{ background: "#EEEBFC", color: "#4A36C9" }}
       >
-        <div
-          className="w-7 h-7 rounded-lg grid place-items-center shrink-0"
-          style={{
-            background: "var(--lp-icon-bg)",
-            border: "1px solid var(--lp-icon-border)",
-            color: "var(--lp-icon-color)",
-          }}
-        >
-          <Mail width={13} height={13} />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[11px] font-semibold truncate" style={{ color: "var(--lp-text)" }}>
-            Email à Camille Rousseau
-          </div>
-          <div className="text-[9.5px]" style={{ color: "var(--lp-text-4)" }}>
-            depuis votre dashboard Klaris
-          </div>
-        </div>
-        <span
-          className="px-1.5 py-0.5 rounded text-[8.5px] uppercase tracking-widest font-bold"
-          style={{
-            background: "var(--lp-success-bg)",
-            border: "1px solid var(--lp-success-border)",
-            color: "var(--lp-success)",
-          }}
-        >
-          Prêt
-        </span>
-      </div>
-
-      {/* Contenu email */}
-      <div className="p-4">
-        <div className="text-[10.5px] mb-1" style={{ color: "var(--lp-text-4)" }}>À : camille.rousseau@example.com</div>
-        <div className="text-[12px] font-semibold mb-3 leading-snug" style={{ color: "var(--lp-text)" }}>
-          Klaris · Vérification d&apos;identité pour votre projet
-        </div>
-        <p className="text-[11px] leading-relaxed mb-3" style={{ color: "var(--lp-text-3)" }}>
-          Bonjour Camille, dans le cadre de votre projet, merci de compléter votre fiche en cliquant sur le lien sécurisé ci-dessous.
-        </p>
-
-        {/* Le LIEN — mis en avant */}
-        <div
-          className="rounded-lg px-3 py-2.5 flex items-center gap-2"
-          style={{
-            background: "var(--lp-card-bg-accent)",
-            border: "1px solid var(--lp-card-border-accent)",
-            color: "var(--lp-accent-text)",
-          }}
-        >
-          <Lock width={11} height={11} className="shrink-0" />
-          <div className="flex-1 text-[10.5px] font-mono truncate">
-            klaris-app.fr/kyc/Yt8K…aB3z
-          </div>
-          <ArrowRight width={11} height={11} className="shrink-0" />
-        </div>
-
-        <div className="mt-3 flex items-center gap-1.5 text-[10px]" style={{ color: "var(--lp-text-4)" }}>
-          <Check width={10} height={10} strokeWidth={3} style={{ color: "var(--lp-success)" }} />
-          Lien sécurisé · expire dans 7 jours
-        </div>
-      </div>
-
-      {/* Footer email */}
-      <div
-        className="px-4 py-2 flex items-center gap-1.5"
-        style={{ borderTop: "1px solid var(--lp-border-1)", background: "var(--lp-surface)" }}
-      >
-        <Send width={10} height={10} style={{ color: "var(--lp-text-4)" }} />
-        <span className="text-[9px]" style={{ color: "var(--lp-text-4)" }}>Envoi via email · SMS · WhatsApp</span>
-      </div>
-    </div>
-  );
-}
-
-/* ───────────────────────────────────────────────────────────────
-   Flèche connecteur entre les 2 mockups
-   ─────────────────────────────────────────────────────────────── */
-
-function ArrowConnector() {
-  return (
-    <div className="flex items-center gap-2 px-3 py-2 rounded-full"
-      style={{
-        background: "var(--lp-card-bg)",
-        border: "1px solid var(--lp-card-border-accent)",
-        boxShadow: "var(--lp-card-shadow)",
-        color: "var(--lp-accent-text)",
-      }}
-    >
-      <Send width={12} height={12} />
-      <span className="hidden md:block text-[10px] uppercase tracking-widest font-semibold">
-        30 sec
-      </span>
-      <div className="hidden md:block w-12 h-px relative">
-        <div
-          className="absolute inset-0"
-          style={{ background: "var(--lp-cta-grad)" }}
-        />
-      </div>
-      <ArrowRight width={13} height={13} />
-    </div>
-  );
-}
-
-/* ───────────────────────────────────────────────────────────────
-   Chip de bénéfice (contenu de page — thémé clair/sombre)
-   ─────────────────────────────────────────────────────────────── */
-
-function BenefitChip({
-  icon: Icon, title, desc,
-}: {
-  icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <div
-      className="rounded-xl p-4 flex items-start gap-3"
-      style={{
-        background: "var(--lp-card-bg)",
-        border: "1px solid var(--lp-card-border)",
-        boxShadow: "var(--lp-card-shadow)",
-        backdropFilter: "blur(12px)",
-      }}
-    >
-      <div
-        className="w-9 h-9 rounded-lg grid place-items-center shrink-0"
-        style={{
-          background: "var(--lp-icon-bg)",
-          border: "1px solid var(--lp-icon-border)",
-          color: "var(--lp-icon-color)",
-        }}
-      >
-        <Icon width={15} height={15} />
-      </div>
-      <div className="min-w-0">
-        <div className="text-[14px] font-bold leading-tight mb-0.5" style={{ color: "var(--lp-text)" }}>{title}</div>
-        <div className="text-[12px] leading-snug" style={{ color: "var(--lp-text-3)" }}>{desc}</div>
+        klaris-app.fr/kyc/Yt8K…aB3z
       </div>
     </div>
   );

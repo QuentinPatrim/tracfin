@@ -3,6 +3,7 @@
 // Variantes :
 //  - default : carré arrondi gradient violet→magenta + K blanc + losange pivot
 //  - mono    : carré sombre + K blanc (pour PDF / impression / contexte mono)
+//  - flat    : carré violet en aplat + K blanc (site public, identité « Papier & encre »)
 //
 // Le composant est auto-suffisant (gère son propre fond). On l'utilise partout :
 // landing, dashboard, footers, PDF, KYC public, etc.
@@ -15,6 +16,8 @@ interface Props {
   className?: string;
   /** Désactive le bg carré arrondi (pour ne garder que le glyphe sur fond externe) */
   noBackground?: boolean;
+  /** Aplat violet, sans dégradé ni reflet (site public). */
+  flat?: boolean;
 }
 
 export default function KlarisLogo({
@@ -22,12 +25,16 @@ export default function KlarisLogo({
   mono = false,
   className = "",
   noBackground = false,
+  flat = false,
 }: Props) {
   const uid = useId();
   const id = `klogo-${uid}`;
 
+  const FLAT = "#5B46E0";
   const bgFill = mono
     ? "#0f172a"
+    : flat
+    ? FLAT
     : noBackground
     ? "transparent"
     : `url(#${id})`;
@@ -42,7 +49,7 @@ export default function KlarisLogo({
       className={className}
       aria-label="Klaris"
     >
-      {!mono && !noBackground && (
+      {!mono && !noBackground && !flat && (
         <defs>
           <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#7c3aed" />
@@ -58,7 +65,7 @@ export default function KlarisLogo({
       )}
 
       {/* Highlight haut subtil (relief) — couleur seulement, sans bg externe */}
-      {!mono && !noBackground && (
+      {!mono && !noBackground && !flat && (
         <rect x="2" y="2" width="44" height="22" rx="11" fill="white" opacity="0.10" />
       )}
 
@@ -91,7 +98,7 @@ export default function KlarisLogo({
         width="3"
         height="3"
         transform="rotate(45 19 24)"
-        fill={mono ? "#0f172a" : noBackground ? bgFill : `url(#${id})`}
+        fill={mono ? "#0f172a" : flat ? FLAT : noBackground ? bgFill : `url(#${id})`}
         stroke={noBackground ? bgFill : fgFill}
         strokeWidth="0.5"
       />

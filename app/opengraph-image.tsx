@@ -1,11 +1,19 @@
 // app/opengraph-image.tsx — Carte de partage social (générée à la volée, next/og)
+// Identité « Papier & encre » : champ d'encre, logo en aplat, échelle de vigilance.
 
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Klaris — Conformité LCB-FT, sans stress";
+export const alt = "Klaris : vos dossiers LCB-FT en ordre, sans stress";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+const BARS = [
+  { n: "1", label: "Vigilance standard", c: "#1E9E6A", w: 300, fg: "#fff" },
+  { n: "2", label: "Vigilance renforcée", c: "#E3A008", w: 350, fg: "#2A1D00" },
+  { n: "3", label: "Examen renforcé", c: "#DD6B20", w: 400, fg: "#fff" },
+  { n: "4", label: "Interdiction", c: "#C5302C", w: 450, fg: "#fff" },
+];
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -17,10 +25,8 @@ export default function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "72px 80px",
-          backgroundColor: "#0A0712",
-          backgroundImage:
-            "radial-gradient(1100px 500px at 12% -10%, rgba(109,94,246,0.45), transparent), radial-gradient(900px 500px at 110% 120%, rgba(236,72,153,0.32), transparent)",
+          padding: "68px 76px",
+          backgroundColor: "#1E1657",
           fontFamily: "sans-serif",
         }}
       >
@@ -28,61 +34,59 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <div
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: 16,
+              width: 60,
+              height: 60,
+              borderRadius: 14,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              backgroundImage: "linear-gradient(135deg, #7C3AED, #EC4899)",
+              backgroundColor: "#5B46E0",
               color: "#fff",
-              fontSize: 38,
+              fontSize: 36,
               fontWeight: 800,
             }}
           >
             K
           </div>
-          <div style={{ display: "flex", color: "#fff", fontSize: 38, fontWeight: 700, letterSpacing: -1 }}>
+          <div style={{ display: "flex", color: "#F4F2FF", fontSize: 38, fontWeight: 700, letterSpacing: -1 }}>
             Klaris
           </div>
         </div>
 
-        {/* Titre */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", fontSize: 70, fontWeight: 800, letterSpacing: -2, lineHeight: 1.05, color: "#F8FAFC" }}>
-            Tracez vos dossiers KYC&nbsp;
-            <span style={{ color: "#C4B5FD" }}>comme l'exige la loi.</span>
-          </div>
-          <div style={{ display: "flex", fontSize: 30, color: "rgba(255,255,255,0.66)" }}>
-            Conformité LCB-FT · Souveraineté UE · Attestations opposables
-          </div>
-        </div>
-
-        {/* Pied : 3 accents */}
-        <div style={{ display: "flex", gap: 14 }}>
-          {[
-            { t: "Scoring LCB-FT v2", c: "#A78BFA" },
-            { t: "KYC sans friction", c: "#F9A8D4" },
-            { t: "100% hébergé UE", c: "#5EEAD4" },
-          ].map((chip) => (
-            <div
-              key={chip.t}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "12px 22px",
-                borderRadius: 999,
-                backgroundColor: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                color: "rgba(255,255,255,0.9)",
-                fontSize: 24,
-              }}
-            >
-              <div style={{ width: 12, height: 12, borderRadius: 999, backgroundColor: chip.c, display: "flex" }} />
-              {chip.t}
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 40 }}>
+          {/* Titre */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 22, maxWidth: 600 }}>
+            <div style={{ display: "flex", fontSize: 72, fontWeight: 800, letterSpacing: -2, lineHeight: 1.03, color: "#F4F2FF" }}>
+              Vos dossiers LCB-FT en ordre, sans stress.
             </div>
-          ))}
+            <div style={{ display: "flex", fontSize: 28, lineHeight: 1.35, color: "rgba(244,242,255,0.76)" }}>
+              Pour les agences immobilières. 14 jours gratuits.
+            </div>
+          </div>
+
+          {/* Échelle de vigilance */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {BARS.map((b) => (
+              <div
+                key={b.n}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  width: b.w,
+                  height: 58,
+                  padding: "0 20px",
+                  backgroundColor: b.c,
+                  color: b.fg,
+                  fontSize: 24,
+                  fontWeight: 700,
+                }}
+              >
+                <div style={{ display: "flex" }}>{b.label}</div>
+                <div style={{ display: "flex", fontSize: 28, fontWeight: 800 }}>{b.n}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     ),
