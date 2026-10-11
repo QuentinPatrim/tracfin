@@ -2,8 +2,8 @@
 //
 // Identité « Papier & encre » :
 //  - un champ d'encre violette pour le hero et l'hébergement, du papier pour le reste ;
-//  - un haut de page animé au défilement (ScrollStory) qui raconte les quatre étapes
-//    avec le vrai formulaire client et la vraie attestation ;
+//  - un haut de page animé (ScrollStory) qui raconte les quatre étapes, un geste à la
+//    fois, avec le vrai formulaire client et la vraie attestation ;
 //  - l'échelle de vigilance, dans la grammaire de l'étiquette énergie, comme signature ;
 //  - chaque article cité est un lien vers le texte officiel (components/landing/LegalRef).
 // Règles de fond : chiffres sourcés uniquement, Klaris « aide à être conforme » et ne
@@ -34,7 +34,7 @@ export default function LandingPage() {
       <ScrollFx />
 
       <main>
-        {/* ───────── HAUT DE PAGE ANIMÉ : titre, puis les 4 étapes au défilement ───────── */}
+        {/* ───────── HAUT DE PAGE ANIMÉ : titre, puis les 4 étapes, un geste à la fois ───────── */}
         <ScrollStory
           isSignedIn={!!isSignedIn}
           onSignUp={signUp}

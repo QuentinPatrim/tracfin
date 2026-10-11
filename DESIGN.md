@@ -69,27 +69,47 @@ Règles :
 
 Le mouvement raconte le produit, il ne décore pas.
 
-- **Haut de page : une séquence au défilement** (`components/landing/ScrollStory.tsx`).
-  La scène est épinglée pendant cinq hauteurs d'écran. Le téléphone, posé en
-  perspective, se redresse et vient vers nous ; on entre dans le vrai formulaire
-  client, dont les étapes avancent avec le défilement ; l'étiquette de vigilance se
-  construit ; l'attestation se relève et l'étiquette vient s'y coller. Ce sont les
-  quatre étapes du produit, dans l'ordre.
+- **Haut de page : une séquence en quatre plans** (`components/landing/ScrollStory.tsx`).
+  La scène occupe un écran. Chaque étape a son propre cadrage, pour qu'on ne les
+  confonde pas : (1) l'écran « Dossier créé » au premier plan, le téléphone du client
+  au loin, le lien part de l'un vers l'autre ; (2) on entre dans le téléphone, le vrai
+  formulaire avance tout seul ; (3) le téléphone sort, l'étiquette de vigilance se
+  construit ; (4) l'attestation se relève et l'étiquette vient s'y coller.
+- **Un geste = une étape.** Tant que la page est tout en haut, un glissement du doigt,
+  un coup de molette ou une flèche du clavier fait avancer d'un plan, jamais de deux,
+  même avec un grand geste (demande explicite : sur téléphone, un seul glissement
+  faisait défiler les trois étapes d'un coup). Après le dernier plan, la page défile
+  normalement ; revenu tout en haut, on remonte les plans. Le lien « Passer » et les
+  repères sur le bord droit (ordinateur) restent toujours disponibles.
+- **Démo guidée : un film en 3D** (`components/landing/DemoModal.tsx`, styles dans
+  `components/landing/demo-film.css`). Les écrans du produit sont posés dans un décor
+  en trois dimensions ; une caméra vole de l'un à l'autre (tableau de bord, téléphone
+  du client, analyse de risque et étiquette, attestation et archive). Les fonds
+  alternent encre et papier d'un chapitre à l'autre. Tout se déduit d'une seule
+  horloge : pause, retour et saut de chapitre reviennent à changer l'heure.
 - **Sous la séquence : un geste par section** (`components/landing/ScrollFx.tsx` et
   le bloc « Effets liés au défilement » de `globals.css`). Les barres de l'échelle
   se déploient, les lignes du tableau s'inscrivent une à une, le champ d'encre de
   l'hébergement s'ouvre d'un panneau vers la pleine largeur. Pas d'apparition
   identique plaquée sur tout.
 - **Règles** :
-  - le défilement n'est jamais détourné : la page suit le doigt, la scène suit la page ;
+  - le défilement n'est capté qu'à un seul endroit, la séquence du haut de page, et
+    seulement quand la page est tout en haut. Partout ailleurs, la page suit le doigt ;
   - seuls `transform`, `opacity` et `clip-path` sont animés ;
   - le texte est toujours dans le DOM et lisible sans JavaScript ;
-  - `prefers-reduced-motion` : la séquence n'est pas épinglée et s'affiche à plat,
-    les effets de section sont désactivés ;
+  - `prefers-reduced-motion` : la séquence s'affiche à plat et ne capte aucun geste,
+    la démo passe d'un plan fixe au suivant sans vol de caméra, les effets de section
+    sont désactivés ;
   - interface (boutons, survols) sous 300 ms, courbe `--kl-ease-out`, retour au clic
     par `scale(0.97)`, survol dans `@media (hover: hover)`.
-- Pour régler la séquence : les fenêtres de chaque légende sont dans `CAPTIONS`, les
-  étapes du formulaire dans `formStep()`, la longueur dans `LENGTH_VH`.
+- **On ne montre que ce que le produit fait.** L'envoi du lien passe par la messagerie
+  de l'agent (e-mail, WhatsApp, message) ; le niveau de vigilance vient de l'analyse
+  saisie par l'agent ; aucun contrôle n'est présenté comme automatique s'il ne l'est
+  pas. Les libellés des écrans reconstitués reprennent ceux du produit
+  (`app/dashboard/nouveau/NewDossierForm.tsx`, `components/tracfin/Step2.tsx`).
+- Pour régler la séquence : durées dans `DUR_FWD`, poses dans `render()`, pages du
+  formulaire dans `FORM_PLAY`. Pour régler le film : chapitres dans `CHAPTERS`, plans
+  de caméra dans `shots()`, scénario dans `T`, place des objets dans `WORLD`.
 
 ## Textes
 
@@ -106,6 +126,7 @@ Le mouvement raconte le produit, il ne décore pas.
 - Variables et classes `.kl-*` : `app/globals.css` (dans `@layer components`, pour
   qu'un utilitaire Tailwind posé sur l'élément garde le dernier mot).
 - Page d'accueil : `app/page.tsx`. Haut de page animé : `components/landing/ScrollStory.tsx`.
+  Démo guidée : `components/landing/DemoModal.tsx` et `components/landing/demo-film.css`.
 - Échelle de vigilance : `components/landing/VigilanceScale.tsx`. Ses textes
   décrivent les règles de `lib/tracfin.ts` : si le moteur change, ils changent aussi.
 - Navigation : `components/landing/FloatingNav.tsx`. Pied de page :

@@ -457,16 +457,15 @@ body {
   @keyframes kl-swap { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .kl-swap { animation: kl-swap 220ms var(--kl-ease-out) both; }
 
-  /* ══ Haut de page animé au défilement (components/landing/ScrollStory.tsx) ══
-     La scène est épinglée (position: sticky) pendant que la section, plus haute
-     que l'écran, défile. Le moteur JS écrit transform et opacity sur les objets.
+  /* ══ Haut de page animé, étape par étape (components/landing/ScrollStory.tsx) ══
+     La scène occupe un écran. Tant que la page est tout en haut, un geste fait
+     avancer d'un plan ; le moteur JS écrit transform et opacity sur les objets.
      data-mode : "pending" avant montage, "live" animé, "static" si l'utilisateur
-     demande moins d'animations (tout est alors affiché à plat, sans épinglage). */
+     demande moins d'animations (tout est alors affiché à plat, sans capture). */
   .st { position: relative; }
   .st.kl-field { background: var(--kl-field); }
   .st .st-stage { background: var(--kl-field-glow), var(--kl-field); }
   .st-stage { position: relative; height: 100svh; overflow: hidden; }
-  .st[data-mode="live"] .st-stage { position: sticky; top: 0; }
   .st-inner { position: relative; z-index: 2; height: 100%; display: grid; grid-template-columns: minmax(0, 1fr); pointer-events: none; }
   .st-inner :is(a, button) { pointer-events: auto; }
   .st-text { align-self: start; padding-top: 5.75rem; }
@@ -497,9 +496,47 @@ body {
   /* Pas de will-change ici : le navigateur doit pouvoir re-dessiner le contenu à la
      bonne résolution quand un objet est agrandi (sinon le formulaire devient flou). */
   .st-obj { position: absolute; left: 0; top: 0; opacity: 0; visibility: hidden; transform-origin: 50% 50%; }
-  .st-phone { padding: 8px; border-radius: 48px; background: #0E0B20; box-shadow: 0 60px 90px -40px rgba(5, 2, 30, 0.85), 0 24px 40px -24px rgba(5, 2, 30, 0.6); }
+  .st-phone { padding: 8px; border-radius: 48px; background: #0E0B20; box-shadow: 0 0 0 1.5px rgba(196, 186, 255, 0.30), 0 60px 90px -40px rgba(5, 2, 30, 0.85), 0 24px 40px -24px rgba(5, 2, 30, 0.6); }
   .st-phone__screen { border-radius: 40px; overflow: hidden; background: #fff; }
   .st-sheet { border-radius: 6px; box-shadow: 0 60px 90px -40px rgba(5, 2, 30, 0.85), 0 24px 40px -24px rgba(5, 2, 30, 0.55); }
+  /* Écran verrouillé du téléphone du client (plan 1) : heure, puis le message reçu. */
+  .st-lock { position: absolute; inset: 0; border-radius: 40px; overflow: hidden; opacity: 0; visibility: hidden; color: #fff; background: radial-gradient(120% 70% at 88% 0%, #EC4899, transparent 64%), radial-gradient(120% 85% at 0% 100%, #6D5EF6, transparent 66%), #2B1F7A; }
+  .st-lock__in { position: absolute; inset: 0; transform-origin: 50% 34%; }
+  .st-lock__time { position: absolute; left: 0; right: 0; top: 11%; text-align: center; font-size: 6.6rem; line-height: 1; letter-spacing: -0.03em; }
+  .st-lock__notif { position: absolute; left: 12px; right: 12px; top: 34%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.85rem; padding: 1.1rem 1.1rem 1.2rem; border-radius: 26px; background: #fff; color: #17123A; box-shadow: 0 26px 44px -18px rgba(5,2,30,0.75); opacity: 0; }
+  .st-lock__app { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; color: #fff; background: #1E9E6A; }
+  .st-lock__from { display: flex; justify-content: space-between; align-items: baseline; font-size: 1.3rem; }
+  .st-lock__from span { font-size: 1rem; color: #6F6A8A; }
+  .st-lock__body p { margin-top: 0.2rem; font-size: 1.28rem; line-height: 1.3; color: #3B3560; }
+
+  /* Écran « Dossier créé » : le lien et les trois façons de le partager. */
+  .st-card { background: #fff; color: #17123A; border-radius: 14px; padding: 1.35rem 1.4rem 1.2rem; box-shadow: 0 50px 80px -36px rgba(5, 2, 30, 0.9), 0 18px 30px -18px rgba(5, 2, 30, 0.55); }
+  .st-card__ok { display: flex; align-items: center; gap: 0.55rem; font-weight: 650; font-size: 0.95rem; color: #147A52; }
+  .st-card__ok span { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: #1E9E6A; }
+  .st-card__t { margin-top: 0.8rem; font-size: 1.5rem; line-height: 1.12; }
+  .st-card__link { margin-top: 1rem; display: flex; align-items: center; gap: 0.55rem; padding: 0.7rem 0.8rem; border-radius: 10px; background: #F4F2FB; border: 1px solid #E4E0F3; font-family: var(--font-jetbrains-mono, ui-monospace), monospace; font-size: 0.88rem; color: #3B3560; }
+  .st-card__link span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .st-card__link b { font-family: var(--font-inter), system-ui, sans-serif; font-weight: 600; font-size: 0.85rem; color: #5B46E0; }
+  .st-card__via { margin-top: 1rem; font-size: 0.85rem; color: #6F6A8A; }
+  .st-card__btns { margin-top: 0.5rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+  .st-card__btns span { display: grid; place-items: center; height: 2.7rem; border-radius: 10px; font-weight: 600; font-size: 0.92rem; color: #17123A; border: 1px solid #DDD8EE; background: #fff; }
+  .st-card__btns span[data-on] { color: #fff; border-color: transparent; background: var(--lp-cta-grad); }
+  .st-card__sent { margin-top: 0.85rem; display: flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; font-weight: 600; color: #147A52; opacity: 0; }
+
+  /* Le message en vol, du tableau de bord au téléphone. */
+  .st-chip { display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 16px 16px 16px 4px; background: #fff; color: #17123A; font-weight: 600; font-size: 0.92rem; box-shadow: 0 18px 34px -14px rgba(5, 2, 30, 0.85); }
+  .st-chip svg { color: #5B46E0; }
+
+  /* Repères d'étape, sur le bord droit de la scène. */
+  .st-rail { position: absolute; z-index: 3; right: 0.55rem; top: 50%; translate: 0 -50%; display: none; flex-direction: column; }
+  .st[data-mode="live"] .st-rail { display: flex; }
+  .st-rail__dot { width: 1.5rem; height: 1.5rem; display: grid; place-items: center; cursor: pointer; }
+  .st-rail__dot::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--kl-on-field); opacity: 0.34; transition: height 260ms var(--kl-ease-out), opacity 200ms var(--kl-ease-out); }
+  .st-rail__dot[aria-current]::before { height: 18px; opacity: 1; }
+  @media (hover: hover) { .st-rail__dot:hover::before { opacity: 0.8; } }
+  /* Sur téléphone, le formulaire passe sous les repères : la légende « 2/4 » suffit. */
+  @media (max-width: 1023px) { .st[data-mode="live"] .st-rail { display: none; } }
+
   .st-label { background: #fff; color: #17123A; border-radius: 8px; padding: 1.2rem 1.25rem 1.4rem; box-shadow: 0 40px 70px -34px rgba(5, 2, 30, 0.85), 0 14px 26px -16px rgba(5, 2, 30, 0.5); }
   .st-label__k { font-size: 0.9rem; color: #6F6A8A; }
   .st-label__v { font-size: 1.65rem; line-height: 1.1; margin-top: 0.15rem; }
@@ -541,7 +578,8 @@ body {
   .st[data-mode="static"] .st-objs { position: static; perspective: none; display: flex; justify-content: center; padding-top: 2.5rem; }
   .st[data-mode="static"] .st-obj { position: static; opacity: 1; visibility: visible; }
   .st[data-mode="static"] .st-phone { zoom: 0.72; }
-  .st[data-mode="static"] :is(.st-sheet, .st-label) { display: none; }
+  .st[data-mode="static"] :is(.st-sheet, .st-label, .st-card, .st-chip, .st-lock) { display: none; }
+  .st[data-mode="static"] .st-cap__skip { display: none; }
   @media (min-width: 1024px) {
     .st[data-mode="static"] .st-inner { grid-template-columns: minmax(0, 1fr); }
     .st[data-mode="static"] .st-cap { display: grid; }

@@ -1,17 +1,36 @@
-// components/landing/DemoModal.tsx — Démo narrative Klaris
-// On suit Claire Martin (cliente fictive) du clic au PDF, étape par étape.
-// Animations intra-étape pour donner vie au produit (typewriter, upload, score).
+// components/landing/DemoModal.tsx — Démo guidée : un film en 3D, joué dans le navigateur
+//
+// Quatre chapitres, un seul décor. Les écrans du produit sont posés dans un espace
+// en trois dimensions et une caméra vole de l'un à l'autre :
+//   1. le tableau de bord : on crée le dossier, le lien est généré ;
+//   2. le téléphone du client : le VRAI formulaire (/kyc/demo) avance étape par étape ;
+//   3. l'analyse de risque, puis l'étiquette de vigilance ;
+//   4. la VRAIE attestation (/pdf-render/attestation/demo) et l'archive du dossier.
+//
+// Fonctionnement :
+//   - une seule horloge (le temps du film, en millisecondes). Tout l'affichage s'en
+//     déduit : position de la caméra, curseur, texte saisi, éléments révélés. Mettre
+//     en pause, revenir en arrière ou sauter un chapitre revient à changer l'heure ;
+//   - la caméra est une transformation CSS 3D appliquée au décor entier (.dm-world).
+//     Ses plans sont décrits par l'objet visé, la zone à cadrer et l'angle ;
+//   - seuls transform et opacity sont animés ;
+//   - « réduire les animations » : pas de lecture automatique ni de vol de caméra,
+//     on passe d'un plan fixe au suivant avec les boutons.
+//
+// Règles de fond : on ne montre que ce que le produit fait. L'envoi du lien passe
+// par la messagerie de l'agent ; le niveau de vigilance vient de l'analyse saisie
+// par l'agent ; aucun contrôle n'est présenté comme automatique s'il ne l'est pas.
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import "./demo-film.css";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  X, Play, Pause, ArrowRight, Mail, Send, Check, Upload, FileText, Folder,
-  ShieldCheck, Lock, Smartphone, Sparkles, Image as ImageIcon, CheckCircle2,
-  Hash, Download, Clock, BadgeCheck, ScanSearch, ShieldOff,
-  Ban, Fingerprint, Globe,
+  X, Play, Pause, ChevronLeft, ChevronRight, Plus, Check, Link2, MessageSquare,
+  FileText, FolderArchive, RotateCcw, MousePointer2,
 } from "lucide-react";
 import KlarisLogo from "@/components/ui/KlarisLogo";
+import { LEVELS } from "@/components/landing/VigilanceScale";
 
 interface Props {
   open: boolean;
@@ -19,1495 +38,756 @@ interface Props {
   onCta?: () => void;
 }
 
-interface Step {
-  num: string;
-  title: string;
-  caption: string;
-  durationMs: number;
-  Mockup: React.FC<{ active: boolean }>;
-}
+/* ── Décor : taille naturelle et place de chaque objet dans l'espace (px) ── */
+const WIN_W = 1040, WIN_H = 660;
+const PHONE_W = 400, PHONE_H = 776, SCREEN_W = 384, SCREEN_H = 760;
+const PANEL_W = 520, PANEL_H = 724;
+const LABEL_W = 380, LABEL_H = 356;   // hauteur approchée, pour le centrage
+const SHEET_W = 794, SHEET_H = 1123;
+const ZIP_W = 430, ZIP_H = 256;
+const CHIP_W = 250, CHIP_H = 50;
 
-const STEPS: Step[] = [
+type Obj = { x: number; y: number; z: number; ry: number };
+const WORLD = {
+  win: { x: 0, y: 0, z: 0, ry: 0 },
+  phone: { x: 1320, y: 10, z: 180, ry: -26 },
+  panel: { x: 2700, y: 0, z: 0, ry: 12 },
+  label: { x: 3020, y: 110, z: 250, ry: -8 },
+  sheet: { x: 4150, y: 0, z: -40, ry: -12 },
+  zip: { x: 3760, y: 330, z: 260, ry: 10 },
+} satisfies Record<string, Obj>;
+type ObjName = keyof typeof WORLD;
+
+const PERSPECTIVE = 1400;
+
+/* ── Chapitres ── */
+const CHAPTERS = [
   {
-    num: "01",
-    title: "Vous créez le dossier de Claire",
-    caption: "Quelques champs suffisent. Le dossier est créé, le lien KYC est généré et prêt à partir.",
-    durationMs: 6500,
-    Mockup: Step1_Create,
+    t: 0,
+    title: "Vous créez le dossier.",
+    text: "Quatre champs suffisent : le rôle, le type de client, son nom, son e-mail. Le lien de la fiche est généré aussitôt.",
   },
   {
-    num: "02",
-    title: "Le lien KYC part chez Claire",
-    caption: "E-mail ou WhatsApp — Claire n'a aucune app à installer, aucun compte à créer.",
-    durationMs: 5500,
-    Mockup: Step2_Send,
+    t: 8900,
+    title: "Votre client remplit sa fiche.",
+    text: "Vous lui envoyez le lien par e-mail, WhatsApp ou message. Il répond en sept étapes sur son téléphone, sans compte ni application.",
   },
   {
-    num: "03",
-    title: "Claire remplit sur son téléphone",
-    caption: "Le formulaire est conçu d'abord pour le téléphone : Claire le remplit sans rien installer.",
-    durationMs: 7500,
-    Mockup: Step3_Mobile,
+    t: 19000,
+    title: "Vous analysez, Klaris classe.",
+    text: "Ses réponses et ses pièces arrivent dans le dossier. Vous complétez l'analyse de risque ; Klaris en déduit le niveau de vigilance et la marche à suivre.",
   },
   {
-    num: "04",
-    title: "Klaris analyse et score",
-    caption: "Le moteur Klaris v2 classe le dossier sur 4 niveaux Klaris, fondés sur le CMF. Verdict en quelques secondes.",
-    durationMs: 6500,
-    Mockup: Step4_Score,
+    t: 29000,
+    title: "Tout est prêt pour un contrôle.",
+    text: "Une attestation PDF horodatée, avec son empreinte SHA-256, et une archive complète : attestation, fiche, pièces.",
   },
-  {
-    num: "05",
-    title: "L'attestation est prête",
-    caption: "PDF horodaté, avec empreinte SHA-256, à présenter en cas de contrôle.",
-    durationMs: 6000,
-    Mockup: Step5_Attestation,
-  },
+] as const;
+const END_T = 38000;      // début du plan final
+const FILM_T = 41500;     // fin du film
+/* Plans fixes utilisés quand les animations sont réduites (un par chapitre, puis la fin). */
+const POSTERS = [8400, 17900, 28400, 36800, FILM_T];
+
+/* ── Plans de caméra ──
+   obj : objet visé ; rect : zone à cadrer, relative au centre de l'objet [cx, cy, l, h] ;
+   yaw : angle autour de l'objet (0 = de face), pitch : hauteur de la caméra. */
+type Shot = { t: number; dur: number; obj: ObjName; rect: [number, number, number, number]; yaw: number; pitch: number };
+const shots = (portrait: boolean): Shot[] => [
+  // Ouverture : la fenêtre du tableau de bord, vue de côté et d'en haut.
+  { t: -1, dur: 1, obj: "win", rect: [0, 0, 1700, 1200], yaw: 30, pitch: 14 },
+  { t: 0, dur: 1900, obj: "win", rect: portrait ? [250, -150, 600, 470] : [0, 0, 1130, 730], yaw: 9, pitch: 4 },
+  { t: 2000, dur: 1200, obj: "win", rect: portrait ? [0, 10, 580, 630] : [0, 20, 980, 660], yaw: -7, pitch: 3 },
+  { t: 6100, dur: 1300, obj: "win", rect: portrait ? [0, 10, 600, 560] : [0, 10, 860, 600], yaw: 8, pitch: 5 },
+  // Vol vers le téléphone, puis lent tour autour de lui pendant que le client répond.
+  { t: 8900, dur: 2300, obj: "phone", rect: portrait ? [0, -70, 410, 640] : [0, 0, 620, 830], yaw: 16, pitch: 6 },
+  { t: 11900, dur: 6700, obj: "phone", rect: portrait ? [0, -70, 400, 630] : [0, 0, 600, 810], yaw: -11, pitch: 2 },
+  // L'analyse de risque, puis l'étiquette.
+  // (de près d'abord : la caméra descend le long des critères à mesure qu'ils sont renseignés)
+  { t: 19000, dur: 2200, obj: "panel", rect: portrait ? [0, -110, 560, 560] : [30, -110, 720, 520], yaw: -13, pitch: 5 },
+  { t: 21400, dur: 3100, obj: "panel", rect: portrait ? [0, 110, 560, 560] : [30, 100, 720, 520], yaw: 6, pitch: 3 },
+  { t: 24700, dur: 1500, obj: "label", rect: portrait ? [0, 0, 440, 420] : [-150, -100, 900, 780], yaw: 7, pitch: 4 },
+  // L'attestation, puis l'archive.
+  { t: 29000, dur: 2300, obj: "sheet", rect: portrait ? [0, 0, 880, 1180] : [0, 0, 1100, 1180], yaw: 17, pitch: 9 },
+  { t: 31400, dur: 1900, obj: "sheet", rect: portrait ? [0, -40, 860, 1150] : [-60, 0, 1100, 1170], yaw: -7, pitch: 4 },
+  { t: 33400, dur: 1500, obj: "zip", rect: portrait ? [0, 0, 480, 400] : [150, -230, 1150, 1060], yaw: -6, pitch: 5 },
+  // Plan final : toute la chaîne, vue de loin.
+  { t: END_T, dur: 2800, obj: "panel", rect: portrait ? [-500, 0, 3300, 1500] : [-650, 0, 5200, 1500], yaw: portrait ? 52 : 34, pitch: 13 },
 ];
 
-const TOTAL_STEPS = STEPS.length;
+/* ── Scénario : ce qui se passe à l'écran, et quand (ms) ── */
+const NAME = "Camille Rousseau";
+const EMAIL = "camille.rousseau@example.com";
+const T = {
+  cursorIn: 900, clickNew: 1900, scrForm: 2050,
+  role: 2750, type: 3150, nameStart: 3350, emailStart: 4450, clickCreate: 5950, scrDone: 6150,
+  clickShare: 7700, sent: 8100, chipStart: 8300, chipEnd: 10950,
+  notif: 10900, tapNotif: 11800, unlock: 11950,
+  form: [12700, 13900, 15100, 16300, 17500],
+  rows: 21300, rowGap: 430, badge: 24500,
+  label: 24900, bars: 25300, pointer: 26500, todo: 27100,
+  sheet: 29500, zip: 33500, zipGap: 480,
+  endCard: 39700,
+} as const;
+const FORM_STEPS = [0, 1, 2, 3, 5, 6];
+
+const ROWS = [
+  { k: "Résidence fiscale", v: "France / Union Européenne" },
+  { k: "Source des fonds", v: "Épargne personnelle (justifiée)" },
+  { k: "Montage financier", v: "Prêt bancaire UE classique" },
+  { k: "Mode de paiement", v: "Virement bancaire UE" },
+  { k: "Personne sous gel des avoirs ?", v: "Non" },
+  { k: "Liste de sanctions internationales ?", v: "Non" },
+  { k: "Personne politiquement exposée ?", v: "Non" },
+];
+const DOSSIERS = [
+  { i: "ST", n: "SCI Les Tilleuls", d: "Personne morale", r: "VENDEUR", b: "Vigilance renforcée", c: "amber" },
+  { i: "ML", n: "Marc Lefèvre", d: "Personne physique", r: "ACQUÉREUR", b: "Conforme", c: "green" },
+  { i: "NB", n: "Nadia Benali", d: "Personne physique", r: "ACQUÉREUR", b: "En attente du KYC", c: "violet" },
+  { i: "JM", n: "Julien Mercier", d: "Personne physique", r: "VENDEUR", b: "Conforme", c: "green" },
+];
+
+const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+const rad = (d: number) => (d * Math.PI) / 180;
+
+/* Point local d'un objet (px, relatif à son centre) → point du décor. */
+const toWorld = (o: Obj, lx: number, ly: number): [number, number, number] => [
+  o.x + lx * Math.cos(rad(o.ry)),
+  o.y + ly,
+  o.z - lx * Math.sin(rad(o.ry)),
+];
+
+/* Centre d'un élément dans le repère de `root` (mise en page, avant toute transformation). */
+const centerIn = (el: HTMLElement | null, root: HTMLElement | null): [number, number] => {
+  if (!el || !root) return [0, 0];
+  let x = 0, y = 0;
+  let n: HTMLElement | null = el;
+  while (n && n !== root) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent as HTMLElement | null; }
+  return [x + el.offsetWidth / 2, y + el.offsetHeight / 2];
+};
+
+/* Pose un objet dans le décor. `h` sert au centrage ; `fixed` impose aussi la hauteur. */
+const place = (o: Obj, w: number, h: number, fixed = true): React.CSSProperties => ({
+  width: w,
+  ...(fixed ? { height: h } : null),
+  transform: `translate3d(${o.x - w / 2}px, ${o.y - h / 2}px, ${o.z}px) rotateY(${o.ry}deg)`,
+});
+const prefersReduced = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export default function DemoModal({ open, onClose, onCta }: Props) {
-  const [step, setStep] = useState(0);
-  const [playing, setPlaying] = useState(true);
-  const startRef = useRef<number>(0);
-  const [progress, setProgress] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<HTMLDivElement>(null);
+  const worldRef = useRef<HTMLDivElement>(null);
+  const lightRef = useRef<HTMLDivElement>(null);
+  const cutRef = useRef<HTMLDivElement>(null);
+  const segRefs = useRef<(HTMLElement | null)[]>([]);
+  // Fenêtre du tableau de bord
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const rippleRef = useRef<HTMLElement>(null);
+  const scrRefs = useRef<(HTMLElement | null)[]>([]);
+  const btnNewRef = useRef<HTMLSpanElement>(null);
+  const roleRef = useRef<HTMLSpanElement>(null);
+  const typeRef = useRef<HTMLSpanElement>(null);
+  const nameRef = useRef<HTMLSpanElement>(null);
+  const emailRef = useRef<HTMLSpanElement>(null);
+  const btnCreateRef = useRef<HTMLSpanElement>(null);
+  const btnShareRef = useRef<HTMLSpanElement>(null);
+  const sentRef = useRef<HTMLDivElement>(null);
+  const chipRef = useRef<HTMLDivElement>(null);
+  // Téléphone
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const lockRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
+  // Analyse, étiquette, attestation, archive
+  const rowRefs = useRef<(HTMLElement | null)[]>([]);
+  const badgeRef = useRef<HTMLSpanElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
+  const barRefs = useRef<(HTMLElement | null)[]>([]);
+  const pointerRef = useRef<HTMLSpanElement>(null);
+  const todoRef = useRef<HTMLParagraphElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const zipRef = useRef<HTMLDivElement>(null);
+  const zipRowRefs = useRef<(HTMLElement | null)[]>([]);
+  const endRef = useRef<HTMLDivElement>(null);
 
+  const [chapter, setChapter] = useState(0);      // 0 à 3, 4 = plan final
+  const [playing, setPlaying] = useState(() => !prefersReduced());
+  const [reduced, setReduced] = useState(prefersReduced);
+  const [phoneReady, setPhoneReady] = useState(false);
+  const [step, setStep] = useState(0);
+  const [sheetOn, setSheetOn] = useState(false);
+
+  // Commandes du moteur, appelées par les boutons.
+  const api = useRef<{ step: (d: number) => void; toggle: () => void; replay: () => void }>({
+    step: () => {}, toggle: () => {}, replay: () => {},
+  });
+
+  // Toujours la dernière version de onClose, sans relancer les effets à chaque rendu du parent.
+  const closeFn = useRef(onClose);
+  useEffect(() => { closeFn.current = onClose; }, [onClose]);
+
+  /* ── Dialogue avec le formulaire (prêt, étape, thème clair) ── */
   useEffect(() => {
     if (!open) return;
-    setStep(0);
-    setPlaying(true);
-    setProgress(0);
+    const onMsg = (e: MessageEvent) => {
+      if (e?.data?.type === "klaris-demo-ready") setPhoneReady(true);
+    };
+    window.addEventListener("message", onMsg);
+    iframeRef.current?.contentWindow?.postMessage({ type: "klaris-demo-ping" }, "*");
+    return () => window.removeEventListener("message", onMsg);
   }, [open]);
+  useEffect(() => {
+    const w = iframeRef.current?.contentWindow;
+    if (!w) return;
+    w.postMessage({ type: "klaris-demo-theme", theme: "light" }, "*");
+    w.postMessage({ type: "klaris-demo-step", step }, "*");
+  }, [step, phoneReady]);
 
+  /* ── Fenêtre modale : défilement de la page bloqué, Échap, focus ── */
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    const before = document.activeElement as HTMLElement | null;
+    // Filet de sécurité : Échap ferme la démo même si le focus en est sorti.
+    const onEsc = (e: KeyboardEvent) => { if (e.key === "Escape") closeFn.current(); };
+    window.addEventListener("keydown", onEsc);
+    // Le focus va sur la fenêtre elle-même : espace met en pause, Tab mène aux boutons.
+    rootRef.current?.focus({ preventScroll: true });
+    return () => {
+      window.removeEventListener("keydown", onEsc);
+      document.body.style.overflow = prev;
+      before?.focus?.({ preventScroll: true });
+    };
   }, [open]);
 
+  /* ── Moteur du film ── */
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowRight" && step < TOTAL_STEPS - 1) goTo(step + 1);
-      else if (e.key === "ArrowLeft" && step > 0) goTo(step - 1);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, step, onClose]);
+    const root = rootRef.current, view = viewRef.current, world = worldRef.current;
+    if (!root || !view || !world) return;
 
-  useEffect(() => {
-    if (!open || !playing) return;
-    startRef.current = performance.now();
-    let raf: number;
-    const tick = (t: number) => {
-      const elapsed = t - startRef.current;
-      const p = Math.min(1, elapsed / STEPS[step].durationMs);
-      setProgress(p);
-      if (p >= 1) {
-        setStep((s) => (s + 1) % TOTAL_STEPS);
-        startRef.current = performance.now();
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let still = mq.matches;          // animations réduites : plans fixes
+    let t = still ? POSTERS[0] : 0;  // heure du film
+    let run = !still;
+    let raf = 0;
+    let lastTs = 0;
+    let lastChapter = -1, lastStep = -1, lastName = -1, lastEmail = -1, lastTone = "";
+    let sheetAsked = false;
+
+    /* Mise en page : origine de la scène, plans résolus, repères du curseur. */
+    type Pose = { fx: number; fy: number; fz: number; yaw: number; pitch: number; s: number };
+    let poses: (Pose & { t: number; dur: number })[] = [];
+    let ox = 0, oy = 0;
+    const pts: Record<string, [number, number]> = {};
+    let chipA: [number, number, number] = [0, 0, 0];
+    const chipB = toWorld(WORLD.phone, 0, -110);
+    chipB[2] += 40;
+
+    const measure = () => {
+      const vw = view.clientWidth, vh = view.clientHeight;
+      const portrait = vw < 820 || vw / vh < 0.9;
+      root.toggleAttribute("data-portrait", portrait);
+      const top = 62;
+      const bottom = portrait ? (root.querySelector<HTMLElement>(".dm-console")?.offsetHeight ?? 200) + 26 : 150;
+      const availW = vw * (portrait ? 0.97 : 0.92), availH = (vh - top - bottom) * 0.96;
+      ox = vw / 2; oy = top + (vh - top - bottom) / 2;
+      view.style.perspectiveOrigin = `${ox}px ${oy}px`;
+      poses = shots(portrait).map((sh) => {
+        const o = WORLD[sh.obj];
+        const [fx, fy, fz] = toWorld(o, sh.rect[0], sh.rect[1]);
+        return {
+          t: sh.t, dur: sh.dur, fx, fy, fz,
+          yaw: o.ry + sh.yaw, pitch: sh.pitch,
+          s: Math.min(availW / sh.rect[2], availH / sh.rect[3]),
+        };
+      });
+      const body = bodyRef.current;
+      pts.start = [WIN_W * 0.46, (WIN_H - 40) * 0.72];
+      pts.new = centerIn(btnNewRef.current, body);
+      pts.role = centerIn(roleRef.current, body);
+      pts.type = centerIn(typeRef.current, body);
+      pts.name = centerIn(nameRef.current, body);
+      pts.email = centerIn(emailRef.current, body);
+      pts.create = centerIn(btnCreateRef.current, body);
+      pts.share = centerIn(btnShareRef.current, body);
+      chipA = toWorld(WORLD.win, pts.share[0] - WIN_W / 2, pts.share[1] + 40 - WIN_H / 2);
+      chipA[2] += 30;
+    };
+
+    /* Trajet du curseur : [heure d'arrivée, durée du trajet, point visé]. */
+    const CURSOR: [number, number, string][] = [
+      [T.cursorIn, 1, "start"], [T.clickNew - 100, 800, "new"],
+      [T.role - 60, 420, "role"], [T.type - 60, 300, "type"],
+      [T.nameStart - 40, 180, "name"], [T.emailStart - 40, 160, "email"],
+      [T.clickCreate - 60, 340, "create"], [T.clickShare - 80, 720, "share"],
+    ];
+    const CLICKS = [T.clickNew, T.role, T.type, T.nameStart, T.emailStart, T.clickCreate, T.clickShare];
+
+    /* Chapitre en cours d'après l'heure du film (CHAPTERS.length = plan final). */
+    const chapterAt = () => {
+      if (t >= END_T) return CHAPTERS.length;
+      let ch = 0;
+      while (ch < CHAPTERS.length - 1 && CHAPTERS[ch + 1].t <= t) ch += 1;
+      return ch;
+    };
+
+    const flag = (el: Element | null | undefined, on: boolean) => {
+      if (el && el.hasAttribute("data-on") !== on) el.toggleAttribute("data-on", on);
+    };
+
+    const render = (now: number) => {
+      /* ── Caméra ── */
+      let i = 0;
+      while (i < poses.length - 1 && poses[i + 1].t <= t) i += 1;
+      const b = poses[i], a = poses[Math.max(0, i - 1)];
+      const k = still ? 1 : seg(t, b.t, b.t + b.dur);
+      const e = easeInOut(k);
+      const dist = Math.hypot(b.fx - a.fx, b.fz - a.fz);
+      const far = clamp(dist / 900);            // grand déplacement : la caméra prend du recul et s'incline
+      const arc = Math.sin(Math.PI * e) * far;
+      // Respiration : la caméra n'est jamais tout à fait immobile.
+      const live = still ? 0 : 1;
+      const yaw = lerp(a.yaw, b.yaw, e) + live * 1.6 * Math.sin(now / 2700);
+      const pitch = lerp(a.pitch, b.pitch, e) + arc * 5 + live * 0.8 * Math.sin(now / 3300 + 1);
+      const roll = arc * 2.6 * Math.sign(b.fx - a.fx);
+      const s = Math.exp(lerp(Math.log(a.s), Math.log(b.s), e)) * (1 - 0.24 * arc) * (1 + live * 0.012 * Math.sin(now / 2300));
+      const fx = lerp(a.fx, b.fx, e), fy = lerp(a.fy, b.fy, e) - arc * 40, fz = lerp(a.fz, b.fz, e);
+      const dolly = PERSPECTIVE * (1 - 1 / s);
+      world.style.transform =
+        `translate3d(${ox.toFixed(1)}px, ${oy.toFixed(1)}px, 0) translateZ(${dolly.toFixed(1)}px) ` +
+        `rotateZ(${(-roll).toFixed(3)}deg) rotateX(${pitch.toFixed(3)}deg) rotateY(${(-yaw).toFixed(3)}deg) ` +
+        `translate3d(${(-fx).toFixed(1)}px, ${(-fy).toFixed(1)}px, ${(-fz).toFixed(1)}px)`;
+
+      /* ── Alternance sombre / clair ── */
+      const light = clamp(
+        easeInOut(seg(t, CHAPTERS[1].t + 700, CHAPTERS[1].t + 2000)) - easeInOut(seg(t, CHAPTERS[2].t + 300, CHAPTERS[2].t + 1700)) +
+        easeInOut(seg(t, CHAPTERS[3].t + 300, CHAPTERS[3].t + 1700)) - easeInOut(seg(t, END_T + 200, END_T + 1700)),
+      );
+      if (lightRef.current) lightRef.current.style.opacity = light.toFixed(3);
+      const tone = light > 0.5 ? "light" : "dark";
+      if (tone !== lastTone) { lastTone = tone; root.setAttribute("data-tone", tone); }
+
+      /* ── Chapitre et barre de progression ── */
+      const ch = chapterAt();
+      if (ch !== lastChapter) { lastChapter = ch; setChapter(ch); }
+      segRefs.current.forEach((el, n) => {
+        if (!el) return;
+        const t0 = CHAPTERS[n].t, t1 = n < CHAPTERS.length - 1 ? CHAPTERS[n + 1].t : END_T;
+        el.style.transform = `scaleX(${seg(t, t0, t1).toFixed(4)})`;
+      });
+
+      /* ── Chapitre 1 : le tableau de bord ── */
+      flag(scrRefs.current[0], t < T.scrForm);
+      flag(scrRefs.current[1], t >= T.scrForm && t < T.scrDone);
+      flag(scrRefs.current[2], t >= T.scrDone);
+      flag(btnNewRef.current, t >= T.clickNew - 40 && t < T.clickNew + 160);
+      flag(roleRef.current, t >= T.role);
+      flag(typeRef.current, t >= T.type);
+      flag(btnCreateRef.current, t >= T.clickCreate - 40 && t < T.clickCreate + 160);
+      flag(btnShareRef.current, t >= T.clickShare);
+      flag(sentRef.current, t >= T.sent);
+      const nName = clamp(Math.floor((t - T.nameStart) / 58), 0, NAME.length);
+      if (nName !== lastName && nameRef.current) { lastName = nName; nameRef.current.textContent = NAME.slice(0, nName); }
+      flag(nameRef.current, t >= T.nameStart && t < T.emailStart);
+      const nEmail = clamp(Math.floor((t - T.emailStart) / 38), 0, EMAIL.length);
+      if (nEmail !== lastEmail && emailRef.current) { lastEmail = nEmail; emailRef.current.textContent = EMAIL.slice(0, nEmail); }
+      flag(emailRef.current, t >= T.emailStart && t < T.clickCreate);
+
+      const cur = cursorRef.current;
+      if (cur) {
+        let c = 0;
+        while (c < CURSOR.length - 1 && CURSOR[c + 1][0] - CURSOR[c + 1][1] <= t) c += 1;
+        const to = pts[CURSOR[c][2]], from = pts[CURSOR[Math.max(0, c - 1)][2]];
+        const ke = easeInOut(seg(t, CURSOR[c][0] - CURSOR[c][1], CURSOR[c][0]));
+        const cx = lerp(from[0], to[0], ke), cy = lerp(from[1], to[1], ke) - Math.sin(Math.PI * ke) * 14;
+        const press = CLICKS.reduce((m, tc) => Math.max(m, Math.sin(Math.PI * seg(t, tc - 90, tc + 150))), 0);
+        cur.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0) scale(${(1 - 0.14 * press).toFixed(3)})`;
+        cur.style.opacity = (seg(t, T.cursorIn - 300, T.cursorIn) * (1 - seg(t, T.sent, T.sent + 400))).toFixed(3);
+        const rp = rippleRef.current;
+        if (rp) {
+          const last = CLICKS.reduce((m, tc) => (tc <= t ? tc : m), -9999);
+          const r = seg(t, last, last + 520);
+          rp.style.opacity = (r > 0 && r < 1 ? 0.55 * (1 - r) : 0).toFixed(3);
+          rp.style.transform = `translate(-50%, -50%) scale(${(0.3 + 2.4 * easeOut(r)).toFixed(3)})`;
+        }
       }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [open, playing, step]);
 
-  const goTo = (i: number) => {
-    setStep(i);
-    setProgress(0);
-    startRef.current = performance.now();
-  };
+      /* ── Le lien part vers le téléphone (la caméra le suit) ── */
+      const chip = chipRef.current;
+      if (chip) {
+        const f = seg(t, T.chipStart, T.chipEnd);
+        const ce = easeInOut(f);
+        const mx = (chipA[0] + chipB[0]) / 2, my = Math.min(chipA[1], chipB[1]) - 210, mz = Math.max(chipA[2], chipB[2]) + 330;
+        const q = (p0: number, p1: number, p2: number) => (1 - ce) * (1 - ce) * p0 + 2 * (1 - ce) * ce * p1 + ce * ce * p2;
+        const o = Math.min(seg(f, 0, 0.08), 1 - seg(f, 0.9, 1));
+        chip.style.opacity = o.toFixed(3);
+        chip.style.visibility = o < 0.01 ? "hidden" : "visible";
+        // Toujours face à la caméra.
+        chip.style.transform =
+          `translate3d(${(q(chipA[0], mx, chipB[0]) - CHIP_W / 2).toFixed(1)}px, ${(q(chipA[1], my, chipB[1]) - CHIP_H / 2).toFixed(1)}px, ${q(chipA[2], mz, chipB[2]).toFixed(1)}px) ` +
+          `rotateY(${yaw.toFixed(2)}deg) rotateX(${(-pitch).toFixed(2)}deg) scale(${lerp(0.8, 1.5, Math.sin(Math.PI * ce)).toFixed(3)})`;
+      }
+
+      /* ── Chapitre 2 : le téléphone ── */
+      flag(notifRef.current, t >= T.notif);
+      flag(lockRef.current, t < T.unlock);
+      if (notifRef.current) notifRef.current.toggleAttribute("data-tap", t >= T.tapNotif && t < T.unlock);
+      let st = 0;
+      T.form.forEach((tf, n) => { if (t >= tf) st = n + 1; });
+      if (FORM_STEPS[st] !== lastStep) { lastStep = FORM_STEPS[st]; setStep(lastStep); }
+
+      /* ── Chapitre 3 : l'analyse, puis l'étiquette ── */
+      rowRefs.current.forEach((el, n) => flag(el, t >= T.rows + n * T.rowGap));
+      flag(badgeRef.current, t >= T.badge);
+      flag(labelRef.current, t >= T.label);
+      barRefs.current.forEach((el, n) => {
+        flag(el, t >= T.bars + n * 190);
+        if (el) el.toggleAttribute("data-dim", n > 0 && t >= T.pointer);
+      });
+      flag(pointerRef.current, t >= T.pointer);
+      flag(todoRef.current, t >= T.todo);
+
+      /* ── Chapitre 4 : l'attestation et l'archive ── */
+      flag(sheetRef.current, t >= T.sheet);
+      flag(zipRef.current, t >= T.zip);
+      zipRowRefs.current.forEach((el, n) => flag(el, t >= T.zip + 350 + n * T.zipGap));
+      if (!sheetAsked && t >= CHAPTERS[2].t) { sheetAsked = true; setSheetOn(true); }
+
+      /* ── Fin ── */
+      flag(endRef.current, t >= T.endCard);
+    };
+
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      const dt = lastTs ? Math.min(80, now - lastTs) : 0;
+      lastTs = now;
+      if (run && !document.hidden) {
+        t += dt;
+        if (t >= FILM_T) { t = FILM_T; run = false; setPlaying(false); }
+      }
+      render(now);
+    };
+
+    /* Coupe franche (changement de chapitre) : un court fondu masque le saut de caméra. */
+    const cut = () => {
+      cutRef.current?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 420, easing: "ease-out" });
+    };
+    api.current = {
+      // Chapitre précédent ou suivant, d'après l'heure du film (et non l'affichage, qui
+      // peut avoir une image de retard quand on appuie vite).
+      step: (d) => {
+        const n = clamp(chapterAt() + d, 0, CHAPTERS.length);
+        t = still ? POSTERS[n] : n === CHAPTERS.length ? END_T : CHAPTERS[n].t;
+        if (!still && n < CHAPTERS.length) { run = true; setPlaying(true); }
+        cut();
+      },
+      toggle: () => {
+        if (still) return;
+        if (t >= FILM_T) { t = 0; cut(); }
+        run = !run; setPlaying(run);
+      },
+      replay: () => { t = still ? POSTERS[0] : 0; run = !still; setPlaying(run); cut(); },
+    };
+
+    const onResize = () => measure();
+    const onMq = () => {
+      still = mq.matches; setReduced(still);
+      if (still) { run = false; setPlaying(false); t = POSTERS[Math.max(0, lastChapter)]; }
+    };
+    measure();
+    raf = requestAnimationFrame(frame);
+    document.fonts?.ready.then(measure).catch(() => {});
+    window.addEventListener("resize", onResize);
+    mq.addEventListener("change", onMq);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+      mq.removeEventListener("change", onMq);
+      api.current = { step: () => {}, toggle: () => {}, replay: () => {} };
+    };
+  }, [open]);
+
+  /* ── Clavier : Échap, espace, flèches, et le focus reste dans la fenêtre ── */
+  const onKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Escape") return; // géré au niveau de la fenêtre
+    if (e.key === "ArrowRight") { api.current.step(1); return; }
+    if (e.key === "ArrowLeft") { api.current.step(-1); return; }
+    if (e.key === " " && (e.target as HTMLElement).tagName !== "BUTTON") { e.preventDefault(); api.current.toggle(); return; }
+    if (e.key === "Tab") {
+      // Le focus tourne entre les boutons de la démo, sans jamais en sortir.
+      const f = Array.from(rootRef.current?.querySelectorAll<HTMLElement>("button:not([disabled]):not([tabindex='-1'])") ?? []);
+      if (!f.length) return;
+      e.preventDefault();
+      const i = f.indexOf(document.activeElement as HTMLElement);
+      const next = i < 0 ? (e.shiftKey ? f.length - 1 : 0) : (i + (e.shiftKey ? -1 : 1) + f.length) % f.length;
+      f[next].focus();
+    }
+  }, []);
 
   if (!open) return null;
 
-  const S = STEPS[step];
+  const ended = chapter >= CHAPTERS.length;
+  const cap = CHAPTERS[Math.min(chapter, CHAPTERS.length - 1)];
 
   return (
     <div
+      ref={rootRef}
+      className="dm"
       role="dialog"
       aria-modal="true"
-      onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 md:p-10"
-      style={{
-        background: "rgba(7,8,15,0.85)",
-        backdropFilter: "blur(22px) saturate(180%)",
-        WebkitBackdropFilter: "blur(22px) saturate(180%)",
-      }}
+      aria-label="Démo guidée de Klaris"
+      tabIndex={-1}
+      data-tone="dark"
+      onKeyDown={onKeyDown}
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl rounded-3xl overflow-hidden border border-white/[0.08]"
-        style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-          backdropFilter: "blur(28px) saturate(180%)",
-          WebkitBackdropFilter: "blur(28px) saturate(180%)",
-          boxShadow: "0 40px 100px -20px rgba(124,58,237,0.45), 0 12px 40px -8px rgba(0,0,0,0.6)",
-        }}
-      >
-        {/* halos */}
-        <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(closest-side, rgba(124,58,237,0.30), transparent 70%)" }} />
-        <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full pointer-events-none"
-          style={{ background: "radial-gradient(closest-side, rgba(236,72,153,0.22), transparent 70%)" }} />
+      <div className="dm-bg" aria-hidden="true" />
+      <div ref={lightRef} className="dm-bg dm-bg--light" aria-hidden="true" />
 
-        {/* HEADER */}
-        <div className="relative flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-white/[0.06]">
-          <div className="flex items-center gap-2.5">
-            <KlarisLogo size={28} />
-            <div className="text-[14.5px] font-bold tracking-tight text-white">Klaris</div>
-            <div
-              className="px-2 py-0.5 rounded-md text-[9.5px] font-semibold tracking-widest uppercase border"
-              style={{
-                background: "rgba(124,58,237,0.10)",
-                borderColor: "rgba(124,58,237,0.30)",
-                color: "#c4b5fd",
-              }}
+      {/* ───────── Le décor en 3D ───────── */}
+      <div ref={viewRef} className="dm-view" aria-hidden="true" onClick={() => api.current.toggle()}>
+        <div ref={worldRef} className="dm-world">
+          {/* Grands chiffres en fond de décor : ils donnent la profondeur pendant les vols. */}
+          {(["win", "phone", "panel", "sheet"] as const).map((o, i) => (
+            <span
+              key={o}
+              className="dm-num"
+              style={{ transform: `translate3d(${WORLD[o].x - 340}px, ${-640}px, ${WORLD[o].z - 620}px) rotateY(${WORLD[o].ry * 0.5}deg)` }}
             >
-              Démo guidée
-            </div>
-            <div className="hidden md:block text-[11.5px] text-white/45 ml-2">
-              · Suivez le parcours du dossier de <span className="text-white/65">Claire Martin</span>
+              {i + 1}
+            </span>
+          ))}
+
+          {/* 1 · Tableau de bord */}
+          <div className="dm-obj dm-win" style={place(WORLD.win, WIN_W, WIN_H)}>
+            <div className="dm-win__bar"><i /><i /><i /><span>klaris-app.fr/dashboard</span></div>
+            <div ref={bodyRef} className="dm-win__body">
+              <section ref={(el) => { scrRefs.current[0] = el; }} className="dm-scr" data-on="">
+                <div className="dm-app__nav">
+                  <KlarisLogo size={26} /><b>Klaris</b>
+                  <span data-cur="">Dossiers</span><span>Cartographie</span><span>Intégrations</span><span>Abonnement</span>
+                </div>
+                <div className="dm-app__head">
+                  <div>
+                    <h3>Tableau de bord</h3>
+                    <p>4 dossiers KYC · mise à jour à l&apos;instant</p>
+                  </div>
+                  <span ref={btnNewRef} className="dm-btn"><Plus width={18} height={18} strokeWidth={2.6} />Nouveau dossier</span>
+                </div>
+                <ul className="dm-rows">
+                  {DOSSIERS.map((d) => (
+                    <li key={d.n}>
+                      <span className="dm-rows__av">{d.i}</span>
+                      <div>
+                        <b>{d.n}</b>
+                        <small>{d.d} · <em data-r={d.r}>{d.r}</em></small>
+                      </div>
+                      <span className="dm-badge" data-c={d.c}>{d.b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section ref={(el) => { scrRefs.current[1] = el; }} className="dm-scr dm-scr--form">
+                <h3>Créer un dossier</h3>
+                <label>Rôle dans la transaction</label>
+                <div className="dm-opts">
+                  <span><b>Vendeur</b><small>Cède le bien</small></span>
+                  <span ref={roleRef}><b>Acquéreur</b><small>Achète le bien</small></span>
+                </div>
+                <label>Type de client</label>
+                <div className="dm-opts">
+                  <span ref={typeRef}><b>Personne physique</b></span>
+                  <span><b>Personne morale</b></span>
+                </div>
+                <div className="dm-two">
+                  <div>
+                    <label>Nom et prénom du client</label>
+                    <div className="dm-input"><span ref={nameRef} /></div>
+                  </div>
+                  <div>
+                    <label>Email du client</label>
+                    <div className="dm-input"><span ref={emailRef} /></div>
+                  </div>
+                </div>
+                <span ref={btnCreateRef} className="dm-btn dm-btn--wide">Créer le dossier et générer le lien</span>
+              </section>
+
+              <section ref={(el) => { scrRefs.current[2] = el; }} className="dm-scr dm-scr--done">
+                <div className="dm-ok"><span><Check width={20} height={20} strokeWidth={3} /></span>Dossier créé</div>
+                <h3>Le lien KYC pour {NAME} est prêt.</h3>
+                <span className="dm-pill">Côté acquéreur</span>
+                <div className="dm-link"><Link2 width={18} height={18} /><span>klaris-app.fr/kyc/…</span><b>Copier</b></div>
+                <label>Partager via</label>
+                <div className="dm-share">
+                  <span>Email</span>
+                  <span ref={btnShareRef}>WhatsApp</span>
+                  <span>Message</span>
+                </div>
+                <div ref={sentRef} className="dm-sent"><Check width={16} height={16} strokeWidth={3} />Lien envoyé depuis votre messagerie</div>
+              </section>
+
+              <div ref={cursorRef} className="dm-cursor">
+                <i ref={rippleRef} />
+                <MousePointer2 width={30} height={30} fill="#17123A" stroke="#fff" strokeWidth={1.6} />
+              </div>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            aria-label="Fermer la démo"
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.06] transition"
-          >
-            <X width={15} height={15} />
-          </button>
-        </div>
 
-        {/* PLAYER */}
-        <div className="relative px-3 sm:px-6 pt-4 sm:pt-5 pb-2">
-          <div
-            className="relative rounded-2xl overflow-hidden border border-white/[0.08]"
-            style={{
-              background: "#08090F",
-              boxShadow: "0 30px 80px -20px rgba(124,58,237,0.35), 0 12px 30px -8px rgba(0,0,0,0.6)",
-            }}
-          >
-            {/* fake browser bar */}
-            <div className="flex items-center gap-2 px-4 py-2 border-b border-white/[0.06] bg-black/30">
-              <div className="flex gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
-                <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/60" />
-              </div>
-              <div className="flex-1 mx-3">
-                <div className="text-[10.5px] text-white/45 font-mono truncate text-center">
-                  klaris-app.fr{stepUrl(step)}
+          {/* Le lien, en vol entre le tableau de bord et le téléphone */}
+          <div ref={chipRef} className="dm-chip" style={{ width: CHIP_W, height: CHIP_H }}>
+            <Link2 width={19} height={19} /><span>klaris-app.fr/kyc/…</span>
+          </div>
+
+          {/* 2 · Téléphone du client */}
+          <div className="dm-obj dm-phone" style={place(WORLD.phone, PHONE_W, PHONE_H)}>
+            <div className="dm-phone__screen" style={{ width: SCREEN_W, height: SCREEN_H }}>
+              <iframe
+                ref={iframeRef}
+                src="/kyc/demo"
+                title="Le formulaire reçu par le client (exemple fictif)"
+                tabIndex={-1}
+                scrolling="no"
+                style={{ width: SCREEN_W, height: SCREEN_H, border: 0, pointerEvents: "none" }}
+              />
+              <div ref={lockRef} className="dm-lock" data-on="">
+                <div className="dm-lock__time">9:41</div>
+                <div ref={notifRef} className="dm-lock__notif">
+                  <span className="dm-lock__app"><MessageSquare width={24} height={24} strokeWidth={2.2} /></span>
+                  <div>
+                    <div className="dm-lock__from"><b>Marie Lefort</b><span>maintenant</span></div>
+                    <p>Bonjour, pour votre projet immobilier, je vous invite à remplir ce formulaire : klaris-app.fr/kyc/…</p>
+                  </div>
                 </div>
               </div>
-              <Lock width={11} height={11} className="text-emerald-400/80" />
             </div>
+          </div>
 
-            {/* viewport */}
-            <div
-              className="relative w-full bg-[#06070D]"
-              style={{ aspectRatio: "16 / 9", overflow: "hidden" }}
-            >
-              {STEPS.map((s, i) => (
-                <div
-                  key={i}
-                  className="absolute inset-0"
-                  style={{
-                    opacity: step === i ? 1 : 0,
-                    transform: step === i ? "scale(1)" : "scale(0.98)",
-                    transition: "opacity 600ms ease, transform 600ms ease",
-                    pointerEvents: step === i ? "auto" : "none",
-                  }}
-                >
-                  <s.Mockup active={step === i} />
+          {/* 3 · Analyse de risque */}
+          <div className="dm-obj dm-panel" style={place(WORLD.panel, PANEL_W, PANEL_H)}>
+            <div className="dm-panel__head">
+              <span className="dm-rows__av">CR</span>
+              <div>
+                <b>{NAME}</b>
+                <small>Personne physique · <em data-r="ACQUÉREUR">ACQUÉREUR</em></small>
+              </div>
+              <span className="dm-badge dm-badge--swap">
+                <span data-c="violet">À analyser</span>
+                <span ref={badgeRef} data-c="green">Conforme</span>
+              </span>
+            </div>
+            <div className="dm-panel__files"><FileText width={17} height={17} />Pièces justificatives reçues <b>3</b></div>
+            <h4>Analyse des risques</h4>
+            <ul className="dm-crit">
+              {ROWS.map((r, i) => (
+                <li key={r.k} ref={(el) => { rowRefs.current[i] = el; }}>
+                  <span>{r.k}</span>
+                  <b><i><Check width={13} height={13} strokeWidth={3.4} /></i>{r.v}</b>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* L'étiquette de vigilance */}
+          <div ref={labelRef} className="dm-obj dm-label" style={place(WORLD.label, LABEL_W, LABEL_H, false)}>
+            <div className="dm-label__k">Niveau de vigilance du dossier</div>
+            <div className="dm-label__v">{LEVELS[0].name}</div>
+            <div className="dm-scale">
+              {LEVELS.map((l, i) => (
+                <div key={l.n} className="dm-scale__row">
+                  <span ref={(el) => { barRefs.current[i] = el; }} className="dm-scale__bar" data-level={l.n}>{l.name}</span>
+                  {i === 0 && <span ref={pointerRef} className="dm-scale__pointer">1</span>}
                 </div>
               ))}
             </div>
+            <p ref={todoRef} className="dm-label__todo">Marche à suivre : traiter normalement, archiver cinq ans.</p>
           </div>
 
-          {/* CAPTION */}
-          <div className="mt-4 px-1">
-            <div className="flex items-baseline gap-2.5 mb-1.5 flex-wrap">
-              <span
-                className="font-mono text-[10.5px] font-semibold px-2 py-1 rounded-md tracking-widest"
-                style={{
-                  background: "rgba(124,58,237,0.12)",
-                  border: "1px solid rgba(124,58,237,0.30)",
-                  color: "#c4b5fd",
-                }}
-              >
-                {S.num} / {String(TOTAL_STEPS).padStart(2, "0")}
-              </span>
-              <h2 className="text-[16px] sm:text-[18px] font-bold tracking-tight text-white">{S.title}</h2>
-            </div>
-            <p className="text-[13px] sm:text-[13.5px] text-white/60 leading-relaxed max-w-3xl">{S.caption}</p>
-          </div>
-        </div>
-
-        {/* CONTROLS */}
-        <div className="relative px-4 sm:px-6 py-3.5 border-t border-white/[0.06] flex items-center justify-between gap-3 flex-wrap">
-          <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <button
-              onClick={() => setPlaying((p) => !p)}
-              className="w-8 h-8 rounded-lg grid place-items-center text-white/65 hover:text-white hover:bg-white/[0.06] transition shrink-0 border border-white/[0.08]"
-              aria-label={playing ? "Pause" : "Lecture"}
-            >
-              {playing ? <Pause width={13} height={13} /> : <Play width={13} height={13} fill="currentColor" strokeWidth={0} />}
-            </button>
-
-            <div className="flex gap-1.5 items-center overflow-hidden">
-              {STEPS.map((_, i) => {
-                const isActive = i === step;
-                const isPast = i < step;
-                return (
-                  <button
-                    key={i}
-                    onClick={() => goTo(i)}
-                    className="h-1.5 rounded-full transition-all relative overflow-hidden shrink-0"
-                    style={{
-                      width: isActive ? 44 : 8,
-                      background: isPast
-                        ? "linear-gradient(90deg, #7c3aed, #ec4899)"
-                        : "rgba(255,255,255,0.10)",
-                    }}
-                    aria-label={`Étape ${i + 1}`}
-                  >
-                    {isActive && (
-                      <span
-                        className="absolute inset-y-0 left-0 rounded-full"
-                        style={{
-                          width: `${Math.round(progress * 100)}%`,
-                          background: "linear-gradient(90deg, #7c3aed, #ec4899)",
-                          transition: "width 100ms linear",
-                        }}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <button
-            onClick={() => { onClose(); onCta?.(); }}
-            className="px-4 sm:px-5 py-2 rounded-lg text-white text-[13px] font-semibold inline-flex items-center gap-1.5 transition-transform hover:-translate-y-0.5 shrink-0"
-            style={{
-              background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 8px 22px rgba(124,58,237,0.35)",
-            }}
-          >
-            Essayer gratuitement
-            <ArrowRight width={13} height={13} />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function stepUrl(step: number): string {
-  return [
-    "/dashboard/nouveau",
-    "/dashboard/d_a1f7…/envoyé",
-    "/kyc/Yt8K…aB3z",
-    "/dashboard/d_a1f7…",
-    "/dashboard/d_a1f7…/attestation.pdf",
-  ][step];
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   COMPOSANTS PARTAGÉS
-   ════════════════════════════════════════════════════════════════════════════ */
-
-function AppFrame({ children }: { children: React.ReactNode }) {
-  // Frame "dashboard Klaris" : sidebar discrète + main
-  return (
-    <div className="absolute inset-0 flex">
-      {/* Sidebar miniature */}
-      <div className="hidden sm:flex flex-col w-[140px] border-r border-white/[0.05] py-3 px-2.5 gap-2 bg-[#08090F]/80">
-        <div className="flex items-center gap-2 px-1.5 pb-2 border-b border-white/[0.04]">
-          <KlarisLogo size={20} />
-          <div className="text-[11px] font-bold text-white">Klaris</div>
-        </div>
-        <div className="text-[8.5px] uppercase tracking-widest text-white/35 px-1.5 pt-1">Pilotage</div>
-        <div
-          className="px-2 py-1.5 rounded-md flex items-center gap-2 text-[11px] font-medium"
-          style={{
-            background: "rgba(124,58,237,0.10)",
-            border: "1px solid rgba(124,58,237,0.22)",
-            color: "#c4b5fd",
-          }}
-        >
-          <Folder width={11} height={11} />
-          Dossiers
-          <span className="ml-auto text-[9px] text-white/45">3</span>
-        </div>
-        <div className="px-2 py-1.5 rounded-md flex items-center gap-2 text-[11px] text-white/55">
-          <BadgeCheck width={11} height={11} />
-          Tarifs
-        </div>
-        <div className="mt-auto p-2 rounded-md border border-white/[0.06] bg-white/[0.02]">
-          <div className="text-[9px] uppercase tracking-widest text-white/40 mb-0.5">Essai</div>
-          <div className="text-[10.5px] text-white/75 font-medium">12 jours restants</div>
-        </div>
-      </div>
-      {/* Main */}
-      <div className="flex-1 relative overflow-hidden">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function Highlight({ active, delay = 0 }: { active: boolean; delay?: number }) {
-  // Anneau pulsé violet pour pointer un élément (cursor virtuel)
-  if (!active) return null;
-  return (
-    <span
-      className="pointer-events-none absolute inset-0 rounded-[inherit]"
-      style={{
-        boxShadow: "0 0 0 2px rgba(124,58,237,0.45), 0 0 24px rgba(124,58,237,0.35)",
-        animation: `pulseRing 1.4s ease-out ${delay}ms infinite`,
-      }}
-    />
-  );
-}
-
-/* ────────────────────── ÉTAPE 1 : Création du dossier ────────────────────── */
-
-function Step1_Create({ active }: { active: boolean }) {
-  const [nom, setNom] = useState("");
-  const [showEmail, setShowEmail] = useState(false);
-  const [highlightCreate, setHighlightCreate] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-
-  useEffect(() => {
-    if (!active) {
-      setNom(""); setShowEmail(false); setHighlightCreate(false); setShowToast(false);
-      return;
-    }
-    const target = "Claire Martin";
-    let i = 0;
-    const tw = setInterval(() => {
-      i++;
-      setNom(target.slice(0, i));
-      if (i >= target.length) clearInterval(tw);
-    }, 90);
-
-    const t1 = setTimeout(() => setShowEmail(true), 1900);
-    const t2 = setTimeout(() => setHighlightCreate(true), 3400);
-    const t3 = setTimeout(() => setShowToast(true), 4700);
-    return () => { clearInterval(tw); clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [active]);
-
-  return (
-    <AppFrame>
-      {/* main : titre */}
-      <div className="px-5 pt-4">
-        <div className="text-[11px] uppercase tracking-widest text-white/40 mb-1">Tableau de bord</div>
-        <div className="text-[16px] font-bold text-white">Dossiers</div>
-      </div>
-
-      {/* Modale "Nouveau dossier" en surimpression */}
-      <div className="absolute inset-0 grid place-items-center px-5 pb-3">
-        <div
-          className="relative w-full max-w-[380px] rounded-2xl p-4 border border-white/[0.10]"
-          style={{
-            background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
-            backdropFilter: "blur(20px) saturate(180%)",
-            boxShadow: "0 20px 60px -10px rgba(124,58,237,0.40), 0 4px 12px rgba(0,0,0,0.5)",
-          }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <div
-              className="w-7 h-7 rounded-lg grid place-items-center"
-              style={{
-                background: "linear-gradient(135deg, rgba(124,58,237,0.22), rgba(236,72,153,0.12))",
-                border: "1px solid rgba(124,58,237,0.30)",
-              }}
-            >
-              <Folder width={13} height={13} className="text-violet-200" />
-            </div>
-            <div className="text-[13px] font-bold text-white">Nouveau dossier</div>
-          </div>
-
-          <div className="space-y-2.5">
-            <div>
-              <div className="text-[9px] font-semibold text-white/45 uppercase tracking-widest mb-1">Type</div>
-              <div className="grid grid-cols-2 gap-1.5">
-                <div
-                  className="relative py-1.5 rounded-md text-[10.5px] font-semibold text-center text-violet-200"
-                  style={{
-                    background: "rgba(124,58,237,0.14)",
-                    border: "1px solid rgba(124,58,237,0.35)",
-                  }}
-                >
-                  Personne physique
-                  <Highlight active={active} />
-                </div>
-                <div className="py-1.5 rounded-md text-[10.5px] font-medium text-center text-white/40 bg-white/[0.03] border border-white/[0.06]">
-                  Personne morale
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div className="text-[9px] font-semibold text-white/45 uppercase tracking-widest mb-1">Nom et prénom</div>
-              <div className="px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.12] text-[11.5px] text-white">
-                {nom}
-                {nom.length < 13 && <span className="inline-block w-0.5 h-3 bg-violet-300 ml-px align-middle animate-pulse" />}
-              </div>
-            </div>
-
-            <div
-              style={{
-                opacity: showEmail ? 1 : 0,
-                transform: showEmail ? "translateY(0)" : "translateY(4px)",
-                transition: "opacity 400ms, transform 400ms",
-              }}
-            >
-              <div className="text-[9px] font-semibold text-white/45 uppercase tracking-widest mb-1">Email du client</div>
-              <div className="px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.12] text-[11.5px] text-white/85">
-                claire.martin@email.fr
-              </div>
-            </div>
-          </div>
-
-          <div className="relative mt-3.5">
-            <button
-              className="w-full py-2 rounded-lg text-white text-[11.5px] font-semibold inline-flex items-center justify-center gap-1.5 relative overflow-hidden"
-              style={{
-                background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-                boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 8px 20px rgba(124,58,237,0.40)",
-              }}
-            >
-              Créer et générer le lien KYC
-              <Send width={11} height={11} />
-              {/* Ripple effect quand le bouton est "cliqué" virtuellement */}
-              {showToast && (
-                <span
-                  className="absolute top-1/2 left-1/2 w-32 h-32 rounded-full pointer-events-none"
-                  style={{
-                    background: "radial-gradient(circle, rgba(255,255,255,0.55) 0%, transparent 60%)",
-                    animation: "ripple 700ms ease-out",
-                  }}
+          {/* 4 · Attestation */}
+          <div className="dm-obj dm-sheetwrap" style={place(WORLD.sheet, SHEET_W, SHEET_H)}>
+            <div ref={sheetRef} className="dm-sheet">
+              {sheetOn && (
+                <iframe
+                  src="/pdf-render/attestation/demo"
+                  title="Attestation générée par Klaris (exemple fictif)"
+                  tabIndex={-1}
+                  scrolling="no"
+                  style={{ width: SHEET_W, height: SHEET_H, border: 0, pointerEvents: "none" }}
                 />
               )}
-            </button>
-            <Highlight active={highlightCreate} />
-          </div>
-        </div>
-      </div>
-
-      {/* Toast bottom + sparkles */}
-      {showToast && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 pointer-events-none">
-          <div
-            className="relative px-3 py-2 rounded-lg flex items-center gap-2 border"
-            style={{
-              background: "rgba(16,185,129,0.10)",
-              borderColor: "rgba(16,185,129,0.35)",
-              color: "#6ee7b7",
-              animation: "slideUp 400ms ease both",
-              boxShadow: "0 8px 22px rgba(16,185,129,0.20)",
-            }}
-          >
-            <CheckCircle2 width={13} height={13} />
-            <span className="text-[11px] font-semibold whitespace-nowrap">Dossier créé · Lien KYC généré</span>
-
-            {/* Sparkles flottants autour du toast */}
-            <Sparkles
-              width={9}
-              height={9}
-              className="absolute -top-1 -left-2 text-emerald-300"
-              style={{ animation: "sparkleFloat 1.6s ease-out 200ms both", filter: "drop-shadow(0 0 4px rgba(16,185,129,0.6))" }}
-            />
-            <Sparkles
-              width={7}
-              height={7}
-              className="absolute -top-2 right-4 text-emerald-200"
-              style={{ animation: "sparkleFloat 1.6s ease-out 500ms both", filter: "drop-shadow(0 0 4px rgba(16,185,129,0.6))" }}
-            />
-            <Sparkles
-              width={8}
-              height={8}
-              className="absolute top-0 -right-2 text-emerald-300"
-              style={{ animation: "sparkleFloat 1.6s ease-out 800ms both", filter: "drop-shadow(0 0 4px rgba(16,185,129,0.6))" }}
-            />
-          </div>
-        </div>
-      )}
-    </AppFrame>
-  );
-}
-
-/* ────────────────────── ÉTAPE 2 : Envoi du lien ────────────────────── */
-
-function Step2_Send({ active }: { active: boolean }) {
-  const [sent, setSent] = useState(false);
-  const [showStatus, setShowStatus] = useState(false);
-
-  useEffect(() => {
-    if (!active) { setSent(false); setShowStatus(false); return; }
-    const t1 = setTimeout(() => setSent(true), 1800);
-    const t2 = setTimeout(() => setShowStatus(true), 2800);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [active]);
-
-  return (
-    <AppFrame>
-      <div className="absolute inset-0 grid place-items-center px-5">
-        <div className="relative w-full max-w-[420px]">
-          {/* Email card */}
-          <div
-            className="rounded-2xl p-4 border border-white/[0.10]"
-            style={{
-              background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 20px 60px -10px rgba(124,58,237,0.30)",
-              transform: sent ? "translateY(-8px) scale(0.98)" : "translateY(0) scale(1)",
-              opacity: sent ? 0.6 : 1,
-              transition: "transform 700ms ease, opacity 700ms ease",
-            }}
-          >
-            <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/[0.05]">
-              <div className="flex items-center gap-2">
-                <Mail width={13} height={13} className="text-violet-200" />
-                <div className="text-[11px] font-semibold text-white">Email à Claire</div>
-              </div>
-              <div className="text-[10px] text-white/40 font-mono">14:32</div>
-            </div>
-            <div className="text-[11.5px] text-white/45 mb-1">À : claire.martin@email.fr</div>
-            <div className="text-[12.5px] font-semibold text-white mb-3">
-              Klaris · Vérification d'identité pour votre projet immobilier
-            </div>
-            <div className="text-[11.5px] text-white/65 leading-relaxed">
-              Bonjour Claire, dans le cadre de votre projet d'acquisition, merci de remplir votre fiche
-              en cliquant sur le lien sécurisé ci-dessous.
-            </div>
-            <div
-              className="mt-3 px-3 py-2 rounded-lg flex items-center gap-2 border"
-              style={{
-                background: "rgba(124,58,237,0.08)",
-                borderColor: "rgba(124,58,237,0.25)",
-              }}
-            >
-              <Lock width={11} height={11} className="text-violet-300" />
-              <div className="flex-1 text-[10.5px] font-mono text-violet-200 truncate">
-                klaris-app.fr/kyc/Yt8K…aB3z
-              </div>
-              <div className="text-[9px] text-white/40">↗</div>
             </div>
           </div>
 
-          {/* "Sent" badge */}
-          <div
-            className="absolute left-1/2 -bottom-2 -translate-x-1/2 px-3 py-1.5 rounded-full flex items-center gap-1.5 border"
-            style={{
-              background: "rgba(16,185,129,0.12)",
-              borderColor: "rgba(16,185,129,0.40)",
-              color: "#6ee7b7",
-              opacity: showStatus ? 1 : 0,
-              transform: showStatus ? "translate(-50%, 0) scale(1)" : "translate(-50%, 6px) scale(0.9)",
-              transition: "opacity 400ms, transform 400ms",
-              boxShadow: "0 6px 18px rgba(16,185,129,0.30)",
-            }}
-          >
-            <CheckCircle2 width={12} height={12} />
-            <span className="text-[10.5px] font-semibold tracking-widest uppercase">Envoyé</span>
-          </div>
-
-          {/* "Sending" plane + trail de particules */}
-          {sent && (
-            <>
-              <Send
-                width={20}
-                height={20}
-                className="absolute text-violet-300"
-                style={{
-                  top: "30%",
-                  left: "50%",
-                  animation: "flyAway 900ms ease-out forwards",
-                  filter: "drop-shadow(0 0 8px rgba(124,58,237,0.7))",
-                }}
-              />
-              {/* Trail : 3 particules qui suivent avec délai */}
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  className="absolute w-1.5 h-1.5 rounded-full pointer-events-none"
-                  style={{
-                    top: "30%",
-                    left: "50%",
-                    background: i === 0 ? "#c4b5fd" : i === 1 ? "#a78bfa" : "#f0abfc",
-                    animation: `flyAway 900ms ease-out ${i * 90}ms forwards, particleTrail 900ms ease-out ${i * 90}ms forwards`,
-                    boxShadow: "0 0 8px rgba(124,58,237,0.6)",
-                  }}
-                />
+          {/* L'archive du dossier */}
+          <div ref={zipRef} className="dm-obj dm-zip" style={place(WORLD.zip, ZIP_W, ZIP_H, false)}>
+            <div className="dm-zip__head"><span><FolderArchive width={22} height={22} /></span>Dossier complet (ZIP)</div>
+            <ul>
+              {["attestation-rousseau-camille.pdf", "fiche-kyc-rousseau-camille.pdf", "pieces/ · 3 fichiers"].map((f, i) => (
+                <li key={f} ref={(el) => { zipRowRefs.current[i] = el; }}><FileText width={17} height={17} />{f}</li>
               ))}
-            </>
-          )}
-        </div>
-      </div>
-    </AppFrame>
-  );
-}
-
-/* ────────────────────── ÉTAPE 3 : Mobile KYC ────────────────────── */
-
-function Step3_Mobile({ active }: { active: boolean }) {
-  const [phase, setPhase] = useState(0);
-  // phase 0 : début (header), 1 : identité OK, 2 : upload piece commence, 3 : upload OK, 4 : consentement
-
-  useEffect(() => {
-    if (!active) { setPhase(0); return; }
-    const t1 = setTimeout(() => setPhase(1), 1300);
-    const t2 = setTimeout(() => setPhase(2), 2800);
-    const t3 = setTimeout(() => setPhase(3), 4900);
-    const t4 = setTimeout(() => setPhase(4), 6200);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, [active]);
-
-  return (
-    <div className="absolute inset-0 flex items-center justify-center px-4 py-4 sm:py-6">
-      {/* Halo derrière le téléphone */}
-      <div
-        className="absolute pointer-events-none rounded-full"
-        style={{
-          width: 380, height: 380,
-          background: "radial-gradient(circle, rgba(124,58,237,0.25), transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
-      {/* Side info à gauche (desktop only) */}
-      <div className="hidden lg:flex flex-col gap-3 mr-8 max-w-[180px]">
-        <Smartphone width={20} height={20} className="text-violet-300" />
-        <div className="text-[11px] uppercase tracking-widest text-white/40">Côté client</div>
-        <div className="text-[15px] font-bold text-white leading-tight">Claire utilise son téléphone.</div>
-        <div className="text-[11.5px] text-white/55 leading-relaxed">
-          Le formulaire est mobile-first. Photo de la pièce, upload, signature RGPD — tout passe.
+            </ul>
+          </div>
         </div>
       </div>
 
-      {/* Phone frame (légère vibration au submit) */}
-      <PhoneFrame shake={phase >= 4}>
-        <div className="flex flex-col h-full bg-[#06070D]">
-          {/* Status bar du tel */}
-          <div className="px-4 pt-2 pb-1 flex items-center justify-between text-[8.5px] font-medium text-white/70">
-            <span>14:34</span>
-            <div className="flex items-center gap-1">
-              <span>●●●●</span>
-              <span>5G</span>
-              <span>🔋</span>
-            </div>
-          </div>
+      <div ref={cutRef} className="dm-cut" aria-hidden="true" />
 
-          {/* Top bar Klaris */}
-          <div className="px-3 py-2 border-b border-white/[0.05] flex items-center gap-1.5">
-            <KlarisLogo size={16} />
-            <div className="text-[9.5px] font-bold text-white">Klaris</div>
-            <div className="ml-auto text-[8px] text-white/40">KYC sécurisé</div>
-          </div>
+      {/* ───────── Barre du haut : marque, progression, fermer ───────── */}
+      <header className="dm-top">
+        <div className="dm-top__brand"><KlarisLogo size={26} /><span>Démo guidée</span></div>
+        <div className="dm-segs" aria-hidden="true">
+          {CHAPTERS.map((c, i) => (
+            <span key={c.title}><i ref={(el) => { segRefs.current[i] = el; }} /></span>
+          ))}
+        </div>
+        <button type="button" className="dm-icon" onClick={onClose} aria-label="Fermer la démo">
+          <X width={20} height={20} />
+        </button>
+      </header>
 
-          {/* Contenu scrollable visuel */}
-          <div className="flex-1 overflow-hidden">
-            <div
-              className="px-3 py-3 space-y-3"
-              style={{
-                transform: phase >= 2 ? "translateY(-40px)" : "translateY(0)",
-                transition: "transform 700ms ease",
-              }}
-            >
-              <div>
-                <div className="text-[11px] font-bold text-white mb-0.5">Identification</div>
-                <div className="text-[8.5px] text-white/45">Pour votre dossier chez votre agence</div>
-              </div>
-
-              {/* Champ nom */}
-              <MobileField label="Nom et prénom" value="Claire Martin" filled />
-              {/* Champ DDN — se remplit en phase 1 */}
-              <MobileField
-                label="Date de naissance"
-                value="12 juin 1986"
-                filled={phase >= 1}
-                highlight={phase === 0}
-              />
-
-              {/* Pièces */}
-              <div>
-                <div className="text-[8.5px] uppercase tracking-widest text-white/45 font-semibold mb-1.5 mt-1">Pièces</div>
-                <UploadRow
-                  label="Pièce d'identité"
-                  state={phase === 2 ? "uploading" : phase >= 3 ? "ok" : "idle"}
-                />
-                <UploadRow
-                  label="Justificatif domicile"
-                  state={phase >= 3 ? "uploading" : "idle"}
-                />
-              </div>
-
-              {/* Consentement */}
-              <div className="mt-2 space-y-1.5">
-                <Checkbox label="J'autorise le traitement de mes données" checked={phase >= 4} />
-                <Checkbox label="J'accepte la conservation 5 ans (LCB-FT)" checked={phase >= 4} />
-              </div>
-            </div>
-          </div>
-
-          {/* Bouton submit */}
-          <div className="px-3 pb-3 pt-1 border-t border-white/[0.05]">
-            <button
-              className="w-full py-2 rounded-md text-white text-[10.5px] font-semibold inline-flex items-center justify-center gap-1.5 relative"
-              style={{
-                background: phase >= 4
-                  ? "linear-gradient(135deg, #7c3aed, #ec4899)"
-                  : "rgba(124,58,237,0.25)",
-                opacity: phase >= 4 ? 1 : 0.55,
-                boxShadow: phase >= 4 ? "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 18px rgba(124,58,237,0.40)" : "none",
-                transition: "background 400ms, opacity 400ms",
-              }}
-            >
-              Soumettre mon dossier
-              {phase >= 4 && <Highlight active />}
+      {/* ───────── Légende et commandes ───────── */}
+      <div className="dm-console" data-hidden={ended ? "" : undefined}>
+        <div className="dm-console__text" key={chapter} aria-live="polite">
+          <span className="dm-console__n" aria-hidden="true">
+            {Math.min(chapter, CHAPTERS.length - 1) + 1}<small>/{CHAPTERS.length}</small>
+          </span>
+          <h2>{cap.title}</h2>
+          <p>{cap.text}</p>
+        </div>
+        <div className="dm-console__ctl">
+          <button type="button" className="dm-icon" onClick={() => api.current.step(-1)} disabled={chapter === 0} aria-label="Chapitre précédent">
+            <ChevronLeft width={20} height={20} />
+          </button>
+          {!reduced && (
+            <button type="button" className="dm-icon dm-icon--main" onClick={() => api.current.toggle()} aria-label={playing ? "Mettre en pause" : "Lire"}>
+              {playing ? <Pause width={18} height={18} fill="currentColor" strokeWidth={0} /> : <Play width={18} height={18} fill="currentColor" strokeWidth={0} />}
             </button>
-          </div>
-        </div>
-      </PhoneFrame>
-    </div>
-  );
-}
-
-function PhoneFrame({ children, shake = false }: { children: React.ReactNode; shake?: boolean }) {
-  return (
-    <div
-      className="relative"
-      style={{
-        width: 220,
-        height: 440,
-        borderRadius: 32,
-        padding: 7,
-        background: "linear-gradient(180deg, #1a1a2e, #0d0d1f)",
-        boxShadow: "0 0 0 1px rgba(255,255,255,0.10), 0 30px 80px -20px rgba(124,58,237,0.40), 0 12px 30px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.12) inset",
-        animation: shake ? "phoneShake 500ms ease-in-out 1" : "none",
-      }}
-    >
-      <div
-        className="w-full h-full rounded-[26px] overflow-hidden relative"
-        style={{ background: "#06070D" }}
-      >
-        {/* Notch */}
-        <div
-          className="absolute top-1 left-1/2 -translate-x-1/2 w-16 h-3 rounded-full bg-black z-10"
-        />
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function MobileField({
-  label, value, filled, highlight,
-}: {
-  label: string;
-  value: string;
-  filled: boolean;
-  highlight?: boolean;
-}) {
-  return (
-    <div className="relative">
-      <div className="text-[8px] uppercase tracking-widest text-white/45 font-semibold mb-1">{label}</div>
-      <div
-        className="px-2 py-1.5 rounded-md border text-[9.5px] transition-all"
-        style={{
-          background: filled ? "rgba(124,58,237,0.10)" : "rgba(255,255,255,0.03)",
-          borderColor: filled ? "rgba(124,58,237,0.35)" : "rgba(255,255,255,0.08)",
-          color: filled ? "#fff" : "rgba(255,255,255,0.30)",
-        }}
-      >
-        {filled ? value : "—"}
-        {highlight && <Highlight active />}
-      </div>
-    </div>
-  );
-}
-
-function UploadRow({ label, state }: { label: string; state: "idle" | "uploading" | "ok" }) {
-  return (
-    <div
-      className="rounded-md px-2 py-1.5 mb-1.5 flex items-center gap-2 border"
-      style={{
-        background: state === "ok"
-          ? "rgba(16,185,129,0.06)"
-          : state === "uploading"
-          ? "rgba(124,58,237,0.06)"
-          : "rgba(255,255,255,0.02)",
-        borderColor: state === "ok"
-          ? "rgba(16,185,129,0.30)"
-          : state === "uploading"
-          ? "rgba(124,58,237,0.25)"
-          : "rgba(255,255,255,0.06)",
-      }}
-    >
-      <div className="w-6 h-6 rounded grid place-items-center"
-        style={{
-          background: state === "ok" ? "rgba(16,185,129,0.18)" : "rgba(124,58,237,0.12)",
-        }}
-      >
-        {state === "ok" ? (
-          <Check width={10} height={10} className="text-emerald-300" strokeWidth={3} />
-        ) : state === "uploading" ? (
-          <Upload width={10} height={10} className="text-violet-200 animate-pulse" />
-        ) : (
-          <ImageIcon width={10} height={10} className="text-white/40" />
-        )}
-      </div>
-      <div className="flex-1 min-w-0 text-[9.5px] text-white truncate">{label}</div>
-      {state === "uploading" && (
-        <div className="w-10 h-1 rounded-full bg-white/10 overflow-hidden shrink-0">
-          <div
-            className="h-full"
-            style={{
-              animation: "uploadBar 1.4s ease-out forwards",
-              background: "linear-gradient(90deg, #7c3aed, #ec4899)",
-            }}
-          />
-        </div>
-      )}
-      {state === "ok" && (
-        <span className="text-[8px] uppercase tracking-widest font-bold text-emerald-300">OK</span>
-      )}
-    </div>
-  );
-}
-
-function Checkbox({ label, checked }: { label: string; checked: boolean }) {
-  return (
-    <div className="flex items-start gap-1.5">
-      <div
-        className="w-3 h-3 rounded grid place-items-center shrink-0 mt-0.5 border transition-all"
-        style={{
-          background: checked ? "linear-gradient(135deg, #7c3aed, #ec4899)" : "rgba(255,255,255,0.03)",
-          borderColor: checked ? "rgba(124,58,237,0.40)" : "rgba(255,255,255,0.20)",
-        }}
-      >
-        {checked && <Check width={8} height={8} className="text-white" strokeWidth={4} />}
-      </div>
-      <div className="text-[8.5px] text-white/70 leading-tight">{label}</div>
-    </div>
-  );
-}
-
-/* ────────────────────── ÉTAPE 4 : Moteur de décision LCB-FT ──────────────────────
-   Fidèle à la logique réelle de lib/tracfin.ts :
-   1. Gates absolues (gel d'avoirs / sanctions) → ✓ aucune → on continue
-   2. Critères de risque évalués un par un
-   3. Décision parmi 4 niveaux qualitatifs (pas de score 0-100)
-   ─────────────────────────────────────────────────────────────────────────────── */
-
-function Step4_Score({ active }: { active: boolean }) {
-  const [phase, setPhase] = useState(0);
-  // phase 0 : init
-  // phase 1 : gates validées (no gel, no sanctions)
-  // phase 2 : critères évalués
-  // phase 3 : scan des 4 niveaux qui balaie
-  // phase 4 : niveau choisi (verdict)
-
-  useEffect(() => {
-    if (!active) { setPhase(0); return; }
-    const t1 = setTimeout(() => setPhase(1), 1100);
-    const t2 = setTimeout(() => setPhase(2), 2400);
-    const t3 = setTimeout(() => setPhase(3), 3800);
-    const t4 = setTimeout(() => setPhase(4), 4900);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
-  }, [active]);
-
-  const gates = [
-    { icon: ShieldOff, label: "Gel d'avoirs", sub: "Règl. (UE) 2580/2001" },
-    { icon: Ban, label: "Sanctions internationales", sub: "UE · ONU · Trésor" },
-  ];
-
-  const criteres = [
-    { icon: Fingerprint, label: "Identité vérifiée", sub: "Pièce d'identité + nationalité" },
-    { icon: Globe, label: "Géographie", sub: "France — hors zone GAFI" },
-    { icon: BadgeCheck, label: "Origine des fonds", sub: "Épargne personnelle justifiée" },
-    { icon: ShieldCheck, label: "Profil PPE", sub: "Aucune exposition politique" },
-  ];
-
-  // 4 niveaux Klaris (fondés sur le CMF) — l'algorithme va "balayer" pour choisir
-  const niveaux = [
-    {
-      key: "standard",
-      label: "Vigilance standard",
-      ref: "L.561-5 à L.561-8",
-      color: "#10b981",
-      bgGlow: "rgba(16,185,129,0.10)",
-      action: "Traiter normalement. Archivage 5 ans.",
-    },
-    {
-      key: "renforcee",
-      label: "Vigilance renforcée",
-      ref: "L.561-10 et L.561-10-1",
-      color: "#fb923c",
-      bgGlow: "rgba(251,146,60,0.10)",
-      action: "Justificatifs additionnels requis.",
-    },
-    {
-      key: "examen",
-      label: "Examen renforcé",
-      ref: "L.561-10-2",
-      color: "#ef4444",
-      bgGlow: "rgba(239,68,68,0.10)",
-      action: "Suspension immédiate. Délibération.",
-    },
-    {
-      key: "interdiction",
-      label: "Interdiction & déclaration",
-      ref: "L.562-4 (gel des avoirs) · L.561-8",
-      color: "#7c3aed",
-      bgGlow: "rgba(124,58,237,0.12)",
-      action: "Refus. Déclaration à TRACFIN avant l'exécution de l'opération.",
-    },
-  ];
-
-  // L'algorithme converge vers le niveau 0 (vigilance_standard) pour le cas de Claire
-  const chosenIdx = 0;
-
-  // Toutes les validations (gates + critères) regroupées en une ligne de chips
-  const validations = [
-    { label: "Aucun gel d'avoirs", phase: 1 },
-    { label: "Aucune sanction", phase: 1 },
-    { label: "Identité vérifiée", phase: 2 },
-    { label: "Géographie OK", phase: 2 },
-    { label: "Origine des fonds OK", phase: 2 },
-    { label: "Aucun PPE", phase: 2 },
-  ];
-
-  return (
-    <AppFrame>
-      <div className="absolute inset-0 flex flex-col gap-2.5 p-3.5">
-        {/* Header */}
-        <div className="flex items-center gap-2">
-          <div
-            className="w-8 h-8 rounded-md grid place-items-center shrink-0"
-            style={{
-              background: "linear-gradient(135deg, rgba(124,58,237,0.25), rgba(236,72,153,0.15))",
-              border: "1px solid rgba(124,58,237,0.35)",
-              boxShadow: "0 0 18px rgba(124,58,237,0.30)",
-            }}
-          >
-            <ScanSearch
-              width={14}
-              height={14}
-              className="text-violet-200"
-              style={{ animation: phase < 4 ? "rotateScan 2s linear infinite" : "none" }}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[11px] uppercase tracking-widest font-semibold text-violet-200">
-              Moteur Klaris v2
-            </div>
-            <div className="text-[10px] text-white/40">Arbre de décision déterministe · CMF L.561</div>
-          </div>
-          {phase >= 3 && (
-            <span className="text-[9px] uppercase tracking-widest font-bold text-emerald-300 flex items-center gap-1 shrink-0">
-              <CheckCircle2 width={11} height={11} />
-              Analyse OK
-            </span>
           )}
-        </div>
-
-        {/* Validations en chips horizontaux */}
-        <div className="flex flex-wrap gap-1.5">
-          {validations.map((v, i) => {
-            const done = phase >= v.phase;
-            return (
-              <span
-                key={v.label}
-                className="text-[10px] px-2 py-1 rounded-full border inline-flex items-center gap-1 transition-all duration-500"
-                style={{
-                  background: done ? "rgba(16,185,129,0.10)" : "rgba(255,255,255,0.03)",
-                  borderColor: done ? "rgba(16,185,129,0.35)" : "rgba(255,255,255,0.08)",
-                  color: done ? "#6ee7b7" : "rgba(255,255,255,0.45)",
-                  opacity: done ? 1 : 0.5,
-                  transitionDelay: done ? `${i * 80}ms` : "0ms",
-                }}
-              >
-                {done && <Check width={9} height={9} strokeWidth={3} />}
-                {v.label}
-              </span>
-            );
-          })}
-        </div>
-
-        {/* Section décision 4 niveaux */}
-        <div className="text-[9px] uppercase tracking-widest text-white/45 font-semibold mt-1 flex items-center gap-1.5">
-          <span>Décision · 4 niveaux Klaris, fondés sur le CMF</span>
-          {phase >= 4 && <CheckCircle2 width={10} height={10} className="text-emerald-400 ml-auto" />}
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          {niveaux.map((n, i) => {
-            const isChosen = phase >= 4 && i === chosenIdx;
-            const isEliminated = phase >= 4 && i !== chosenIdx;
-            return (
-              <div
-                key={n.key}
-                className="relative rounded-md p-2 border flex items-center gap-2.5 transition-all duration-500"
-                style={{
-                  background: isChosen
-                    ? n.bgGlow
-                    : isEliminated
-                    ? "rgba(255,255,255,0.015)"
-                    : "rgba(255,255,255,0.03)",
-                  borderColor: isChosen
-                    ? n.color
-                    : isEliminated
-                    ? "rgba(255,255,255,0.05)"
-                    : "rgba(255,255,255,0.08)",
-                  opacity: isEliminated ? 0.32 : 1,
-                  boxShadow: isChosen ? `0 0 24px ${n.bgGlow}` : "none",
-                }}
-              >
-                <div
-                  className="w-1 self-stretch rounded-full shrink-0"
-                  style={{ background: isChosen ? n.color : "rgba(255,255,255,0.10)" }}
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-[11.5px] font-semibold leading-tight flex items-center gap-2 flex-wrap"
-                    style={{ color: isChosen ? n.color : "rgba(255,255,255,0.80)" }}
-                  >
-                    {n.label}
-                    {isChosen && (
-                      <span
-                        className="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded"
-                        style={{ background: n.color, color: "#06070D" }}
-                      >
-                        Choisi
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[9.5px] mt-0.5"
-                    style={{ color: isChosen ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.40)" }}
-                  >
-                    CMF {n.ref}{isChosen && <> · {n.action}</>}
-                  </div>
-                </div>
-                {isChosen && (
-                  <Sparkles
-                    width={12}
-                    height={12}
-                    className="shrink-0"
-                    style={{
-                      color: n.color,
-                      animation: "twinkle 1.4s ease-in-out infinite",
-                      filter: `drop-shadow(0 0 6px ${n.color})`,
-                    }}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Footer */}
-        <div className="mt-auto pt-1.5 border-t border-white/[0.05] flex items-center gap-1.5 text-[9px] text-white/40">
-          <Clock width={10} height={10} />
-          Décision rendue en 1,8 s · Algorithme déterministe v2.1 · Auditable
-        </div>
-      </div>
-    </AppFrame>
-  );
-}
-
-function GateRow({
-  icon: Icon, label, sub, done, delay,
-}: {
-  icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
-  label: string;
-  sub: string;
-  done: boolean;
-  delay: number;
-}) {
-  return (
-    <div
-      className="flex items-center gap-2 transition-all duration-500"
-      style={{
-        transitionDelay: done ? `${delay}ms` : "0ms",
-        opacity: done ? 1 : 0.4,
-      }}
-    >
-      <div
-        className="w-5 h-5 rounded grid place-items-center shrink-0 transition-all"
-        style={{
-          background: done ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.04)",
-          border: `1px solid ${done ? "rgba(16,185,129,0.40)" : "rgba(255,255,255,0.10)"}`,
-        }}
-      >
-        {done
-          ? <Check width={10} height={10} className="text-emerald-300" strokeWidth={3} />
-          : <Icon width={9} height={9} className="text-white/40" />}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-[10px] font-medium text-white truncate">{label}</div>
-        <div className="text-[8.5px] text-white/40 truncate">{sub}</div>
-      </div>
-      {done && (
-        <span className="text-[7.5px] uppercase tracking-widest font-bold text-emerald-300 shrink-0">Aucun</span>
-      )}
-    </div>
-  );
-}
-
-function CritereRow({
-  icon: Icon, label, sub, done, delay,
-}: {
-  icon: React.ComponentType<{ width?: number; height?: number; className?: string }>;
-  label: string;
-  sub: string;
-  done: boolean;
-  delay: number;
-}) {
-  return (
-    <div
-      className="flex items-center gap-2 transition-all duration-500"
-      style={{
-        transitionDelay: done ? `${delay}ms` : "0ms",
-        opacity: done ? 1 : 0.4,
-        transform: done ? "translateX(0)" : "translateX(-4px)",
-      }}
-    >
-      <div
-        className="w-5 h-5 rounded grid place-items-center shrink-0 transition-all"
-        style={{
-          background: done ? "rgba(124,58,237,0.15)" : "rgba(255,255,255,0.04)",
-          border: `1px solid ${done ? "rgba(124,58,237,0.40)" : "rgba(255,255,255,0.10)"}`,
-        }}
-      >
-        <Icon width={9} height={9} className={done ? "text-violet-200" : "text-white/40"} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="text-[10px] font-medium text-white truncate">{label}</div>
-        <div className="text-[8.5px] text-white/40 truncate">{sub}</div>
-      </div>
-      {done && (
-        <span className="text-[7.5px] uppercase tracking-widest font-bold text-emerald-300 shrink-0">✓ Vert</span>
-      )}
-    </div>
-  );
-}
-
-/* ────────────────────── ÉTAPE 5 : Attestation ────────────────────── */
-
-function Step5_Attestation({ active }: { active: boolean }) {
-  const [revealed, setRevealed] = useState(false);
-  const [hashTyped, setHashTyped] = useState("");
-  const [showDl, setShowDl] = useState(false);
-
-  useEffect(() => {
-    if (!active) { setRevealed(false); setHashTyped(""); setShowDl(false); return; }
-    const t1 = setTimeout(() => setRevealed(true), 600);
-    // hash typewriter
-    const fullHash = "a1f7b2c8…3bc4";
-    let i = 0;
-    const tw = setInterval(() => {
-      i++;
-      setHashTyped(fullHash.slice(0, i));
-      if (i >= fullHash.length) clearInterval(tw);
-    }, 80);
-    const t2 = setTimeout(() => setShowDl(true), 3000);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearInterval(tw); };
-  }, [active]);
-
-  return (
-    <div className="absolute inset-0 flex items-center justify-center px-4 py-4 sm:py-6">
-      {/* Halo */}
-      <div
-        className="absolute pointer-events-none rounded-full"
-        style={{
-          width: 380, height: 380,
-          background: "radial-gradient(circle, rgba(124,58,237,0.20), transparent 70%)",
-          filter: "blur(50px)",
-        }}
-      />
-
-      <div className="hidden lg:flex flex-col gap-3 mr-6 max-w-[170px]">
-        <FileText width={20} height={20} className="text-violet-300" />
-        <div className="text-[11px] uppercase tracking-widest text-white/40">Sortie finale</div>
-        <div className="text-[15px] font-bold text-white leading-tight">Attestation prête.</div>
-        <div className="text-[11.5px] text-white/55 leading-relaxed">
-          PDF horodaté, empreinte SHA-256, archivé 5 ans. À présenter en cas de contrôle.
+          <button type="button" className="dm-icon" onClick={() => api.current.step(1)} aria-label={chapter === CHAPTERS.length - 1 ? "Aller à la fin" : "Chapitre suivant"}>
+            <ChevronRight width={20} height={20} />
+          </button>
         </div>
       </div>
 
-      {/* PDF mockup */}
-      <div
-        className="relative w-full max-w-[360px]"
-        style={{
-          transform: revealed ? "translateY(0) scale(1)" : "translateY(-20px) scale(0.95)",
-          opacity: revealed ? 1 : 0,
-          transition: "all 700ms cubic-bezier(0.34, 1.56, 0.64, 1)",
-        }}
-      >
-        {/* Rayons radiants autour du PDF — effet "document officiel" */}
-        {revealed && (
-          <>
-            <div
-              className="absolute inset-0 rounded-xl pointer-events-none"
-              style={{
-                background: "radial-gradient(circle at center, rgba(124,58,237,0.20), transparent 60%)",
-                animation: "radiantBurst 1.4s ease-out 200ms 1",
-              }}
-            />
-            <svg
-              className="absolute inset-0 w-full h-full pointer-events-none"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              style={{
-                animation: "radiantBurst 1.6s ease-out 200ms 1",
-                mixBlendMode: "screen",
-              }}
-            >
-              {/* 8 rayons partant du centre */}
-              {Array.from({ length: 8 }).map((_, i) => {
-                const angle = (i * 360) / 8;
-                return (
-                  <line
-                    key={i}
-                    x1="50"
-                    y1="50"
-                    x2="50"
-                    y2="10"
-                    stroke="url(#rayGrad)"
-                    strokeWidth="0.6"
-                    strokeLinecap="round"
-                    transform={`rotate(${angle} 50 50)`}
-                    opacity="0.55"
-                  />
-                );
-              })}
-              <defs>
-                <linearGradient id="rayGrad" x1="0" y1="1" x2="0" y2="0">
-                  <stop offset="0%" stopColor="rgba(124,58,237,0)" />
-                  <stop offset="60%" stopColor="rgba(124,58,237,0.7)" />
-                  <stop offset="100%" stopColor="rgba(236,72,153,0.9)" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </>
-        )}
-
-        <div
-          className="relative rounded-xl overflow-hidden bg-white"
-          style={{
-            boxShadow: "0 30px 80px -20px rgba(124,58,237,0.50), 0 12px 30px -8px rgba(0,0,0,0.5)",
-          }}
-        >
-          <div className="h-1.5" style={{ background: "linear-gradient(90deg, #7c3aed, #a855f7, #ec4899)" }} />
-          <div className="p-4 text-slate-900">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-slate-200">
-              <div className="flex items-center gap-1.5">
-                <KlarisLogo size={20} />
-                <div className="text-[11.5px] font-bold tracking-tight text-slate-900">Klaris</div>
-                <div
-                  className="px-1.5 py-0.5 rounded text-[7.5px] font-bold tracking-widest"
-                  style={{
-                    background: "rgba(124,58,237,0.08)",
-                    color: "#7c3aed",
-                    border: "1px solid rgba(124,58,237,0.22)",
-                  }}
-                >
-                  ATTESTATION
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-[6.5px] uppercase tracking-widest text-slate-400 font-semibold">Dossier</div>
-                <div className="text-[8.5px] font-bold font-mono text-slate-700">#a1f7b2c8</div>
-              </div>
-            </div>
-
-            {/* Titre */}
-            <div
-              className="text-[15px] font-bold tracking-tight mb-2.5 leading-tight"
-              style={{
-                background: "linear-gradient(90deg, #1b1438 0%, #4c1d95 60%, #7c3aed 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                color: "transparent",
-              }}
-            >
-              Attestation de Conformité<br />LCB-FT
-            </div>
-
-            <div className="text-[9px] text-slate-500 mb-3">Claire Martin · Personne physique · 16 mai 2026</div>
-
-            {/* Verdict */}
-            <div
-              className="rounded-lg p-2.5 mb-3 border"
-              style={{
-                background: "#ecfdf5",
-                borderColor: "rgba(16,185,129,0.40)",
-              }}
-            >
-              <div className="text-[7px] font-bold uppercase tracking-widest mb-0.5 text-emerald-700 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                Verdict · Niveau 1/4
-              </div>
-              <div className="text-[12px] font-bold tracking-tight text-emerald-700 mb-1.5">
-                Vigilance standard
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex-1 h-1 bg-emerald-200/60 rounded-full overflow-hidden">
-                  <div className="h-full" style={{ width: "100%", background: "linear-gradient(90deg,#059669,#10b981)" }} />
-                </div>
-                <div className="text-[10px] font-bold text-emerald-700">100 %</div>
-              </div>
-            </div>
-
-            {/* SHA-256 */}
-            <div className="flex items-center gap-1.5 mb-1.5 text-[8px] text-slate-500 relative">
-              <Hash width={9} height={9} />
-              <span className="font-semibold uppercase tracking-widest">SHA-256</span>
-              <span className="font-mono text-slate-700 ml-auto">{hashTyped || "·"}</span>
-            </div>
-
-            {/* Tampon « Horodaté » qui s'applique en bas-droit du PDF */}
-            {hashTyped.length >= 5 && (
-              <div
-                className="absolute top-1/2 right-3 pointer-events-none"
-                style={{
-                  animation: "stampSeal 600ms ease-out 1 forwards",
-                  transform: "translate(-50%, -50%) rotate(-12deg)",
-                }}
-              >
-                <div
-                  className="px-2.5 py-1 rounded-md border-2 inline-flex items-center gap-1.5"
-                  style={{
-                    borderColor: "#7c3aed",
-                    background: "rgba(124,58,237,0.06)",
-                    boxShadow: "0 0 0 2px rgba(255,255,255,0.95) inset",
-                  }}
-                >
-                  <BadgeCheck width={11} height={11} style={{ color: "#7c3aed" }} />
-                  <span className="text-[8px] font-bold uppercase tracking-[0.18em]" style={{ color: "#7c3aed" }}>
-                    Horodaté
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {/* Critères */}
-            <div className="space-y-1 pt-1.5 border-t border-slate-100">
-              {["Identité vérifiée", "Origine des fonds", "Profil de risque"].map((l) => (
-                <div key={l} className="flex items-center justify-between py-0.5">
-                  <span className="text-[8.5px] text-slate-700">{l}</span>
-                  <span
-                    className="text-[6.5px] font-bold uppercase tracking-widest px-1 py-0.5 rounded bg-emerald-50 text-emerald-700"
-                    style={{ border: "1px solid #a7f3d0" }}
-                  >
-                    ● Conforme
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* ───────── Fin ───────── */}
+      <div ref={endRef} className="dm-end kl-field" aria-hidden={ended ? undefined : true}>
+        <h2>Essayez Klaris sur votre prochain dossier.</h2>
+        <p>14 jours gratuits, aucun prélèvement avant le 14ᵉ jour, sans engagement.</p>
+        <div>
+          <button type="button" className="kl-btn kl-btn--onfield" tabIndex={ended ? 0 : -1} onClick={() => { onClose(); onCta?.(); }}>
+            Créer mon compte
+          </button>
+          <button type="button" className="kl-btn kl-btn--ghost dm-end__again" tabIndex={ended ? 0 : -1} onClick={() => { api.current.replay(); rootRef.current?.focus({ preventScroll: true }); }}>
+            <RotateCcw width={15} height={15} />
+            Revoir la démo
+          </button>
         </div>
-
-        {/* Download bubble */}
-        {showDl && (
-          <div
-            className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-3 py-2 rounded-full flex items-center gap-2 border whitespace-nowrap"
-            style={{
-              background: "rgba(7,8,15,0.92)",
-              borderColor: "rgba(124,58,237,0.40)",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 12px 28px rgba(124,58,237,0.40)",
-              animation: "slideUp 400ms ease both",
-            }}
-          >
-            <Download width={12} height={12} className="text-violet-200" />
-            <span className="text-[10.5px] font-semibold text-white">Téléchargé · Archivé 5 ans</span>
-          </div>
-        )}
       </div>
-
-      {/* keyframes globales — partagés par toutes les étapes */}
-      <style jsx global>{`
-        @keyframes pulseRing {
-          0% { box-shadow: 0 0 0 0 rgba(124,58,237,0.55), 0 0 0 0 rgba(124,58,237,0.40); }
-          70% { box-shadow: 0 0 0 6px rgba(124,58,237,0), 0 0 0 12px rgba(124,58,237,0); }
-          100% { box-shadow: 0 0 0 0 rgba(124,58,237,0), 0 0 0 0 rgba(124,58,237,0); }
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(8px) translateX(-50%); }
-          to { opacity: 1; transform: translateY(0) translateX(-50%); }
-        }
-        @keyframes flyAway {
-          0% { transform: translate(-50%, -50%) rotate(-12deg); opacity: 0.9; }
-          100% { transform: translate(60px, -90px) rotate(20deg); opacity: 0; }
-        }
-        @keyframes uploadBar {
-          from { width: 0%; }
-          to { width: 100%; }
-        }
-        @keyframes rotateScan {
-          to { transform: rotate(360deg); }
-        }
-        @keyframes scanBeam {
-          0% { top: -20%; opacity: 0; }
-          15% { opacity: 1; }
-          85% { opacity: 1; }
-          100% { top: 110%; opacity: 0; }
-        }
-        @keyframes twinkle {
-          0%, 100% { transform: scale(1); opacity: 0.95; }
-          50% { transform: scale(1.25); opacity: 1; }
-        }
-        @keyframes fadeSlide {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes ripple {
-          0% { transform: translate(-50%, -50%) scale(0); opacity: 0.55; }
-          100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
-        }
-        @keyframes sparkleFloat {
-          0% { transform: translateY(0) scale(0); opacity: 0; }
-          15% { transform: translateY(-2px) scale(1); opacity: 1; }
-          85% { transform: translateY(-14px) scale(1); opacity: 0.85; }
-          100% { transform: translateY(-22px) scale(0.5); opacity: 0; }
-        }
-        @keyframes cameraFlash {
-          0% { opacity: 0; }
-          12% { opacity: 0.85; }
-          100% { opacity: 0; }
-        }
-        @keyframes phoneShake {
-          0%, 100% { transform: translateX(0); }
-          15%, 45%, 75% { transform: translateX(-2px); }
-          30%, 60%, 90% { transform: translateX(2px); }
-        }
-        @keyframes radiantBurst {
-          0% { transform: scale(0.6); opacity: 0; }
-          40% { opacity: 0.7; }
-          100% { transform: scale(1.6); opacity: 0; }
-        }
-        @keyframes stampSeal {
-          0% { transform: translate(-50%, -50%) scale(2.2) rotate(-18deg); opacity: 0; }
-          60% { transform: translate(-50%, -50%) scale(0.95) rotate(-12deg); opacity: 0.95; }
-          80% { transform: translate(-50%, -50%) scale(1.05) rotate(-12deg); opacity: 1; }
-          100% { transform: translate(-50%, -50%) scale(1) rotate(-12deg); opacity: 1; }
-        }
-        @keyframes particleTrail {
-          0% { transform: scale(1); opacity: 0.9; }
-          100% { transform: scale(0.2); opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 }

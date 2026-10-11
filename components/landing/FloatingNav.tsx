@@ -13,7 +13,7 @@ import { useClerk, useAuth, UserButton } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 
-// Démo guidée chargée à la demande (≈1500 lignes + animations) : exclue du
+// Démo guidée chargée à la demande (film 3D + sa feuille de style) : exclue du
 // bundle initial de chaque page publique, tirée seulement à l'ouverture.
 const DemoModal = dynamic(() => import("./DemoModal"), { ssr: false });
 
