@@ -53,11 +53,11 @@ export default function CartographyClient({ carto }: Props) {
   return (
     <div style={{ padding: "24px 28px 80px" }}>
       {/* ─── Header ─────────────────────────────────────────────────── */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 24, marginBottom: 28 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: 24, marginBottom: 28 }}>
         <div>
           <Link
             href="/dashboard"
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#64748b", fontSize: 13, textDecoration: "none", marginBottom: 10 }}
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#6F6A8A", fontSize: 13, textDecoration: "none", marginBottom: 10 }}
           >
             <ArrowLeft size={14} /> Retour au dashboard
           </Link>
@@ -68,9 +68,9 @@ export default function CartographyClient({ carto }: Props) {
               gap: 6,
               padding: "3px 9px",
               borderRadius: 6,
-              background: "rgba(124,58,237,0.08)",
-              border: "1px solid rgba(124,58,237,0.18)",
-              color: "#6d28d9",
+              background: "rgba(109,94,246,0.08)",
+              border: "1px solid rgba(109,94,246,0.18)",
+              color: "#5B46E0",
               fontSize: 10.5,
               fontWeight: 700,
               textTransform: "uppercase",
@@ -86,15 +86,12 @@ export default function CartographyClient({ carto }: Props) {
               fontWeight: 700,
               letterSpacing: "-0.02em",
               margin: 0,
-              background: "linear-gradient(135deg, #0F172A, #6d28d9)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
+              color: "#17123A",
             }}
           >
             Cartographie des risques
           </h1>
-          <p style={{ color: "#64748b", fontSize: 13.5, marginTop: 6, lineHeight: 1.5, maxWidth: 640 }}>
+          <p style={{ color: "#6F6A8A", fontSize: 13.5, marginTop: 6, lineHeight: 1.5, maxWidth: 640 }}>
             Synthèse des risques BC/FT du portefeuille — {fmtRange(carto.rangeStart, carto.rangeEnd)}.
             Document à présenter en première intention lors d&apos;un contrôle DGCCRF (art. <strong>L.561-4-1 du CMF</strong>).
           </p>
@@ -111,14 +108,14 @@ export default function CartographyClient({ carto }: Props) {
             padding: "10px 16px",
             borderRadius: 10,
             background: exporting || total === 0
-              ? "rgba(124,58,237,0.20)"
-              : "linear-gradient(135deg, #7c3aed, #a855f7)",
+              ? "rgba(109,94,246,0.20)"
+              : "linear-gradient(135deg, #6D5EF6, #A548D8)",
             color: "white",
             fontWeight: 600,
             fontSize: 13,
             border: 0,
             cursor: exporting || total === 0 ? "wait" : "pointer",
-            boxShadow: "0 4px 14px rgba(124,58,237,0.25)",
+            boxShadow: "0 4px 14px rgba(109,94,246,0.25)",
             whiteSpace: "nowrap",
           }}
         >
@@ -217,9 +214,9 @@ export default function CartographyClient({ carto }: Props) {
         {carto.dossiersAtRisk.length === 0 ? (
           <EmptyState text="Aucun dossier actif en examen renforcé ou interdiction." />
         ) : (
-          <div style={{ border: "1px solid rgba(15,23,42,0.08)", borderRadius: 12, overflow: "hidden" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-              <thead style={{ background: "rgba(15,23,42,0.03)" }}>
+          <div style={{ border: "1px solid rgba(23,18,58,0.08)", borderRadius: 12, overflowX: "auto" }}>
+            <table style={{ width: "100%", minWidth: 520, borderCollapse: "collapse", fontSize: 13 }}>
+              <thead style={{ background: "rgba(23,18,58,0.03)" }}>
                 <tr>
                   <Th>Client</Th>
                   <Th>Type</Th>
@@ -230,17 +227,17 @@ export default function CartographyClient({ carto }: Props) {
               </thead>
               <tbody>
                 {carto.dossiersAtRisk.map((d) => (
-                  <tr key={d.id} style={{ borderTop: "1px solid rgba(15,23,42,0.05)" }}>
-                    <Td style={{ fontWeight: 500, color: "#0f172a" }}>{d.nom_prenom}</Td>
-                    <Td style={{ color: "#64748b" }}>{d.type_client === "morale" ? "Personne morale" : "Personne physique"}</Td>
+                  <tr key={d.id} style={{ borderTop: "1px solid rgba(23,18,58,0.05)" }}>
+                    <Td style={{ fontWeight: 500, color: "#17123A" }}>{d.nom_prenom}</Td>
+                    <Td style={{ color: "#6F6A8A" }}>{d.type_client === "morale" ? "Personne morale" : "Personne physique"}</Td>
                     <Td><NiveauBadge n={d.niveau} /></Td>
-                    <Td style={{ color: "#64748b" }}>
+                    <Td style={{ color: "#6F6A8A" }}>
                       {new Date(d.updated_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" })}
                     </Td>
                     <Td>
                       <Link
                         href={`/dashboard/${d.id}`}
-                        style={{ color: "#7c3aed", display: "inline-flex", alignItems: "center", gap: 3 }}
+                        style={{ color: "#6D5EF6", display: "inline-flex", alignItems: "center", gap: 3 }}
                       >
                         Ouvrir <ArrowRight size={12} />
                       </Link>
@@ -286,15 +283,15 @@ export default function CartographyClient({ carto }: Props) {
         style={{
           marginTop: 32,
           padding: 16,
-          background: "rgba(124,58,237,0.04)",
-          border: "1px dashed rgba(124,58,237,0.20)",
+          background: "rgba(109,94,246,0.04)",
+          border: "1px dashed rgba(109,94,246,0.20)",
           borderRadius: 10,
           fontSize: 12,
-          color: "#475569",
+          color: "#55506F",
           lineHeight: 1.55,
         }}
       >
-        <strong style={{ color: "#6d28d9" }}>Méthodologie.</strong>{" "}
+        <strong style={{ color: "#5B46E0" }}>Méthodologie.</strong>{" "}
         Cette cartographie est générée automatiquement à partir des dossiers KYC ayant été instruits dans Klaris sur la période indiquée.
         Les pays sont rapportés contre la liste grise/noire GAFI maintenue dans l&apos;application.
         Les critères de classification s&apos;appuient sur l&apos;algorithme propriétaire Klaris v2, versionné et déterministe (cf. attestations).
@@ -310,10 +307,10 @@ function Section({ title, sub, children }: { title: string; sub?: string; childr
   return (
     <section style={{ marginTop: 28 }}>
       <div style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", color: "#6d28d9" }}>
+        <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.18em", color: "#5B46E0" }}>
           {title}
         </div>
-        {sub && <div style={{ fontSize: 12.5, color: "#64748b", marginTop: 3 }}>{sub}</div>}
+        {sub && <div style={{ fontSize: 12.5, color: "#6F6A8A", marginTop: 3 }}>{sub}</div>}
       </div>
       {children}
     </section>
@@ -328,10 +325,10 @@ function KpiCard({
   tone: "info" | "warn" | "danger" | "critical";
 }) {
   const colors = {
-    info: { fg: "#6d28d9", bg: "rgba(124,58,237,0.06)", border: "rgba(124,58,237,0.20)" },
-    warn: { fg: "#b45309", bg: "rgba(245,158,11,0.07)", border: "rgba(245,158,11,0.25)" },
-    danger: { fg: "#b91c1c", bg: "rgba(220,38,38,0.07)", border: "rgba(220,38,38,0.25)" },
-    critical: { fg: "#0f172a", bg: "rgba(15,23,42,0.06)", border: "rgba(15,23,42,0.20)" },
+    info: { fg: "#5B46E0", bg: "rgba(109,94,246,0.06)", border: "rgba(109,94,246,0.20)" },
+    warn: { fg: "#8F5A00", bg: "rgba(227,160,8,0.07)", border: "rgba(227,160,8,0.25)" },
+    danger: { fg: "#A3241F", bg: "rgba(197,48,44,0.07)", border: "rgba(197,48,44,0.25)" },
+    critical: { fg: "#17123A", bg: "rgba(23,18,58,0.06)", border: "rgba(23,18,58,0.20)" },
   }[tone];
 
   return (
@@ -349,7 +346,7 @@ function KpiCard({
         <Icon size={12} /> {label}
       </div>
       <div style={{ fontSize: 26, fontWeight: 700, color: colors.fg, lineHeight: 1 }}>{value}</div>
-      <div style={{ fontSize: 11.5, color: "#64748b", marginTop: 4 }}>{sub}</div>
+      <div style={{ fontSize: 11.5, color: "#6F6A8A", marginTop: 4 }}>{sub}</div>
     </div>
   );
 }
@@ -360,7 +357,7 @@ function TypologyCard({ label, count }: { label: string; count: number }) {
       style={{
         padding: 12,
         background: "white",
-        border: "1px solid rgba(15,23,42,0.08)",
+        border: "1px solid rgba(23,18,58,0.08)",
         borderRadius: 10,
         display: "flex",
         alignItems: "center",
@@ -368,14 +365,14 @@ function TypologyCard({ label, count }: { label: string; count: number }) {
         gap: 8,
       }}
     >
-      <span style={{ fontSize: 12.5, color: "#0f172a" }}>{label}</span>
+      <span style={{ fontSize: 12.5, color: "#17123A" }}>{label}</span>
       <span
         style={{
           fontSize: 13,
           fontWeight: 700,
           padding: "3px 8px",
-          background: "rgba(124,58,237,0.10)",
-          color: "#6d28d9",
+          background: "rgba(109,94,246,0.10)",
+          color: "#5B46E0",
           borderRadius: 999,
         }}
       >
@@ -393,20 +390,20 @@ function CountTable({
   rows: Array<{ key: string; count: number; flagged?: boolean }>;
 }) {
   return (
-    <div style={{ background: "white", border: "1px solid rgba(15,23,42,0.08)", borderRadius: 12, padding: 14 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#6d28d9", marginBottom: 10 }}>
+    <div style={{ background: "white", border: "1px solid rgba(23,18,58,0.08)", borderRadius: 12, padding: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#5B46E0", marginBottom: 10 }}>
         <Icon size={12} /> {heading}
       </div>
       {rows.length === 0 ? (
-        <div style={{ fontSize: 12, color: "#94a3b8" }}>Aucune donnée sur la période.</div>
+        <div style={{ fontSize: 12, color: "#9792B4" }}>Aucune donnée sur la période.</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           {rows.slice(0, 8).map((r) => (
             <div key={r.key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 0", fontSize: 12.5 }}>
-              <span style={{ color: r.flagged ? "#b91c1c" : "#0f172a", fontWeight: r.flagged ? 600 : 400 }}>
+              <span style={{ color: r.flagged ? "#A3241F" : "#17123A", fontWeight: r.flagged ? 600 : 400 }}>
                 {r.flagged && "🚩 "}{r.key}
               </span>
-              <span style={{ color: "#64748b", fontWeight: 500 }}>{r.count}</span>
+              <span style={{ color: "#6F6A8A", fontWeight: 500 }}>{r.count}</span>
             </div>
           ))}
         </div>
@@ -419,7 +416,7 @@ function MonthlyChart({ monthly }: { monthly: Cartography["monthly"] }) {
   const maxTotal = Math.max(...monthly.map((m) => m.total), 1);
 
   return (
-    <div style={{ background: "white", border: "1px solid rgba(15,23,42,0.08)", borderRadius: 12, padding: 16 }}>
+    <div style={{ background: "white", border: "1px solid rgba(23,18,58,0.08)", borderRadius: 12, padding: 16 }}>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 120, marginBottom: 8 }}>
         {monthly.map((m) => {
           const flagHeight = ((m.renforcee + m.examen + m.interdiction) / maxTotal) * 100;
@@ -429,7 +426,7 @@ function MonthlyChart({ monthly }: { monthly: Cartography["monthly"] }) {
               <div
                 style={{
                   height: `${totalHeight}%`,
-                  background: "rgba(124,58,237,0.18)",
+                  background: "rgba(109,94,246,0.18)",
                   borderRadius: 4,
                   position: "relative",
                   minHeight: m.total > 0 ? 2 : 0,
@@ -444,7 +441,7 @@ function MonthlyChart({ monthly }: { monthly: Cartography["monthly"] }) {
                       left: 0,
                       right: 0,
                       height: `${(flagHeight / totalHeight) * 100}%`,
-                      background: "linear-gradient(180deg, #ef4444, #b91c1c)",
+                      background: "linear-gradient(180deg, #D9443F, #A3241F)",
                       borderRadius: 4,
                     }}
                   />
@@ -454,16 +451,16 @@ function MonthlyChart({ monthly }: { monthly: Cartography["monthly"] }) {
           );
         })}
       </div>
-      <div style={{ display: "flex", gap: 6, fontSize: 10, color: "#94a3b8" }}>
+      <div style={{ display: "flex", gap: 6, fontSize: 10, color: "#9792B4" }}>
         {monthly.map((m) => (
           <div key={m.month} style={{ flex: 1, textAlign: "center" }}>
             {m.month.slice(5)}
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", gap: 16, marginTop: 10, fontSize: 11, color: "#64748b" }}>
-        <Legend color="rgba(124,58,237,0.30)" label="Total dossiers" />
-        <Legend color="#dc2626" label="Dossiers à risque (renforcée+)" />
+      <div style={{ display: "flex", gap: 16, marginTop: 10, fontSize: 11, color: "#6F6A8A" }}>
+        <Legend color="rgba(109,94,246,0.30)" label="Total dossiers" />
+        <Legend color="#C5302C" label="Dossiers à risque (renforcée+)" />
       </div>
     </div>
   );
@@ -480,11 +477,11 @@ function Legend({ color, label }: { color: string; label: string }) {
 
 function NiveauBadge({ n }: { n: string }) {
   const cfg = {
-    vigilance_standard: { color: "#047857", bg: "rgba(16,185,129,0.10)", label: "Standard" },
-    vigilance_renforcee: { color: "#b45309", bg: "rgba(245,158,11,0.12)", label: "Renforcée" },
-    examen_renforce: { color: "#b91c1c", bg: "rgba(220,38,38,0.10)", label: "Examen" },
-    interdiction: { color: "white", bg: "#0f172a", label: "Interdiction" },
-  }[n] ?? { color: "#64748b", bg: "rgba(148,163,184,0.10)", label: n };
+    vigilance_standard: { color: "#177A52", bg: "rgba(30,158,106,0.10)", label: "Standard" },
+    vigilance_renforcee: { color: "#8F5A00", bg: "rgba(227,160,8,0.12)", label: "Renforcée" },
+    examen_renforce: { color: "#A3241F", bg: "rgba(197,48,44,0.10)", label: "Examen" },
+    interdiction: { color: "white", bg: "#17123A", label: "Interdiction" },
+  }[n] ?? { color: "#6F6A8A", bg: "rgba(151,146,180,0.10)", label: n };
 
   return (
     <span
@@ -508,11 +505,11 @@ function EmptyState({ text }: { text: string }) {
     <div
       style={{
         padding: 24,
-        background: "rgba(16,185,129,0.04)",
-        border: "1px dashed rgba(16,185,129,0.30)",
+        background: "rgba(30,158,106,0.04)",
+        border: "1px dashed rgba(30,158,106,0.30)",
         borderRadius: 12,
         fontSize: 13,
-        color: "#047857",
+        color: "#177A52",
         textAlign: "center",
       }}
     >
@@ -531,7 +528,7 @@ function Th({ children, style }: { children?: React.ReactNode; style?: React.CSS
         fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.14em",
-        color: "#64748b",
+        color: "#6F6A8A",
         ...style,
       }}
     >

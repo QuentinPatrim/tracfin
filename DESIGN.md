@@ -1,10 +1,12 @@
-# Identité du site public Klaris : « Papier & encre »
+# Identité de Klaris : « Papier & encre »
 
 Ce fichier décrit les choix visuels du site public (accueil, tarifs, confiance,
-sécurité, guides, pages légales) et du formulaire client. Le tableau de bord a sa
-propre feuille de style (`app/dashboard/dashboard.css`) et n'est pas concerné.
+sécurité, guides, pages légales), du formulaire client, de l'application connectée
+(tableau de bord et écrans de dossier) et des PDF. Tous partagent la même palette et
+la même typographie ; l'application garde sa propre feuille de style
+(`app/dashboard/dashboard.css`) et sa disposition d'origine.
 
-À lire avant toute modification visuelle du site, par un humain ou par un agent.
+À lire avant toute modification visuelle, par un humain ou par un agent.
 
 ## L'idée
 
@@ -114,6 +116,33 @@ Le mouvement raconte le produit, il ne décore pas.
 - Pour régler la séquence : durées dans `DUR_FWD`, poses dans `render()`, pages du
   formulaire dans `FORM_PLAY`. Pour régler le film : chapitres dans `CHAPTERS`, plans
   de caméra dans `shots()`, scénario dans `T`, place des objets dans `WORLD`.
+
+## Application connectée et PDF
+
+L'application a reçu l'habillage de l'identité, sans changement de disposition ni de
+fonctionnement.
+
+- **Jetons** : `--k-*` dans `app/dashboard/dashboard.css` (violet `#6D5EF6`, texte
+  violet `#5B46E0`, dégradé du bouton `#6D5EF6 → #A548D8 → #DB2777`, encre `#17123A`,
+  fond papier `#F6F5FA`). Les cartes sont pleines, comme des feuilles : plus d'effet
+  verre, plus de halo flou en fond, plus de dégradé animé.
+- **Titres** en Bricolage, par la classe `k-app` posée par `app/dashboard/layout.tsx`
+  (et sur `app/abonnement`). Pas de dégradé sur le texte des titres.
+- **Boutons** : rayon 10 px, pas de pilule. Les pastilles de statut restent arrondies.
+- **Couleurs Tailwind** : les nuances `violet`, `indigo`, `slate`, `emerald` et `red`
+  utilisées dans l'application sont redéfinies dans `app/globals.css` (`@theme`) pour
+  donner les teintes Iris. Écrire `text-slate-500` donne donc le gris-violet de la
+  palette.
+- **Pages sombres** (attente du client) : le champ d'encre du site, avec sa lueur fixe
+  (`components/tracfin/AmbientOrbs.tsx`).
+- **Niveaux de vigilance dans l'application** : vert (standard), ambre (renforcée),
+  rouge (examen renforcé), encre sombre (interdiction). C'est la convention d'origine
+  du produit, conservée. Elle diffère de l'échelle du site (vert, jaune, orange,
+  rouge) : toute harmonisation est une décision produit, pas un détail d'habillage.
+- **PDF** (`app/pdf-render/`) : mêmes couleurs, contenu et mise en page inchangés. La
+  police reste Inter : pas de police supplémentaire à charger au moment du rendu.
+- **Origine du site côté navigateur** : passer par `lib/use-origin.ts`, jamais par
+  `typeof window !== "undefined" ? window.location.origin : …` (écart d'hydratation).
 
 ## Textes
 

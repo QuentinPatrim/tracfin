@@ -341,9 +341,9 @@ export const INDICE_LABELS: Record<DeclarationDraft["indices"][number]["type"], 
 };
 
 export const SEVERITE_COLORS: Record<DeclarationDraft["indices"][number]["severite"], string> = {
-  rouge: "#b91c1c",
-  orange: "#b45309",
-  gate: "#0f172a",
+  rouge: "#A3241F",
+  orange: "#8F5A00",
+  gate: "#17123A",
 };
 
 export { RISK_LABELS };

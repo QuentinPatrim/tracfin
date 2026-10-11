@@ -21,10 +21,10 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
       <div
         style={{
           padding: 14,
-          background: "rgba(124,58,237,0.04)",
-          border: "1px dashed rgba(124,58,237,0.20)",
+          background: "rgba(109,94,246,0.04)",
+          border: "1px dashed rgba(109,94,246,0.20)",
           borderRadius: 10,
-          color: "#64748b",
+          color: "#6F6A8A",
           fontSize: 12.5,
           textAlign: "center",
         }}
@@ -51,7 +51,7 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
                 gap: 10,
                 padding: "8px 10px",
                 borderRadius: 9,
-                border: "1px solid rgba(124,58,237,0.10)",
+                border: "1px solid rgba(109,94,246,0.10)",
                 background: "rgba(255,255,255,0.6)",
                 textDecoration: "none",
                 color: "inherit",
@@ -59,19 +59,19 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
                 fontSize: 12.5,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(124,58,237,0.06)";
-                e.currentTarget.style.borderColor = "rgba(124,58,237,0.22)";
+                e.currentTarget.style.background = "rgba(109,94,246,0.06)";
+                e.currentTarget.style.borderColor = "rgba(109,94,246,0.22)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "rgba(255,255,255,0.6)";
-                e.currentTarget.style.borderColor = "rgba(124,58,237,0.10)";
+                e.currentTarget.style.borderColor = "rgba(109,94,246,0.10)";
               }}
             >
               <div
                 style={{
                   width: 26, height: 26, borderRadius: 7,
-                  background: "rgba(124,58,237,0.10)",
-                  color: "#7c3aed",
+                  background: "rgba(109,94,246,0.10)",
+                  color: "#6D5EF6",
                   display: "grid", placeItems: "center",
                   flexShrink: 0,
                 }}
@@ -79,10 +79,10 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
                 <Icon width={13} height={13} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, color: "#0f172a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.label}</div>
-                <div style={{ fontSize: 10.5, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 1 }}>{f.ext}</div>
+                <div style={{ fontWeight: 600, color: "#17123A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.label}</div>
+                <div style={{ fontSize: 10.5, color: "#9792B4", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 1 }}>{f.ext}</div>
               </div>
-              <ExternalLink width={12} height={12} style={{ color: "#94a3b8" }} />
+              <ExternalLink width={12} height={12} style={{ color: "#9792B4" }} />
             </a>
           );
         })}
@@ -101,9 +101,9 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
             style={{
               padding: 14,
               borderRadius: 12,
-              border: "1px solid rgba(124,58,237,0.10)",
+              border: "1px solid rgba(109,94,246,0.10)",
               background: "rgba(255,255,255,0.7)",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 12px -6px rgba(124,58,237,0.10)",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 12px -6px rgba(109,94,246,0.10)",
               display: "flex",
               flexDirection: "column",
               gap: 10,
@@ -113,8 +113,8 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
               <div
                 style={{
                   width: 36, height: 36, borderRadius: 9,
-                  background: "rgba(124,58,237,0.10)",
-                  color: "#7c3aed",
+                  background: "rgba(109,94,246,0.10)",
+                  color: "#6D5EF6",
                   display: "grid", placeItems: "center",
                   flexShrink: 0,
                 }}
@@ -122,8 +122,8 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
                 <Icon width={17} height={17} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, color: "#0f172a", fontSize: 13.5 }}>{f.label}</div>
-                <div style={{ fontSize: 10.5, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>
+                <div style={{ fontWeight: 600, color: "#17123A", fontSize: 13.5 }}>{f.label}</div>
+                <div style={{ fontSize: 10.5, color: "#9792B4", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: 2 }}>
                   Fichier .{f.ext}
                 </div>
               </div>
@@ -136,11 +136,11 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
                 style={{
                   flex: 1, textAlign: "center",
                   padding: "7px 10px", borderRadius: 8,
-                  background: "rgba(124,58,237,0.08)",
-                  color: "#7c3aed",
+                  background: "rgba(109,94,246,0.08)",
+                  color: "#6D5EF6",
                   fontWeight: 600, fontSize: 11.5,
                   textDecoration: "none",
-                  border: "1px solid rgba(124,58,237,0.18)",
+                  border: "1px solid rgba(109,94,246,0.18)",
                   display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 5,
                 }}
               >
@@ -154,10 +154,10 @@ export default function DocumentsList({ files, mode = "compact" }: Props) {
                   flex: 1, textAlign: "center",
                   padding: "7px 10px", borderRadius: 8,
                   background: "#ffffff",
-                  color: "#334155",
+                  color: "#3B3560",
                   fontWeight: 600, fontSize: 11.5,
                   textDecoration: "none",
-                  border: "1px solid #ebebf2",
+                  border: "1px solid #E9E7F2",
                   display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 5,
                 }}
               >

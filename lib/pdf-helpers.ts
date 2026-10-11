@@ -104,8 +104,8 @@ export function klarisLogoSvg(size: number = 36): string {
 <svg width="${size}" height="${size}" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="display:block">
   <defs>
     <linearGradient id="klogo-pdf" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7c3aed" />
-      <stop offset="55%" stop-color="#a855f7" />
+      <stop offset="0%" stop-color="#6D5EF6" />
+      <stop offset="55%" stop-color="#A548D8" />
       <stop offset="100%" stop-color="#ec4899" />
     </linearGradient>
   </defs>

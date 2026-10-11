@@ -47,8 +47,8 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
           d.kyc_status === "received" && cfg
             ? cfg.color
             : d.kyc_status === "sent"
-            ? "#A855F7"
-            : "#6366F1";
+            ? "#A548D8"
+            : "#4F46E5";
 
         return (
           <Link
@@ -136,7 +136,7 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
 
                 {/* Cas 2 : KYC reçu mais score pas encore calculé */}
                 {d.kyc_status === "received" && !cfg && (
-                  <Badge color="#34D399" bg="rgba(52,211,153,0.10)" border="rgba(52,211,153,0.35)">
+                  <Badge color="#3DBE8B" bg="rgba(61,190,139,0.10)" border="rgba(61,190,139,0.35)">
                     <Mail className="w-3 h-3" />
                     KYC reçu — à analyser
                   </Badge>
@@ -144,7 +144,7 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
 
                 {/* Cas 3 : En attente du KYC client */}
                 {d.kyc_status !== "received" && (
-                  <Badge color="#C4B5FD" bg="rgba(168,85,247,0.12)" border="rgba(168,85,247,0.40)">
+                  <Badge color="#C7C0FF" bg="rgba(165,72,216,0.12)" border="rgba(165,72,216,0.40)">
                     <Clock className="w-3 h-3" />
                     En attente du KYC
                   </Badge>

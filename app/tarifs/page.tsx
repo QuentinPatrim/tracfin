@@ -171,20 +171,6 @@ export default function TarifsPage() {
     <div
       className="klaris-public min-h-screen relative overflow-x-hidden"
     >
-      {/* Orbes ambiants */}
-      <div className="fixed pointer-events-none rounded-full" style={{
-        width: 800, height: 800, top: -250, left: -180, zIndex: 0, filter: "blur(110px)",
-        background: "radial-gradient(circle, var(--lp-orb-1) 0%, transparent 70%)",
-      }} />
-      <div className="fixed pointer-events-none rounded-full" style={{
-        width: 700, height: 700, bottom: -200, right: -150, zIndex: 0, filter: "blur(110px)",
-        background: "radial-gradient(circle, var(--lp-orb-2) 0%, transparent 70%)",
-      }} />
-      <div className="fixed pointer-events-none rounded-full" style={{
-        width: 500, height: 500, top: "40%", left: "50%", zIndex: 0, filter: "blur(110px)",
-        transform: "translate(-50%, -50%)",
-        background: "radial-gradient(circle, var(--lp-orb-1) 0%, transparent 70%)",
-      }} />
 
       <FloatingNav />
 
@@ -196,12 +182,12 @@ export default function TarifsPage() {
             style={{
               background: "var(--lp-success-bg)",
               backdropFilter: "blur(20px)",
-              boxShadow: "0 0 0 1px var(--lp-success-border), 0 1px 0 rgba(255,255,255,0.10) inset, 0 0 28px -4px rgba(16,185,129,0.40)",
+              boxShadow: "0 0 0 1px var(--lp-success-border), 0 1px 0 rgba(255,255,255,0.10) inset, 0 0 28px -4px rgba(30,158,106,0.40)",
             }}
           >
             <span
               className="w-2 h-2 rounded-full"
-              style={{ background: "#10B981", boxShadow: "0 0 0 4px rgba(16,185,129,0.30)" }}
+              style={{ background: "#1E9E6A", boxShadow: "0 0 0 4px rgba(30,158,106,0.30)" }}
             />
             <span className="text-[12px] font-bold tracking-[0.14em] uppercase text-[color:var(--lp-success)]">
               14 jours gratuits · annulable en 1 clic
@@ -209,17 +195,7 @@ export default function TarifsPage() {
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-[-0.03em] mb-5 leading-[1.05]">
             Essayez Klaris,<br />
-            <span
-              className="inline-block bg-clip-text text-transparent"
-              style={{
-                backgroundImage: "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)",
-                backgroundSize: "200% 200%",
-                animation: "gradShift 6s ease infinite",
-              }}
-            >
-              sans engagement
-            </span>
-            .
+            sans engagement.
           </h1>
           <p className="text-[color:var(--lp-text-3)] text-base md:text-lg leading-relaxed max-w-xl mx-auto">
             <strong className="text-[color:var(--lp-text)]">Aucun prélèvement pendant 14 jours.</strong>{" "}
@@ -230,7 +206,7 @@ export default function TarifsPage() {
         {/* Toggle */}
         <div className="flex justify-center mb-12">
           <div
-            className="inline-flex p-1 rounded-full"
+            className="inline-flex p-1 rounded-[12px]"
             style={{
               background: "var(--lp-surface-2)",
               backdropFilter: "blur(20px)",
@@ -239,7 +215,7 @@ export default function TarifsPage() {
           >
             <button
               onClick={() => setPeriod("monthly")}
-              className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all ${
+              className={`px-5 py-2 rounded-[10px] text-[13px] font-bold transition-all ${
                 period === "monthly" ? "bg-white text-slate-950 shadow-lg" : "text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)]"
               }`}
             >
@@ -247,7 +223,7 @@ export default function TarifsPage() {
             </button>
             <button
               onClick={() => setPeriod("yearly")}
-              className={`px-5 py-2 rounded-full text-[13px] font-bold transition-all flex items-center gap-2 ${
+              className={`px-5 py-2 rounded-[10px] text-[13px] font-bold transition-all flex items-center gap-2 ${
                 period === "yearly" ? "bg-white text-slate-950 shadow-lg" : "text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)]"
               }`}
             >
@@ -298,7 +274,7 @@ export default function TarifsPage() {
             }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#10B981", boxShadow: "0 0 0 4px rgba(16,185,129,0.20)" }} />
+              <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#1E9E6A", boxShadow: "0 0 0 4px rgba(30,158,106,0.20)" }} />
               <div>
                 <div className="text-[11px] font-bold tracking-widest uppercase text-[color:var(--lp-success)]">
                   {status.state === "trialing" ? "Essai gratuit en cours" : "Abonnement actif"}
@@ -314,7 +290,7 @@ export default function TarifsPage() {
               <button
                 onClick={handlePortal}
                 disabled={loading === "portal"}
-                className="px-4 py-2 rounded-full text-[12px] font-bold text-[color:var(--lp-success)] hover:text-[color:var(--lp-success)] transition flex items-center gap-2"
+                className="px-4 py-2 rounded-[10px] text-[12px] font-bold text-[color:var(--lp-success)] hover:text-[color:var(--lp-success)] transition flex items-center gap-2"
                 style={{ background: "var(--lp-success-bg)", border: "1px solid var(--lp-success-border)" }}
               >
                 <Settings className="w-3.5 h-3.5" />
@@ -415,7 +391,7 @@ export default function TarifsPage() {
             <div
               className="inline-block mb-3 text-[11px] font-bold tracking-[0.2em] uppercase"
               style={{
-                background: "linear-gradient(90deg, #6366F1, #A855F7, #EC4899)",
+                background: "linear-gradient(90deg, #6D5EF6, #A548D8 55%, #DB2777)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -452,13 +428,6 @@ export default function TarifsPage() {
           </div>
         </div>
       </main>
-
-      <style jsx global>{`
-        @keyframes gradShift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-      `}</style>
     </div>
   );
 }
@@ -480,9 +449,9 @@ function PlanCard({
         WebkitBackdropFilter: "blur(28px) saturate(180%)",
         boxShadow: popular
           ? [
-              "0 0 0 1px rgba(168,85,247,0.40)",
+              "0 0 0 1px rgba(165,72,216,0.40)",
               "0 1px 0 rgba(255,255,255,0.20) inset",
-              "0 30px 80px -20px rgba(168,85,247,0.50)",
+              "0 30px 80px -20px rgba(165,72,216,0.50)",
               "0 12px 30px -8px rgba(0,0,0,0.5)",
             ].join(", ")
           : [
@@ -504,22 +473,12 @@ function PlanCard({
           <div
             className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] text-white"
             style={{
-              background: "linear-gradient(135deg, #6366F1, #A855F7, #EC4899)",
-              backgroundSize: "200% 200%",
-              animation: "gradShift 4s ease infinite",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.20) inset, 0 4px 20px rgba(168,85,247,0.60)",
+              background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)",
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.20) inset, 0 4px 20px rgba(165,72,216,0.60)",
             }}
           >
             Le plus populaire
           </div>
-          <div
-            className="absolute -top-20 -right-20 w-44 h-44 rounded-full opacity-30 blur-3xl pointer-events-none"
-            style={{ background: "radial-gradient(circle, #A855F7, transparent 70%)" }}
-          />
-          <div
-            className="absolute -bottom-20 -left-20 w-44 h-44 rounded-full opacity-30 blur-3xl pointer-events-none"
-            style={{ background: "radial-gradient(circle, #EC4899, transparent 70%)" }}
-          />
         </>
       )}
 
@@ -542,7 +501,7 @@ function PlanCard({
         <button
           onClick={onClick}
           disabled={loading || isCurrent}
-          className="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-[14px] font-bold transition-transform hover:scale-[1.02] mb-2 disabled:opacity-60 disabled:cursor-default disabled:hover:scale-100"
+          className="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-[10px] text-[14px] font-bold transition-transform hover:scale-[1.02] mb-2 disabled:opacity-60 disabled:cursor-default disabled:hover:scale-100"
           style={
             isCurrent
               ? {
@@ -553,13 +512,11 @@ function PlanCard({
               : popular
               ? {
                   background: "var(--lp-cta-grad)",
-                  backgroundSize: "200% 200%",
-                  animation: "gradShift 6s ease infinite",
                   color: "white",
                   boxShadow:
-                    "0 0 0 1px rgba(255,255,255,0.10) inset, 0 1px 0 rgba(255,255,255,0.30) inset, 0 10px 30px rgba(168,85,247,0.50)",
+                    "0 0 0 1px rgba(255,255,255,0.10) inset, 0 1px 0 rgba(255,255,255,0.30) inset, 0 10px 30px rgba(165,72,216,0.50)",
                 }
-              : { background: "white", color: "#0F172A" }
+              : { background: "white", color: "#17123A" }
           }
         >
           {loading ? "Redirection…" : cta}
@@ -586,14 +543,14 @@ function PlanCard({
                 style={
                   popular
                     ? {
-                        background: "rgba(168,85,247,0.20)",
-                        boxShadow: "0 0 0 1px rgba(168,85,247,0.40), 0 0 8px rgba(168,85,247,0.30)",
-                        color: "#C4B5FD",
+                        background: "rgba(165,72,216,0.20)",
+                        boxShadow: "0 0 0 1px rgba(165,72,216,0.40), 0 0 8px rgba(165,72,216,0.30)",
+                        color: "#C7C0FF",
                       }
                     : {
-                        background: "rgba(52,211,153,0.15)",
-                        boxShadow: "0 0 0 1px rgba(52,211,153,0.40), 0 0 8px rgba(52,211,153,0.20)",
-                        color: "#34D399",
+                        background: "rgba(61,190,139,0.15)",
+                        boxShadow: "0 0 0 1px rgba(61,190,139,0.40), 0 0 8px rgba(61,190,139,0.20)",
+                        color: "#3DBE8B",
                       }
                 }
               >

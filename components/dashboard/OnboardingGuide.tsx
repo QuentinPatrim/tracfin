@@ -68,7 +68,7 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(15,23,42,0.45)",
+        background: "rgba(23,18,58,0.45)",
         backdropFilter: "blur(14px) saturate(180%)",
         WebkitBackdropFilter: "blur(14px) saturate(180%)",
         zIndex: 200,
@@ -88,14 +88,14 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
           padding: "8px 14px",
           borderRadius: 10,
           background: "rgba(255,255,255,0.85)",
-          border: "1px solid rgba(15,23,42,0.10)",
-          color: "#334155",
+          border: "1px solid rgba(23,18,58,0.10)",
+          color: "#3B3560",
           fontSize: 12.5,
           fontWeight: 600,
           cursor: "pointer",
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
-          boxShadow: "0 4px 12px rgba(15,23,42,0.08)",
+          boxShadow: "0 4px 12px rgba(23,18,58,0.08)",
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
@@ -117,22 +117,20 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
           backdropFilter: "blur(28px) saturate(180%)",
           WebkitBackdropFilter: "blur(28px) saturate(180%)",
           borderRadius: 20,
-          border: "1px solid rgba(124,58,237,0.18)",
+          border: "1px solid rgba(109,94,246,0.18)",
           overflow: "hidden",
           boxShadow:
-            "0 1px 0 rgba(255,255,255,0.9) inset, 0 30px 80px -20px rgba(124,58,237,0.40), 0 12px 40px -8px rgba(15,23,42,0.12)",
+            "0 1px 0 rgba(255,255,255,0.9) inset, 0 30px 80px -20px rgba(109,94,246,0.40), 0 12px 40px -8px rgba(23,18,58,0.12)",
         }}
       >
         {/* halos ambient */}
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden", borderRadius: 20 }}>
-          <div style={{ position: "absolute", top: -120, left: -120, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(124,58,237,0.20), transparent 70%)", filter: "blur(60px)" }} />
-          <div style={{ position: "absolute", bottom: -120, right: -120, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(236,72,153,0.15), transparent 70%)", filter: "blur(60px)" }} />
         </div>
 
         {/* Top accent bar gradient */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 4,
-          background: "linear-gradient(90deg, #7C3AED, #A855F7, #EC4899)",
+          background: "linear-gradient(90deg, #6D5EF6, #A548D8 55%, #DB2777)",
         }} />
 
         {/* Contenu (scroll si besoin) */}
@@ -148,8 +146,8 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
             alignItems: "center",
             justifyContent: "space-between",
             padding: "20px 32px",
-            borderTop: "1px solid rgba(124,58,237,0.10)",
-            background: "rgba(250,250,255,0.6)",
+            borderTop: "1px solid rgba(109,94,246,0.10)",
+            background: "rgba(246,245,250,0.6)",
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
             gap: 16,
@@ -169,16 +167,16 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
                   borderRadius: 999,
                   border: 0,
                   background: i === step
-                    ? "linear-gradient(90deg, #7C3AED, #EC4899)"
+                    ? "linear-gradient(90deg, #6D5EF6, #A548D8 55%, #DB2777)"
                     : i < step
-                      ? "rgba(124,58,237,0.45)"
-                      : "rgba(15,23,42,0.10)",
+                      ? "rgba(109,94,246,0.45)"
+                      : "rgba(23,18,58,0.10)",
                   cursor: "pointer",
                   transition: "width 0.25s, background 0.25s",
                 }}
               />
             ))}
-            <span style={{ marginLeft: 12, fontSize: 11.5, color: "#64748b", fontWeight: 500 }}>
+            <span style={{ marginLeft: 12, fontSize: 11.5, color: "#6F6A8A", fontWeight: 500 }}>
               {step + 1} / {N_SLIDES}
             </span>
           </div>
@@ -230,8 +228,8 @@ const navBtnStyle = {
     color: "white",
     fontWeight: 600,
     fontSize: 13,
-    background: "linear-gradient(135deg, #7C3AED, #A855F7, #EC4899)",
-    boxShadow: "0 1px 0 rgba(255,255,255,0.25) inset, 0 6px 16px rgba(124,58,237,0.30)",
+    background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)",
+    boxShadow: "0 1px 0 rgba(255,255,255,0.25) inset, 0 6px 16px rgba(109,94,246,0.30)",
     cursor: "pointer",
   },
   secondary: {
@@ -240,8 +238,8 @@ const navBtnStyle = {
     gap: 6,
     padding: "9px 14px",
     borderRadius: 10,
-    border: "1px solid rgba(15,23,42,0.10)",
-    color: "#334155",
+    border: "1px solid rgba(23,18,58,0.10)",
+    color: "#3B3560",
     fontWeight: 500,
     fontSize: 13,
     background: "rgba(255,255,255,0.7)",
@@ -257,10 +255,10 @@ const SLIDES = [
   // ─── 1) BIENVENUE ─────────────────────────────────────────────────────
   (
     <div key="welcome" style={{ textAlign: "center", maxWidth: 640, margin: "0 auto" }}>
-      <div style={iconCircle("#7C3AED")}>
+      <div style={iconCircle("#6D5EF6")}>
         <BookOpen width={28} height={28} color="white" />
       </div>
-      <Eyebrow color="#7C3AED">Bienvenue dans Klaris</Eyebrow>
+      <Eyebrow color="#6D5EF6">Bienvenue dans Klaris</Eyebrow>
       <H1>En 5 minutes, comprenez vos obligations LCB-FT</H1>
       <P>
         Klaris a été conçu pour vous aider à être <strong>en règle</strong> avec vos obligations légales
@@ -274,17 +272,17 @@ const SLIDES = [
   // ─── 2) HISTORIQUE LCB-FT ────────────────────────────────────────────
   (
     <div key="history">
-      <Eyebrow color="#7C3AED">Module 01 · Contexte</Eyebrow>
+      <Eyebrow color="#6D5EF6">Module 01 · Contexte</Eyebrow>
       <H1>D'où vient la LCB-FT ?</H1>
       <P>
         La lutte contre le blanchiment est un effort <strong>mondial</strong>, coordonné depuis 1989.
         Les professionnels de l'immobilier y sont assujettis en France depuis 1998.
       </P>
       <Timeline items={[
-        { year: "1989", color: "#7C3AED", title: "Création du GAFI", desc: "Groupe d'Action Financière, organisme international piloté par le G7 pour fixer les standards anti-blanchiment." },
-        { year: "1991", color: "#7C3AED", title: "1ʳᵉ directive UE", desc: "Premier cadre européen contre l'utilisation du système financier aux fins de blanchiment." },
-        { year: "1998", color: "#A855F7", title: "Professionnels de l'immobilier assujettis", desc: "Vous êtes intégré au dispositif. Aujourd'hui : article L.561-2 8° du Code monétaire et financier." },
-        { year: "2001", color: "#A855F7", title: "Post 11-Septembre", desc: "Renforcement mondial pour lutter contre le financement du terrorisme (CFT)." },
+        { year: "1989", color: "#6D5EF6", title: "Création du GAFI", desc: "Groupe d'Action Financière, organisme international piloté par le G7 pour fixer les standards anti-blanchiment." },
+        { year: "1991", color: "#6D5EF6", title: "1ʳᵉ directive UE", desc: "Premier cadre européen contre l'utilisation du système financier aux fins de blanchiment." },
+        { year: "1998", color: "#A548D8", title: "Professionnels de l'immobilier assujettis", desc: "Vous êtes intégré au dispositif. Aujourd'hui : article L.561-2 8° du Code monétaire et financier." },
+        { year: "2001", color: "#A548D8", title: "Post 11-Septembre", desc: "Renforcement mondial pour lutter contre le financement du terrorisme (CFT)." },
         { year: "2018", color: "#EC4899", title: "5ᵉ directive UE", desc: "Directive (UE) 2018/843 : elle modifie la 4ᵉ directive (UE) 2015/849, qui a posé le principe des registres des bénéficiaires effectifs." },
         { year: "2020", color: "#EC4899", title: "Directive (UE) 2018/1673", desc: "Lutte contre le blanchiment au moyen du droit pénal, à transposer au plus tard le 3 décembre 2020." },
         { year: "2024", color: "#F43F5E", title: "Paquet AML 2024", desc: "Règlement (UE) 2024/1624, directive (UE) 2024/1640 et création de l'AMLA (autorité européenne). Le règlement est applicable à partir du 10 juillet 2027." },
@@ -295,7 +293,7 @@ const SLIDES = [
   // ─── 3) POURQUOI VOUS ─────────────────────────────────────────────────
   (
     <div key="why-you">
-      <Eyebrow color="#7C3AED">Module 02 · Votre rôle</Eyebrow>
+      <Eyebrow color="#6D5EF6">Module 02 · Votre rôle</Eyebrow>
       <H1>Pourquoi êtes-vous concerné ?</H1>
       <P>
         L'immobilier est un véhicule privilégié de blanchiment : montants élevés, opacité possible des
@@ -305,7 +303,7 @@ const SLIDES = [
         { value: "1998", label: "année où vous êtes devenus assujettis", src: "Tracfin, brochure immobilier 2026 · Art. L.561-2 8° CMF" },
         { value: "5 ans", label: "obligation de conservation des dossiers KYC", src: "Art. L.561-12 CMF" },
       ]} />
-      <Callout color="#7C3AED" icon={<ShieldCheck width={18} height={18} />}>
+      <Callout color="#6D5EF6" icon={<ShieldCheck width={18} height={18} />}>
         <strong>Votre mission :</strong> être les « yeux et oreilles » de Bercy <em>avant</em> que l'argent
         douteux ne soit lessivé via la pierre. Identifier, vérifier, signaler.
       </Callout>
@@ -315,7 +313,7 @@ const SLIDES = [
   // ─── 4) 5 OBLIGATIONS ─────────────────────────────────────────────────
   (
     <div key="obligations">
-      <Eyebrow color="#7C3AED">Module 03 · Vos obligations</Eyebrow>
+      <Eyebrow color="#6D5EF6">Module 03 · Vos obligations</Eyebrow>
       <H1>Vos 5 obligations clés</H1>
       <P>
         Tout est codifié dans le Code monétaire et financier, articles L.561-1 à L.561-50.
@@ -324,7 +322,7 @@ const SLIDES = [
       <CardsGrid items={[
         {
           n: "01",
-          color: "#7C3AED",
+          color: "#6D5EF6",
           icon: <CheckCircle2 width={18} height={18} />,
           title: "Identifier votre client",
           desc: "Pièce d'identité + justif de domicile (PP) ou Kbis + statuts + bénéficiaire effectif (PM : plus de 25 % du capital ou des droits de vote).",
@@ -332,7 +330,7 @@ const SLIDES = [
         },
         {
           n: "02",
-          color: "#A855F7",
+          color: "#A548D8",
           icon: <Clock width={18} height={18} />,
           title: "Vigilance constante",
           desc: "Réévaluer le risque tout au long de la relation : changement de situation, opération atypique, PPE détectée…",
@@ -356,7 +354,7 @@ const SLIDES = [
         },
         {
           n: "05",
-          color: "#7C3AED",
+          color: "#6D5EF6",
           icon: <BookOpen width={18} height={18} />,
           title: "Former vos équipes",
           desc: "Formation à l'embauche puis régulière des collaborateurs qui participent à la LCB-FT (D.561-38-1-1), en complément des procédures internes (L.561-32).",
@@ -369,7 +367,7 @@ const SLIDES = [
   // ─── 5) 4 NIVEAUX KLARIS — QUE FAIRE ? ────────────────────────────────
   (
     <div key="levels">
-      <Eyebrow color="#7C3AED">Module 04 · Réflexes</Eyebrow>
+      <Eyebrow color="#6D5EF6">Module 04 · Réflexes</Eyebrow>
       <H1>Les 4 niveaux Klaris : que faire ?</H1>
       <P>
         Klaris analyse chaque dossier sur 12 critères et vous indique le niveau de
@@ -377,28 +375,28 @@ const SLIDES = [
       </P>
       <LevelRows items={[
         {
-          color: "#059669", bgColor: "#ecfdf5", bdColor: "#a7f3d0",
+          color: "#177A52", bgColor: "#EDF8F3", bdColor: "#B5E6D2",
           dot: "🟢",
           name: "Vigilance standard",
           ref: "CMF L.561-5 à L.561-8",
           action: "Traiter normalement. Conserver le dossier complet pendant 5 ans.",
         },
         {
-          color: "#d97706", bgColor: "#fffbeb", bdColor: "#fde68a",
+          color: "#B87A00", bgColor: "#FDF7E6", bdColor: "#F4DFA0",
           dot: "🟠",
           name: "Vigilance renforcée",
           ref: "CMF L.561-10 et L.561-10-1",
           action: "Collecter des justificatifs additionnels (origine fonds, RBE détaillé). Faire valider par le correspondant LCB-FT avant signature.",
         },
         {
-          color: "#dc2626", bgColor: "#fef2f2", bdColor: "#fecaca",
+          color: "#C5302C", bgColor: "#FCF1F0", bdColor: "#F3C9C6",
           dot: "🔴",
           name: "Examen renforcé",
           ref: "CMF L.561-10-2",
           action: "Suspendre immédiatement la transaction. Délibération formalisée avec votre responsable LCB-FT. Décision motivée avant toute reprise.",
         },
         {
-          color: "#0f172a", bgColor: "#f3f4f6", bdColor: "#9ca3af",
+          color: "#17123A", bgColor: "#F1EFF8", bdColor: "#9792B4",
           dot: "⚫",
           name: "Interdiction & déclaration",
           ref: "CMF L.562-4 (gel des avoirs) · L.561-8",
@@ -411,7 +409,7 @@ const SLIDES = [
   // ─── 6) SANCTIONS ─────────────────────────────────────────────────────
   (
     <div key="sanctions">
-      <Eyebrow color="#DC2626">Module 05 · Risques</Eyebrow>
+      <Eyebrow color="#C5302C">Module 05 · Risques</Eyebrow>
       <H1>Sanctions en cas de manquement</H1>
       <P>
         L'autorité de contrôle pour les agents immobiliers est la <strong>DGCCRF</strong>
@@ -421,13 +419,13 @@ const SLIDES = [
       </P>
       <SanctionCards items={[
         {
-          color: "#d97706", icon: <FileWarning width={18} height={18} />,
+          color: "#B87A00", icon: <FileWarning width={18} height={18} />,
           title: "Administrative",
           items: ["Avertissement", "Blâme", "Interdiction temporaire d'exercice (5 ans au plus)", "Retrait de la carte professionnelle"],
           ref: "Art. L.561-40 CMF",
         },
         {
-          color: "#dc2626", icon: <Scale width={18} height={18} />,
+          color: "#C5302C", icon: <Scale width={18} height={18} />,
           title: "Pécuniaire",
           items: [
             "Jusqu'à 5 M€, ou le double de l'avantage retiré du manquement",
@@ -437,7 +435,7 @@ const SLIDES = [
           ref: "Art. L.561-40 CMF",
         },
         {
-          color: "#0f172a", icon: <Gavel width={18} height={18} />,
+          color: "#17123A", icon: <Gavel width={18} height={18} />,
           title: "Pénale",
           items: [
             "Jusqu'à 5 ans de prison",
@@ -447,7 +445,7 @@ const SLIDES = [
           ref: "Art. 324-1 Code pénal",
         },
       ]} />
-      <Callout color="#DC2626" icon={<AlertTriangle width={18} height={18} />}>
+      <Callout color="#C5302C" icon={<AlertTriangle width={18} height={18} />}>
         <strong>La bonne foi ne suffit pas.</strong> En cas de contrôle DGCCRF, vous devez pouvoir produire votre cartographie des risques, vos procédures internes, la traçabilité de la vigilance, et les justificatifs de chaque dossier — sur 5 ans.
       </Callout>
     </div>
@@ -456,10 +454,10 @@ const SLIDES = [
   // ─── 7) KLARIS VOUS AIDE ─────────────────────────────────────────────
   (
     <div key="klaris-helps" style={{ textAlign: "center", maxWidth: 720, margin: "0 auto" }}>
-      <div style={iconCircle("#10B981")}>
+      <div style={iconCircle("#1E9E6A")}>
         <Sparkles width={28} height={28} color="white" />
       </div>
-      <Eyebrow color="#10B981">Vous êtes prêt</Eyebrow>
+      <Eyebrow color="#1E9E6A">Vous êtes prêt</Eyebrow>
       <H1>Klaris fait le gros du travail pour vous</H1>
       <P>
         À chaque dossier, l'application applique automatiquement les bons réflexes réglementaires.
@@ -505,10 +503,7 @@ function H1({ children }: { children: React.ReactNode }) {
   return (
     <h1 style={{
       fontSize: 28, fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.2,
-      margin: "0 0 16px 0", color: "#0f172a",
-      backgroundImage: "linear-gradient(90deg, #0f172a 0%, #4c1d95 60%, #7c3aed 100%)",
-      WebkitBackgroundClip: "text", backgroundClip: "text",
-      WebkitTextFillColor: "transparent",
+      margin: "0 0 16px 0", color: "#17123A",
     }}>{children}</h1>
   );
 }
@@ -516,7 +511,7 @@ function H1({ children }: { children: React.ReactNode }) {
 function P({ children }: { children: React.ReactNode }) {
   return (
     <p style={{
-      fontSize: 14.5, lineHeight: 1.6, color: "#334155",
+      fontSize: 14.5, lineHeight: 1.6, color: "#3B3560",
       margin: "0 0 22px 0", maxWidth: 720,
     }}>{children}</p>
   );
@@ -529,9 +524,9 @@ function Note({ children, style }: { children: React.ReactNode; style?: React.CS
       marginTop: 12,
       padding: "10px 16px",
       borderRadius: 10,
-      background: "rgba(124,58,237,0.06)",
-      border: "1px solid rgba(124,58,237,0.18)",
-      color: "#5b21b6", fontSize: 12.5, lineHeight: 1.5,
+      background: "rgba(109,94,246,0.06)",
+      border: "1px solid rgba(109,94,246,0.18)",
+      color: "#4A38C8", fontSize: 12.5, lineHeight: 1.5,
       ...style,
     }}>
       {children}
@@ -549,7 +544,7 @@ function Callout({ color, icon, children }: { color: string; icon: React.ReactNo
       marginTop: 20,
     }}>
       <div style={{ color, flexShrink: 0, marginTop: 1 }}>{icon}</div>
-      <div style={{ fontSize: 13.5, lineHeight: 1.6, color: "#334155" }}>{children}</div>
+      <div style={{ fontSize: 13.5, lineHeight: 1.6, color: "#3B3560" }}>{children}</div>
     </div>
   );
 }
@@ -568,8 +563,8 @@ function Timeline({ items }: { items: Array<{ year: string; color: string; title
           </div>
           <div style={{ width: 8, height: 8, borderRadius: "50%", background: it.color, marginTop: 8, flexShrink: 0, boxShadow: `0 0 0 4px ${it.color}22` }} />
           <div style={{ flex: 1, paddingBottom: 4 }}>
-            <div style={{ fontWeight: 600, color: "#0f172a", fontSize: 14 }}>{it.title}</div>
-            <div style={{ fontSize: 12.5, color: "#64748b", marginTop: 2, lineHeight: 1.5 }}>{it.desc}</div>
+            <div style={{ fontWeight: 600, color: "#17123A", fontSize: 14 }}>{it.title}</div>
+            <div style={{ fontSize: 12.5, color: "#6F6A8A", marginTop: 2, lineHeight: 1.5 }}>{it.desc}</div>
           </div>
         </div>
       ))}
@@ -583,18 +578,16 @@ function Stats({ items }: { items: Array<{ value: string; label: string; src: st
       {items.map((s, i) => (
         <div key={i} style={{
           padding: 16, borderRadius: 12,
-          background: "linear-gradient(180deg, rgba(124,58,237,0.06), rgba(236,72,153,0.03))",
-          border: "1px solid rgba(124,58,237,0.15)",
+          background: "linear-gradient(180deg, rgba(109,94,246,0.06), rgba(236,72,153,0.03))",
+          border: "1px solid rgba(109,94,246,0.15)",
         }}>
           <div style={{
             fontSize: 28, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1,
-            backgroundImage: "linear-gradient(135deg, #7c3aed, #ec4899)",
-            WebkitBackgroundClip: "text", backgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            color: "#5B46E0",
             marginBottom: 6, fontVariantNumeric: "tabular-nums",
           }}>{s.value}</div>
-          <div style={{ fontSize: 12, color: "#334155", lineHeight: 1.45 }}>{s.label}</div>
-          <div style={{ fontSize: 10.5, color: "#94a3b8", marginTop: 6, fontStyle: "italic" }}>{s.src}</div>
+          <div style={{ fontSize: 12, color: "#3B3560", lineHeight: 1.45 }}>{s.label}</div>
+          <div style={{ fontSize: 10.5, color: "#9792B4", marginTop: 6, fontStyle: "italic" }}>{s.src}</div>
         </div>
       ))}
     </div>
@@ -608,8 +601,8 @@ function CardsGrid({ items }: { items: Array<{ n: string; color: string; icon: R
         <div key={i} style={{
           padding: 16, borderRadius: 14,
           background: "rgba(255,255,255,0.7)",
-          border: "1px solid rgba(124,58,237,0.10)",
-          boxShadow: "0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 12px -6px rgba(124,58,237,0.10)",
+          border: "1px solid rgba(109,94,246,0.10)",
+          boxShadow: "0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 12px -6px rgba(109,94,246,0.10)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
             <div style={{
@@ -624,8 +617,8 @@ function CardsGrid({ items }: { items: Array<{ n: string; color: string; icon: R
               background: `${c.color}10`, border: `1px solid ${c.color}22`,
             }}>{c.n}</div>
           </div>
-          <div style={{ fontWeight: 600, color: "#0f172a", fontSize: 13.5, marginBottom: 4 }}>{c.title}</div>
-          <div style={{ fontSize: 12.5, color: "#64748b", lineHeight: 1.5, marginBottom: 8 }}>{c.desc}</div>
+          <div style={{ fontWeight: 600, color: "#17123A", fontSize: 13.5, marginBottom: 4 }}>{c.title}</div>
+          <div style={{ fontSize: 12.5, color: "#6F6A8A", lineHeight: 1.5, marginBottom: 8 }}>{c.desc}</div>
           <div style={{ fontSize: 10.5, color: c.color, fontWeight: 600, letterSpacing: "0.04em" }}>CMF {c.ref}</div>
         </div>
       ))}
@@ -648,7 +641,7 @@ function LevelRows({ items }: { items: Array<{ color: string; bgColor: string; b
               <div style={{ fontWeight: 700, color: l.color, fontSize: 14.5 }}>{l.name}</div>
               <div style={{ fontSize: 10.5, color: l.color, opacity: 0.8, fontWeight: 600, letterSpacing: "0.04em" }}>{l.ref}</div>
             </div>
-            <div style={{ fontSize: 13, color: "#334155", lineHeight: 1.5 }}>{l.action}</div>
+            <div style={{ fontSize: 13, color: "#3B3560", lineHeight: 1.5 }}>{l.action}</div>
           </div>
         </div>
       ))}
@@ -674,7 +667,7 @@ function SanctionCards({ items }: { items: Array<{ color: string; icon: React.Re
           </div>
           <ul style={{ listStyle: "none", padding: 0, margin: "0 0 10px 0", display: "flex", flexDirection: "column", gap: 4 }}>
             {s.items.map((it, j) => (
-              <li key={j} style={{ fontSize: 12.5, color: "#334155", lineHeight: 1.5, paddingLeft: 14, position: "relative" }}>
+              <li key={j} style={{ fontSize: 12.5, color: "#3B3560", lineHeight: 1.5, paddingLeft: 14, position: "relative" }}>
                 <span style={{ position: "absolute", left: 0, top: 8, width: 4, height: 4, borderRadius: "50%", background: s.color }} />
                 {it}
               </li>
@@ -695,10 +688,10 @@ function FeaturesList({ items }: { items: Array<{ icon: string; text: string }> 
           display: "flex", alignItems: "center", gap: 14,
           padding: "12px 16px", borderRadius: 12,
           background: "rgba(255,255,255,0.7)",
-          border: "1px solid rgba(124,58,237,0.10)",
+          border: "1px solid rgba(109,94,246,0.10)",
         }}>
           <div style={{ fontSize: 22, flexShrink: 0 }}>{f.icon}</div>
-          <div style={{ fontSize: 13.5, color: "#334155", lineHeight: 1.5 }}>{f.text}</div>
+          <div style={{ fontSize: 13.5, color: "#3B3560", lineHeight: 1.5 }}>{f.text}</div>
         </div>
       ))}
     </div>

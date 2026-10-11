@@ -24,16 +24,16 @@ export const NIVEAU_CFG: Record<Niveau, {
   vigilance_standard: {
     label: "Vigilance standard — Conforme",
     ref: "CMF L561-5 à L561-8",
-    color: "#34D399",
-    bg: "rgba(52,211,153,0.08)",
-    border: "rgba(52,211,153,0.3)",
-    glow: "rgba(52,211,153,0.12)",
+    color: "#3DBE8B",
+    bg: "rgba(61,190,139,0.08)",
+    border: "rgba(61,190,139,0.3)",
+    glow: "rgba(61,190,139,0.12)",
     action: "Traiter normalement. Archivage 5 ans (L561-12).",
   },
   vigilance_renforcee: {
     label: "Vigilance renforcée requise",
     ref: "CMF L561-10 et L561-10-1",
-    color: "#FB923C",
+    color: "#F0924D",
     bg: "rgba(251,146,60,0.08)",
     border: "rgba(251,146,60,0.3)",
     glow: "rgba(251,146,60,0.12)",
@@ -42,19 +42,19 @@ export const NIVEAU_CFG: Record<Niveau, {
   examen_renforce: {
     label: "Examen renforcé",
     ref: "CMF L561-10-2",
-    color: "#F87171",
-    bg: "rgba(248,113,113,0.10)",
-    border: "rgba(248,113,113,0.35)",
-    glow: "rgba(248,113,113,0.15)",
+    color: "#E8807B",
+    bg: "rgba(232,128,123,0.10)",
+    border: "rgba(232,128,123,0.35)",
+    glow: "rgba(232,128,123,0.15)",
     action: "Suspension immédiate de la transaction. Délibération formalisée.",
   },
   interdiction: {
     label: "Interdiction & déclaration",
     ref: "CMF L562-4 (gel des avoirs) · L561-8",
-    color: "#1F2937",
+    color: "#241E4E",
     bg: "rgba(31,41,55,0.10)",
     border: "rgba(31,41,55,0.40)",
-    glow: "rgba(220,38,38,0.20)",
+    glow: "rgba(197,48,44,0.20)",
     action: "Refus de relation d'affaires. Déclaration de soupçon à TRACFIN avant l'exécution de l'opération, ou sans délai si elle a déjà été réalisée (L561-16).",
   },
 };
@@ -182,9 +182,9 @@ export const RISK_LABELS: Record<string, string> = {
 };
 
 export const RISK_CFG: Record<Risk, { color: string; bg: string; border: string; glow: string; label: string }> = {
-  green: { color: "#34D399", bg: "rgba(52,211,153,0.1)", border: "rgba(52,211,153,0.3)", glow: "rgba(52,211,153,0.35)", label: "Conforme" },
-  orange: { color: "#FB923C", bg: "rgba(251,146,60,0.1)", border: "rgba(251,146,60,0.3)", glow: "rgba(251,146,60,0.35)", label: "Vigilance" },
-  red: { color: "#F87171", bg: "rgba(248,113,113,0.1)", border: "rgba(248,113,113,0.3)", glow: "rgba(248,113,113,0.35)", label: "Critique" },
+  green: { color: "#3DBE8B", bg: "rgba(61,190,139,0.1)", border: "rgba(61,190,139,0.3)", glow: "rgba(61,190,139,0.35)", label: "Conforme" },
+  orange: { color: "#F0924D", bg: "rgba(251,146,60,0.1)", border: "rgba(251,146,60,0.3)", glow: "rgba(251,146,60,0.35)", label: "Vigilance" },
+  red: { color: "#E8807B", bg: "rgba(232,128,123,0.1)", border: "rgba(232,128,123,0.3)", glow: "rgba(232,128,123,0.35)", label: "Critique" },
 };
 
 // ─── Type des proches PPE (L561-10 1°) ───────────────────────────────────

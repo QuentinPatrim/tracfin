@@ -70,7 +70,7 @@ export default function NewDossierForm() {
   /* ─── Écran "dossier créé" ─── */
   if (created) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: "#fafaff", fontFamily: "Inter, sans-serif", color: "#0f172a" }}>
+      <div className="min-h-screen flex flex-col" style={{ background: "#F6F5FA", fontFamily: "Inter, sans-serif", color: "#17123A" }}>
         <BackgroundHalos />
         <Header />
 
@@ -79,21 +79,18 @@ export default function NewDossierForm() {
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
               style={{
-                background: "linear-gradient(180deg, rgba(16,185,129,0.18), rgba(16,185,129,0.08))",
-                border: "1px solid rgba(16,185,129,0.40)",
-                boxShadow: "0 0 0 4px rgba(16,185,129,0.10), 0 12px 30px rgba(16,185,129,0.20), 0 1px 0 rgba(255,255,255,0.50) inset",
+                background: "linear-gradient(180deg, rgba(30,158,106,0.18), rgba(30,158,106,0.08))",
+                border: "1px solid rgba(30,158,106,0.40)",
+                boxShadow: "0 0 0 4px rgba(30,158,106,0.10), 0 12px 30px rgba(30,158,106,0.20), 0 1px 0 rgba(255,255,255,0.50) inset",
               }}
             >
-              <Check className="w-7 h-7" style={{ color: "#047857" }} strokeWidth={2.5} />
+              <Check className="w-7 h-7" style={{ color: "#177A52" }} strokeWidth={2.5} />
             </div>
 
             <h1
               className="text-[28px] sm:text-[32px] font-bold tracking-tight mb-3"
               style={{
-                background: "linear-gradient(135deg, #0F172A 0%, #6d28d9 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
+                color: "#17123A",
               }}
             >
               Dossier créé ✨
@@ -103,9 +100,9 @@ export default function NewDossierForm() {
             </p>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] uppercase tracking-widest font-bold mb-7"
               style={{
-                background: partie === "vendeur" ? "rgba(124,58,237,0.08)" : "rgba(236,72,153,0.08)",
-                border: `1px solid ${partie === "vendeur" ? "rgba(124,58,237,0.25)" : "rgba(236,72,153,0.25)"}`,
-                color: partie === "vendeur" ? "#6d28d9" : "#be185d",
+                background: partie === "vendeur" ? "rgba(109,94,246,0.08)" : "rgba(236,72,153,0.08)",
+                border: `1px solid ${partie === "vendeur" ? "rgba(109,94,246,0.25)" : "rgba(236,72,153,0.25)"}`,
+                color: partie === "vendeur" ? "#5B46E0" : "#be185d",
               }}
             >
               {partie === "vendeur" ? <Home className="w-3 h-3" /> : <KeyRound className="w-3 h-3" />}
@@ -117,16 +114,16 @@ export default function NewDossierForm() {
               className="rounded-2xl p-1 mb-6"
               style={{
                 background: "white",
-                border: "1px solid rgba(124,58,237,0.18)",
-                boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 12px 28px rgba(124,58,237,0.10)",
+                border: "1px solid rgba(109,94,246,0.18)",
+                boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 12px 28px rgba(109,94,246,0.10)",
               }}
             >
-              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl" style={{ background: "rgba(124,58,237,0.04)" }}>
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl" style={{ background: "rgba(109,94,246,0.04)" }}>
                 <input
                   readOnly
                   value={link}
                   className="flex-1 bg-transparent outline-none text-[12px] font-mono truncate"
-                  style={{ color: "#475569" }}
+                  style={{ color: "#55506F" }}
                   onClick={(e) => e.currentTarget.select()}
                 />
                 <button
@@ -134,8 +131,8 @@ export default function NewDossierForm() {
                   className="px-3 py-1.5 rounded-lg text-xs font-bold transition inline-flex items-center gap-1.5"
                   style={
                     copied
-                      ? { background: "rgba(16,185,129,0.12)", color: "#047857", border: "1px solid rgba(16,185,129,0.35)" }
-                      : { background: "linear-gradient(135deg, #7c3aed, #ec4899)", color: "white", boxShadow: "0 4px 12px rgba(124,58,237,0.30)" }
+                      ? { background: "rgba(30,158,106,0.12)", color: "#177A52", border: "1px solid rgba(30,158,106,0.35)" }
+                      : { background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)", color: "white", boxShadow: "0 4px 12px rgba(109,94,246,0.30)" }
                   }
                 >
                   {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -144,7 +141,7 @@ export default function NewDossierForm() {
               </div>
             </div>
 
-            <div className="text-[11px] uppercase tracking-widest mb-3 font-bold" style={{ color: "#94a3b8" }}>
+            <div className="text-[11px] uppercase tracking-widest mb-3 font-bold" style={{ color: "#9792B4" }}>
               Partager via
             </div>
             <div className="grid grid-cols-3 gap-3 mb-10">
@@ -163,16 +160,16 @@ export default function NewDossierForm() {
 
             <button
               onClick={() => router.push("/dashboard")}
-              className="px-6 py-3 rounded-full text-white text-sm font-bold transition-transform hover:-translate-y-0.5"
+              className="px-6 py-3 rounded-[10px] text-white text-sm font-bold transition-transform hover:-translate-y-0.5"
               style={{
-                background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-                boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 12px 30px rgba(124,58,237,0.35)",
+                background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)",
+                boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 12px 30px rgba(109,94,246,0.35)",
               }}
             >
               Retour au tableau de bord
             </button>
 
-            <p className="text-[11.5px] mt-6 max-w-md mx-auto leading-relaxed" style={{ color: "#94a3b8" }}>
+            <p className="text-[11.5px] mt-6 max-w-md mx-auto leading-relaxed" style={{ color: "#9792B4" }}>
               Vous serez notifié dès que le client aura rempli sa fiche. Le formulaire d&apos;analyse s&apos;ouvrira automatiquement avec les données pré-remplies.
             </p>
           </div>
@@ -183,7 +180,7 @@ export default function NewDossierForm() {
 
   /* ─── Écran "créer un dossier" ─── */
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#fafaff", fontFamily: "Inter, sans-serif", color: "#0f172a" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#F6F5FA", fontFamily: "Inter, sans-serif", color: "#17123A" }}>
       <BackgroundHalos />
       <Header />
 
@@ -193,20 +190,17 @@ export default function NewDossierForm() {
             <div
               className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-5"
               style={{
-                background: "linear-gradient(135deg, rgba(124,58,237,0.18), rgba(236,72,153,0.10))",
-                border: "1px solid rgba(124,58,237,0.30)",
-                boxShadow: "0 6px 18px rgba(124,58,237,0.25), 0 1px 0 rgba(255,255,255,0.8) inset",
+                background: "linear-gradient(135deg, rgba(109,94,246,0.18), rgba(236,72,153,0.10))",
+                border: "1px solid rgba(109,94,246,0.30)",
+                boxShadow: "0 6px 18px rgba(109,94,246,0.25), 0 1px 0 rgba(255,255,255,0.8) inset",
               }}
             >
-              <Send className="w-5 h-5" style={{ color: "#6d28d9" }} />
+              <Send className="w-5 h-5" style={{ color: "#5B46E0" }} />
             </div>
             <h1
               className="text-[28px] sm:text-[32px] font-bold tracking-tight mb-3"
               style={{
-                background: "linear-gradient(135deg, #0F172A 0%, #6d28d9 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
+                color: "#17123A",
               }}
             >
               Créer un dossier
@@ -220,14 +214,14 @@ export default function NewDossierForm() {
             className="rounded-3xl p-6 sm:p-7 mb-6"
             style={{
               background: "white",
-              border: "1px solid rgba(124,58,237,0.10)",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 14px 38px rgba(124,58,237,0.10), 0 4px 12px rgba(15,23,42,0.04)",
+              border: "1px solid rgba(109,94,246,0.10)",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 14px 38px rgba(109,94,246,0.10), 0 4px 12px rgba(23,18,58,0.04)",
             }}
           >
             <div className="flex flex-col gap-5">
               {/* Rôle (vendeur / acquéreur) — NOUVEAU */}
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ color: "#6d28d9" }}>
+                <label className="text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ color: "#5B46E0" }}>
                   Rôle dans la transaction
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -246,14 +240,14 @@ export default function NewDossierForm() {
                     sub="Achète le bien"
                   />
                 </div>
-                <p className="text-[11.5px] leading-relaxed mt-1" style={{ color: "#64748b" }}>
+                <p className="text-[11.5px] leading-relaxed mt-1" style={{ color: "#6F6A8A" }}>
                   La vigilance LCB-FT s&apos;applique aux 2 parties (Décret 2018-284). Les questions seront adaptées selon le rôle.
                 </p>
               </div>
 
               {/* Type de client */}
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ color: "#475569" }}>
+                <label className="text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ color: "#55506F" }}>
                   Type de client
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -270,11 +264,11 @@ export default function NewDossierForm() {
                         className="h-12 rounded-xl text-sm font-semibold transition-all border"
                         style={{
                           background: active
-                            ? "linear-gradient(180deg, rgba(124,58,237,0.08), rgba(236,72,153,0.04))"
+                            ? "linear-gradient(180deg, rgba(109,94,246,0.08), rgba(236,72,153,0.04))"
                             : "white",
-                          borderColor: active ? "rgba(124,58,237,0.40)" : "rgba(15,23,42,0.10)",
-                          color: active ? "#6d28d9" : "#475569",
-                          boxShadow: active ? "0 4px 12px rgba(124,58,237,0.12)" : "none",
+                          borderColor: active ? "rgba(109,94,246,0.40)" : "rgba(23,18,58,0.10)",
+                          color: active ? "#5B46E0" : "#55506F",
+                          boxShadow: active ? "0 4px 12px rgba(109,94,246,0.12)" : "none",
                         }}
                       >
                         {o.label}
@@ -286,7 +280,7 @@ export default function NewDossierForm() {
 
               {/* Nom */}
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ color: "#475569" }}>
+                <label className="text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ color: "#55506F" }}>
                   {typeClient === "morale" ? "Dénomination sociale" : "Nom et prénom du client"}
                 </label>
                 <input
@@ -300,7 +294,7 @@ export default function NewDossierForm() {
 
               {/* Email */}
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ color: "#475569" }}>
+                <label className="text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ color: "#55506F" }}>
                   Email du client
                 </label>
                 <input
@@ -311,7 +305,7 @@ export default function NewDossierForm() {
                   onChange={(e) => setEmailContact(e.target.value)}
                   placeholder="client@email.fr"
                 />
-                <p className="text-[11.5px] leading-relaxed mt-1" style={{ color: "#64748b" }}>
+                <p className="text-[11.5px] leading-relaxed mt-1" style={{ color: "#6F6A8A" }}>
                   Cet email pré-remplira le bouton « Envoyer par mail » sur l&apos;écran suivant.
                 </p>
               </div>
@@ -322,9 +316,9 @@ export default function NewDossierForm() {
             <div
               className="mb-4 p-4 rounded-xl text-sm text-center"
               style={{
-                background: "rgba(220,38,38,0.06)",
-                border: "1px solid rgba(220,38,38,0.30)",
-                color: "#b91c1c",
+                background: "rgba(197,48,44,0.06)",
+                border: "1px solid rgba(197,48,44,0.30)",
+                color: "#A3241F",
               }}
             >
               {error}
@@ -335,10 +329,10 @@ export default function NewDossierForm() {
             type="button"
             onClick={submit}
             disabled={!isValid || creating}
-            className="w-full px-6 py-3.5 rounded-full text-white text-sm font-bold transition-transform hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 inline-flex items-center justify-center gap-2"
+            className="w-full px-6 py-3.5 rounded-[10px] text-white text-sm font-bold transition-transform hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 inline-flex items-center justify-center gap-2"
             style={{
-              background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 12px 30px rgba(124,58,237,0.40)",
+              background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)",
+              boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 12px 30px rgba(109,94,246,0.40)",
             }}
           >
             {creating ? "Création du dossier..." : "Créer le dossier et générer le lien"}
@@ -356,18 +350,18 @@ function Header() {
   return (
     <header
       className="relative z-10 backdrop-blur-xl"
-      style={{ borderBottom: "1px solid rgba(124,58,237,0.10)", background: "rgba(255,255,255,0.85)" }}
+      style={{ borderBottom: "1px solid rgba(109,94,246,0.10)", background: "rgba(255,255,255,0.85)" }}
     >
       <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link
           href="/dashboard"
           className="flex items-center gap-2 transition text-sm font-medium"
-          style={{ color: "#64748b" }}
+          style={{ color: "#6F6A8A" }}
         >
           <ArrowLeft className="w-4 h-4" />
           Retour au dashboard
         </Link>
-        <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: "#94a3b8" }}>
+        <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: "#9792B4" }}>
           Nouveau dossier
         </div>
       </div>
@@ -378,22 +372,6 @@ function Header() {
 function BackgroundHalos() {
   return (
     <>
-      <div
-        className="fixed pointer-events-none rounded-full"
-        style={{
-          width: 600, height: 600, top: -200, left: -150,
-          background: "radial-gradient(circle, rgba(124,58,237,0.10) 0%, transparent 70%)",
-          filter: "blur(60px)",
-        }}
-      />
-      <div
-        className="fixed pointer-events-none rounded-full"
-        style={{
-          width: 600, height: 600, top: -150, right: -200,
-          background: "radial-gradient(circle, rgba(236,72,153,0.07) 0%, transparent 70%)",
-          filter: "blur(60px)",
-        }}
-      />
     </>
   );
 }
@@ -414,29 +392,29 @@ function PartieButton({
       className="rounded-xl px-4 py-3 text-left transition-all border"
       style={{
         background: active
-          ? "linear-gradient(180deg, rgba(124,58,237,0.10), rgba(236,72,153,0.04))"
+          ? "linear-gradient(180deg, rgba(109,94,246,0.10), rgba(236,72,153,0.04))"
           : "white",
-        borderColor: active ? "rgba(124,58,237,0.45)" : "rgba(15,23,42,0.10)",
+        borderColor: active ? "rgba(109,94,246,0.45)" : "rgba(23,18,58,0.10)",
         boxShadow: active
-          ? "0 8px 22px rgba(124,58,237,0.18), 0 1px 0 rgba(255,255,255,0.8) inset"
-          : "0 1px 2px rgba(15,23,42,0.04)",
+          ? "0 8px 22px rgba(109,94,246,0.18), 0 1px 0 rgba(255,255,255,0.8) inset"
+          : "0 1px 2px rgba(23,18,58,0.04)",
       }}
     >
       <div className="flex items-center gap-2 mb-1">
         <div
           className="w-7 h-7 rounded-lg grid place-items-center"
           style={{
-            background: active ? "rgba(124,58,237,0.14)" : "rgba(15,23,42,0.04)",
-            border: `1px solid ${active ? "rgba(124,58,237,0.30)" : "rgba(15,23,42,0.08)"}`,
+            background: active ? "rgba(109,94,246,0.14)" : "rgba(23,18,58,0.04)",
+            border: `1px solid ${active ? "rgba(109,94,246,0.30)" : "rgba(23,18,58,0.08)"}`,
           }}
         >
           <Icon className={active ? "w-3.5 h-3.5" : "w-3.5 h-3.5"} />
         </div>
-        <span className="font-bold text-[14px]" style={{ color: active ? "#6d28d9" : "#0f172a" }}>
+        <span className="font-bold text-[14px]" style={{ color: active ? "#5B46E0" : "#17123A" }}>
           {label}
         </span>
       </div>
-      <div className="text-[11.5px]" style={{ color: "#64748b" }}>
+      <div className="text-[11.5px]" style={{ color: "#6F6A8A" }}>
         {sub}
       </div>
     </button>
@@ -454,8 +432,8 @@ function ShareButton({
 }) {
   const styles = {
     background: "white",
-    border: "1px solid rgba(15,23,42,0.10)",
-    boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 12px rgba(15,23,42,0.04)",
+    border: "1px solid rgba(23,18,58,0.10)",
+    boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 12px rgba(23,18,58,0.04)",
     transition: "all .15s",
   };
 
@@ -468,7 +446,7 @@ function ShareButton({
         style={styles}
       >
         <Icon className="w-5 h-5" />
-        <span className="text-xs font-medium" style={{ color: "#475569" }}>{label}</span>
+        <span className="text-xs font-medium" style={{ color: "#55506F" }}>{label}</span>
       </a>
     );
   }
@@ -481,7 +459,7 @@ function ShareButton({
       style={styles}
     >
       <Icon className="w-5 h-5" />
-      <span className="text-xs font-medium" style={{ color: "#475569" }}>{label}</span>
+      <span className="text-xs font-medium" style={{ color: "#55506F" }}>{label}</span>
     </button>
   );
 }

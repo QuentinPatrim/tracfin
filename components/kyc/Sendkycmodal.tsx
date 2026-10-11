@@ -53,7 +53,7 @@ export default function SendKycModal({ dossierId, nomPrenom, onClose }: Props) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md"
-      style={{ background: "rgba(7,8,15,0.85)" }}
+      style={{ background: "rgba(12,10,36,0.85)" }}
       onClick={onClose}
     >
       <div
@@ -87,8 +87,8 @@ export default function SendKycModal({ dossierId, nomPrenom, onClose }: Props) {
               disabled={generating}
               className="w-full px-6 py-3 rounded-full text-white text-sm font-bold transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-wait"
               style={{
-                background: "linear-gradient(135deg,#6366F1,#8B5CF6,#06B6D4)",
-                boxShadow: "0 4px 20px rgba(99,102,241,0.45)",
+                background: "linear-gradient(135deg,#4F46E5,#8676F7,#06B6D4)",
+                boxShadow: "0 4px 20px rgba(79,70,229,0.45)",
               }}
             >
               {generating ? "Génération..." : "Générer le lien sécurisé"}

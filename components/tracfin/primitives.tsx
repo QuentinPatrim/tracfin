@@ -12,25 +12,25 @@ export function Sect({ title, sub, children }: { title: string; sub?: string; ch
       className="relative rounded-2xl mb-6 overflow-hidden"
       style={{
         background: "white",
-        border: "1px solid rgba(124,58,237,0.10)",
-        boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 14px rgba(124,58,237,0.06)",
+        border: "1px solid rgba(109,94,246,0.10)",
+        boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 14px rgba(109,94,246,0.06)",
       }}
     >
       <div
         className="px-6 py-3.5 flex items-center justify-between"
         style={{
-          background: "linear-gradient(90deg, rgba(124,58,237,0.06) 0%, rgba(236,72,153,0.02) 100%)",
-          borderBottom: "1px solid rgba(124,58,237,0.10)",
+          background: "linear-gradient(90deg, rgba(109,94,246,0.06) 0%, rgba(236,72,153,0.02) 100%)",
+          borderBottom: "1px solid rgba(109,94,246,0.10)",
         }}
       >
         <span
           className="font-bold uppercase tracking-[0.15em] text-[10px]"
-          style={{ color: "#6d28d9" }}
+          style={{ color: "#5B46E0" }}
         >
           {title}
         </span>
         {sub && (
-          <span className="text-[10px] uppercase tracking-widest" style={{ color: "#94a3b8" }}>
+          <span className="text-[10px] uppercase tracking-widest" style={{ color: "#9792B4" }}>
             {sub}
           </span>
         )}
@@ -75,11 +75,11 @@ export function Toggle({
             className="flex-1 py-3 rounded-xl text-sm font-semibold transition-all border"
             style={{
               background: active
-                ? "linear-gradient(180deg, rgba(124,58,237,0.10), rgba(236,72,153,0.06))"
+                ? "linear-gradient(180deg, rgba(109,94,246,0.10), rgba(236,72,153,0.06))"
                 : "white",
-              borderColor: active ? "rgba(124,58,237,0.45)" : "rgba(15,23,42,0.10)",
-              color: active ? "#6d28d9" : "#475569",
-              boxShadow: active ? "0 4px 14px rgba(124,58,237,0.15)" : "none",
+              borderColor: active ? "rgba(109,94,246,0.45)" : "rgba(23,18,58,0.10)",
+              color: active ? "#5B46E0" : "#55506F",
+              boxShadow: active ? "0 4px 14px rgba(109,94,246,0.15)" : "none",
             }}
           >
             {o.label}
@@ -104,8 +104,8 @@ export function Check({
         onClick={() => onChange(!checked)}
         className="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all shrink-0"
         style={{
-          background: checked ? "#10b981" : "white",
-          borderColor: checked ? "#10b981" : "#cbd5e1",
+          background: checked ? "#1E9E6A" : "white",
+          borderColor: checked ? "#1E9E6A" : "#D5D1E6",
         }}
       >
         {checked && (
@@ -120,9 +120,9 @@ export function Check({
 }
 
 const RISK_BORDER_LIGHT: Record<string, string> = {
-  green: "rgba(16,185,129,0.45)",
-  orange: "rgba(245,158,11,0.45)",
-  red: "rgba(220,38,38,0.45)",
+  green: "rgba(30,158,106,0.45)",
+  orange: "rgba(227,160,8,0.45)",
+  red: "rgba(197,48,44,0.45)",
 };
 
 export function RiskSelect({
@@ -166,16 +166,16 @@ export function BinaryField({
     if (!isActive) {
       return {
         background: "white",
-        border: "1px solid rgba(15,23,42,0.10)",
-        color: "#475569",
+        border: "1px solid rgba(23,18,58,0.10)",
+        color: "#55506F",
       };
     }
     const isGreen = isPositiveAnswer;
     return {
-      background: isGreen ? "rgba(16,185,129,0.08)" : "rgba(220,38,38,0.08)",
-      border: `1px solid ${isGreen ? "rgba(16,185,129,0.45)" : "rgba(220,38,38,0.45)"}`,
-      color: isGreen ? "#047857" : "#b91c1c",
-      boxShadow: `0 4px 12px ${isGreen ? "rgba(16,185,129,0.18)" : "rgba(220,38,38,0.18)"}`,
+      background: isGreen ? "rgba(30,158,106,0.08)" : "rgba(197,48,44,0.08)",
+      border: `1px solid ${isGreen ? "rgba(30,158,106,0.45)" : "rgba(197,48,44,0.45)"}`,
+      color: isGreen ? "#177A52" : "#A3241F",
+      boxShadow: `0 4px 12px ${isGreen ? "rgba(30,158,106,0.18)" : "rgba(197,48,44,0.18)"}`,
     };
   };
 

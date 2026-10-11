@@ -36,10 +36,10 @@ interface Props {
 }
 
 const STATUT_CFG: Record<Declaration["statut"], { label: string; color: string; bg: string; border: string }> = {
-  draft:        { label: "Brouillon",         color: "#475569", bg: "rgba(148,163,184,0.10)", border: "rgba(148,163,184,0.30)" },
-  submitted:    { label: "Soumise à TRACFIN", color: "#b45309", bg: "rgba(245,158,11,0.10)",  border: "rgba(245,158,11,0.30)" },
-  acknowledged: { label: "Accusée par TRACFIN", color: "#047857", bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.30)" },
-  closed:       { label: "Clôturée",          color: "#0f172a", bg: "rgba(15,23,42,0.08)",    border: "rgba(15,23,42,0.20)" },
+  draft:        { label: "Brouillon",         color: "#55506F", bg: "rgba(151,146,180,0.10)", border: "rgba(151,146,180,0.30)" },
+  submitted:    { label: "Soumise à TRACFIN", color: "#8F5A00", bg: "rgba(227,160,8,0.10)",  border: "rgba(227,160,8,0.30)" },
+  acknowledged: { label: "Accusée par TRACFIN", color: "#177A52", bg: "rgba(30,158,106,0.10)", border: "rgba(30,158,106,0.30)" },
+  closed:       { label: "Clôturée",          color: "#17123A", bg: "rgba(23,18,58,0.08)",    border: "rgba(23,18,58,0.20)" },
 };
 
 export default function DeclarationSection({ dossierId, niveau, isArchived }: Props) {
@@ -97,8 +97,8 @@ export default function DeclarationSection({ dossierId, niveau, isArchived }: Pr
       style={{
         marginTop: 24,
         padding: 18,
-        background: niveau === "interdiction" ? "rgba(220,38,38,0.04)" : "rgba(245,158,11,0.04)",
-        border: `2px solid ${niveau === "interdiction" ? "rgba(220,38,38,0.30)" : "rgba(245,158,11,0.30)"}`,
+        background: niveau === "interdiction" ? "rgba(197,48,44,0.04)" : "rgba(227,160,8,0.04)",
+        border: `2px solid ${niveau === "interdiction" ? "rgba(197,48,44,0.30)" : "rgba(227,160,8,0.30)"}`,
         borderRadius: 12,
       }}
     >
@@ -106,25 +106,25 @@ export default function DeclarationSection({ dossierId, niveau, isArchived }: Pr
         <div
           style={{
             width: 40, height: 40, borderRadius: 10,
-            background: niveau === "interdiction" ? "rgba(220,38,38,0.10)" : "rgba(245,158,11,0.10)",
+            background: niveau === "interdiction" ? "rgba(197,48,44,0.10)" : "rgba(227,160,8,0.10)",
             display: "grid", placeItems: "center",
-            color: niveau === "interdiction" ? "#b91c1c" : "#b45309",
-            border: `1px solid ${niveau === "interdiction" ? "rgba(220,38,38,0.25)" : "rgba(245,158,11,0.25)"}`,
+            color: niveau === "interdiction" ? "#A3241F" : "#8F5A00",
+            border: `1px solid ${niveau === "interdiction" ? "rgba(197,48,44,0.25)" : "rgba(227,160,8,0.25)"}`,
             flexShrink: 0,
           }}
         >
           <FileWarning size={20} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: niveau === "interdiction" ? "#b91c1c" : "#b45309", marginBottom: 4 }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: niveau === "interdiction" ? "#A3241F" : "#8F5A00", marginBottom: 4 }}>
             Déclaration de soupçon · L.561-15 CMF
           </div>
-          <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#17123A" }}>
             {niveau === "interdiction"
               ? "Une déclaration TRACFIN est obligatoire pour ce dossier"
               : "Le niveau de vigilance recommande une déclaration TRACFIN"}
           </h2>
-          <p style={{ fontSize: 13, color: "#64748b", margin: "4px 0 0", lineHeight: 1.5 }}>
+          <p style={{ fontSize: 13, color: "#6F6A8A", margin: "4px 0 0", lineHeight: 1.5 }}>
             {niveau === "interdiction"
               ? "La déclaration se fait avant l'exécution de l'opération, ou sans délai si elle a déjà été réalisée (CMF L.561-16). Klaris pré-remplit le dossier ERMES avec toutes les données déjà saisies."
               : "Si vos vérifications complémentaires n'ont pas levé le soupçon, vous devez déclarer à TRACFIN. Klaris prépare le dossier pour vous."}
@@ -133,13 +133,13 @@ export default function DeclarationSection({ dossierId, niveau, isArchived }: Pr
       </div>
 
       {loading && (
-        <div style={{ padding: 12, textAlign: "center", color: "#94a3b8", fontSize: 13 }}>
+        <div style={{ padding: 12, textAlign: "center", color: "#9792B4", fontSize: 13 }}>
           <Loader2 className="animate-spin inline" size={14} /> Chargement…
         </div>
       )}
 
       {error && (
-        <div style={{ padding: 10, background: "rgba(220,38,38,0.10)", border: "1px solid rgba(220,38,38,0.30)", borderRadius: 8, color: "#b91c1c", fontSize: 12.5 }}>
+        <div style={{ padding: 10, background: "rgba(197,48,44,0.10)", border: "1px solid rgba(197,48,44,0.30)", borderRadius: 8, color: "#A3241F", fontSize: 12.5 }}>
           ⚠️ {error}
         </div>
       )}
@@ -156,14 +156,14 @@ export default function DeclarationSection({ dossierId, niveau, isArchived }: Pr
             padding: "10px 18px",
             borderRadius: 10,
             background: creating
-              ? "rgba(220,38,38,0.40)"
-              : "linear-gradient(135deg, #dc2626, #b91c1c)",
+              ? "rgba(197,48,44,0.40)"
+              : "linear-gradient(135deg, #C5302C, #A3241F)",
             color: "white",
             fontWeight: 600,
             fontSize: 13,
             border: 0,
             cursor: creating ? "wait" : "pointer",
-            boxShadow: "0 4px 14px rgba(220,38,38,0.30)",
+            boxShadow: "0 4px 14px rgba(197,48,44,0.30)",
           }}
         >
           {creating ? <Loader2 size={14} className="animate-spin" /> : <FileWarning size={14} />}
@@ -303,7 +303,7 @@ function DeclarationCard({
         background: "white",
         border: `1px solid ${cfg.border}`,
         borderRadius: 10,
-        boxShadow: "0 1px 0 rgba(15,23,42,0.04)",
+        boxShadow: "0 1px 0 rgba(23,18,58,0.04)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
@@ -323,17 +323,17 @@ function DeclarationCard({
           >
             {cfg.label}
           </span>
-          <span style={{ fontSize: 11.5, color: "#64748b" }}>
+          <span style={{ fontSize: 11.5, color: "#6F6A8A" }}>
             Créée le {new Date(declaration.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
           </span>
         </div>
-        <span style={{ fontSize: 10.5, color: "#94a3b8", fontFamily: "monospace" }}>
+        <span style={{ fontSize: 10.5, color: "#9792B4", fontFamily: "monospace" }}>
           {declaration.id.slice(0, 8).toUpperCase()}
         </span>
       </div>
 
       {localError && (
-        <div style={{ padding: 8, background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.25)", borderRadius: 6, color: "#b91c1c", fontSize: 12, marginBottom: 10 }}>
+        <div style={{ padding: 8, background: "rgba(197,48,44,0.08)", border: "1px solid rgba(197,48,44,0.25)", borderRadius: 6, color: "#A3241F", fontSize: 12, marginBottom: 10 }}>
           ⚠️ {localError}
         </div>
       )}
@@ -349,13 +349,13 @@ function DeclarationCard({
             style={{
               width: "100%",
               padding: 10,
-              border: "1px solid rgba(15,23,42,0.15)",
+              border: "1px solid rgba(23,18,58,0.15)",
               borderRadius: 8,
               fontSize: 13,
               fontFamily: "inherit",
               lineHeight: 1.55,
               resize: "vertical",
-              background: "#FAF8FE",
+              background: "#F8F7FC",
             }}
           />
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
@@ -363,7 +363,7 @@ function DeclarationCard({
               type="button"
               onClick={onClose}
               disabled={saving}
-              style={{ padding: "7px 14px", borderRadius: 8, background: "white", border: "1px solid #e2e8f0", fontSize: 12.5, cursor: "pointer" }}
+              style={{ padding: "7px 14px", borderRadius: 8, background: "white", border: "1px solid #E4E0F3", fontSize: 12.5, cursor: "pointer" }}
             >
               Annuler
             </button>
@@ -374,7 +374,7 @@ function DeclarationCard({
               style={{
                 padding: "7px 14px",
                 borderRadius: 8,
-                background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                background: "linear-gradient(135deg, #6D5EF6, #A548D8)",
                 color: "white",
                 border: 0,
                 fontSize: 12.5,
@@ -390,11 +390,11 @@ function DeclarationCard({
         <div
           style={{
             padding: 10,
-            background: "#FAF8FE",
-            border: "1px dashed #c4b5fd",
+            background: "#F8F7FC",
+            border: "1px dashed #C7C0FF",
             borderRadius: 6,
             fontSize: 12.5,
-            color: "#0f172a",
+            color: "#17123A",
             whiteSpace: "pre-wrap",
             lineHeight: 1.55,
             maxHeight: 200,
@@ -411,7 +411,7 @@ function DeclarationCard({
           <button
             type="button"
             onClick={onEdit}
-            style={{ padding: "7px 12px", borderRadius: 8, background: "white", border: "1px solid #cbd5e1", color: "#475569", fontSize: 12.5, fontWeight: 500, cursor: "pointer" }}
+            style={{ padding: "7px 12px", borderRadius: 8, background: "white", border: "1px solid #D5D1E6", color: "#55506F", fontSize: 12.5, fontWeight: 500, cursor: "pointer" }}
           >
             Modifier les faits
           </button>
@@ -425,7 +425,7 @@ function DeclarationCard({
             style={{
               padding: "7px 14px",
               borderRadius: 8,
-              background: "linear-gradient(135deg, #dc2626, #b91c1c)",
+              background: "linear-gradient(135deg, #C5302C, #A3241F)",
               color: "white",
               border: 0,
               fontSize: 12.5,
@@ -448,16 +448,16 @@ function DeclarationCard({
           style={{
             marginTop: 14,
             padding: 12,
-            background: "rgba(245,158,11,0.06)",
-            border: "1px solid rgba(245,158,11,0.25)",
+            background: "rgba(227,160,8,0.06)",
+            border: "1px solid rgba(227,160,8,0.25)",
             borderRadius: 8,
           }}
         >
-          <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#b45309", marginBottom: 6 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#8F5A00", marginBottom: 6 }}>
             Étape suivante — Confirmation TRACFIN
           </div>
-          <p style={{ fontSize: 12, color: "#92400e", margin: "0 0 10px", lineHeight: 1.5 }}>
-            Connectez-vous au portail ERMES (<a href="https://tracfin.minefi.gouv.fr/ermes/" target="_blank" rel="noreferrer noopener" style={{ color: "#b45309", textDecoration: "underline" }}>tracfin.minefi.gouv.fr/ermes</a>), créez la déclaration en y joignant le PDF Klaris, et reportez ci-dessous le numéro d&apos;AR reçu :
+          <p style={{ fontSize: 12, color: "#7A4C00", margin: "0 0 10px", lineHeight: 1.5 }}>
+            Connectez-vous au portail ERMES (<a href="https://tracfin.minefi.gouv.fr/ermes/" target="_blank" rel="noreferrer noopener" style={{ color: "#8F5A00", textDecoration: "underline" }}>tracfin.minefi.gouv.fr/ermes</a>), créez la déclaration en y joignant le PDF Klaris, et reportez ci-dessous le numéro d&apos;AR reçu :
           </p>
           <div style={{ display: "flex", gap: 8, alignItems: "stretch" }}>
             <input
@@ -469,7 +469,7 @@ function DeclarationCard({
               style={{
                 flex: 1,
                 padding: "7px 10px",
-                border: "1px solid #f59e0b",
+                border: "1px solid #E3A008",
                 borderRadius: 6,
                 fontSize: 12.5,
                 background: "white",
@@ -482,7 +482,7 @@ function DeclarationCard({
               style={{
                 padding: "7px 14px",
                 borderRadius: 6,
-                background: ermesRef.trim() ? "linear-gradient(135deg, #10b981, #059669)" : "rgba(16,185,129,0.30)",
+                background: ermesRef.trim() ? "linear-gradient(135deg, #1E9E6A, #177A52)" : "rgba(30,158,106,0.30)",
                 color: "white",
                 border: 0,
                 fontSize: 12.5,
@@ -505,20 +505,20 @@ function DeclarationCard({
           style={{
             marginTop: 12,
             padding: 10,
-            background: "rgba(16,185,129,0.08)",
-            border: "1px solid rgba(16,185,129,0.30)",
+            background: "rgba(30,158,106,0.08)",
+            border: "1px solid rgba(30,158,106,0.30)",
             borderRadius: 8,
             display: "flex",
             alignItems: "center",
             gap: 10,
           }}
         >
-          <CheckCircle2 size={16} style={{ color: "#047857", flexShrink: 0 }} />
+          <CheckCircle2 size={16} style={{ color: "#177A52", flexShrink: 0 }} />
           <div style={{ flex: 1, fontSize: 12.5 }}>
-            <div style={{ fontWeight: 600, color: "#047857" }}>
+            <div style={{ fontWeight: 600, color: "#177A52" }}>
               Déclaration acceptée par TRACFIN
             </div>
-            <div style={{ color: "#065f46", marginTop: 2, fontFamily: "monospace", fontSize: 11.5 }}>
+            <div style={{ color: "#0E5C3D", marginTop: 2, fontFamily: "monospace", fontSize: 11.5 }}>
               N° ERMES : <strong>{declaration.ermes_ref}</strong>
               {declaration.acknowledged_at && ` · ${new Date(declaration.acknowledged_at).toLocaleDateString("fr-FR")}`}
             </div>

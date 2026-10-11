@@ -130,8 +130,8 @@ export default function KycClientSummary({ data }: Props) {
         style={{
           borderRadius: 14,
           background: "white",
-          border: "1px solid rgba(124,58,237,0.18)",
-          boxShadow: "0 6px 18px rgba(124,58,237,0.06)",
+          border: "1px solid rgba(109,94,246,0.18)",
+          boxShadow: "0 6px 18px rgba(109,94,246,0.06)",
           overflow: "hidden",
         }}
       >
@@ -154,17 +154,17 @@ export default function KycClientSummary({ data }: Props) {
           <div
             style={{
               width: 32, height: 32, borderRadius: 9,
-              background: "linear-gradient(135deg, rgba(124,58,237,0.14), rgba(236,72,153,0.10))",
-              border: "1px solid rgba(124,58,237,0.30)",
+              background: "linear-gradient(135deg, rgba(109,94,246,0.14), rgba(236,72,153,0.10))",
+              border: "1px solid rgba(109,94,246,0.30)",
               display: "grid", placeItems: "center",
-              color: "#6d28d9",
+              color: "#5B46E0",
               flexShrink: 0,
             }}
           >
             {isMorale ? <Building2 width={16} height={16} /> : <UserCheck width={16} height={16} />}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#0f172a" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#17123A" }}>
               Données déclarées par le client
               <span
                 style={{
@@ -175,9 +175,9 @@ export default function KycClientSummary({ data }: Props) {
                   letterSpacing: "0.10em",
                   padding: "2px 7px",
                   borderRadius: 999,
-                  background: isVendeur ? "rgba(124,58,237,0.10)" : "rgba(236,72,153,0.10)",
-                  color: isVendeur ? "#6d28d9" : "#be185d",
-                  border: `1px solid ${isVendeur ? "rgba(124,58,237,0.30)" : "rgba(236,72,153,0.30)"}`,
+                  background: isVendeur ? "rgba(109,94,246,0.10)" : "rgba(236,72,153,0.10)",
+                  color: isVendeur ? "#5B46E0" : "#be185d",
+                  border: `1px solid ${isVendeur ? "rgba(109,94,246,0.30)" : "rgba(236,72,153,0.30)"}`,
                 }}
               >
                 {roleLabel}
@@ -191,15 +191,15 @@ export default function KycClientSummary({ data }: Props) {
                   letterSpacing: "0.10em",
                   padding: "2px 7px",
                   borderRadius: 999,
-                  background: "rgba(15,23,42,0.04)",
-                  color: "#64748b",
-                  border: "1px solid rgba(15,23,42,0.10)",
+                  background: "rgba(23,18,58,0.04)",
+                  color: "#6F6A8A",
+                  border: "1px solid rgba(23,18,58,0.10)",
                 }}
               >
                 {isMorale ? "Personne morale" : "Personne physique"}
               </span>
             </div>
-            <div style={{ fontSize: 11.5, color: "#94a3b8", marginTop: 3 }}>
+            <div style={{ fontSize: 11.5, color: "#9792B4", marginTop: 3 }}>
               Source : fiche KYC signée le {fmtDate(data.consentementRgpdAt ?? data.submittedAt)} · lecture seule
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function KycClientSummary({ data }: Props) {
             width={16}
             height={16}
             style={{
-              color: "#94a3b8",
+              color: "#9792B4",
               transform: open ? "rotate(180deg)" : "rotate(0deg)",
               transition: "transform 0.2s",
               flexShrink: 0,
@@ -218,9 +218,9 @@ export default function KycClientSummary({ data }: Props) {
         {open && (
           <div
             style={{
-              borderTop: "1px solid rgba(124,58,237,0.10)",
+              borderTop: "1px solid rgba(109,94,246,0.10)",
               padding: 18,
-              background: "rgba(250,250,255,0.6)",
+              background: "rgba(246,245,250,0.6)",
               display: "flex",
               flexDirection: "column",
               gap: 14,
@@ -280,13 +280,13 @@ export default function KycClientSummary({ data }: Props) {
             {isMorale && data.beneficiairesEffectifs.length > 0 && (
               <div
                 style={{
-                  border: "1px solid rgba(124,58,237,0.15)",
+                  border: "1px solid rgba(109,94,246,0.15)",
                   background: "white",
                   borderRadius: 11,
                   padding: 14,
                 }}
               >
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#6d28d9", textTransform: "uppercase", letterSpacing: "0.10em", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#5B46E0", textTransform: "uppercase", letterSpacing: "0.10em", marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>
                   <Building2 width={13} height={13} />
                   Bénéficiaires effectifs ({data.beneficiairesEffectifs.length})
                 </div>
@@ -300,26 +300,26 @@ export default function KycClientSummary({ data }: Props) {
                         gap: 12,
                         padding: "10px 12px",
                         borderRadius: 9,
-                        background: "rgba(124,58,237,0.04)",
-                        border: "1px solid rgba(124,58,237,0.12)",
+                        background: "rgba(109,94,246,0.04)",
+                        border: "1px solid rgba(109,94,246,0.12)",
                       }}
                     >
                       <div
                         style={{
                           width: 26, height: 26, borderRadius: 6,
                           background: "white",
-                          border: "1px solid rgba(124,58,237,0.20)",
+                          border: "1px solid rgba(109,94,246,0.20)",
                           display: "grid", placeItems: "center",
-                          color: "#6d28d9", fontSize: 11, fontWeight: 700,
+                          color: "#5B46E0", fontSize: 11, fontWeight: 700,
                         }}
                       >
                         {String(i + 1).padStart(2, "0")}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#17123A" }}>
                           {be.nom || "—"}
                         </div>
-                        <div style={{ fontSize: 11.5, color: "#64748b", marginTop: 1 }}>
+                        <div style={{ fontSize: 11.5, color: "#6F6A8A", marginTop: 1 }}>
                           {has(be.pctDetention) ? `${be.pctDetention}% du capital` : ""}
                           {has(be.pctDetention) && has(be.typeControle) ? " · " : ""}
                           {has(be.typeControle) ? optLabel(TYPE_CONTROLE_BE_OPTIONS, be.typeControle) : ""}
@@ -406,7 +406,7 @@ function SummaryBlock({
   return (
     <div
       style={{
-        border: "1px solid rgba(124,58,237,0.15)",
+        border: "1px solid rgba(109,94,246,0.15)",
         background: "white",
         borderRadius: 11,
         padding: 14,
@@ -416,7 +416,7 @@ function SummaryBlock({
         style={{
           fontSize: 11,
           fontWeight: 700,
-          color: "#6d28d9",
+          color: "#5B46E0",
           textTransform: "uppercase",
           letterSpacing: "0.10em",
           marginBottom: 10,
@@ -446,13 +446,13 @@ function SummaryBlock({
               minWidth: 0,
             }}
           >
-            <span style={{ fontSize: 10.5, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+            <span style={{ fontSize: 10.5, color: "#9792B4", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
               {it.k}
             </span>
             <span
               style={{
                 fontSize: 13,
-                color: "#0f172a",
+                color: "#17123A",
                 fontWeight: 500,
                 wordBreak: "break-word",
                 fontFamily: it.mono ? '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace' : undefined,

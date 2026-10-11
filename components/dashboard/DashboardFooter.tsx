@@ -9,7 +9,7 @@ export default function DashboardFooter() {
     <footer
       className="relative mt-auto pt-10 pb-8 px-8"
       style={{
-        borderTop: "1px solid rgba(124,58,237,0.08)",
+        borderTop: "1px solid rgba(109,94,246,0.08)",
         background: "linear-gradient(180deg, transparent, rgba(255,255,255,0.50))",
       }}
     >
@@ -17,19 +17,19 @@ export default function DashboardFooter() {
         <div>
           <div className="flex items-center gap-2 mb-2.5">
             <KlarisLogo size={28} />
-            <span className="font-bold tracking-tight text-[13.5px]" style={{ color: "#0F172A" }}>
+            <span className="font-bold tracking-tight text-[13.5px]" style={{ color: "#17123A" }}>
               Klaris
             </span>
           </div>
-          <p className="text-[12px] max-w-xs leading-relaxed" style={{ color: "#64748b" }}>
+          <p className="text-[12px] max-w-xs leading-relaxed" style={{ color: "#6F6A8A" }}>
             Conformité LCB-FT pour les professionnels assujettis. Hébergement en Union européenne.
           </p>
           <div
             className="mt-3 inline-flex items-center gap-2 text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-md"
             style={{
-              background: "rgba(124,58,237,0.06)",
-              border: "1px solid rgba(124,58,237,0.18)",
-              color: "#6d28d9",
+              background: "rgba(109,94,246,0.06)",
+              border: "1px solid rgba(109,94,246,0.18)",
+              color: "#5B46E0",
             }}
           >
             <span>🇪🇺</span> Données UE · chiffrées AES-256
@@ -48,7 +48,7 @@ export default function DashboardFooter() {
 
       <div
         className="max-w-6xl mx-auto mt-6 pt-5 text-[11px] uppercase tracking-widest text-center"
-        style={{ borderTop: "1px solid rgba(124,58,237,0.05)", color: "#94a3b8" }}
+        style={{ borderTop: "1px solid rgba(109,94,246,0.05)", color: "#9792B4" }}
       >
         © {new Date().getFullYear()} Klaris — Tous droits réservés
       </div>

@@ -522,12 +522,12 @@ ${forSignature ? `
 
   <!-- Zone de signature à position absolue — calée sur SIGNATURE_FIELD_GEOMETRY.
        Le champ Yousign est placé EXACTEMENT à ces coordonnées (mm → pt). -->
-  <div style="position:absolute; left:${SIGNATURE_FIELD_GEOMETRY.leftMm}mm; top:${SIGNATURE_FIELD_GEOMETRY.topMm}mm; width:${SIGNATURE_FIELD_GEOMETRY.widthMm}mm; height:${SIGNATURE_FIELD_GEOMETRY.heightMm}mm; border:1.5px dashed #b7a8e0; border-radius:8px; background:linear-gradient(135deg, rgba(124,58,237,.04), rgba(236,72,153,.04)); display:flex; align-items:center; justify-content:center;">
-    <span style="font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:#9d8fc4; font-weight:600;">Signature du responsable LCB-FT</span>
+  <div style="position:absolute; left:${SIGNATURE_FIELD_GEOMETRY.leftMm}mm; top:${SIGNATURE_FIELD_GEOMETRY.topMm}mm; width:${SIGNATURE_FIELD_GEOMETRY.widthMm}mm; height:${SIGNATURE_FIELD_GEOMETRY.heightMm}mm; border:1.5px dashed #B5ADE8; border-radius:8px; background:linear-gradient(135deg, rgba(109,94,246,.04), rgba(236,72,153,.04)); display:flex; align-items:center; justify-content:center;">
+    <span style="font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:#9792B4; font-weight:600;">Signature du responsable LCB-FT</span>
   </div>
 
   <!-- Légende sous la zone -->
-  <div style="position:absolute; left:${SIGNATURE_FIELD_GEOMETRY.leftMm}mm; top:${SIGNATURE_FIELD_GEOMETRY.topMm + SIGNATURE_FIELD_GEOMETRY.heightMm + 3}mm; width:${SIGNATURE_FIELD_GEOMETRY.widthMm}mm; font-size:8px; color:#9d8fc4; text-align:center;">
+  <div style="position:absolute; left:${SIGNATURE_FIELD_GEOMETRY.leftMm}mm; top:${SIGNATURE_FIELD_GEOMETRY.topMm + SIGNATURE_FIELD_GEOMETRY.heightMm + 3}mm; width:${SIGNATURE_FIELD_GEOMETRY.widthMm}mm; font-size:8px; color:#9792B4; text-align:center;">
     Signé électroniquement via Yousign · eIDAS (UE 910/2014)
   </div>
 

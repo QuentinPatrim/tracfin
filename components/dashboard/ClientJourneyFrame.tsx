@@ -43,13 +43,13 @@ export default function ClientJourneyFrame({ step }: { step: number }) {
         margin: "0 auto",
         padding: 8,
         borderRadius: 34,
-        background: "#0b0712",
-        boxShadow: "0 26px 60px -20px rgba(124,58,237,0.55), 0 0 0 1px rgba(124,58,237,0.22)",
+        background: "#110E30",
+        boxShadow: "0 26px 60px -20px rgba(109,94,246,0.55), 0 0 0 1px rgba(109,94,246,0.22)",
         position: "relative",
       }}
     >
       {/* encoche */}
-      <div style={{ position: "absolute", top: 8, left: "50%", transform: "translateX(-50%)", width: 74, height: 16, background: "#0b0712", borderRadius: "0 0 12px 12px", zIndex: 2 }} />
+      <div style={{ position: "absolute", top: 8, left: "50%", transform: "translateX(-50%)", width: 74, height: 16, background: "#110E30", borderRadius: "0 0 12px 12px", zIndex: 2 }} />
       <div
         style={{
           width: visW,
@@ -57,7 +57,7 @@ export default function ClientJourneyFrame({ step }: { step: number }) {
           borderRadius: 26,
           overflow: "hidden",
           position: "relative",
-          background: "#06070D",
+          background: "#0C0A24",
         }}
       >
         <iframe
@@ -77,11 +77,11 @@ export default function ClientJourneyFrame({ step }: { step: number }) {
         />
         {/* voile de chargement tant que l'iframe n'a pas signalé "prêt" */}
         {!ready && (
-          <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", background: "#06070D" }}>
+          <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", background: "#0C0A24" }}>
             <div
               style={{
                 width: 30, height: 30, borderRadius: "50%",
-                border: "3px solid rgba(167,139,250,0.25)", borderTopColor: "#a78bfa",
+                border: "3px solid rgba(169,157,251,0.25)", borderTopColor: "#A99DFB",
                 animation: "klaris-spin 0.7s linear infinite",
               }}
             />

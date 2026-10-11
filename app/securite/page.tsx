@@ -339,7 +339,7 @@ export default function SecuritePage() {
           <div
             className="rounded-2xl p-7 md:p-9 border"
             style={{
-              background: "linear-gradient(135deg, rgba(251,146,60,0.06), rgba(248,113,113,0.04))",
+              background: "linear-gradient(135deg, rgba(251,146,60,0.06), rgba(232,128,123,0.04))",
               borderColor: "rgba(251,146,60,0.25)",
             }}
           >

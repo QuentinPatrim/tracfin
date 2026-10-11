@@ -9,6 +9,7 @@ import {
   ArrowLeft, Copy, Check, Mail, MessageCircle, Clock, Eye, Trash2, RefreshCw, Inbox,
 } from "lucide-react";
 import AmbientOrbs from "@/components/tracfin/AmbientOrbs";
+import { useOrigin } from "@/lib/use-origin";
 
 interface Props {
   dossierId: string;
@@ -28,7 +29,8 @@ export default function WaitingView({
   const [deleting, setDeleting] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const link = typeof window !== "undefined" ? `${window.location.origin}/kyc/${token}` : `/kyc/${token}`;
+  const origin = useOrigin();
+  const link = `${origin}/kyc/${token}`;
 
   const message =
     `Bonjour ${nomPrenom},\n\n` +
@@ -73,7 +75,7 @@ export default function WaitingView({
   const opened = !!openedAt;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#06070D", fontFamily: "Inter, sans-serif" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#0C0A24", fontFamily: "Inter, sans-serif" }}>
       <AmbientOrbs />
 
       <header className="relative z-10 border-b border-white/[0.06] backdrop-blur-xl bg-black/20">
@@ -99,15 +101,15 @@ export default function WaitingView({
             <div
               className="relative w-20 h-20 rounded-full flex items-center justify-center"
               style={{
-                background: "linear-gradient(180deg, rgba(168,85,247,0.20), rgba(168,85,247,0.08))",
-                boxShadow: "0 0 0 1px rgba(168,85,247,0.40), 0 0 50px rgba(168,85,247,0.30), 0 1px 0 rgba(255,255,255,0.20) inset",
+                background: "linear-gradient(180deg, rgba(165,72,216,0.20), rgba(165,72,216,0.08))",
+                boxShadow: "0 0 0 1px rgba(165,72,216,0.40), 0 0 50px rgba(165,72,216,0.30), 0 1px 0 rgba(255,255,255,0.20) inset",
               }}
             >
               {/* Anneau qui pulse */}
               <span
                 className="absolute inset-0 rounded-full"
                 style={{
-                  border: "2px solid rgba(168,85,247,0.40)",
+                  border: "2px solid rgba(165,72,216,0.40)",
                   animation: "pulse-ring 2s ease-out infinite",
                 }}
               />
@@ -116,7 +118,8 @@ export default function WaitingView({
           </div>
 
           <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-[-0.025em] mb-3">
+            {/* Couleur explicite : sans elle le titre héritait du texte sombre de la page et restait illisible sur le fond d'encre. */}
+            <h1 className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-3" style={{ color: "#F4F2FF" }}>
               En attente du client
             </h1>
             <p className="text-white/55 leading-relaxed text-sm md:text-base max-w-md mx-auto">
@@ -132,7 +135,7 @@ export default function WaitingView({
               background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
               backdropFilter: "blur(28px) saturate(180%)",
               WebkitBackdropFilter: "blur(28px) saturate(180%)",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.10) inset, 0 20px 40px -12px rgba(168,85,247,0.30)",
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.10) inset, 0 20px 40px -12px rgba(165,72,216,0.30)",
             }}
           >
             <div className="absolute inset-x-6 top-0 h-px rounded-full"
@@ -218,7 +221,7 @@ export default function WaitingView({
           <button
             onClick={cancelDossier}
             disabled={deleting}
-            className="w-full py-3 rounded-full text-sm font-medium text-white/40 hover:text-red-400 hover:bg-red-500/10 transition disabled:opacity-50 inline-flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-[10px] text-sm font-medium text-white/40 hover:text-red-400 hover:bg-red-500/10 transition disabled:opacity-50 inline-flex items-center justify-center gap-2"
           >
             <Trash2 className="w-3.5 h-3.5" />
             {deleting ? "Suppression..." : "Annuler ce dossier"}
@@ -242,10 +245,10 @@ function StatusItem({ icon, label, active }: { icon: React.ReactNode; label: str
       className="flex items-center gap-3 p-3 rounded-xl"
       style={{
         background: active
-          ? "linear-gradient(180deg, rgba(52,211,153,0.10), rgba(52,211,153,0.03))"
+          ? "linear-gradient(180deg, rgba(61,190,139,0.10), rgba(61,190,139,0.03))"
           : "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
         boxShadow: active
-          ? "0 0 0 1px rgba(52,211,153,0.30), 0 1px 0 rgba(255,255,255,0.10) inset"
+          ? "0 0 0 1px rgba(61,190,139,0.30), 0 1px 0 rgba(255,255,255,0.10) inset"
           : "0 0 0 1px rgba(255,255,255,0.06), 0 1px 0 rgba(255,255,255,0.06) inset",
       }}
     >

@@ -360,7 +360,7 @@ export default function DashboardClient({
                 const ab = niveauBadge(d);
                 return (
                   <Link key={d.id} href={`/dashboard/${d.id}`} className="alert-pill">
-                    <span className="risk-dot" style={{ background: ab.tone === "critical" ? "#0f172a" : "#ef4444" }} />
+                    <span className="risk-dot" style={{ background: ab.tone === "critical" ? "#17123A" : "#D9443F" }} />
                     <span className="alert-name">{d.nom_prenom}</span>
                     <span className="muted small">{ab.label}</span>
                     <ChevronRight width={12} height={12} style={{ opacity: 0.6 }} />
@@ -395,11 +395,11 @@ export default function DashboardClient({
                     gap: 6,
                     fontSize: 12,
                     fontWeight: 600,
-                    color: "#6d28d9",
+                    color: "#5B46E0",
                     padding: "5px 11px",
                     borderRadius: 8,
-                    background: "rgba(124,58,237,0.06)",
-                    border: "1px solid rgba(124,58,237,0.22)",
+                    background: "rgba(109,94,246,0.06)",
+                    border: "1px solid rgba(109,94,246,0.22)",
                     textDecoration: "none",
                     whiteSpace: "nowrap",
                   }}
@@ -436,9 +436,9 @@ export default function DashboardClient({
                               <span
                                 className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] uppercase tracking-widest font-bold"
                                 style={{
-                                  background: d.partie === "vendeur" ? "rgba(124,58,237,0.08)" : "rgba(236,72,153,0.08)",
-                                  border: `1px solid ${d.partie === "vendeur" ? "rgba(124,58,237,0.25)" : "rgba(236,72,153,0.25)"}`,
-                                  color: d.partie === "vendeur" ? "#6d28d9" : "#be185d",
+                                  background: d.partie === "vendeur" ? "rgba(109,94,246,0.08)" : "rgba(236,72,153,0.08)",
+                                  border: `1px solid ${d.partie === "vendeur" ? "rgba(109,94,246,0.25)" : "rgba(236,72,153,0.25)"}`,
+                                  color: d.partie === "vendeur" ? "#5B46E0" : "#be185d",
                                 }}
                               >
                                 {d.partie === "vendeur" ? "Vendeur" : "Acquéreur"}
@@ -455,9 +455,9 @@ export default function DashboardClient({
                         <span
                           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
                           style={{
-                            background: "rgba(220,38,38,0.10)",
-                            border: "1px solid rgba(220,38,38,0.40)",
-                            color: "#b91c1c",
+                            background: "rgba(197,48,44,0.10)",
+                            border: "1px solid rgba(197,48,44,0.40)",
+                            color: "#A3241F",
                             animation: "pulse-alert 2s ease-in-out infinite",
                           }}
                           title="Nouvelle correspondance sanctions détectée — vigilance L.561-6"
@@ -469,9 +469,9 @@ export default function DashboardClient({
                         <span
                           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
                           style={{
-                            background: "rgba(16,185,129,0.10)",
-                            border: "1px solid rgba(16,185,129,0.30)",
-                            color: "#047857",
+                            background: "rgba(30,158,106,0.10)",
+                            border: "1px solid rgba(30,158,106,0.30)",
+                            color: "#177A52",
                           }}
                           title="Marche à suivre terminée"
                         >
@@ -538,10 +538,10 @@ export default function DashboardClient({
           style={{
             position: "fixed", top: 10, left: "50%", transform: "translateX(-50%)",
             zIndex: 9999, pointerEvents: "none",
-            background: "linear-gradient(135deg, #7c3aed, #ec4899)", color: "white",
+            background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)", color: "white",
             fontSize: 11.5, fontWeight: 700, letterSpacing: "0.04em",
             padding: "6px 14px", borderRadius: 999,
-            boxShadow: "0 8px 24px -6px rgba(124,58,237,0.6)",
+            boxShadow: "0 8px 24px -6px rgba(109,94,246,0.6)",
           }}
         >
           ✦ Mode démonstration — données fictives
@@ -590,7 +590,7 @@ function ConfirmArchiveModal({
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(15,23,42,0.45)",
+        background: "rgba(23,18,58,0.45)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         zIndex: 100,
@@ -605,27 +605,27 @@ function ConfirmArchiveModal({
         style={{
           width: "min(480px, 100%)",
           background: "#ffffff",
-          border: "1px solid rgba(124,58,237,0.22)",
+          border: "1px solid rgba(109,94,246,0.22)",
           borderRadius: 16,
           padding: 24,
-          boxShadow: "0 30px 80px rgba(15,23,42,0.18), 0 0 0 1px rgba(255,255,255,0.6) inset",
+          boxShadow: "0 30px 80px rgba(23,18,58,0.18), 0 0 0 1px rgba(255,255,255,0.6) inset",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <div
             style={{
               width: 40, height: 40, borderRadius: 12,
-              background: "rgba(124,58,237,0.10)",
+              background: "rgba(109,94,246,0.10)",
               display: "grid", placeItems: "center",
-              color: "#6d28d9",
-              border: "1px solid rgba(124,58,237,0.22)",
+              color: "#5B46E0",
+              border: "1px solid rgba(109,94,246,0.22)",
             }}
           >
             <Archive width={20} height={20} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 16, color: "#0f172a" }}>Archiver ce dossier ?</div>
-            <div style={{ fontSize: 13, color: "#64748b", marginTop: 2 }}>
+            <div style={{ fontWeight: 700, fontSize: 16, color: "#17123A" }}>Archiver ce dossier ?</div>
+            <div style={{ fontSize: 13, color: "#6F6A8A", marginTop: 2 }}>
               Dossier de <strong>{dossier.nom_prenom}</strong>
             </div>
           </div>
@@ -635,15 +635,15 @@ function ConfirmArchiveModal({
           style={{
             marginBottom: 16,
             padding: 12,
-            background: "rgba(16,185,129,0.08)",
-            border: "1px solid rgba(16,185,129,0.30)",
+            background: "rgba(30,158,106,0.08)",
+            border: "1px solid rgba(30,158,106,0.30)",
             borderRadius: 10,
             fontSize: 12.5,
-            color: "#334155",
+            color: "#3B3560",
             lineHeight: 1.5,
           }}
         >
-          <strong style={{ color: "#047857" }}>✓ Action conforme L.561-12 CMF.</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
+          <strong style={{ color: "#177A52" }}>✓ Action conforme L.561-12 CMF.</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
         </div>
 
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
@@ -653,9 +653,9 @@ function ConfirmArchiveModal({
             style={{
               padding: "8px 16px",
               borderRadius: 9,
-              border: "1px solid #ebebf2",
+              border: "1px solid #E9E7F2",
               background: "#ffffff",
-              color: "#334155",
+              color: "#3B3560",
               fontWeight: 500,
               fontSize: 13,
               cursor: "pointer",
@@ -670,12 +670,12 @@ function ConfirmArchiveModal({
               padding: "8px 16px",
               borderRadius: 9,
               border: 0,
-              background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+              background: "linear-gradient(135deg, #6D5EF6, #A548D8)",
               color: "white",
               fontWeight: 600,
               fontSize: 13,
               cursor: loading ? "wait" : "pointer",
-              boxShadow: "0 4px 14px rgba(124,58,237,0.30), 0 1px 0 rgba(255,255,255,0.20) inset",
+              boxShadow: "0 4px 14px rgba(109,94,246,0.30), 0 1px 0 rgba(255,255,255,0.20) inset",
               opacity: loading ? 0.7 : 1,
               display: "inline-flex",
               alignItems: "center",
@@ -714,9 +714,9 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
                 <span
                   className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] uppercase tracking-widest font-bold"
                   style={{
-                    background: d.partie === "vendeur" ? "rgba(124,58,237,0.08)" : "rgba(236,72,153,0.08)",
-                    border: `1px solid ${d.partie === "vendeur" ? "rgba(124,58,237,0.25)" : "rgba(236,72,153,0.25)"}`,
-                    color: d.partie === "vendeur" ? "#6d28d9" : "#be185d",
+                    background: d.partie === "vendeur" ? "rgba(109,94,246,0.08)" : "rgba(236,72,153,0.08)",
+                    border: `1px solid ${d.partie === "vendeur" ? "rgba(109,94,246,0.25)" : "rgba(236,72,153,0.25)"}`,
+                    color: d.partie === "vendeur" ? "#5B46E0" : "#be185d",
                   }}
                 >
                   {d.partie === "vendeur" ? "Vendeur" : "Acquéreur"}
@@ -734,10 +734,10 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
             className="preview-risk-label"
             style={{
               color:
-                b.tone === "success" ? "#059669"
-                : b.tone === "warn" ? "#d97706"
-                : b.tone === "critical" ? "#0f172a"
-                : "#dc2626",
+                b.tone === "success" ? "#177A52"
+                : b.tone === "warn" ? "#B87A00"
+                : b.tone === "critical" ? "#17123A"
+                : "#C5302C",
             }}
           >
             {cfg.label}
@@ -772,9 +772,9 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
           alignItems: "flex-start",
           gap: 10,
           padding: "12px 14px",
-          background: "#faf6ff",
-          border: "1px solid #ebe1ff",
-          color: "#5b21b6",
+          background: "#F6F3FF",
+          border: "1px solid #E9E5FF",
+          color: "#4A38C8",
           borderRadius: 10,
           fontSize: 12.5,
           lineHeight: 1.5,
@@ -804,7 +804,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
       {/* Pièces justificatives */}
       {d.kyc_status === "received" && (
         <div className="preview-section">
-          <div className="preview-label">Pièces justificatives <span style={{ marginLeft: 4, color: "#94a3b8", fontWeight: 500 }}>({files.length})</span></div>
+          <div className="preview-label">Pièces justificatives <span style={{ marginLeft: 4, color: "#9792B4", fontWeight: 500 }}>({files.length})</span></div>
           <DocumentsList files={files} mode="compact" />
         </div>
       )}
@@ -824,8 +824,8 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
             rel="noreferrer noopener"
             className="btn-grad small block"
             style={{
-              background: "linear-gradient(135deg, #dc2626, #ef4444, #f43f5e)",
-              boxShadow: "0 4px 14px rgba(220,38,38,0.35), 0 1px 0 rgba(255,255,255,0.25) inset",
+              background: "linear-gradient(135deg, #C5302C, #D9443F, #f43f5e)",
+              boxShadow: "0 4px 14px rgba(197,48,44,0.35), 0 1px 0 rgba(255,255,255,0.25) inset",
             }}
           >
             <AlertTriangle width={12} height={12} />
@@ -872,7 +872,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
         <button
           onClick={onAskArchive}
           className="ghost-btn small block"
-          style={{ justifyContent: "center", color: "#6d28d9", borderColor: "rgba(124,58,237,0.20)" }}
+          style={{ justifyContent: "center", color: "#5B46E0", borderColor: "rgba(109,94,246,0.20)" }}
           title="Retire le dossier de la liste active. Conservation 5 ans (L.561-12)."
         >
           <Archive width={12} height={12} />
@@ -887,11 +887,11 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
    Pas de pourcentage, pas de score — juste la couleur du verdict. */
 function NiveauDisc({ tone }: { tone: "success" | "warn" | "danger" | "critical" | "pending" }) {
   const cfg =
-    tone === "success"  ? { from: "#10b981", to: "#34d399", glow: "rgba(16,185,129,0.40)" }
-    : tone === "warn"   ? { from: "#f59e0b", to: "#fbbf24", glow: "rgba(245,158,11,0.40)" }
-    : tone === "danger" ? { from: "#dc2626", to: "#f43f5e", glow: "rgba(220,38,38,0.40)" }
-    : tone === "critical" ? { from: "#0f172a", to: "#1e293b", glow: "rgba(220,38,38,0.45)" }
-    : { from: "#7c3aed", to: "#ec4899", glow: "rgba(124,58,237,0.40)" };
+    tone === "success"  ? { from: "#1E9E6A", to: "#3DBE8B", glow: "rgba(30,158,106,0.40)" }
+    : tone === "warn"   ? { from: "#E3A008", to: "#EDB52E", glow: "rgba(227,160,8,0.40)" }
+    : tone === "danger" ? { from: "#C5302C", to: "#f43f5e", glow: "rgba(197,48,44,0.40)" }
+    : tone === "critical" ? { from: "#17123A", to: "#241E4E", glow: "rgba(197,48,44,0.45)" }
+    : { from: "#6D5EF6", to: "#DB2777", glow: "rgba(109,94,246,0.40)" };
 
   return (
     <div
@@ -923,7 +923,7 @@ function NiveauDisc({ tone }: { tone: "success" | "warn" | "danger" | "critical"
             position: "absolute",
             inset: 0,
             borderRadius: "50%",
-            boxShadow: "0 0 0 1.5px rgba(220,38,38,0.55) inset",
+            boxShadow: "0 0 0 1.5px rgba(197,48,44,0.55) inset",
             pointerEvents: "none",
           }}
         />

@@ -19,25 +19,6 @@ export const metadata: Metadata = {
 export default function ConfiancePage() {
   return (
     <div className="klaris-public min-h-screen relative overflow-hidden">
-      {/* Halos */}
-      <div
-        className="fixed pointer-events-none rounded-full"
-        style={{
-          top: -200, left: -100,
-          width: 600, height: 600,
-          background: "radial-gradient(circle, var(--lp-orb-1), transparent 70%)",
-          filter: "blur(70px)",
-        }}
-      />
-      <div
-        className="fixed pointer-events-none rounded-full"
-        style={{
-          top: "30%", right: -200,
-          width: 500, height: 500,
-          background: "radial-gradient(circle, var(--lp-orb-2), transparent 70%)",
-          filter: "blur(70px)",
-        }}
-      />
 
       {/* Header */}
       <header className="relative z-10 border-b border-[color:var(--lp-border-1)]">

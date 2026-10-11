@@ -327,11 +327,11 @@ Cordialement,
 function tones(tone: Wizard["tone"]) {
   switch (tone) {
     case "ok":
-      return { fg: "#047857", bgSoft: "rgba(16,185,129,0.06)", border: "rgba(16,185,129,0.30)", iconBg: "rgba(16,185,129,0.12)", accent: "#10b981" };
+      return { fg: "#177A52", bgSoft: "rgba(30,158,106,0.06)", border: "rgba(30,158,106,0.30)", iconBg: "rgba(30,158,106,0.12)", accent: "#1E9E6A" };
     case "warn":
-      return { fg: "#b45309", bgSoft: "rgba(245,158,11,0.06)", border: "rgba(245,158,11,0.30)", iconBg: "rgba(245,158,11,0.12)", accent: "#f59e0b" };
+      return { fg: "#8F5A00", bgSoft: "rgba(227,160,8,0.06)", border: "rgba(227,160,8,0.30)", iconBg: "rgba(227,160,8,0.12)", accent: "#E3A008" };
     case "danger":
-      return { fg: "#be123c", bgSoft: "rgba(220,38,38,0.06)", border: "rgba(220,38,38,0.30)", iconBg: "rgba(220,38,38,0.12)", accent: "#dc2626" };
+      return { fg: "#be123c", bgSoft: "rgba(197,48,44,0.06)", border: "rgba(197,48,44,0.30)", iconBg: "rgba(197,48,44,0.12)", accent: "#C5302C" };
     case "crit":
       return { fg: "#7c2d12", bgSoft: "rgba(124,45,18,0.07)", border: "rgba(124,45,18,0.30)", iconBg: "rgba(124,45,18,0.14)", accent: "#9a3412" };
   }
@@ -533,7 +533,7 @@ function CompactView({
         background: c.bgSoft,
         border: `1px solid ${c.border}`,
         textDecoration: "none",
-        boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 14px rgba(15,23,42,0.04)`,
+        boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 14px rgba(23,18,58,0.04)`,
       }}
     >
       <div className="flex items-start gap-3">
@@ -641,16 +641,16 @@ function FullView({
       style={{
         background: "white",
         border: `1px solid ${c.border}`,
-        boxShadow: `0 1px 0 rgba(255,255,255,0.9) inset, 0 14px 38px rgba(15,23,42,0.06)`,
+        boxShadow: `0 1px 0 rgba(255,255,255,0.9) inset, 0 14px 38px rgba(23,18,58,0.06)`,
       }}
     >
       {/* Bandeau d'annulation si une transition manuelle a été faite récemment */}
       {prevNiveau && (
         <div
           className="px-5 sm:px-6 py-2.5 flex items-center justify-between gap-3 flex-wrap text-[12.5px]"
-          style={{ background: "rgba(15,23,42,0.04)", borderBottom: "1px dashed rgba(15,23,42,0.10)" }}
+          style={{ background: "rgba(23,18,58,0.04)", borderBottom: "1px dashed rgba(23,18,58,0.10)" }}
         >
-          <span style={{ color: "#475569" }}>
+          <span style={{ color: "#55506F" }}>
             <RotateCw width={11} height={11} className="inline mr-1 -mt-0.5" />
             Vous avez basculé ce dossier manuellement. Cliqué par erreur&nbsp;?
           </span>
@@ -661,8 +661,8 @@ function FullView({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold text-[12px] transition border"
             style={{
               background: "white",
-              borderColor: "rgba(15,23,42,0.15)",
-              color: "#0f172a",
+              borderColor: "rgba(23,18,58,0.15)",
+              color: "#17123A",
               opacity: undoing ? 0.6 : 1,
               cursor: undoing ? "wait" : "pointer",
             }}
@@ -773,9 +773,9 @@ function StepCard({
     return (
       <div
         className="rounded-xl p-3.5 flex items-start gap-3"
-        style={{ background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.25)" }}
+        style={{ background: "rgba(30,158,106,0.04)", border: "1px solid rgba(30,158,106,0.25)" }}
       >
-        <CheckCircle2 width={20} height={20} style={{ color: "#10b981" }} className="shrink-0 mt-0.5" />
+        <CheckCircle2 width={20} height={20} style={{ color: "#1E9E6A" }} className="shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
           <div className="text-[13px] font-semibold text-slate-700 line-through opacity-60">{step.title}</div>
         </div>
@@ -796,11 +796,11 @@ function StepCard({
     return (
       <div
         className="rounded-xl p-3.5 flex items-start gap-3"
-        style={{ background: "rgba(15,23,42,0.02)", border: "1px solid rgba(15,23,42,0.06)" }}
+        style={{ background: "rgba(23,18,58,0.02)", border: "1px solid rgba(23,18,58,0.06)" }}
       >
         <div
           className="w-5 h-5 rounded-full grid place-items-center shrink-0 mt-0.5 text-[10px] font-bold"
-          style={{ background: "white", border: "1px solid rgba(15,23,42,0.10)", color: "#94a3b8" }}
+          style={{ background: "white", border: "1px solid rgba(23,18,58,0.10)", color: "#9792B4" }}
         >
           {index + 1}
         </div>
@@ -818,7 +818,7 @@ function StepCard({
       style={{
         background: "white",
         border: `2px solid ${c.accent}`,
-        boxShadow: `0 0 0 4px ${c.bgSoft}, 0 6px 18px rgba(15,23,42,0.06)`,
+        boxShadow: `0 0 0 4px ${c.bgSoft}, 0 6px 18px rgba(23,18,58,0.06)`,
       }}
     >
       <div className="flex items-start gap-3 mb-3">
@@ -832,7 +832,7 @@ function StepCard({
           <div className="text-[10px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: c.fg, opacity: 0.7 }}>
             Action en cours · Étape {index + 1} sur {total}
           </div>
-          <h3 className="text-[16px] font-bold leading-tight" style={{ color: "#0f172a" }}>
+          <h3 className="text-[16px] font-bold leading-tight" style={{ color: "#17123A" }}>
             {step.title}
           </h3>
         </div>
@@ -948,7 +948,7 @@ function StepAction({
           placeholder={a.placeholder}
           rows={4}
           className="w-full px-3 py-2.5 rounded-lg border text-[13px] text-slate-800 leading-relaxed outline-none focus:ring-4 focus:ring-violet-500/15 resize-y"
-          style={{ borderColor: "rgba(15,23,42,0.12)", background: "white" }}
+          style={{ borderColor: "rgba(23,18,58,0.12)", background: "white" }}
         />
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -1030,14 +1030,14 @@ function StepAction({
               disabled={branchState.loading}
               className="text-left inline-flex items-center justify-between gap-2 px-4 py-3 rounded-lg text-[13.5px] font-semibold border transition hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
               style={{
-                borderColor: isCrit ? "rgba(15,23,42,0.40)" : isWarn ? "rgba(245,158,11,0.40)" : "rgba(15,23,42,0.12)",
-                color: isCrit ? "#ffffff" : isWarn ? "#b45309" : "#0f172a",
+                borderColor: isCrit ? "rgba(23,18,58,0.40)" : isWarn ? "rgba(227,160,8,0.40)" : "rgba(23,18,58,0.12)",
+                color: isCrit ? "#ffffff" : isWarn ? "#8F5A00" : "#17123A",
                 background: isCrit
-                  ? "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)"
+                  ? "linear-gradient(135deg, #17123A 0%, #241E4E 100%)"
                   : isWarn
-                  ? "rgba(245,158,11,0.06)"
+                  ? "rgba(227,160,8,0.06)"
                   : "white",
-                boxShadow: isCrit ? "0 0 0 1px rgba(220,38,38,0.30), 0 6px 18px rgba(15,23,42,0.20)" : "none",
+                boxShadow: isCrit ? "0 0 0 1px rgba(197,48,44,0.30), 0 6px 18px rgba(23,18,58,0.20)" : "none",
               }}
             >
               <span className="flex-1">{opt.label}</span>
@@ -1079,9 +1079,9 @@ function DoneView({
     <div className="space-y-4">
       <div
         className="rounded-xl p-5 flex items-start gap-3"
-        style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.30)" }}
+        style={{ background: "rgba(30,158,106,0.06)", border: "1px solid rgba(30,158,106,0.30)" }}
       >
-        <Sparkles width={20} height={20} style={{ color: "#10b981" }} className="shrink-0 mt-0.5" />
+        <Sparkles width={20} height={20} style={{ color: "#1E9E6A" }} className="shrink-0 mt-0.5" />
         <div>
           <div className="text-[14px] font-bold text-emerald-800 mb-1">Toutes les étapes sont validées</div>
           <p className="text-[12.5px] text-emerald-900/85 leading-relaxed">
@@ -1104,7 +1104,7 @@ function DoneView({
               <div
                 key={i}
                 className="rounded-lg p-3"
-                style={{ background: "rgba(15,23,42,0.02)", border: "1px solid rgba(15,23,42,0.08)" }}
+                style={{ background: "rgba(23,18,58,0.02)", border: "1px solid rgba(23,18,58,0.08)" }}
               >
                 <div className="text-[11.5px] font-semibold text-slate-500 mb-1">{step.title}</div>
                 <div className="text-[13px] text-slate-700 whitespace-pre-wrap leading-relaxed">{note}</div>

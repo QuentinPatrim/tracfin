@@ -290,7 +290,7 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
   };
 
   return (
-    <div style={{ background: "#fafaff", minHeight: "100vh" }}>
+    <div style={{ background: "#F6F5FA", minHeight: "100vh" }}>
       <DossierPieces dossierId={id} files={files} />
       <KycClientSummary data={summary} />
       {niveauEffectif && (

@@ -13,17 +13,17 @@ interface Props {
 
 // ─── Palette light contrastée pour Step3 (lisible sur fond blanc) ──
 const RISK_LIGHT: Record<Risk, { color: string; bg: string; border: string; label: string }> = {
-  green:  { color: "#047857", bg: "rgba(16,185,129,0.10)", border: "rgba(16,185,129,0.35)", label: "Conforme" },
-  orange: { color: "#b45309", bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.35)", label: "Vigilance" },
-  red:    { color: "#b91c1c", bg: "rgba(220,38,38,0.10)", border: "rgba(220,38,38,0.35)", label: "Critique" },
+  green:  { color: "#177A52", bg: "rgba(30,158,106,0.10)", border: "rgba(30,158,106,0.35)", label: "Conforme" },
+  orange: { color: "#8F5A00", bg: "rgba(227,160,8,0.10)", border: "rgba(227,160,8,0.35)", label: "Vigilance" },
+  red:    { color: "#A3241F", bg: "rgba(197,48,44,0.10)", border: "rgba(197,48,44,0.35)", label: "Critique" },
 };
 
 interface StatusLight { color: string; bg: string; border: string; title: string; sub: string; }
 const STATUS_LIGHT: Record<StatutKey, StatusLight> = {
-  valid:    { color: "#047857", bg: "rgba(16,185,129,0.08)", border: "rgba(16,185,129,0.30)", title: "Vigilance standard — Conforme", sub: "Traiter normalement. Archivage 5 ans (L561-12)." },
-  vigilance:{ color: "#b45309", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
-  stop:     { color: "#b45309", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
-  critical: { color: "#b91c1c", bg: "rgba(220,38,38,0.08)", border: "rgba(220,38,38,0.30)", title: "Examen renforcé", sub: "Suspension immédiate de la transaction. Délibération formalisée." },
+  valid:    { color: "#177A52", bg: "rgba(30,158,106,0.08)", border: "rgba(30,158,106,0.30)", title: "Vigilance standard — Conforme", sub: "Traiter normalement. Archivage 5 ans (L561-12)." },
+  vigilance:{ color: "#8F5A00", bg: "rgba(227,160,8,0.08)", border: "rgba(227,160,8,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
+  stop:     { color: "#8F5A00", bg: "rgba(227,160,8,0.08)", border: "rgba(227,160,8,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
+  critical: { color: "#A3241F", bg: "rgba(197,48,44,0.08)", border: "rgba(197,48,44,0.30)", title: "Examen renforcé", sub: "Suspension immédiate de la transaction. Délibération formalisée." },
 };
 
 export default function Step3({ form, set, score }: Props) {
@@ -37,7 +37,7 @@ export default function Step3({ form, set, score }: Props) {
       {/* Verdict principal */}
       <div
         className="relative rounded-2xl p-8 mb-6 overflow-hidden border"
-        style={{ background: cfg.bg, borderColor: cfg.border, boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 8px 24px rgba(15,23,42,0.06)` }}
+        style={{ background: cfg.bg, borderColor: cfg.border, boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 8px 24px rgba(23,18,58,0.06)` }}
       >
         <div className="text-[10px] uppercase tracking-[0.2em] mb-2 font-bold" style={{ color: cfg.color }}>
           Verdict de conformité
@@ -89,20 +89,20 @@ export default function Step3({ form, set, score }: Props) {
       <Sect title="Synthèse" sub="Données saisies">
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#94a3b8" }}>Type de client</div>
-            <div style={{ color: "#0f172a" }}>{form.typeClient === "morale" ? "Personne Morale" : "Personne Physique"}</div>
+            <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#9792B4" }}>Type de client</div>
+            <div style={{ color: "#17123A" }}>{form.typeClient === "morale" ? "Personne Morale" : "Personne Physique"}</div>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#94a3b8" }}>Nom</div>
-            <div style={{ color: "#0f172a" }}>{form.nomPrenom || "—"}</div>
+            <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#9792B4" }}>Nom</div>
+            <div style={{ color: "#17123A" }}>{form.nomPrenom || "—"}</div>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#94a3b8" }}>Origine des fonds</div>
-            <div style={{ color: "#0f172a" }}>{labelFor("origineFonds", form.origineFonds)}</div>
+            <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#9792B4" }}>Origine des fonds</div>
+            <div style={{ color: "#17123A" }}>{labelFor("origineFonds", form.origineFonds)}</div>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#94a3b8" }}>Montage</div>
-            <div style={{ color: "#0f172a" }}>{labelFor("montageFinancier", form.montageFinancier)}</div>
+            <div className="text-[10px] uppercase tracking-widest mb-1" style={{ color: "#9792B4" }}>Montage</div>
+            <div style={{ color: "#17123A" }}>{labelFor("montageFinancier", form.montageFinancier)}</div>
           </div>
         </div>
       </Sect>

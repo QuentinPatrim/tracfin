@@ -102,8 +102,8 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
       style={{
         marginTop: 24,
         padding: 18,
-        background: isSigned ? "rgba(16,185,129,0.04)" : "rgba(124,58,237,0.04)",
-        border: `1px solid ${isSigned ? "rgba(16,185,129,0.30)" : "rgba(124,58,237,0.22)"}`,
+        background: isSigned ? "rgba(30,158,106,0.04)" : "rgba(109,94,246,0.04)",
+        border: `1px solid ${isSigned ? "rgba(30,158,106,0.30)" : "rgba(109,94,246,0.22)"}`,
         borderRadius: 12,
       }}
     >
@@ -111,10 +111,10 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
         <div
           style={{
             width: 40, height: 40, borderRadius: 10,
-            background: isSigned ? "rgba(16,185,129,0.10)" : "rgba(124,58,237,0.10)",
+            background: isSigned ? "rgba(30,158,106,0.10)" : "rgba(109,94,246,0.10)",
             display: "grid", placeItems: "center",
-            color: isSigned ? "#047857" : "#6d28d9",
-            border: `1px solid ${isSigned ? "rgba(16,185,129,0.25)" : "rgba(124,58,237,0.25)"}`,
+            color: isSigned ? "#177A52" : "#5B46E0",
+            border: `1px solid ${isSigned ? "rgba(30,158,106,0.25)" : "rgba(109,94,246,0.25)"}`,
             flexShrink: 0,
           }}
         >
@@ -122,17 +122,17 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: isSigned ? "#047857" : "#6d28d9", marginBottom: 4 }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: isSigned ? "#177A52" : "#5B46E0", marginBottom: 4 }}>
             Signature électronique · eIDAS
           </div>
-          <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0f172a" }}>
+          <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#17123A" }}>
             {isSigned
               ? "Attestation signée électroniquement"
               : isPending
                 ? "Signature en cours…"
                 : "Faire signer l'attestation par le responsable LCB-FT"}
           </h2>
-          <p style={{ fontSize: 12.5, color: "#64748b", margin: "4px 0 0", lineHeight: 1.5 }}>
+          <p style={{ fontSize: 12.5, color: "#6F6A8A", margin: "4px 0 0", lineHeight: 1.5 }}>
             {isSigned
               ? `Signée par ${latest?.signer_name}${latest?.signed_at ? ` le ${new Date(latest.signed_at).toLocaleDateString("fr-FR")}` : ""}. Signature électronique au sens du règlement eIDAS (UE n° 910/2014).`
               : isPending
@@ -141,7 +141,7 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
           </p>
 
           {error && (
-            <div style={{ marginTop: 10, padding: 8, background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.25)", borderRadius: 6, color: "#b91c1c", fontSize: 12 }}>
+            <div style={{ marginTop: 10, padding: 8, background: "rgba(197,48,44,0.08)", border: "1px solid rgba(197,48,44,0.25)", borderRadius: 6, color: "#A3241F", fontSize: 12 }}>
               ⚠️ {error}
             </div>
           )}
@@ -155,10 +155,10 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "9px 16px", borderRadius: 9,
-                  background: initiating ? "rgba(124,58,237,0.40)" : "linear-gradient(135deg, #7c3aed, #a855f7)",
+                  background: initiating ? "rgba(109,94,246,0.40)" : "linear-gradient(135deg, #6D5EF6, #A548D8)",
                   color: "white", fontWeight: 600, fontSize: 13, border: 0,
                   cursor: initiating ? "wait" : "pointer",
-                  boxShadow: "0 4px 14px rgba(124,58,237,0.25)",
+                  boxShadow: "0 4px 14px rgba(109,94,246,0.25)",
                 }}
               >
                 {initiating ? <Loader2 size={14} className="animate-spin" /> : <PenLine size={14} />}
@@ -174,9 +174,9 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "9px 16px", borderRadius: 9,
-                  background: "linear-gradient(135deg, #7c3aed, #a855f7)",
+                  background: "linear-gradient(135deg, #6D5EF6, #A548D8)",
                   color: "white", fontWeight: 600, fontSize: 13, textDecoration: "none",
-                  boxShadow: "0 4px 14px rgba(124,58,237,0.25)",
+                  boxShadow: "0 4px 14px rgba(109,94,246,0.25)",
                 }}
               >
                 <ExternalLink size={14} /> Ouvrir la page de signature
@@ -187,7 +187,7 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
               <button
                 type="button"
                 onClick={() => refresh()}
-                style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 14px", borderRadius: 9, background: "white", border: "1px solid #cbd5e1", color: "#475569", fontSize: 12.5, fontWeight: 500, cursor: "pointer" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 14px", borderRadius: 9, background: "white", border: "1px solid #D5D1E6", color: "#55506F", fontSize: 12.5, fontWeight: 500, cursor: "pointer" }}
               >
                 <RefreshCw size={13} /> Actualiser
               </button>
@@ -199,9 +199,9 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "9px 16px", borderRadius: 9,
-                  background: "linear-gradient(135deg, #10b981, #059669)",
+                  background: "linear-gradient(135deg, #1E9E6A, #177A52)",
                   color: "white", fontWeight: 600, fontSize: 13, textDecoration: "none",
-                  boxShadow: "0 4px 14px rgba(16,185,129,0.25)",
+                  boxShadow: "0 4px 14px rgba(30,158,106,0.25)",
                 }}
               >
                 <FileDown size={14} /> Télécharger l'attestation signée
@@ -210,12 +210,12 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
           </div>
 
           {latest?.status === "declined" && (
-            <div style={{ marginTop: 10, fontSize: 12, color: "#b45309" }}>
+            <div style={{ marginTop: 10, fontSize: 12, color: "#8F5A00" }}>
               La signature précédente a été refusée. Vous pouvez en relancer une nouvelle.
             </div>
           )}
           {latest?.status === "expired" && (
-            <div style={{ marginTop: 10, fontSize: 12, color: "#b45309" }}>
+            <div style={{ marginTop: 10, fontSize: 12, color: "#8F5A00" }}>
               La demande de signature a expiré. Relancez-en une nouvelle.
             </div>
           )}

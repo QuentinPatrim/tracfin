@@ -158,13 +158,13 @@ export default function Topbar({
           <div
             className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] uppercase tracking-widest font-semibold mb-1.5"
             style={{
-              background: "rgba(124,58,237,0.08)",
-              border: "1px solid rgba(124,58,237,0.18)",
-              color: "#6d28d9",
+              background: "rgba(109,94,246,0.08)",
+              border: "1px solid rgba(109,94,246,0.18)",
+              color: "#5B46E0",
               width: "fit-content",
             }}
           >
-            <span className="w-1 h-1 rounded-full" style={{ background: "#7c3aed" }} />
+            <span className="w-1 h-1 rounded-full" style={{ background: "#6D5EF6" }} />
             Pilotage LCB-FT
           </div>
           <h1 className="page-title">{title}</h1>
@@ -206,9 +206,9 @@ function SubscriptionBadge({ subscription }: { subscription: SubInfo }) {
         href="/abonnement"
         className="topbar-v2-sub-badge"
         style={{
-          background: urgent ? "rgba(245,158,11,0.08)" : "rgba(124,58,237,0.06)",
-          borderColor: urgent ? "rgba(245,158,11,0.30)" : "rgba(124,58,237,0.22)",
-          color: urgent ? "#b45309" : "#6d28d9",
+          background: urgent ? "rgba(227,160,8,0.08)" : "rgba(109,94,246,0.06)",
+          borderColor: urgent ? "rgba(227,160,8,0.30)" : "rgba(109,94,246,0.22)",
+          color: urgent ? "#8F5A00" : "#5B46E0",
         }}
         title="Voir les tarifs"
       >
@@ -228,9 +228,9 @@ function SubscriptionBadge({ subscription }: { subscription: SubInfo }) {
         href="/abonnement"
         className="topbar-v2-sub-badge"
         style={{
-          background: "rgba(220,38,38,0.08)",
-          borderColor: "rgba(220,38,38,0.30)",
-          color: "#b91c1c",
+          background: "rgba(197,48,44,0.08)",
+          borderColor: "rgba(197,48,44,0.30)",
+          color: "#A3241F",
         }}
       >
         <Lock width={12} height={12} />
@@ -245,9 +245,9 @@ function SubscriptionBadge({ subscription }: { subscription: SubInfo }) {
         href="/abonnement"
         className="topbar-v2-sub-badge"
         style={{
-          background: "rgba(16,185,129,0.06)",
-          borderColor: "rgba(16,185,129,0.30)",
-          color: "#047857",
+          background: "rgba(30,158,106,0.06)",
+          borderColor: "rgba(30,158,106,0.30)",
+          color: "#177A52",
         }}
         title="Gérer mon abonnement"
       >
