@@ -53,8 +53,11 @@ const WORLD = {
   phone: { x: 1320, y: 10, z: 180, ry: -26 },
   panel: { x: 2700, y: 0, z: 0, ry: 12 },
   label: { x: 3020, y: 110, z: 250, ry: -8 },
-  sheet: { x: 4150, y: 0, z: -40, ry: -12 },
-  zip: { x: 3760, y: 330, z: 260, ry: 10 },
+  // L'attestation est loin de l'analyse : aucun objet du chapitre 3 ne reste dans le champ.
+  sheet: { x: 4900, y: 0, z: -40, ry: -12 },
+  // L'archive est accrochée au bord bas de l'attestation, un peu en avant : elle ne
+  // recouvre que le pied de page.
+  zip: { x: 4900, y: 615, z: 50, ry: -8 },
 } satisfies Record<string, Obj>;
 type ObjName = keyof typeof WORLD;
 
@@ -107,11 +110,11 @@ const shots = (portrait: boolean): Shot[] => [
   { t: 21400, dur: 3100, obj: "panel", rect: portrait ? [0, 110, 560, 560] : [30, 100, 720, 520], yaw: 6, pitch: 3 },
   { t: 24700, dur: 1500, obj: "label", rect: portrait ? [0, 0, 440, 420] : [-150, -100, 900, 780], yaw: 7, pitch: 4 },
   // L'attestation, puis l'archive.
-  { t: 29000, dur: 2300, obj: "sheet", rect: portrait ? [0, 0, 880, 1180] : [0, 0, 1100, 1180], yaw: 17, pitch: 9 },
-  { t: 31400, dur: 1900, obj: "sheet", rect: portrait ? [0, -40, 860, 1150] : [-60, 0, 1100, 1170], yaw: -7, pitch: 4 },
-  { t: 33400, dur: 1500, obj: "zip", rect: portrait ? [0, 0, 480, 400] : [150, -230, 1150, 1060], yaw: -6, pitch: 5 },
+  { t: 29000, dur: 2400, obj: "sheet", rect: portrait ? [0, 0, 880, 1180] : [0, 0, 1100, 1180], yaw: 17, pitch: 9 },
+  { t: 31500, dur: 1800, obj: "sheet", rect: portrait ? [0, -40, 860, 1150] : [0, 0, 1100, 1170], yaw: -7, pitch: 4 },
+  { t: 33400, dur: 1600, obj: "zip", rect: portrait ? [0, -80, 500, 560] : [0, -215, 1050, 780], yaw: -3, pitch: 4 },
   // Plan final : toute la chaîne, vue de loin.
-  { t: END_T, dur: 2800, obj: "panel", rect: portrait ? [-500, 0, 3300, 1500] : [-650, 0, 5200, 1500], yaw: portrait ? 52 : 34, pitch: 13 },
+  { t: END_T, dur: 2800, obj: "panel", rect: portrait ? [-310, 0, 3700, 1500] : [-310, 0, 6000, 1500], yaw: portrait ? 52 : 34, pitch: 13 },
 ];
 
 /* ── Scénario : ce qui se passe à l'écran, et quand (ms) ── */
@@ -125,7 +128,7 @@ const T = {
   form: [12700, 13900, 15100, 16300, 17500],
   rows: 21300, rowGap: 430, badge: 24500,
   label: 24900, bars: 25300, pointer: 26500, todo: 27100,
-  sheet: 29500, zip: 33500, zipGap: 480,
+  sheet: 29500, zip: 33800, zipGap: 480,
   endCard: 39700,
 } as const;
 const FORM_STEPS = [0, 1, 2, 3, 5, 6];
@@ -457,7 +460,8 @@ export default function DemoModal({ open, onClose, onCta }: Props) {
       flag(sheetRef.current, t >= T.sheet);
       flag(zipRef.current, t >= T.zip);
       zipRowRefs.current.forEach((el, n) => flag(el, t >= T.zip + 350 + n * T.zipGap));
-      if (!sheetAsked && t >= CHAPTERS[2].t) { sheetAsked = true; setSheetOn(true); }
+      // Le PDF est chargé tôt (dès le formulaire en place) : il est prêt même si l'on saute au chapitre 4.
+      if (!sheetAsked && t >= 3000) { sheetAsked = true; setSheetOn(true); }
 
       /* ── Fin ── */
       flag(endRef.current, t >= T.endCard);
@@ -709,18 +713,16 @@ export default function DemoModal({ open, onClose, onCta }: Props) {
           </div>
 
           {/* 4 · Attestation */}
-          <div className="dm-obj dm-sheetwrap" style={place(WORLD.sheet, SHEET_W, SHEET_H)}>
-            <div ref={sheetRef} className="dm-sheet">
-              {sheetOn && (
-                <iframe
-                  src="/pdf-render/attestation/demo"
-                  title="Attestation générée par Klaris (exemple fictif)"
-                  tabIndex={-1}
-                  scrolling="no"
-                  style={{ width: SHEET_W, height: SHEET_H, border: 0, pointerEvents: "none" }}
-                />
-              )}
-            </div>
+          <div ref={sheetRef} className="dm-obj dm-sheet" style={place(WORLD.sheet, SHEET_W, SHEET_H)}>
+            {sheetOn && (
+              <iframe
+                src="/pdf-render/attestation/demo"
+                title="Attestation générée par Klaris (exemple fictif)"
+                tabIndex={-1}
+                scrolling="no"
+                style={{ width: SHEET_W, height: SHEET_H, border: 0, pointerEvents: "none" }}
+              />
+            )}
           </div>
 
           {/* L'archive du dossier */}

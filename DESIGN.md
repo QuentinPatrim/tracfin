@@ -87,6 +87,10 @@ Le mouvement raconte le produit, il ne décore pas.
   du client, analyse de risque et étiquette, attestation et archive). Les fonds
   alternent encre et papier d'un chapitre à l'autre. Tout se déduit d'une seule
   horloge : pause, retour et saut de chapitre reviennent à changer l'heure.
+  Deux précautions de mise en scène : un objet n'entre jamais dans le champ à moitié
+  coupé (l'archive est accrochée au bas de l'attestation, les décors sont assez
+  espacés pour ne pas laisser traîner celui du chapitre précédent), et la barre du
+  haut est opaque, pour qu'un document qui passe dessous ne paraisse pas flou.
 - **Sous la séquence : un geste par section** (`components/landing/ScrollFx.tsx` et
   le bloc « Effets liés au défilement » de `globals.css`). Les barres de l'échelle
   se déploient, les lignes du tableau s'inscrivent une à une, le champ d'encre de

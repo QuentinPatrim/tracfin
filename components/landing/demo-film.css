@@ -148,8 +148,8 @@
 .dm-crit li[data-on] i { transform: none; }
 
 /* L'étiquette de vigilance (grammaire de l'étiquette énergie) */
-.dm-label { padding: 22px 22px 22px; border-radius: 10px; background: #fff; color: #17123A; box-shadow: 0 0 0 1px rgba(23, 18, 58, 0.06), 0 60px 90px -40px rgba(8, 4, 40, 0.85), 0 20px 34px -18px rgba(8, 4, 40, 0.5); opacity: 0; transition: opacity 360ms ease; }
-.dm-label[data-on] { opacity: 1; }
+.dm-label { padding: 22px 22px 22px; border-radius: 10px; background: #fff; color: #17123A; box-shadow: 0 0 0 1px rgba(23, 18, 58, 0.06), 0 60px 90px -40px rgba(8, 4, 40, 0.85), 0 20px 34px -18px rgba(8, 4, 40, 0.5); opacity: 0; translate: 0 60px; scale: 0.9; transition: opacity 360ms ease, translate 700ms var(--dm-ease), scale 700ms var(--dm-ease); }
+.dm-label[data-on] { opacity: 1; translate: none; scale: 1; }
 .dm-label__k { font-size: 15px; color: #6F6A8A; }
 .dm-label__v { margin-top: 3px; font-family: var(--font-display), system-ui, sans-serif; font-variation-settings: "wdth" 90; font-weight: 700; font-size: 29px; line-height: 1.1; letter-spacing: -0.015em; }
 .dm-scale { margin-top: 17px; display: grid; gap: 7px; }
@@ -167,11 +167,12 @@
 .dm-label__todo[data-on] { opacity: 1; }
 
 /* ── 4 · Attestation et archive ── */
-.dm-sheetwrap { perspective: 2400px; }
-.dm-sheet { width: 100%; height: 100%; overflow: hidden; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px rgba(23, 18, 58, 0.07), 0 90px 130px -60px rgba(8, 4, 40, 0.6), 0 30px 54px -30px rgba(8, 4, 40, 0.4); transform-origin: 50% 100%; opacity: 0; transform: translateY(240px) rotateX(64deg); transition: opacity 500ms ease, transform 1500ms var(--dm-ease); }
-.dm-sheet[data-on] { opacity: 1; transform: none; }
-.dm-zip { padding: 22px 24px 20px; border-radius: 18px; background: #17123A; color: #F4F2FF; box-shadow: 0 0 0 1px rgba(196, 186, 255, 0.22), 0 60px 90px -40px rgba(8, 4, 40, 0.8), 0 22px 36px -18px rgba(8, 4, 40, 0.5); opacity: 0; transition: opacity 360ms ease; }
-.dm-zip[data-on] { opacity: 1; }
+/* La place de chaque objet est donnée par `transform` (en ligne) : les entrées en scène
+   passent donc par les propriétés `translate`, `rotate` et `scale`, qui s'y ajoutent. */
+.dm-sheet { overflow: hidden; border-radius: 6px; background: #fff; box-shadow: 0 0 0 1px rgba(23, 18, 58, 0.07), 0 90px 130px -60px rgba(8, 4, 40, 0.6), 0 30px 54px -30px rgba(8, 4, 40, 0.4); opacity: 0; translate: 0 300px; rotate: x 58deg; transition: opacity 500ms ease, translate 1500ms var(--dm-ease), rotate 1500ms var(--dm-ease); }
+.dm-sheet[data-on] { opacity: 1; translate: none; rotate: none; }
+.dm-zip { padding: 22px 24px 20px; border-radius: 18px; background: #17123A; color: #F4F2FF; box-shadow: 0 0 0 1px rgba(196, 186, 255, 0.22), 0 60px 90px -40px rgba(8, 4, 40, 0.8), 0 22px 36px -18px rgba(8, 4, 40, 0.5); opacity: 0; translate: 0 70px; scale: 0.9; transition: opacity 360ms ease, translate 700ms var(--dm-ease), scale 700ms var(--dm-ease); }
+.dm-zip[data-on] { opacity: 1; translate: none; scale: 1; }
 .dm-zip__head { display: flex; align-items: center; gap: 13px; font-family: var(--font-display), system-ui, sans-serif; font-variation-settings: "wdth" 90; font-weight: 700; font-size: 25px; letter-spacing: -0.012em; }
 .dm-zip__head span { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; color: #fff; background: var(--dm-grad); }
 .dm-zip ul { margin-top: 16px; display: grid; gap: 8px; }
@@ -182,8 +183,8 @@
 /* ── Interface du film ── */
 .dm-top { position: absolute; z-index: 4; left: 0; right: 0; top: 0; height: 62px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 0 12px 0 16px; color: var(--dm-fg); transition: color 500ms ease; }
 /* Voile sous la barre : la progression reste lisible quand un objet passe dessous. */
-.dm-top::before { content: ""; position: absolute; inset: 0 0 -26px; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, rgba(17, 14, 48, 0.82) 30%, transparent); transition: opacity 500ms ease; }
-.dm-top::after { content: ""; position: absolute; inset: 0 0 -26px; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, rgba(246, 245, 250, 0.92) 30%, transparent); opacity: 0; transition: opacity 500ms ease; }
+.dm-top::before { content: ""; position: absolute; inset: 0 0 -14px; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, #15113A 0, #15113A calc(100% - 20px), rgba(21, 17, 58, 0)); transition: opacity 500ms ease; }
+.dm-top::after { content: ""; position: absolute; inset: 0 0 -14px; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, #F6F5FA 0, #F6F5FA calc(100% - 20px), rgba(246, 245, 250, 0)); opacity: 0; transition: opacity 500ms ease; }
 .dm[data-tone="light"] .dm-top::before { opacity: 0; }
 .dm[data-tone="light"] .dm-top::after { opacity: 1; }
 .dm-top__brand { display: flex; align-items: center; gap: 10px; font-weight: 650; font-size: 0.95rem; }
