@@ -38,6 +38,14 @@ const isPublicRoute = createRouteMatcher([
   "/guides",
   "/guides/(.*)",
   "/legal/(.*)",
+  // Fichiers générés par Next que les robots et les réseaux sociaux doivent pouvoir
+  // lire sans être connectés. Sans ces lignes, Clerk les protégeait et répondait
+  // 404 : pas de plan du site pour Google, pas d'image d'aperçu quand on partage
+  // un lien, pas d'icône d'onglet pour les visiteurs.
+  "/robots.txt",
+  "/sitemap.xml",
+  "/opengraph-image(.*)",
+  "/icon(.*)",
   // Auth Clerk (sign-in / sign-up hébergés par Clerk via routes catch-all)
   "/sign-in(.*)",
   "/sign-up(.*)",
