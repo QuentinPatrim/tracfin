@@ -56,7 +56,7 @@ export default function CGVPage() {
         </List>
         <P>
           Les tarifs en vigueur sont publiés sur la page{" "}
-          <a href="/tarifs" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">Tarifs</a>.
+          <a href="/tarifs" className="text-violet-600 hover:text-violet-700 underline underline-offset-2">Tarifs</a>.
           Ils s'entendent <Strong>hors taxes</Strong> (TVA non applicable, art. 293 B du CGI —
           franchise en base de TVA pour l'auto-entrepreneur).
         </P>
@@ -144,7 +144,7 @@ export default function CGVPage() {
           Les présentes CGV intègrent l'accord de traitement de données prévu à l'article 28 du
           RGPD, par lequel l'Éditeur agit en qualité de sous-traitant du Client pour le
           traitement des données KYC des clients finaux. Les modalités complètes figurent dans
-          notre <a href="/legal/confidentialite" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">Politique de confidentialité</a> (section « Distinction des rôles »).
+          notre <a href="/legal/confidentialite" className="text-violet-600 hover:text-violet-700 underline underline-offset-2">Politique de confidentialité</a> (section « Distinction des rôles »).
         </P>
       </Section>
 
@@ -167,7 +167,7 @@ export default function CGVPage() {
       <Section title="Article 13 — Contact">
         <P>
           Pour toute question relative à votre abonnement ou à la facturation :{" "}
-          <a href={`mailto:${EDITEUR.email}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-2">{EDITEUR.email}</a>.
+          <a href={`mailto:${EDITEUR.email}`} className="text-violet-600 hover:text-violet-700 underline underline-offset-2">{EDITEUR.email}</a>.
         </P>
       </Section>
     </>

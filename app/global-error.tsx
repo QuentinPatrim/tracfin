@@ -41,7 +41,7 @@ export default function GlobalError({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "linear-gradient(135deg, #5847E8, #5847E8)",
+              background: "linear-gradient(135deg, #2F5BFF, #2F5BFF)",
               fontWeight: 800,
               fontSize: 26,
             }}
@@ -63,8 +63,8 @@ export default function GlobalError({
               fontSize: 15,
               fontWeight: 600,
               color: "#fff",
-              background: "linear-gradient(135deg, #5847E8, #5847E8)",
-              boxShadow: "0 10px 28px rgba(88,71,232,0.35)",
+              background: "linear-gradient(135deg, #2F5BFF, #2F5BFF)",
+              boxShadow: "0 10px 28px rgba(47,91,255,0.35)",
             }}
           >
             Réessayer

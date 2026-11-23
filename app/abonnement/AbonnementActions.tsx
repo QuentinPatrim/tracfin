@@ -93,20 +93,20 @@ export default function AbonnementActions({
         {/* Changer de plan — toujours accessible */}
         <Link
           href="/tarifs"
-          className="rounded-xl p-5 transition-all border"
+          className="rounded-full p-5 transition-all border"
           style={{
             background: "white",
-            borderColor: "rgba(18,17,24,0.10)",
-            color: "#121118",
+            borderColor: "rgba(11,20,53,0.10)",
+            color: "#0B1435",
             textDecoration: "none",
           }}
         >
           <div className="flex items-start justify-between gap-3 mb-2">
             <div
               className="w-10 h-10 rounded-lg grid place-items-center shrink-0"
-              style={{ background: "rgba(88,71,232,0.10)" }}
+              style={{ background: "rgba(47,91,255,0.10)" }}
             >
-              <ArrowRight className="w-5 h-5" style={{ color: "#4A3AD6" }} />
+              <ArrowRight className="w-5 h-5" style={{ color: "#1F45E0" }} />
             </div>
           </div>
           <div className="font-bold text-[16px] leading-tight mb-1">
@@ -116,7 +116,7 @@ export default function AbonnementActions({
                 ? "Changer de plan (prorata appliqué)"
                 : "Choisir un plan"}
           </div>
-          <div className="text-[12.5px] leading-relaxed" style={{ color: "#6C6975" }}>
+          <div className="text-[12.5px] leading-relaxed" style={{ color: "#5B6487" }}>
             {hasActiveSubscription
               ? "Upgrade ou downgrade en 1 clic : Stripe calcule le prorata automatiquement."
               : "Comparez les formules Pro et Agence, mensuel ou annuel."}
@@ -129,11 +129,11 @@ export default function AbonnementActions({
             type="button"
             onClick={cancelSubscription}
             disabled={loading !== null}
-            className="rounded-xl p-5 text-left transition-all border disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-full p-5 text-left transition-all border disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: "white",
               borderColor: "rgba(197,48,44,0.18)",
-              color: "#121118",
+              color: "#0B1435",
             }}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -151,7 +151,7 @@ export default function AbonnementActions({
             <div className="font-bold text-[16px] leading-tight mb-1">
               {isTrialing ? "Annuler l'essai gratuit" : "Annuler mon abonnement"}
             </div>
-            <div className="text-[12.5px] leading-relaxed" style={{ color: "#6C6975" }}>
+            <div className="text-[12.5px] leading-relaxed" style={{ color: "#5B6487" }}>
               {isTrialing
                 ? "Aucun prélèvement. Accès conservé jusqu'à la fin de l'essai, puis bloqué."
                 : "Aucun prélèvement supplémentaire. Accès conservé jusqu'à la fin de la période payée."}
@@ -164,9 +164,9 @@ export default function AbonnementActions({
             type="button"
             onClick={reactivateSubscription}
             disabled={loading !== null}
-            className="rounded-xl p-5 text-left transition-all border disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-full p-5 text-left transition-all border disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              background: "linear-gradient(135deg, #1F9A68, #146B48)",
+              background: "linear-gradient(135deg, #16A06A, #0F7A4F)",
               borderColor: "transparent",
               color: "white",
               boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 8px 22px rgba(30,158,106,0.30)",
@@ -198,14 +198,14 @@ export default function AbonnementActions({
           <div
             className="rounded-xl p-5 border"
             style={{
-              background: "rgba(88,71,232,0.06)",
-              borderColor: "rgba(88,71,232,0.18)",
-              color: "#4A3AD6",
+              background: "rgba(47,91,255,0.06)",
+              borderColor: "rgba(47,91,255,0.18)",
+              color: "#1F45E0",
               opacity: 0.65,
             }}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg grid place-items-center shrink-0" style={{ background: "rgba(88,71,232,0.12)" }}>
+              <div className="w-10 h-10 rounded-lg grid place-items-center shrink-0" style={{ background: "rgba(47,91,255,0.12)" }}>
                 <Lock className="w-5 h-5" />
               </div>
             </div>
@@ -225,27 +225,27 @@ export default function AbonnementActions({
           type="button"
           onClick={openPortal}
           disabled={loading !== null}
-          className="w-full rounded-xl p-4 transition-all border text-left flex items-center gap-3 disabled:opacity-50"
+          className="w-full rounded-full p-4 transition-all border text-left flex items-center gap-3 disabled:opacity-50"
           style={{
             background: "rgba(255,255,255,0.6)",
-            borderColor: "rgba(18,17,24,0.08)",
-            color: "#121118",
+            borderColor: "rgba(11,20,53,0.08)",
+            color: "#0B1435",
           }}
         >
-          <div className="w-9 h-9 rounded-lg grid place-items-center shrink-0" style={{ background: "rgba(18,17,24,0.04)" }}>
+          <div className="w-9 h-9 rounded-lg grid place-items-center shrink-0" style={{ background: "rgba(11,20,53,0.04)" }}>
             {loading === "portal" ? (
-              <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#6C6975" }} />
+              <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#5B6487" }} />
             ) : (
-              <Receipt className="w-4 h-4" style={{ color: "#6C6975" }} />
+              <Receipt className="w-4 h-4" style={{ color: "#5B6487" }} />
             )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-[13.5px] mb-0.5">Factures & moyen de paiement</div>
-            <div className="text-[11.5px] leading-relaxed" style={{ color: "#6C6975" }}>
+            <div className="text-[11.5px] leading-relaxed" style={{ color: "#5B6487" }}>
               Téléchargez vos factures, mettez à jour votre carte — espace sécurisé Stripe.
             </div>
           </div>
-          <ExternalLink className="w-4 h-4 shrink-0" style={{ color: "#9C99A3" }} />
+          <ExternalLink className="w-4 h-4 shrink-0" style={{ color: "#98A0BD" }} />
           <Settings className="w-3 h-3 shrink-0 opacity-0" />
         </button>
       )}
@@ -257,7 +257,7 @@ export default function AbonnementActions({
           style={{
             background: "rgba(30,158,106,0.08)",
             borderColor: "rgba(30,158,106,0.30)",
-            color: "#146B48",
+            color: "#0F7A4F",
           }}
         >
           ✓ {successMessage}

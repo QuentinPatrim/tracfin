@@ -13,14 +13,14 @@ interface Props {
 
 // ─── Palette light contrastée pour Step3 (lisible sur fond blanc) ──
 const RISK_LIGHT: Record<Risk, { color: string; bg: string; border: string; label: string }> = {
-  green:  { color: "#146B48", bg: "rgba(30,158,106,0.10)", border: "rgba(30,158,106,0.35)", label: "Conforme" },
+  green:  { color: "#0F7A4F", bg: "rgba(30,158,106,0.10)", border: "rgba(30,158,106,0.35)", label: "Conforme" },
   orange: { color: "#8F5A00", bg: "rgba(227,160,8,0.10)", border: "rgba(227,160,8,0.35)", label: "Vigilance" },
   red:    { color: "#A3241F", bg: "rgba(197,48,44,0.10)", border: "rgba(197,48,44,0.35)", label: "Critique" },
 };
 
 interface StatusLight { color: string; bg: string; border: string; title: string; sub: string; }
 const STATUS_LIGHT: Record<StatutKey, StatusLight> = {
-  valid:    { color: "#146B48", bg: "rgba(30,158,106,0.08)", border: "rgba(30,158,106,0.30)", title: "Vigilance standard — Conforme", sub: "Traiter normalement. Archivage 5 ans (L561-12)." },
+  valid:    { color: "#0F7A4F", bg: "rgba(30,158,106,0.08)", border: "rgba(30,158,106,0.30)", title: "Vigilance standard — Conforme", sub: "Traiter normalement. Archivage 5 ans (L561-12)." },
   vigilance:{ color: "#8F5A00", bg: "rgba(227,160,8,0.08)", border: "rgba(227,160,8,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
   stop:     { color: "#8F5A00", bg: "rgba(227,160,8,0.08)", border: "rgba(227,160,8,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
   critical: { color: "#A3241F", bg: "rgba(197,48,44,0.08)", border: "rgba(197,48,44,0.30)", title: "Examen renforcé", sub: "Suspension immédiate de la transaction. Délibération formalisée." },
@@ -37,7 +37,7 @@ export default function Step3({ form, set, score }: Props) {
       {/* Verdict principal */}
       <div
         className="relative rounded-2xl p-8 mb-6 overflow-hidden border"
-        style={{ background: cfg.bg, borderColor: cfg.border, boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 8px 24px rgba(18,17,24,0.06)` }}
+        style={{ background: cfg.bg, borderColor: cfg.border, boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 8px 24px rgba(11,20,53,0.06)` }}
       >
         <div className="text-[11.5px] mb-2 font-bold" style={{ color: cfg.color }}>
           Verdict de conformité
@@ -89,20 +89,20 @@ export default function Step3({ form, set, score }: Props) {
       <Sect title="Synthèse" sub="Données saisies">
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <div className="text-[11.5px] mb-1" style={{ color: "#9C99A3" }}>Type de client</div>
-            <div style={{ color: "#121118" }}>{form.typeClient === "morale" ? "Personne Morale" : "Personne Physique"}</div>
+            <div className="text-[11.5px] mb-1" style={{ color: "#98A0BD" }}>Type de client</div>
+            <div style={{ color: "#0B1435" }}>{form.typeClient === "morale" ? "Personne Morale" : "Personne Physique"}</div>
           </div>
           <div>
-            <div className="text-[11.5px] mb-1" style={{ color: "#9C99A3" }}>Nom</div>
-            <div style={{ color: "#121118" }}>{form.nomPrenom || "—"}</div>
+            <div className="text-[11.5px] mb-1" style={{ color: "#98A0BD" }}>Nom</div>
+            <div style={{ color: "#0B1435" }}>{form.nomPrenom || "—"}</div>
           </div>
           <div>
-            <div className="text-[11.5px] mb-1" style={{ color: "#9C99A3" }}>Origine des fonds</div>
-            <div style={{ color: "#121118" }}>{labelFor("origineFonds", form.origineFonds)}</div>
+            <div className="text-[11.5px] mb-1" style={{ color: "#98A0BD" }}>Origine des fonds</div>
+            <div style={{ color: "#0B1435" }}>{labelFor("origineFonds", form.origineFonds)}</div>
           </div>
           <div>
-            <div className="text-[11.5px] mb-1" style={{ color: "#9C99A3" }}>Montage</div>
-            <div style={{ color: "#121118" }}>{labelFor("montageFinancier", form.montageFinancier)}</div>
+            <div className="text-[11.5px] mb-1" style={{ color: "#98A0BD" }}>Montage</div>
+            <div style={{ color: "#0B1435" }}>{labelFor("montageFinancier", form.montageFinancier)}</div>
           </div>
         </div>
       </Sect>

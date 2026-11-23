@@ -71,21 +71,21 @@ export default function IntegrationsClient() {
     <div style={{ padding: "24px 28px 80px" }}>
       <Link
         href="/dashboard"
-        style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#6C6975", fontSize: 13, textDecoration: "none", marginBottom: 10 }}
+        style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#5B6487", fontSize: 13, textDecoration: "none", marginBottom: 10 }}
       >
         <ArrowLeft size={14} /> Retour au dashboard
       </Link>
 
-      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 9px", borderRadius: 6, background: "rgba(88,71,232,0.08)", border: "1px solid rgba(88,71,232,0.18)", color: "#4A3AD6", fontSize: 10.5, fontWeight: 700, marginBottom: 10 }}>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 9px", borderRadius: 6, background: "rgba(47,91,255,0.08)", border: "1px solid rgba(47,91,255,0.18)", color: "#1F45E0", fontSize: 10.5, fontWeight: 700, marginBottom: 10 }}>
         <Plug size={11} /> Intégrations CRM
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: 24, marginBottom: 20 }}>
         <div style={{ flex: "1 1 320px", minWidth: 0 }}>
-          <h1 style={{ fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em", margin: 0, color: "#121118", }}>
+          <h1 style={{ fontSize: 30, fontWeight: 700, letterSpacing: "-0.02em", margin: 0, color: "#0B1435", }}>
             Connecter votre CRM
           </h1>
-          <p style={{ color: "#6C6975", fontSize: 13.5, marginTop: 6, lineHeight: 1.5, maxWidth: 720 }}>
+          <p style={{ color: "#5B6487", fontSize: 13.5, marginTop: 6, lineHeight: 1.5, maxWidth: 720 }}>
             Créez une clé API pour que votre CRM immobilier (Hektor, Apimo, Adapt, Netty…) déclenche automatiquement la création d&apos;un dossier KYC Klaris dès qu&apos;un mandat est signé.
             Plus de double-saisie : l&apos;agent reçoit le lien KYC à envoyer au client en quelques secondes.
           </p>
@@ -93,7 +93,7 @@ export default function IntegrationsClient() {
         <button
           type="button"
           onClick={() => setShowCreate(true)}
-          style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 16px", borderRadius: 10, background: "#121118", color: "white", fontWeight: 600, fontSize: 13, border: 0, cursor: "pointer", boxShadow: "0 4px 14px rgba(18,17,24,0.12)", whiteSpace: "nowrap" }}
+          style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 16px", borderRadius: 999, background: "#2F5BFF", color: "white", fontWeight: 600, fontSize: 13, border: 0, cursor: "pointer", boxShadow: "0 4px 14px rgba(11,20,53,0.12)", whiteSpace: "nowrap" }}
         >
           <Plus size={14} /> Nouvelle clé API
         </button>
@@ -117,23 +117,23 @@ export default function IntegrationsClient() {
 
       {/* Liste */}
       <section style={{ marginTop: 28 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#4A3AD6", marginBottom: 12 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#1F45E0", marginBottom: 12 }}>
           Vos intégrations ({activeCount} active{activeCount > 1 ? "s" : ""})
         </div>
 
-        {loading && <div style={{ padding: 20, textAlign: "center", color: "#9C99A3", fontSize: 13 }}><Loader2 size={14} className="animate-spin inline" /> Chargement…</div>}
+        {loading && <div style={{ padding: 20, textAlign: "center", color: "#98A0BD", fontSize: 13 }}><Loader2 size={14} className="animate-spin inline" /> Chargement…</div>}
         {error && <div style={{ padding: 12, background: "rgba(197,48,44,0.08)", border: "1px solid rgba(197,48,44,0.30)", borderRadius: 8, color: "#A3241F", fontSize: 13 }}>⚠️ {error}</div>}
 
         {!loading && integrations.length === 0 && (
-          <div style={{ padding: 32, background: "rgba(88,71,232,0.04)", border: "1px dashed rgba(88,71,232,0.30)", borderRadius: 12, textAlign: "center", fontSize: 13.5, color: "#52505B" }}>
+          <div style={{ padding: 32, background: "rgba(47,91,255,0.04)", border: "1px dashed rgba(47,91,255,0.30)", borderRadius: 12, textAlign: "center", fontSize: 13.5, color: "#47507A" }}>
             Aucune intégration pour l&apos;instant. Cliquez sur <strong>Nouvelle clé API</strong> pour connecter votre premier CRM.
           </div>
         )}
 
         {!loading && integrations.length > 0 && (
-          <div style={{ background: "white", border: "1px solid rgba(18,17,24,0.08)", borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ background: "white", border: "1px solid rgba(11,20,53,0.08)", borderRadius: 12, overflow: "hidden" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-              <thead style={{ background: "rgba(18,17,24,0.03)" }}>
+              <thead style={{ background: "rgba(11,20,53,0.03)" }}>
                 <tr>
                   <Th>Intégration</Th>
                   <Th>Provider</Th>
@@ -146,25 +146,25 @@ export default function IntegrationsClient() {
               </thead>
               <tbody>
                 {integrations.map((i) => (
-                  <tr key={i.id} style={{ borderTop: "1px solid rgba(18,17,24,0.05)", opacity: i.status === "revoked" ? 0.55 : 1 }}>
-                    <Td style={{ fontWeight: 500, color: "#121118" }}>
+                  <tr key={i.id} style={{ borderTop: "1px solid rgba(11,20,53,0.05)", opacity: i.status === "revoked" ? 0.55 : 1 }}>
+                    <Td style={{ fontWeight: 500, color: "#0B1435" }}>
                       {i.label}
-                      <div style={{ fontSize: 11, color: "#9C99A3", marginTop: 1 }}>
+                      <div style={{ fontSize: 11, color: "#98A0BD", marginTop: 1 }}>
                         Créée le {new Date(i.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                       </div>
                     </Td>
-                    <Td style={{ color: "#52505B" }}>
-                      <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 7px", borderRadius: 6, background: "rgba(88,71,232,0.08)", color: "#4A3AD6" }}>
+                    <Td style={{ color: "#47507A" }}>
+                      <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 7px", borderRadius: 6, background: "rgba(47,91,255,0.08)", color: "#1F45E0" }}>
                         {PROVIDERS.find((p) => p.value === i.provider)?.label ?? i.provider}
                       </span>
                     </Td>
-                    <Td style={{ fontFamily: "monospace", color: "#6C6975", fontSize: 12 }}>{i.api_key_prefix}…</Td>
-                    <Td style={{ color: "#6C6975" }}>{i.use_count}</Td>
-                    <Td style={{ color: "#6C6975" }}>
-                      {i.last_used_at ? new Date(i.last_used_at).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : <span style={{ color: "#CFCDC6" }}>—</span>}
+                    <Td style={{ fontFamily: "monospace", color: "#5B6487", fontSize: 12 }}>{i.api_key_prefix}…</Td>
+                    <Td style={{ color: "#5B6487" }}>{i.use_count}</Td>
+                    <Td style={{ color: "#5B6487" }}>
+                      {i.last_used_at ? new Date(i.last_used_at).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : <span style={{ color: "#D3DAEE" }}>—</span>}
                     </Td>
                     <Td>
-                      <span style={{ fontSize: 10.5, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: i.status === "active" ? "rgba(30,158,106,0.10)" : "rgba(151,146,180,0.15)", color: i.status === "active" ? "#146B48" : "#6C6975" }}>
+                      <span style={{ fontSize: 10.5, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: i.status === "active" ? "rgba(30,158,106,0.10)" : "rgba(151,146,180,0.15)", color: i.status === "active" ? "#0F7A4F" : "#5B6487" }}>
                         {i.status === "active" ? "Active" : "Révoquée"}
                       </span>
                     </Td>
@@ -193,15 +193,15 @@ function EndpointCard({ baseUrl }: { baseUrl: string }) {
   const [copied, setCopied] = useState(false);
   const url = `${baseUrl}/api/webhooks/crm`;
   return (
-    <div style={{ background: "white", border: "1px solid rgba(18,17,24,0.08)", borderRadius: 12, padding: 16, marginBottom: 12, display: "flex", alignItems: "center", gap: 12 }}>
-      <Plug size={18} style={{ color: "#4A3AD6" }} />
+    <div style={{ background: "white", border: "1px solid rgba(11,20,53,0.08)", borderRadius: 12, padding: 16, marginBottom: 12, display: "flex", alignItems: "center", gap: 12 }}>
+      <Plug size={18} style={{ color: "#1F45E0" }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#4A3AD6", marginBottom: 2 }}>URL de webhook Klaris</div>
-        <div style={{ fontFamily: "monospace", fontSize: 12.5, color: "#121118", wordBreak: "break-all" }}>{url}</div>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "#1F45E0", marginBottom: 2 }}>URL de webhook Klaris</div>
+        <div style={{ fontFamily: "monospace", fontSize: 12.5, color: "#0B1435", wordBreak: "break-all" }}>{url}</div>
       </div>
       <button
         onClick={async () => { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-        style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(88,71,232,0.08)", border: "1px solid rgba(88,71,232,0.25)", color: "#4A3AD6", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4 }}
+        style={{ padding: "6px 10px", borderRadius: 6, background: "rgba(47,91,255,0.08)", border: "1px solid rgba(47,91,255,0.25)", color: "#1F45E0", fontSize: 12, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4 }}
       >
         {copied ? <Check size={12} /> : <Copy size={12} />}
         {copied ? "Copiée" : "Copier"}
@@ -257,10 +257,10 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
             style={modalInput}
             maxLength={80}
           />
-          <div style={{ fontSize: 11, color: "#9C99A3", marginTop: 4 }}>Pour vous repérer si vous avez plusieurs clés. Affiché uniquement à vous.</div>
+          <div style={{ fontSize: 11, color: "#98A0BD", marginTop: 4 }}>Pour vous repérer si vous avez plusieurs clés. Affiché uniquement à vous.</div>
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={modalLabel}>URL de callback <span style={{ textTransform: "none", letterSpacing: 0, color: "#9C99A3", fontWeight: 400 }}>(optionnel)</span></label>
+          <label style={modalLabel}>URL de callback <span style={{ textTransform: "none", letterSpacing: 0, color: "#98A0BD", fontWeight: 400 }}>(optionnel)</span></label>
           <input
             type="url"
             value={callbackUrl}
@@ -268,7 +268,7 @@ function CreateModal({ onClose, onCreated }: { onClose: () => void; onCreated: (
             placeholder="https://votre-crm.fr/webhooks/klaris"
             style={modalInput}
           />
-          <div style={{ fontSize: 11, color: "#9C99A3", marginTop: 4 }}>
+          <div style={{ fontSize: 11, color: "#98A0BD", marginTop: 4 }}>
             Klaris y enverra les changements de statut (KYC reçu, verdict, déclaration, signature). Un secret HMAC sera généré pour vérifier l&apos;authenticité. Laissez vide pour ne recevoir aucun webhook sortant.
           </div>
         </div>
@@ -294,18 +294,18 @@ function NewKeyModal({ newlyCreated, onClose, baseUrl }: { newlyCreated: { apiKe
   return (
     <Modal onClose={onClose}>
       <div style={{ padding: 22 }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 9px", borderRadius: 6, background: "rgba(30,158,106,0.10)", border: "1px solid rgba(30,158,106,0.30)", color: "#146B48", fontSize: 10.5, fontWeight: 700, marginBottom: 12 }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 9px", borderRadius: 6, background: "rgba(30,158,106,0.10)", border: "1px solid rgba(30,158,106,0.30)", color: "#0F7A4F", fontSize: 10.5, fontWeight: 700, marginBottom: 12 }}>
           <Check size={11} /> Clé générée
         </div>
         <h2 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 6px" }}>{newlyCreated.label}</h2>
-        <p style={{ fontSize: 12.5, color: "#52505B", margin: "0 0 14px", lineHeight: 1.55 }}>
+        <p style={{ fontSize: 12.5, color: "#47507A", margin: "0 0 14px", lineHeight: 1.55 }}>
           <strong style={{ color: "#A3241F" }}>Copiez cette clé maintenant.</strong> Pour des raisons de sécurité, elle ne sera <strong>plus jamais affichée</strong>.
           Si vous la perdez, vous devrez en créer une nouvelle.
         </p>
 
         <div style={{ position: "relative", marginBottom: 16 }}>
-          <pre style={{ background: "#121118", color: "#A9A2F6", padding: 12, borderRadius: 8, margin: 0, fontFamily: "monospace", fontSize: 13, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{newlyCreated.apiKey}</pre>
-          <button onClick={copy} style={{ position: "absolute", top: 8, right: 8, padding: "5px 10px", background: copied ? "#1F9A68" : "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.20)", color: "white", borderRadius: 5, fontSize: 11.5, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4 }}>
+          <pre style={{ background: "#0B1435", color: "#A8BAFF", padding: 12, borderRadius: 8, margin: 0, fontFamily: "monospace", fontSize: 13, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{newlyCreated.apiKey}</pre>
+          <button onClick={copy} style={{ position: "absolute", top: 8, right: 8, padding: "5px 10px", background: copied ? "#16A06A" : "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.20)", color: "white", borderRadius: 5, fontSize: 11.5, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4 }}>
             {copied ? <><Check size={11} /> Copiée</> : <><Copy size={11} /> Copier</>}
           </button>
         </div>
@@ -317,25 +317,25 @@ function NewKeyModal({ newlyCreated, onClose, baseUrl }: { newlyCreated: { apiKe
           </div>
         </div>
 
-        <div style={{ fontSize: 11.5, color: "#6C6975", marginBottom: 6 }}>Configuration côté CRM (entrant) :</div>
-        <pre style={{ background: "#F8F8F6", border: "1px solid #C9C4FA", color: "#121118", padding: 10, borderRadius: 6, margin: 0, fontSize: 11.5, overflow: "auto" }}>{`URL    : ${baseUrl}/api/webhooks/crm
+        <div style={{ fontSize: 11.5, color: "#5B6487", marginBottom: 6 }}>Configuration côté CRM (entrant) :</div>
+        <pre style={{ background: "#F8FAFF", border: "1px solid #C7D3FF", color: "#0B1435", padding: 10, borderRadius: 6, margin: 0, fontSize: 11.5, overflow: "auto" }}>{`URL    : ${baseUrl}/api/webhooks/crm
 Méthode: POST
 Header : Authorization: Bearer ${newlyCreated.apiKey.slice(0, 16)}...`}</pre>
 
         {/* Secret HMAC sortant si callback configuré */}
         {newlyCreated.callbackSecret && (
           <div style={{ marginTop: 16 }}>
-            <div style={{ fontSize: 11.5, color: "#6C6975", marginBottom: 6 }}>
+            <div style={{ fontSize: 11.5, color: "#5B6487", marginBottom: 6 }}>
               Secret de vérification des webhooks <strong>sortants</strong> (Klaris → {newlyCreated.callbackUrl}) :
             </div>
             <div style={{ position: "relative" }}>
-              <pre style={{ background: "#121118", color: "#7AD3B0", padding: 12, borderRadius: 8, margin: 0, fontFamily: "monospace", fontSize: 12.5, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{newlyCreated.callbackSecret}</pre>
-              <button onClick={copySecret} style={{ position: "absolute", top: 8, right: 8, padding: "5px 10px", background: copiedSecret ? "#1F9A68" : "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.20)", color: "white", borderRadius: 5, fontSize: 11.5, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <pre style={{ background: "#0B1435", color: "#7AD3B0", padding: 12, borderRadius: 8, margin: 0, fontFamily: "monospace", fontSize: 12.5, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-all" }}>{newlyCreated.callbackSecret}</pre>
+              <button onClick={copySecret} style={{ position: "absolute", top: 8, right: 8, padding: "5px 10px", background: copiedSecret ? "#16A06A" : "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.20)", color: "white", borderRadius: 5, fontSize: 11.5, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4 }}>
                 {copiedSecret ? <><Check size={11} /> Copié</> : <><Copy size={11} /> Copier</>}
               </button>
             </div>
-            <div style={{ fontSize: 11, color: "#6C6975", marginTop: 6, lineHeight: 1.5 }}>
-              Chaque webhook sortant porte l&apos;en-tête <code style={{ background: "#F8F8F6", padding: "1px 5px", borderRadius: 3 }}>X-Klaris-Signature-256: sha256=&lt;hmac&gt;</code>. Vérifiez-le côté CRM avec ce secret pour garantir l&apos;authenticité.
+            <div style={{ fontSize: 11, color: "#5B6487", marginTop: 6, lineHeight: 1.5 }}>
+              Chaque webhook sortant porte l&apos;en-tête <code style={{ background: "#F8FAFF", padding: "1px 5px", borderRadius: 3 }}>X-Klaris-Signature-256: sha256=&lt;hmac&gt;</code>. Vérifiez-le côté CRM avec ce secret pour garantir l&apos;authenticité.
             </div>
           </div>
         )}
@@ -378,36 +378,36 @@ function DocSection({ baseUrl }: { baseUrl: string }) {
 
   return (
     <section style={{ marginTop: 36 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: "#4A3AD6", marginBottom: 4, display: "flex", alignItems: "center", gap: 6 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: "#1F45E0", marginBottom: 4, display: "flex", alignItems: "center", gap: 6 }}>
         <Code size={12} /> Documentation API
       </div>
-      <p style={{ fontSize: 13, color: "#6C6975", marginBottom: 14, lineHeight: 1.55 }}>
+      <p style={{ fontSize: 13, color: "#5B6487", marginBottom: 14, lineHeight: 1.55 }}>
         Voici comment configurer votre CRM pour qu&apos;il déclenche automatiquement la création d&apos;un dossier Klaris.
         Si votre CRM n&apos;a pas de webhook natif, utilisez <strong>Zapier</strong> ou <strong>Make.com</strong> comme intermédiaire (un trigger « nouveau mandat » → une action « POST HTTP »).
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 16 }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "#52505B", marginBottom: 6 }}>Requête (exemple curl)</div>
-          <pre style={{ background: "#121118", color: "#E3E2DC", padding: 12, borderRadius: 8, fontSize: 11, overflow: "auto", margin: 0, lineHeight: 1.5 }}>{curl}</pre>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "#47507A", marginBottom: 6 }}>Requête (exemple curl)</div>
+          <pre style={{ background: "#0B1435", color: "#E2E8F7", padding: 12, borderRadius: 8, fontSize: 11, overflow: "auto", margin: 0, lineHeight: 1.5 }}>{curl}</pre>
         </div>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "#52505B", marginBottom: 6 }}>Réponse (HTTP 201)</div>
-          <pre style={{ background: "#F8F8F6", border: "1px solid #C9C4FA", color: "#121118", padding: 12, borderRadius: 8, fontSize: 11, overflow: "auto", margin: 0, lineHeight: 1.5 }}>{response}</pre>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "#47507A", marginBottom: 6 }}>Réponse (HTTP 201)</div>
+          <pre style={{ background: "#F8FAFF", border: "1px solid #C7D3FF", color: "#0B1435", padding: 12, borderRadius: 8, fontSize: 11, overflow: "auto", margin: 0, lineHeight: 1.5 }}>{response}</pre>
         </div>
       </div>
 
       <div style={{ marginTop: 18, padding: 14, background: "rgba(30,158,106,0.04)", border: "1px solid rgba(30,158,106,0.25)", borderRadius: 10, fontSize: 12.5, color: "#0E5C3D" }}>
-        <strong>💡 Idempotence.</strong> Si vous envoyez plusieurs fois le même <code style={{ background: "#121118", color: "#B5E6D2", padding: "1px 5px", borderRadius: 3 }}>externalId</code>, Klaris ne crée pas de doublon — le dossier existant est renvoyé avec son lien KYC.
+        <strong>💡 Idempotence.</strong> Si vous envoyez plusieurs fois le même <code style={{ background: "#0B1435", color: "#B5E6D2", padding: "1px 5px", borderRadius: 3 }}>externalId</code>, Klaris ne crée pas de doublon — le dossier existant est renvoyé avec son lien KYC.
       </div>
 
-      <div style={{ marginTop: 14, padding: 14, background: "rgba(88,71,232,0.04)", border: "1px solid rgba(88,71,232,0.20)", borderRadius: 10, fontSize: 12.5, color: "#52505B", lineHeight: 1.55, overflowWrap: "anywhere" }}>
-        <strong style={{ color: "#4A3AD6" }}>🔁 Webhooks sortants (Klaris → votre CRM).</strong> Si vous renseignez une <em>URL de callback</em> à la création de la clé, Klaris y enverra automatiquement les événements suivants :
-        <code style={{ background: "#121118", color: "#C9C4FA", padding: "1px 5px", borderRadius: 3, margin: "0 3px" }}>dossier.kyc_received</code>,
-        <code style={{ background: "#121118", color: "#C9C4FA", padding: "1px 5px", borderRadius: 3, margin: "0 3px" }}>dossier.scored</code>,
-        <code style={{ background: "#121118", color: "#C9C4FA", padding: "1px 5px", borderRadius: 3, margin: "0 3px" }}>dossier.declaration_submitted</code>,
-        <code style={{ background: "#121118", color: "#C9C4FA", padding: "1px 5px", borderRadius: 3, margin: "0 3px" }}>dossier.signed</code>.
-        Chaque appel est signé (en-tête <code style={{ background: "#121118", color: "#C9C4FA", padding: "1px 5px", borderRadius: 3 }}>X-Klaris-Signature-256</code>) et porte un <code style={{ background: "#121118", color: "#C9C4FA", padding: "1px 5px", borderRadius: 3 }}>X-Klaris-Event-Id</code> unique pour la déduplication. Votre CRM reste ainsi synchronisé avec le statut LCB-FT en temps quasi-réel.
+      <div style={{ marginTop: 14, padding: 14, background: "rgba(47,91,255,0.04)", border: "1px solid rgba(47,91,255,0.20)", borderRadius: 10, fontSize: 12.5, color: "#47507A", lineHeight: 1.55, overflowWrap: "anywhere" }}>
+        <strong style={{ color: "#1F45E0" }}>🔁 Webhooks sortants (Klaris → votre CRM).</strong> Si vous renseignez une <em>URL de callback</em> à la création de la clé, Klaris y enverra automatiquement les événements suivants :
+        <code style={{ background: "#0B1435", color: "#C7D3FF", padding: "1px 5px", borderRadius: 3, margin: "0 3px" }}>dossier.kyc_received</code>,
+        <code style={{ background: "#0B1435", color: "#C7D3FF", padding: "1px 5px", borderRadius: 3, margin: "0 3px" }}>dossier.scored</code>,
+        <code style={{ background: "#0B1435", color: "#C7D3FF", padding: "1px 5px", borderRadius: 3, margin: "0 3px" }}>dossier.declaration_submitted</code>,
+        <code style={{ background: "#0B1435", color: "#C7D3FF", padding: "1px 5px", borderRadius: 3, margin: "0 3px" }}>dossier.signed</code>.
+        Chaque appel est signé (en-tête <code style={{ background: "#0B1435", color: "#C7D3FF", padding: "1px 5px", borderRadius: 3 }}>X-Klaris-Signature-256</code>) et porte un <code style={{ background: "#0B1435", color: "#C7D3FF", padding: "1px 5px", borderRadius: 3 }}>X-Klaris-Event-Id</code> unique pour la déduplication. Votre CRM reste ainsi synchronisé avec le statut LCB-FT en temps quasi-réel.
       </div>
     </section>
   );
@@ -416,21 +416,21 @@ function DocSection({ baseUrl }: { baseUrl: string }) {
 /* ─── Primitives UI ────────────────────────────────────────────────────── */
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(18,17,24,0.45)", backdropFilter: "blur(8px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ width: "min(580px, 100%)", background: "white", border: "1px solid rgba(88,71,232,0.20)", borderRadius: 16, boxShadow: "0 30px 80px rgba(18,17,24,0.18)", maxHeight: "90vh", overflow: "auto" }}>{children}</div>
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(11,20,53,0.45)", backdropFilter: "blur(8px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: "min(580px, 100%)", background: "white", border: "1px solid rgba(47,91,255,0.20)", borderRadius: 16, boxShadow: "0 30px 80px rgba(11,20,53,0.18)", maxHeight: "90vh", overflow: "auto" }}>{children}</div>
     </div>
   );
 }
 
 function Th({ children, style }: { children?: React.ReactNode; style?: React.CSSProperties }) {
-  return <th style={{ textAlign: "left", padding: "10px 14px", fontSize: 10.5, fontWeight: 700, color: "#6C6975", ...style }}>{children}</th>;
+  return <th style={{ textAlign: "left", padding: "10px 14px", fontSize: 10.5, fontWeight: 700, color: "#5B6487", ...style }}>{children}</th>;
 }
 
 function Td({ children, style }: { children?: React.ReactNode; style?: React.CSSProperties }) {
   return <td style={{ padding: "12px 14px", verticalAlign: "top", ...style }}>{children}</td>;
 }
 
-const modalLabel: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 600, color: "#52505B", marginBottom: 5 };
-const modalInput: React.CSSProperties = { width: "100%", padding: "9px 11px", border: "1px solid #CFCDC6", borderRadius: 7, fontSize: 13, background: "white", fontFamily: "inherit" };
-const modalCancel: React.CSSProperties = { padding: "8px 16px", borderRadius: 8, background: "white", border: "1px solid #E3E2DC", color: "#3A3842", fontSize: 12.5, fontWeight: 500, cursor: "pointer" };
-const modalPrimary: React.CSSProperties = { padding: "8px 16px", borderRadius: 8, background: "#121118", color: "white", border: 0, fontSize: 12.5, fontWeight: 600, cursor: "pointer" };
+const modalLabel: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 600, color: "#47507A", marginBottom: 5 };
+const modalInput: React.CSSProperties = { width: "100%", padding: "9px 11px", border: "1px solid #D3DAEE", borderRadius: 7, fontSize: 13, background: "white", fontFamily: "inherit" };
+const modalCancel: React.CSSProperties = { padding: "8px 16px", borderRadius: 8, background: "white", border: "1px solid #E2E8F7", color: "#2A3459", fontSize: 12.5, fontWeight: 500, cursor: "pointer" };
+const modalPrimary: React.CSSProperties = { padding: "8px 16px", borderRadius: 999, background: "#2F5BFF", color: "white", border: 0, fontSize: 12.5, fontWeight: 600, cursor: "pointer" };

@@ -87,7 +87,7 @@ export default function SendKycModal({ dossierId, nomPrenom, onClose }: Props) {
               disabled={generating}
               className="w-full px-6 py-3 rounded-full text-white text-sm font-bold transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-wait"
               style={{
-                background: "linear-gradient(135deg,#4A3AD6,#7B6EF0,#06B6D4)",
+                background: "linear-gradient(135deg,#1F45E0,#5B7BFF,#06B6D4)",
                 boxShadow: "0 4px 20px rgba(79,70,229,0.45)",
               }}
             >

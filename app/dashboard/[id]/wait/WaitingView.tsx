@@ -8,7 +8,6 @@ import Link from "next/link";
 import {
   ArrowLeft, Copy, Check, Mail, MessageCircle, Clock, Eye, Trash2, RefreshCw, Inbox,
 } from "lucide-react";
-import AmbientOrbs from "@/components/tracfin/AmbientOrbs";
 import { useOrigin } from "@/lib/use-origin";
 
 interface Props {
@@ -75,18 +74,17 @@ export default function WaitingView({
   const opened = !!openedAt;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0B0A10", fontFamily: "var(--font-sans-face), system-ui, sans-serif" }}>
-      <AmbientOrbs />
+    <div className="min-h-screen flex flex-col" style={{ background: "#F5F7FF", color: "#0B1435", fontFamily: "var(--font-sans-face), system-ui, sans-serif" }}>
 
-      <header className="relative z-10 border-b border-white/[0.06] backdrop-blur-xl bg-black/20">
+      <header className="relative z-10 border-b border-[rgba(11,20,53,0.07)] backdrop-blur-xl bg-white/70">
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2 text-white/60 hover:text-white transition text-sm font-medium">
+          <Link href="/dashboard" className="flex items-center gap-2 text-slate-700 hover:text-slate-900 transition text-sm font-medium">
             <ArrowLeft className="w-4 h-4" />
             Retour au dashboard
           </Link>
           <button
             onClick={refreshStatus}
-            className="flex items-center gap-2 text-white/60 hover:text-white transition text-sm font-medium"
+            className="flex items-center gap-2 text-slate-700 hover:text-slate-900 transition text-sm font-medium"
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
             Actualiser
@@ -101,29 +99,29 @@ export default function WaitingView({
             <div
               className="relative w-20 h-20 rounded-full flex items-center justify-center"
               style={{
-                background: "linear-gradient(180deg, rgba(88,71,232,0.20), rgba(88,71,232,0.08))",
-                boxShadow: "0 0 0 1px rgba(18,17,24,0.12), 0 0 50px rgba(18,17,24,0.12), 0 1px 0 rgba(255,255,255,0.20) inset",
+                background: "linear-gradient(180deg, rgba(47,91,255,0.20), rgba(47,91,255,0.08))",
+                boxShadow: "0 0 0 1px rgba(11,20,53,0.12), 0 0 50px rgba(11,20,53,0.12), 0 1px 0 rgba(255,255,255,0.20) inset",
               }}
             >
               {/* Anneau qui pulse */}
               <span
                 className="absolute inset-0 rounded-full"
                 style={{
-                  border: "2px solid rgba(88,71,232,0.40)",
+                  border: "2px solid rgba(47,91,255,0.40)",
                   animation: "pulse-ring 2s ease-out infinite",
                 }}
               />
-              <Inbox className="w-9 h-9 text-violet-200" strokeWidth={1.8} />
+              <Inbox className="w-9 h-9 text-violet-600" strokeWidth={1.8} />
             </div>
           </div>
 
           <div className="text-center mb-10">
             {/* Couleur explicite : sans elle le titre héritait du texte sombre de la page et restait illisible sur le fond d'encre. */}
-            <h1 className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-3" style={{ color: "#F3F2FE" }}>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-3" style={{ color: "#0B1435" }}>
               En attente du client
             </h1>
-            <p className="text-white/55 leading-relaxed text-sm md:text-base max-w-md mx-auto">
-              Le dossier de <span className="text-white font-medium">{nomPrenom}</span> est créé.
+            <p className="text-slate-500 leading-relaxed text-sm md:text-base max-w-md mx-auto">
+              Le dossier de <span className="text-slate-900 font-semibold">{nomPrenom}</span> est créé.
               Dès que la fiche KYC sera complétée, le formulaire d'analyse de risque s'ouvrira automatiquement avec les données pré-remplies.
             </p>
           </div>
@@ -132,10 +130,10 @@ export default function WaitingView({
           <div
             className="relative rounded-3xl p-6 mb-5 overflow-hidden"
             style={{
-              background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+              background: "#FFFFFF",
               backdropFilter: "blur(28px) saturate(180%)",
               WebkitBackdropFilter: "blur(28px) saturate(180%)",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.10) inset, 0 20px 40px -12px rgba(18,17,24,0.12)",
+              boxShadow: "0 0 0 1px rgba(11,20,53,0.07), 0 1px 0 rgba(255,255,255,0.10) inset, 0 20px 40px -12px rgba(11,20,53,0.12)",
             }}
           >
             <div className="absolute inset-x-6 top-0 h-px rounded-full"
@@ -143,7 +141,7 @@ export default function WaitingView({
             />
 
             <div className="relative">
-              <div className="text-[11.5px] text-violet-300 font-bold mb-4">
+              <div className="text-[11.5px] text-violet-600 font-bold mb-4">
                 Statut du lien
               </div>
 
@@ -160,7 +158,7 @@ export default function WaitingView({
                 />
               </div>
 
-              <div className="flex items-center gap-2 text-[11px] text-white/40">
+              <div className="flex items-center gap-2 text-[11px] text-slate-500">
                 <Clock className="w-3.5 h-3.5" />
                 <span>Expire dans {expiresIn} {expiresIn > 1 ? "jours" : "jour"}</span>
               </div>
@@ -171,10 +169,10 @@ export default function WaitingView({
           <div
             className="relative rounded-3xl p-6 mb-5 overflow-hidden"
             style={{
-              background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+              background: "#FFFFFF",
               backdropFilter: "blur(28px) saturate(180%)",
               WebkitBackdropFilter: "blur(28px) saturate(180%)",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.10) inset, 0 20px 40px -12px rgba(0,0,0,0.4)",
+              boxShadow: "0 0 0 1px rgba(11,20,53,0.07), 0 1px 0 rgba(255,255,255,0.10) inset, 0 20px 40px -12px rgba(0,0,0,0.4)",
             }}
           >
             <div className="absolute inset-x-6 top-0 h-px rounded-full"
@@ -182,23 +180,23 @@ export default function WaitingView({
             />
 
             <div className="relative">
-              <div className="text-[11.5px] text-white/50 font-bold mb-3">
+              <div className="text-[11.5px] text-slate-500 font-bold mb-3">
                 Lien sécurisé à partager
               </div>
 
-              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/[0.03] mb-5"
-                style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.06), 0 1px 0 rgba(255,255,255,0.06) inset" }}
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-[#F5F7FF] mb-5"
+                style={{ boxShadow: "0 0 0 1px rgba(11,20,53,0.07), 0 1px 0 rgba(255,255,255,0.06) inset" }}
               >
                 <input
                   readOnly
                   value={link}
                   onClick={(e) => e.currentTarget.select()}
-                  className="flex-1 bg-transparent outline-none text-xs text-white/85 font-mono truncate"
+                  className="flex-1 bg-transparent outline-none text-xs text-slate-700 font-mono truncate"
                 />
                 <button
                   onClick={copy}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                    copied ? "bg-emerald-500/20 text-emerald-300" : "bg-violet-500/20 text-violet-200 hover:bg-violet-500/30"
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 ${
+                    copied ? "bg-emerald-500/20 text-emerald-600" : "bg-violet-500 text-white hover:bg-violet-600"
                   }`}
                 >
                   {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
@@ -206,13 +204,13 @@ export default function WaitingView({
                 </button>
               </div>
 
-              <div className="text-[12px] text-white/40 mb-3 font-bold">
+              <div className="text-[12px] text-slate-500 mb-3 font-bold">
                 Renvoyer via
               </div>
               <div className="grid grid-cols-3 gap-2">
-                <ShareButton href={mailtoLink} icon={<Mail className="w-4 h-4 text-indigo-300" />} label="Email" />
-                <ShareButton href={whatsappLink} target="_blank" icon={<MessageCircle className="w-4 h-4 text-emerald-300" />} label="WhatsApp" />
-                <ShareButton onClick={copyMessage} icon={<Copy className="w-4 h-4 text-violet-300" />} label="Message" />
+                <ShareButton href={mailtoLink} icon={<Mail className="w-4 h-4 text-indigo-500" />} label="Email" />
+                <ShareButton href={whatsappLink} target="_blank" icon={<MessageCircle className="w-4 h-4 text-emerald-600" />} label="WhatsApp" />
+                <ShareButton onClick={copyMessage} icon={<Copy className="w-4 h-4 text-violet-500" />} label="Message" />
               </div>
             </div>
           </div>
@@ -221,7 +219,7 @@ export default function WaitingView({
           <button
             onClick={cancelDossier}
             disabled={deleting}
-            className="w-full py-3 rounded-[10px] text-sm font-medium text-white/40 hover:text-red-400 hover:bg-red-500/10 transition disabled:opacity-50 inline-flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-full text-sm font-medium text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition disabled:opacity-50 inline-flex items-center justify-center gap-2"
           >
             <Trash2 className="w-3.5 h-3.5" />
             {deleting ? "Suppression..." : "Annuler ce dossier"}
@@ -242,20 +240,20 @@ export default function WaitingView({
 function StatusItem({ icon, label, active }: { icon: React.ReactNode; label: string; active: boolean }) {
   return (
     <div
-      className="flex items-center gap-3 p-3 rounded-xl"
+      className="flex items-center gap-3 p-3 rounded-2xl"
       style={{
         background: active
           ? "linear-gradient(180deg, rgba(61,190,139,0.10), rgba(61,190,139,0.03))"
-          : "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
+          : "#FFFFFF",
         boxShadow: active
           ? "0 0 0 1px rgba(61,190,139,0.30), 0 1px 0 rgba(255,255,255,0.10) inset"
-          : "0 0 0 1px rgba(255,255,255,0.06), 0 1px 0 rgba(255,255,255,0.06) inset",
+          : "0 0 0 1px rgba(11,20,53,0.07), 0 1px 0 rgba(255,255,255,0.06) inset",
       }}
     >
-      <div className={active ? "text-emerald-300" : "text-white/30"}>
+      <div className={active ? "text-emerald-600" : "text-slate-500"}>
         {icon}
       </div>
-      <div className={`text-xs font-medium ${active ? "text-white/85" : "text-white/40"}`}>
+      <div className={`text-xs font-medium ${active ? "text-slate-700" : "text-slate-500"}`}>
         {label}
       </div>
     </div>
@@ -271,24 +269,24 @@ function ShareButton({
   icon: React.ReactNode;
   label: string;
 }) {
-  const className = "group flex flex-col items-center gap-2 py-3 rounded-xl transition";
+  const className = "group flex flex-col items-center gap-2 py-3 rounded-2xl transition";
   const style: React.CSSProperties = {
-    background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
-    boxShadow: "0 0 0 1px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.10) inset",
+    background: "#FFFFFF",
+    boxShadow: "0 0 0 1px rgba(11,20,53,0.07), 0 1px 0 rgba(255,255,255,0.10) inset",
   };
 
   if (href) {
     return (
       <a href={href} target={target} rel={target ? "noreferrer" : undefined} className={className} style={style}>
         {icon}
-        <span className="text-[11px] text-white/70 font-medium">{label}</span>
+        <span className="text-[11px] text-slate-700 font-medium">{label}</span>
       </a>
     );
   }
   return (
     <button onClick={onClick} className={className} style={style}>
       {icon}
-      <span className="text-[11px] text-white/70 font-medium">{label}</span>
+      <span className="text-[11px] text-slate-700 font-medium">{label}</span>
     </button>
   );
 }

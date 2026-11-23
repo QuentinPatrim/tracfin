@@ -11,9 +11,9 @@ export function Eyebrow({ children }: { children: ReactNode }) {
     <span
       className="inline-block px-2.5 py-1 rounded-md text-[12px] font-semibold"
       style={{
-        background: "rgba(88,71,232,0.08)",
-        border: "1px solid rgba(88,71,232,0.18)",
-        color: "#4A3AD6",
+        background: "rgba(47,91,255,0.08)",
+        border: "1px solid rgba(47,91,255,0.18)",
+        color: "#1F45E0",
       }}
     >
       {children}
@@ -27,7 +27,7 @@ export function H1({ children, className = "" }: { children: ReactNode; classNam
     <h1
       className={`text-[28px] sm:text-[34px] md:text-[42px] leading-[1.05] font-bold tracking-tight ${className}`}
       style={{
-        color: "#121118",
+        color: "#0B1435",
       }}
     >
       {children}
@@ -40,7 +40,7 @@ export function H2({ children, className = "" }: { children: ReactNode; classNam
     <h2
       className={`text-[22px] sm:text-[26px] leading-[1.1] font-bold tracking-tight ${className}`}
       style={{
-        color: "#121118",
+        color: "#0B1435",
       }}
     >
       {children}
@@ -52,7 +52,7 @@ export function H3({ children, className = "" }: { children: ReactNode; classNam
   return (
     <h3
       className={`text-[15px] sm:text-[16px] font-semibold tracking-tight ${className}`}
-      style={{ color: "#121118" }}
+      style={{ color: "#0B1435" }}
     >
       {children}
     </h3>
@@ -62,7 +62,7 @@ export function H3({ children, className = "" }: { children: ReactNode; classNam
 /* ─── Paragraphes ─── */
 export function P({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <p className={`text-[13.5px] leading-relaxed ${className}`} style={{ color: "#52505B" }}>
+    <p className={`text-[13.5px] leading-relaxed ${className}`} style={{ color: "#47507A" }}>
       {children}
     </p>
   );
@@ -70,7 +70,7 @@ export function P({ children, className = "" }: { children: ReactNode; className
 
 export function Lede({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <p className={`text-[14.5px] sm:text-[15px] leading-relaxed ${className}`} style={{ color: "#52505B" }}>
+    <p className={`text-[14.5px] sm:text-[15px] leading-relaxed ${className}`} style={{ color: "#47507A" }}>
       {children}
     </p>
   );
@@ -92,12 +92,12 @@ export function IconCircle({
       style={{
         width: dim,
         height: dim,
-        background: "linear-gradient(135deg, rgba(88,71,232,0.12), rgba(88,71,232,0.08))",
-        border: "1px solid rgba(88,71,232,0.22)",
-        boxShadow: "0 4px 12px rgba(18,17,24,0.12), 0 1px 0 rgba(255,255,255,0.8) inset",
+        background: "linear-gradient(135deg, rgba(47,91,255,0.12), rgba(47,91,255,0.08))",
+        border: "1px solid rgba(47,91,255,0.22)",
+        boxShadow: "0 4px 12px rgba(11,20,53,0.12), 0 1px 0 rgba(255,255,255,0.8) inset",
       }}
     >
-      <Icon width={iconDim} height={iconDim} style={{ color: "#4A3AD6" }} />
+      <Icon width={iconDim} height={iconDim} style={{ color: "#1F45E0" }} />
     </div>
   );
 }
@@ -117,12 +117,12 @@ export function Card({
       className={`rounded-2xl p-5 sm:p-6 transition-all ${className}`}
       style={{
         background: accent
-          ? "linear-gradient(180deg, rgba(88,71,232,0.04), rgba(255,255,255,0.85))"
+          ? "linear-gradient(180deg, rgba(47,91,255,0.04), rgba(255,255,255,0.85))"
           : "rgba(255,255,255,0.85)",
         backdropFilter: "blur(20px) saturate(170%)",
         WebkitBackdropFilter: "blur(20px) saturate(170%)",
-        border: `1px solid ${accent ? "rgba(88,71,232,0.18)" : "rgba(88,71,232,0.08)"}`,
-        boxShadow: "0 1px 0 rgba(255,255,255,0.85) inset, 0 4px 14px rgba(18,17,24,0.12)",
+        border: `1px solid ${accent ? "rgba(47,91,255,0.18)" : "rgba(47,91,255,0.08)"}`,
+        boxShadow: "0 1px 0 rgba(255,255,255,0.85) inset, 0 4px 14px rgba(11,20,53,0.12)",
       }}
     >
       {children}
@@ -136,14 +136,14 @@ export function LegalRef({ children }: { children: ReactNode }) {
     <span
       className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[12px] font-semibold align-middle"
       style={{
-        background: "rgba(88,71,232,0.08)",
-        border: "1px solid rgba(88,71,232,0.22)",
-        color: "#4A3AD6",
+        background: "rgba(47,91,255,0.08)",
+        border: "1px solid rgba(47,91,255,0.22)",
+        color: "#1F45E0",
       }}
     >
       <span
         className="w-1 h-1 rounded-full"
-        style={{ background: "#5847E8" }}
+        style={{ background: "#2F5BFF" }}
       />
       {children}
     </span>
@@ -200,8 +200,8 @@ export function EmptyState({
         background: "linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.78))",
         backdropFilter: "blur(20px) saturate(170%)",
         WebkitBackdropFilter: "blur(20px) saturate(170%)",
-        border: "1px solid rgba(88,71,232,0.14)",
-        boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 20px 60px -20px rgba(18,17,24,0.12), 0 8px 24px -8px rgba(18,17,24,0.06)",
+        border: "1px solid rgba(47,91,255,0.14)",
+        boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 20px 60px -20px rgba(11,20,53,0.12), 0 8px 24px -8px rgba(11,20,53,0.06)",
       }}
     >
 
@@ -240,8 +240,8 @@ export function Stat({
   tone?: "accent" | "success" | "warn" | "danger";
 }) {
   const tones = {
-    accent:  { color: "#4A3AD6", bg: "rgba(88,71,232,0.06)",  border: "rgba(88,71,232,0.18)" },
-    success: { color: "#146B48", bg: "rgba(30,158,106,0.06)",  border: "rgba(30,158,106,0.22)" },
+    accent:  { color: "#1F45E0", bg: "rgba(47,91,255,0.06)",  border: "rgba(47,91,255,0.18)" },
+    success: { color: "#0F7A4F", bg: "rgba(30,158,106,0.06)",  border: "rgba(30,158,106,0.22)" },
     warn:    { color: "#8F5A00", bg: "rgba(227,160,8,0.06)",  border: "rgba(227,160,8,0.22)" },
     danger:  { color: "#B3322D", bg: "rgba(225,29,72,0.06)",   border: "rgba(225,29,72,0.22)" },
   }[tone];

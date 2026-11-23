@@ -1,23 +1,14 @@
 import { ClerkProvider } from '@clerk/nextjs'
-import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
+import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import type { Metadata } from 'next'
 import CookieNotice from '@/components/legal/CookieNotice'
 
-// Identité « Registre » (voir DESIGN.md) : texte et interface en Instrument Sans,
-// grands titres en Instrument Serif, vraies données en JetBrains Mono.
-const sans = Instrument_Sans({
+// Identité « Étiquette » (voir DESIGN.md) : une seule famille, Plus Jakarta Sans,
+// du texte courant (400) aux grands titres (800). JetBrains Mono pour les vraies données.
+const sans = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  axes: ['wdth'],
   variable: '--font-sans-face',
-  display: 'swap',
-})
-
-const serif = Instrument_Serif({
-  subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
-  variable: '--font-serif-face',
   display: 'swap',
 })
 
@@ -71,15 +62,15 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="fr" className={`${sans.variable} ${serif.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <html lang="fr" className={`${sans.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
         <body>
-          {/* Thème public clair/sombre appliqué avant le premier rendu (anti-FOUC).
+          {/* Identité claire uniquement : le thème est fixé à « light » avant le premier rendu.
               Défaut = préférence système ; sinon choix mémorisé. N'affecte que les
               pages publiques (.klaris-public) ; le dashboard reste inchangé. */}
           <script
             dangerouslySetInnerHTML={{
               __html:
-                "(function(){try{var t=localStorage.getItem('klaris-theme');var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;var r=(t==='light'||t==='dark')?t:(d?'dark':'light');document.documentElement.setAttribute('data-theme',r);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();",
+                "document.documentElement.setAttribute('data-theme','light');",
             }}
           />
           {/* Données structurées (SEO / rich results) */}

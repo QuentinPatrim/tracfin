@@ -327,7 +327,7 @@ Cordialement,
 function tones(tone: Wizard["tone"]) {
   switch (tone) {
     case "ok":
-      return { fg: "#146B48", bgSoft: "rgba(30,158,106,0.06)", border: "rgba(30,158,106,0.30)", iconBg: "rgba(30,158,106,0.12)", accent: "#1F9A68" };
+      return { fg: "#0F7A4F", bgSoft: "rgba(30,158,106,0.06)", border: "rgba(30,158,106,0.30)", iconBg: "rgba(30,158,106,0.12)", accent: "#16A06A" };
     case "warn":
       return { fg: "#8F5A00", bgSoft: "rgba(227,160,8,0.06)", border: "rgba(227,160,8,0.30)", iconBg: "rgba(227,160,8,0.12)", accent: "#D9980A" };
     case "danger":
@@ -528,12 +528,12 @@ function CompactView({
   return (
     <Link
       href={`/dashboard/${dossierId}`}
-      className="block rounded-xl p-4 transition-transform hover:-translate-y-0.5"
+      className="block rounded-full p-4 transition-transform hover:-translate-y-0.5"
       style={{
         background: c.bgSoft,
         border: `1px solid ${c.border}`,
         textDecoration: "none",
-        boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 14px rgba(18,17,24,0.04)`,
+        boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 14px rgba(11,20,53,0.04)`,
       }}
     >
       <div className="flex items-start gap-3">
@@ -641,16 +641,16 @@ function FullView({
       style={{
         background: "white",
         border: `1px solid ${c.border}`,
-        boxShadow: `0 1px 0 rgba(255,255,255,0.9) inset, 0 14px 38px rgba(18,17,24,0.06)`,
+        boxShadow: `0 1px 0 rgba(255,255,255,0.9) inset, 0 14px 38px rgba(11,20,53,0.06)`,
       }}
     >
       {/* Bandeau d'annulation si une transition manuelle a été faite récemment */}
       {prevNiveau && (
         <div
           className="px-5 sm:px-6 py-2.5 flex items-center justify-between gap-3 flex-wrap text-[12.5px]"
-          style={{ background: "rgba(18,17,24,0.04)", borderBottom: "1px dashed rgba(18,17,24,0.10)" }}
+          style={{ background: "rgba(11,20,53,0.04)", borderBottom: "1px dashed rgba(11,20,53,0.10)" }}
         >
-          <span style={{ color: "#52505B" }}>
+          <span style={{ color: "#47507A" }}>
             <RotateCw width={11} height={11} className="inline mr-1 -mt-0.5" />
             Vous avez basculé ce dossier manuellement. Cliqué par erreur&nbsp;?
           </span>
@@ -661,8 +661,8 @@ function FullView({
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold text-[12px] transition border"
             style={{
               background: "white",
-              borderColor: "rgba(18,17,24,0.15)",
-              color: "#121118",
+              borderColor: "rgba(11,20,53,0.15)",
+              color: "#0B1435",
               opacity: undoing ? 0.6 : 1,
               cursor: undoing ? "wait" : "pointer",
             }}
@@ -775,7 +775,7 @@ function StepCard({
         className="rounded-xl p-3.5 flex items-start gap-3"
         style={{ background: "rgba(30,158,106,0.04)", border: "1px solid rgba(30,158,106,0.25)" }}
       >
-        <CheckCircle2 width={20} height={20} style={{ color: "#1F9A68" }} className="shrink-0 mt-0.5" />
+        <CheckCircle2 width={20} height={20} style={{ color: "#16A06A" }} className="shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
           <div className="text-[13px] font-semibold text-slate-700 line-through opacity-60">{step.title}</div>
         </div>
@@ -796,11 +796,11 @@ function StepCard({
     return (
       <div
         className="rounded-xl p-3.5 flex items-start gap-3"
-        style={{ background: "rgba(18,17,24,0.02)", border: "1px solid rgba(18,17,24,0.06)" }}
+        style={{ background: "rgba(11,20,53,0.02)", border: "1px solid rgba(11,20,53,0.06)" }}
       >
         <div
           className="w-5 h-5 rounded-full grid place-items-center shrink-0 mt-0.5 text-[10px] font-bold"
-          style={{ background: "white", border: "1px solid rgba(18,17,24,0.10)", color: "#9C99A3" }}
+          style={{ background: "white", border: "1px solid rgba(11,20,53,0.10)", color: "#98A0BD" }}
         >
           {index + 1}
         </div>
@@ -818,7 +818,7 @@ function StepCard({
       style={{
         background: "white",
         border: `2px solid ${c.accent}`,
-        boxShadow: `0 0 0 4px ${c.bgSoft}, 0 6px 18px rgba(18,17,24,0.06)`,
+        boxShadow: `0 0 0 4px ${c.bgSoft}, 0 6px 18px rgba(11,20,53,0.06)`,
       }}
     >
       <div className="flex items-start gap-3 mb-3">
@@ -832,7 +832,7 @@ function StepCard({
           <div className="text-[11.5px] font-semibold mb-0.5" style={{ color: c.fg, opacity: 0.7 }}>
             Action en cours · Étape {index + 1} sur {total}
           </div>
-          <h3 className="text-[16px] font-bold leading-tight" style={{ color: "#121118" }}>
+          <h3 className="text-[16px] font-bold leading-tight" style={{ color: "#0B1435" }}>
             {step.title}
           </h3>
         </div>
@@ -871,7 +871,7 @@ function StepAction({
       <button
         type="button"
         onClick={onDone}
-        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5"
+        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5"
         style={{
           background: `linear-gradient(135deg, ${c.accent}, ${c.fg})`,
           boxShadow: `0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 18px ${c.bgSoft}`,
@@ -889,7 +889,7 @@ function StepAction({
       <div className="flex flex-wrap items-center gap-2">
         <a
           href={mailto}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5"
           style={{
             background: `linear-gradient(135deg, ${c.accent}, ${c.fg})`,
             boxShadow: `0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 18px ${c.bgSoft}`,
@@ -901,7 +901,7 @@ function StepAction({
         <button
           type="button"
           onClick={onDone}
-          className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-[12.5px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300 transition"
+          className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-full text-[12.5px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300 transition"
         >
           <Check width={13} height={13} />
           J'ai envoyé l'email
@@ -918,7 +918,7 @@ function StepAction({
           href={a.href}
           target={a.external ? "_blank" : undefined}
           rel={a.external ? "noreferrer noopener" : undefined}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5"
           style={{
             background: `linear-gradient(135deg, ${c.accent}, ${c.fg})`,
             boxShadow: `0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 18px ${c.bgSoft}`,
@@ -930,7 +930,7 @@ function StepAction({
         <button
           type="button"
           onClick={onDone}
-          className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-[12.5px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300 transition"
+          className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-full text-[12.5px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300 transition"
         >
           <Check width={13} height={13} />
           C'est fait
@@ -948,14 +948,14 @@ function StepAction({
           placeholder={a.placeholder}
           rows={4}
           className="w-full px-3 py-2.5 rounded-lg border text-[13px] text-slate-800 leading-relaxed outline-none focus:ring-4 focus:ring-violet-500/15 resize-y"
-          style={{ borderColor: "rgba(18,17,24,0.12)", background: "white" }}
+          style={{ borderColor: "rgba(11,20,53,0.12)", background: "white" }}
         />
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={onDone}
             disabled={!noteValue.trim()}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             style={{
               background: `linear-gradient(135deg, ${c.accent}, ${c.fg})`,
               boxShadow: `0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 18px ${c.bgSoft}`,
@@ -1030,14 +1030,14 @@ function StepAction({
               disabled={branchState.loading}
               className="text-left inline-flex items-center justify-between gap-2 px-4 py-3 rounded-lg text-[13.5px] font-semibold border transition hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
               style={{
-                borderColor: isCrit ? "rgba(18,17,24,0.40)" : isWarn ? "rgba(227,160,8,0.40)" : "rgba(18,17,24,0.12)",
-                color: isCrit ? "#ffffff" : isWarn ? "#8F5A00" : "#121118",
+                borderColor: isCrit ? "rgba(11,20,53,0.40)" : isWarn ? "rgba(227,160,8,0.40)" : "rgba(11,20,53,0.12)",
+                color: isCrit ? "#ffffff" : isWarn ? "#8F5A00" : "#0B1435",
                 background: isCrit
-                  ? "linear-gradient(135deg, #121118 0%, #24232B 100%)"
+                  ? "linear-gradient(135deg, #0B1435 0%, #1C2650 100%)"
                   : isWarn
                   ? "rgba(227,160,8,0.06)"
                   : "white",
-                boxShadow: isCrit ? "0 0 0 1px rgba(197,48,44,0.30), 0 6px 18px rgba(18,17,24,0.20)" : "none",
+                boxShadow: isCrit ? "0 0 0 1px rgba(197,48,44,0.30), 0 6px 18px rgba(11,20,53,0.20)" : "none",
               }}
             >
               <span className="flex-1">{opt.label}</span>
@@ -1081,7 +1081,7 @@ function DoneView({
         className="rounded-xl p-5 flex items-start gap-3"
         style={{ background: "rgba(30,158,106,0.06)", border: "1px solid rgba(30,158,106,0.30)" }}
       >
-        <Sparkles width={20} height={20} style={{ color: "#1F9A68" }} className="shrink-0 mt-0.5" />
+        <Sparkles width={20} height={20} style={{ color: "#16A06A" }} className="shrink-0 mt-0.5" />
         <div>
           <div className="text-[14px] font-bold text-emerald-800 mb-1">Toutes les étapes sont validées</div>
           <p className="text-[12.5px] text-emerald-900/85 leading-relaxed">
@@ -1104,7 +1104,7 @@ function DoneView({
               <div
                 key={i}
                 className="rounded-lg p-3"
-                style={{ background: "rgba(18,17,24,0.02)", border: "1px solid rgba(18,17,24,0.08)" }}
+                style={{ background: "rgba(11,20,53,0.02)", border: "1px solid rgba(11,20,53,0.08)" }}
               >
                 <div className="text-[11.5px] font-semibold text-slate-500 mb-1">{step.title}</div>
                 <div className="text-[13px] text-slate-700 whitespace-pre-wrap leading-relaxed">{note}</div>

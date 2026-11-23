@@ -102,8 +102,8 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
       style={{
         marginTop: 24,
         padding: 18,
-        background: isSigned ? "rgba(30,158,106,0.04)" : "rgba(88,71,232,0.04)",
-        border: `1px solid ${isSigned ? "rgba(30,158,106,0.30)" : "rgba(88,71,232,0.22)"}`,
+        background: isSigned ? "rgba(30,158,106,0.04)" : "rgba(47,91,255,0.04)",
+        border: `1px solid ${isSigned ? "rgba(30,158,106,0.30)" : "rgba(47,91,255,0.22)"}`,
         borderRadius: 12,
       }}
     >
@@ -111,10 +111,10 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
         <div
           style={{
             width: 40, height: 40, borderRadius: 10,
-            background: isSigned ? "rgba(30,158,106,0.10)" : "rgba(88,71,232,0.10)",
+            background: isSigned ? "rgba(30,158,106,0.10)" : "rgba(47,91,255,0.10)",
             display: "grid", placeItems: "center",
-            color: isSigned ? "#146B48" : "#4A3AD6",
-            border: `1px solid ${isSigned ? "rgba(30,158,106,0.25)" : "rgba(88,71,232,0.25)"}`,
+            color: isSigned ? "#0F7A4F" : "#1F45E0",
+            border: `1px solid ${isSigned ? "rgba(30,158,106,0.25)" : "rgba(47,91,255,0.25)"}`,
             flexShrink: 0,
           }}
         >
@@ -122,17 +122,17 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, color: isSigned ? "#146B48" : "#4A3AD6", marginBottom: 4 }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, color: isSigned ? "#0F7A4F" : "#1F45E0", marginBottom: 4 }}>
             Signature électronique · eIDAS
           </div>
-          <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#121118" }}>
+          <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#0B1435" }}>
             {isSigned
               ? "Attestation signée électroniquement"
               : isPending
                 ? "Signature en cours…"
                 : "Faire signer l'attestation par le responsable LCB-FT"}
           </h2>
-          <p style={{ fontSize: 12.5, color: "#6C6975", margin: "4px 0 0", lineHeight: 1.5 }}>
+          <p style={{ fontSize: 12.5, color: "#5B6487", margin: "4px 0 0", lineHeight: 1.5 }}>
             {isSigned
               ? `Signée par ${latest?.signer_name}${latest?.signed_at ? ` le ${new Date(latest.signed_at).toLocaleDateString("fr-FR")}` : ""}. Signature électronique au sens du règlement eIDAS (UE n° 910/2014).`
               : isPending
@@ -155,10 +155,10 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "9px 16px", borderRadius: 9,
-                  background: initiating ? "rgba(88,71,232,0.40)" : "#121118",
+                  background: initiating ? "rgba(47,91,255,0.40)" : "#0B1435",
                   color: "white", fontWeight: 600, fontSize: 13, border: 0,
                   cursor: initiating ? "wait" : "pointer",
-                  boxShadow: "0 4px 14px rgba(18,17,24,0.12)",
+                  boxShadow: "0 4px 14px rgba(11,20,53,0.12)",
                 }}
               >
                 {initiating ? <Loader2 size={14} className="animate-spin" /> : <PenLine size={14} />}
@@ -174,9 +174,9 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "9px 16px", borderRadius: 9,
-                  background: "#121118",
+                  background: "#2F5BFF",
                   color: "white", fontWeight: 600, fontSize: 13, textDecoration: "none",
-                  boxShadow: "0 4px 14px rgba(18,17,24,0.12)",
+                  boxShadow: "0 4px 14px rgba(11,20,53,0.12)",
                 }}
               >
                 <ExternalLink size={14} /> Ouvrir la page de signature
@@ -187,7 +187,7 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
               <button
                 type="button"
                 onClick={() => refresh()}
-                style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 14px", borderRadius: 9, background: "white", border: "1px solid #CFCDC6", color: "#52505B", fontSize: 12.5, fontWeight: 500, cursor: "pointer" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 14px", borderRadius: 9, background: "white", border: "1px solid #D3DAEE", color: "#47507A", fontSize: 12.5, fontWeight: 500, cursor: "pointer" }}
               >
                 <RefreshCw size={13} /> Actualiser
               </button>
@@ -199,7 +199,7 @@ export default function SignatureSection({ dossierId, isArchived, enabled = fals
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 8,
                   padding: "9px 16px", borderRadius: 9,
-                  background: "linear-gradient(135deg, #1F9A68, #146B48)",
+                  background: "linear-gradient(135deg, #16A06A, #0F7A4F)",
                   color: "white", fontWeight: 600, fontSize: 13, textDecoration: "none",
                   boxShadow: "0 4px 14px rgba(30,158,106,0.25)",
                 }}

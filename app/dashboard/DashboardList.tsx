@@ -47,8 +47,8 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
           d.kyc_status === "received" && cfg
             ? cfg.color
             : d.kyc_status === "sent"
-            ? "#5847E8"
-            : "#4A3AD6";
+            ? "#2F5BFF"
+            : "#1F45E0";
 
         return (
           <Link
@@ -111,7 +111,7 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
                       </button>
                       <button
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(`/api/dossiers/${d.id}/pdf`); }}
-                        className="w-7 h-7 rounded-full bg-indigo-500/10 hover:bg-indigo-500/20 flex items-center justify-center transition-colors text-indigo-300 hover:text-indigo-200"
+                        className="w-7 h-7 rounded-full bg-indigo-500/10 hover:bg-indigo-500/20 flex items-center justify-center transition-colors text-indigo-600 hover:text-indigo-700"
                         title="Télécharger Attestation LCB-FT"
                       >
                         <FileDown className="w-3.5 h-3.5" />
@@ -144,7 +144,7 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
 
                 {/* Cas 3 : En attente du KYC client */}
                 {d.kyc_status !== "received" && (
-                  <Badge color="#C9C4FA" bg="rgba(88,71,232,0.12)" border="rgba(88,71,232,0.40)">
+                  <Badge color="#C7D3FF" bg="rgba(47,91,255,0.12)" border="rgba(47,91,255,0.40)">
                     <Clock className="w-3 h-3" />
                     En attente du KYC
                   </Badge>
@@ -163,7 +163,7 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
                   </span>
                 )}
                 {d.kyc_status !== "received" && (
-                  <span className="text-violet-300 font-bold inline-flex items-center gap-1">
+                  <span className="text-violet-500 font-bold inline-flex items-center gap-1">
                     <Send className="w-3 h-3" />
                     Lien actif
                   </span>

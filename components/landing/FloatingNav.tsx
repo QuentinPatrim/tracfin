@@ -1,8 +1,6 @@
 // components/landing/FloatingNav.tsx — Barre de navigation du site public
-// Identité « Registre » : barre pleine largeur, transparente en haut de page, pleine
-// (papier dépoli) au défilement. Sur la page d'accueil elle repose sur la section de
-// nuit du haut de page (prop over="field") : texte clair et bouton blanc tant qu'elle
-// passe au-dessus.
+// Identité « Étiquette » : une pilule blanche flottante, dépolie, qui se densifie au
+// défilement. Le logo anime ses barres à l'arrivée. Identité claire uniquement.
 
 "use client";
 
@@ -12,7 +10,6 @@ import { useEffect, useState } from "react";
 import { Play, Menu, X } from "lucide-react";
 import { useClerk, useAuth, UserButton } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
-import ThemeToggle from "@/components/ui/ThemeToggle";
 
 // Démo guidée chargée à la demande (film 3D + sa feuille de style) : exclue du
 // bundle initial de chaque page publique, tirée seulement à l'ouverture.
@@ -81,9 +78,10 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
       )}
 
       <header className="kl-nav" data-solid={!scrolled ? "false" : onField ? "field" : "true"} data-over={over}>
-        <div className="kl-wrap flex items-center justify-between gap-3 h-16">
+        <div className="kl-wrap">
+        <div className="kl-nav__bar flex items-center justify-between gap-3 h-[3.6rem]">
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Klaris, accueil">
-            <KlarisLogo size={28} inverted={onField} />
+            <KlarisLogo size={30} animated />
             <span className="kl-wordmark">Klaris</span>
           </Link>
 
@@ -99,7 +97,6 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
               isLoaded) : même si Clerk tarde ou échoue en silence (CSP, réseau,
               bloqueur…), l'utilisateur garde un chemin vers la connexion. */}
           <div className="flex items-center gap-1">
-            <ThemeToggle />
 
             {!signedIn && (
               <>
@@ -143,6 +140,7 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
             </button>
           </div>
         </div>
+        </div>
       </header>
 
       {mobileOpen && (
@@ -185,7 +183,6 @@ function MobileMenu({
           <span className="kl-wordmark">Klaris</span>
         </Link>
         <div className="flex items-center gap-1">
-          <ThemeToggle />
           <button type="button" onClick={onClose} className="kl-nav__icon" aria-label="Fermer le menu">
             <X width={20} height={20} />
           </button>

@@ -20,7 +20,7 @@ function PaysModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(18,17,24,0.40)", backdropFilter: "blur(8px)" }}
+      style={{ background: "rgba(11,20,53,0.40)", backdropFilter: "blur(8px)" }}
       onClick={onClose}
     >
       <div
@@ -28,16 +28,16 @@ function PaysModal({ onClose }: { onClose: () => void }) {
         className="rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
         style={{
           background: "white",
-          border: "1px solid rgba(88,71,232,0.18)",
-          boxShadow: "0 30px 80px -20px rgba(18,17,24,0.30)",
+          border: "1px solid rgba(47,91,255,0.18)",
+          boxShadow: "0 30px 80px -20px rgba(11,20,53,0.30)",
         }}
       >
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-bold" style={{ color: "#121118" }}>Pays sous surveillance GAFI</h3>
+          <h3 className="text-lg font-bold" style={{ color: "#0B1435" }}>Pays sous surveillance GAFI</h3>
           <button
             onClick={onClose}
             className="text-2xl leading-none"
-            style={{ color: "#9C99A3" }}
+            style={{ color: "#98A0BD" }}
           >×</button>
         </div>
 
@@ -64,7 +64,7 @@ function PaysModal({ onClose }: { onClose: () => void }) {
           <h4 className="text-sm font-bold mb-3" style={{ color: "#8F5A00" }}>Liste grise</h4>
           {PAYS_GRISE_REGIONS.map((g) => (
             <div key={g.region} className="mb-4">
-              <div className="text-[12px] mb-2" style={{ color: "#9C99A3" }}>{g.region}</div>
+              <div className="text-[12px] mb-2" style={{ color: "#98A0BD" }}>{g.region}</div>
               <div className="flex flex-wrap gap-2">
                 {g.pays.map((p) => (
                   <span
@@ -102,7 +102,7 @@ export default function Step2({ form, set, dossierId, screeningEnabled = false }
             type="button"
             onClick={() => setShowPays(true)}
             className="self-start text-xs underline mt-1"
-            style={{ color: "#4A3AD6" }}
+            style={{ color: "#1F45E0" }}
           >
             Voir la liste des pays GAFI
           </button>
@@ -148,12 +148,12 @@ export default function Step2({ form, set, dossierId, screeningEnabled = false }
           <div
             className="rounded-xl px-3 py-2.5 text-[12px]"
             style={{
-              background: "rgba(88,71,232,0.05)",
-              border: "1px solid rgba(88,71,232,0.20)",
-              color: "#52505B",
+              background: "rgba(47,91,255,0.05)",
+              border: "1px solid rgba(47,91,255,0.20)",
+              color: "#47507A",
             }}
           >
-            <span className="font-semibold" style={{ color: "#4A3AD6" }}>ℹ️ Côté vendeur</span> — Les questions relatives à l&apos;origine des fonds (mode de paiement, financement, espèces) ne s&apos;appliquent pas. Concentrez-vous sur la traçabilité du bien cédé.
+            <span className="font-semibold" style={{ color: "#1F45E0" }}>ℹ️ Côté vendeur</span> — Les questions relatives à l&apos;origine des fonds (mode de paiement, financement, espèces) ne s&apos;appliquent pas. Concentrez-vous sur la traçabilité du bien cédé.
           </div>
         </Sect>
       )}
@@ -184,7 +184,7 @@ export default function Step2({ form, set, dossierId, screeningEnabled = false }
 
             <Field label="Mode de paiement">
               <RiskSelect optionsKey="modePaiement" value={form.modePaiement} onChange={(v) => set("modePaiement", v)} />
-              <p className="text-[11px] mt-1" style={{ color: "#6C6975" }}>
+              <p className="text-[11px] mt-1" style={{ color: "#5B6487" }}>
                 Espèces &gt; 1 000 € interdites (art. L112-6 CMF) entre professionnel et particulier.
               </p>
             </Field>
@@ -285,16 +285,16 @@ function ManualScreeningFallback({ name, hasName }: { name: string; hasName: boo
     <div
       className="rounded-xl p-5 mb-4"
       style={{
-        background: "linear-gradient(180deg, rgba(88,71,232,0.08), rgba(79,70,229,0.04) 60%, rgba(255,255,255,0.02))",
-        border: "1px solid rgba(88,71,232,0.25)",
+        background: "linear-gradient(180deg, rgba(47,91,255,0.08), rgba(79,70,229,0.04) 60%, rgba(255,255,255,0.02))",
+        border: "1px solid rgba(47,91,255,0.25)",
       }}
     >
-      <div className="text-[11.5px] font-bold mb-1.5" style={{ color: "#4A3AD6" }}>
+      <div className="text-[11.5px] font-bold mb-1.5" style={{ color: "#1F45E0" }}>
         Vérification des sanctions internationales
       </div>
-      <p className="text-[12px] leading-relaxed mb-3" style={{ color: "#52505B" }}>
+      <p className="text-[12px] leading-relaxed mb-3" style={{ color: "#47507A" }}>
         {hasName
-          ? <>Lancez une recherche pour <span className="font-semibold" style={{ color: "#121118" }}>«&nbsp;{name}&nbsp;»</span> sur les listes officielles agrégées (DGT Trésor · UE · ONU · OFAC · 200+ listes), puis renseignez les réponses ci-dessous.</>
+          ? <>Lancez une recherche pour <span className="font-semibold" style={{ color: "#0B1435" }}>«&nbsp;{name}&nbsp;»</span> sur les listes officielles agrégées (DGT Trésor · UE · ONU · OFAC · 200+ listes), puis renseignez les réponses ci-dessous.</>
           : <>Renseignez le nom du client à l&apos;étape 1 pour activer la vérification.</>}
       </p>
       <a
@@ -305,7 +305,7 @@ function ManualScreeningFallback({ name, hasName }: { name: string; hasName: boo
         onClick={(e) => { if (!hasName) e.preventDefault(); }}
         className="flex items-center justify-center gap-2.5 rounded-lg px-4 py-3 transition-all w-full"
         style={{
-          background: hasName ? "#121118" : "rgba(255,255,255,0.04)",
+          background: hasName ? "#0B1435" : "rgba(255,255,255,0.04)",
           border: "1px solid rgba(255,255,255,0.18)",
           cursor: hasName ? "pointer" : "not-allowed",
           opacity: hasName ? 1 : 0.5,
@@ -424,19 +424,19 @@ function ScreeningTools({
     <div
       className="rounded-xl p-5 mb-4"
       style={{
-        background: "linear-gradient(180deg, rgba(88,71,232,0.08), rgba(79,70,229,0.04) 60%, rgba(255,255,255,0.02))",
-        border: "1px solid rgba(88,71,232,0.25)",
-        boxShadow: "0 1px 0 rgba(255,255,255,0.08) inset, 0 10px 30px -10px rgba(18,17,24,0.12)",
+        background: "linear-gradient(180deg, rgba(47,91,255,0.08), rgba(79,70,229,0.04) 60%, rgba(255,255,255,0.02))",
+        border: "1px solid rgba(47,91,255,0.25)",
+        boxShadow: "0 1px 0 rgba(255,255,255,0.08) inset, 0 10px 30px -10px rgba(11,20,53,0.12)",
       }}
     >
       <div className="flex items-start justify-between gap-4 mb-3">
         <div className="flex-1 min-w-0">
-          <div className="text-[11.5px] font-bold mb-1.5" style={{ color: "#4A3AD6" }}>
+          <div className="text-[11.5px] font-bold mb-1.5" style={{ color: "#1F45E0" }}>
             Screening sanctions automatique
           </div>
-          <p className="text-[12px] leading-relaxed" style={{ color: "#52505B" }}>
+          <p className="text-[12px] leading-relaxed" style={{ color: "#47507A" }}>
             {hasName ? (
-              <>Vérifie <span className="font-semibold" style={{ color: "#121118" }}>«&nbsp;{cleanedName}&nbsp;»</span> contre les listes agrégées (DGT Trésor FR · UE Consolidated · ONU · OFAC · 200+ autres). Résultats horodatés et conservés pour audit.</>
+              <>Vérifie <span className="font-semibold" style={{ color: "#0B1435" }}>«&nbsp;{cleanedName}&nbsp;»</span> contre les listes agrégées (DGT Trésor FR · UE Consolidated · ONU · OFAC · 200+ autres). Résultats horodatés et conservés pour audit.</>
             ) : (
               <>Renseignez d&apos;abord le nom du client à l&apos;étape 1 pour activer le screening.</>
             )}
@@ -451,13 +451,13 @@ function ScreeningTools({
         className="flex items-center justify-center gap-2.5 rounded-lg px-4 py-3 transition-all w-full"
         style={{
           background: canScreen && !loading
-            ? "#121118"
+            ? "#0B1435"
             : "rgba(255,255,255,0.04)",
           border: canScreen ? "1px solid rgba(255,255,255,0.20)" : "1px solid rgba(255,255,255,0.08)",
           cursor: canScreen && !loading ? "pointer" : "not-allowed",
           opacity: canScreen && !loading ? 1 : 0.5,
           boxShadow: canScreen && !loading
-            ? "0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 20px rgba(88,71,232,0.30)"
+            ? "0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 20px rgba(47,91,255,0.30)"
             : "none",
           color: "white",
           fontWeight: 600,
@@ -509,12 +509,12 @@ function ScreeningTools({
               <span className="text-[14px] leading-none mt-0.5">✓</span>
               <div>
                 <div className="font-semibold mb-0.5">Aucune correspondance significative</div>
-                <div className="text-[11.5px]" style={{ color: "#146B48" }}>
+                <div className="text-[11.5px]" style={{ color: "#0F7A4F" }}>
                   Le client n&apos;apparaît sur aucune liste consultée
                   {result.topScore !== null && ` (meilleur score : ${(result.topScore * 100).toFixed(0)}%, en deçà du seuil 50%)`}.
                   Les gates D1 et D2 sont pré-cochées à <strong>Non</strong>.
                 </div>
-                <div className="text-[10.5px] mt-1.5" style={{ color: "#146B48" }}>
+                <div className="text-[10.5px] mt-1.5" style={{ color: "#0F7A4F" }}>
                   Vérification du {new Date(result.ranAt).toLocaleString("fr-FR")} · ID {result.runId.slice(0, 8)}
                 </div>
               </div>
@@ -558,7 +558,7 @@ function ScreeningTools({
                 {result.matches.map((m) => <MatchCard key={m.id} match={m} />)}
               </div>
 
-              <div className="text-[10.5px] mt-2" style={{ color: "#6C6975" }}>
+              <div className="text-[10.5px] mt-2" style={{ color: "#5B6487" }}>
                 Vérification du {new Date(result.ranAt).toLocaleString("fr-FR")} · ID {result.runId.slice(0, 8)} · Source : OpenSanctions.org
               </div>
             </>
@@ -578,7 +578,7 @@ function MatchCard({ match }: { match: SanctionMatchUI }) {
     ? { fg: "#A3241F", bg: "rgba(197,48,44,0.06)", border: "rgba(197,48,44,0.30)" }
     : isMedium
       ? { fg: "#8F5A00", bg: "rgba(227,160,8,0.06)", border: "rgba(227,160,8,0.30)" }
-      : { fg: "#52505B", bg: "rgba(151,146,180,0.06)", border: "rgba(151,146,180,0.25)" };
+      : { fg: "#47507A", bg: "rgba(151,146,180,0.06)", border: "rgba(151,146,180,0.25)" };
 
   return (
     <div
@@ -590,11 +590,11 @@ function MatchCard({ match }: { match: SanctionMatchUI }) {
     >
       <div className="flex items-start justify-between gap-3 mb-1">
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-[13px]" style={{ color: "#121118" }}>
+          <div className="font-semibold text-[13px]" style={{ color: "#0B1435" }}>
             {match.caption}
           </div>
           {match.aliases.length > 0 && (
-            <div className="text-[10.5px] mt-0.5" style={{ color: "#6C6975" }}>
+            <div className="text-[10.5px] mt-0.5" style={{ color: "#5B6487" }}>
               Alias : {match.aliases.slice(0, 3).join(" · ")}
               {match.aliases.length > 3 && ` +${match.aliases.length - 3}`}
             </div>
@@ -617,9 +617,9 @@ function MatchCard({ match }: { match: SanctionMatchUI }) {
             key={t}
             className="text-[11.5px] font-semibold px-1.5 py-0.5 rounded"
             style={{
-              background: "rgba(18,17,24,0.06)",
-              color: "#3A3842",
-              border: "1px solid rgba(18,17,24,0.08)",
+              background: "rgba(11,20,53,0.06)",
+              color: "#2A3459",
+              border: "1px solid rgba(11,20,53,0.08)",
             }}
           >
             {t}
@@ -630,9 +630,9 @@ function MatchCard({ match }: { match: SanctionMatchUI }) {
             key={c}
             className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded"
             style={{
-              background: "rgba(88,71,232,0.06)",
-              color: "#4A3AD6",
-              border: "1px solid rgba(88,71,232,0.18)",
+              background: "rgba(47,91,255,0.06)",
+              color: "#1F45E0",
+              border: "1px solid rgba(47,91,255,0.18)",
             }}
           >
             {c.toUpperCase()}
@@ -641,7 +641,7 @@ function MatchCard({ match }: { match: SanctionMatchUI }) {
       </div>
 
       <div className="flex items-center justify-between mt-2">
-        <div className="text-[10px]" style={{ color: "#9C99A3" }}>
+        <div className="text-[10px]" style={{ color: "#98A0BD" }}>
           Datasets : {match.datasets.slice(0, 3).join(", ")}{match.datasets.length > 3 && " …"}
         </div>
         <a

@@ -1,7 +1,7 @@
-// app/page.tsx — Page d'accueil Klaris (identité « Registre », voir DESIGN.md)
+// app/page.tsx — Page d'accueil Klaris (identité « Étiquette », voir DESIGN.md)
 //
 // Déroulé :
-//  1. haut de page de nuit : le titre, puis le tableau de bord posé en perspective
+//  1. haut de page clair, brume cobalt et corail : le titre, puis le tableau de bord posé en perspective
 //     qui se redresse au défilement, et le téléphone du client avec le vrai formulaire ;
 //  2. le registre des garanties (hébergement, chiffrement, conservation, empreinte) ;
 //  3. « Comment ça marche » : quatre étapes, une scène épinglée qui change de plan ;
@@ -23,6 +23,7 @@ import LegalRef from "@/components/landing/LegalRef";
 import HeroStage from "@/components/landing/HeroStage";
 import ProductStory from "@/components/landing/ProductStory";
 import { VigilanceExplorer } from "@/components/landing/VigilanceScale";
+import KlarisLogo from "@/components/ui/KlarisLogo";
 import "@/components/landing/landing.css";
 
 export default function LandingPage() {
@@ -40,7 +41,8 @@ export default function LandingPage() {
 
       <main>
         {/* ───────── HAUT DE PAGE ───────── */}
-        <section className="lp-hero kl-field kl-grid-bg" data-nav-field="">
+        <section className="lp-hero kl-grid-bg">
+          <div className="lp-blobs" aria-hidden="true"><span /><span /><span /></div>
           <div className="kl-wrap lp-hero__inner">
             <Link href="/guides/decret-tracfin-2026" className="lp-announce kl-enter">
               <b>Guide</b>
@@ -49,7 +51,7 @@ export default function LandingPage() {
             </Link>
 
             <h1 className="kl-display kl-h1 kl-enter" style={{ "--d": "60ms" } as React.CSSProperties}>
-              Vos dossiers LCB‑FT, <em>en ordre.</em>
+              Chaque client identifié. <em>Chaque dossier prêt.</em>
             </h1>
 
             <p className="kl-lede kl-enter" style={{ "--d": "120ms" } as React.CSSProperties}>
@@ -60,11 +62,11 @@ export default function LandingPage() {
 
             <div className="lp-hero__ctas kl-enter" style={{ "--d": "180ms" } as React.CSSProperties}>
               {isSignedIn ? (
-                <Link href="/dashboard" className="kl-btn kl-btn--onfield kl-btn--lg">
+                <Link href="/dashboard" className="kl-btn kl-btn--primary kl-btn--lg">
                   Mon tableau de bord <ArrowRight width={16} height={16} className="kl-arrow" />
                 </Link>
               ) : (
-                <button type="button" onClick={signUp} className="kl-btn kl-btn--onfield kl-btn--lg">
+                <button type="button" onClick={signUp} className="kl-btn kl-btn--primary kl-btn--lg">
                   Essayer 14 jours gratuits <ArrowRight width={16} height={16} className="kl-arrow" />
                 </button>
               )}
@@ -215,8 +217,9 @@ export default function LandingPage() {
         </section>
 
         {/* ───────── HÉBERGEMENT ───────── */}
-        <section className="lp-secure kl-field kl-grid-bg kl-section fx-open" data-fx="" data-fx-span="0.75">
-          <div className="kl-wrap grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-20">
+        <section className="lp-secure kl-section">
+          <div className="kl-wrap"><div className="lp-secure__panel kl-field fx-open" data-fx="" data-fx-span="0.75">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16">
             <div>
               <p className="kl-kicker">Confiance</p>
               <h2 className="kl-display kl-h2 mt-5">
@@ -250,12 +253,14 @@ export default function LandingPage() {
               </div>
             </dl>
           </div>
+          </div></div>
         </section>
 
         {/* ───────── APPEL FINAL ───────── */}
         <section className="kl-section">
           <div className="kl-wrap">
-            <div className="lp-cta kl-field kl-grid-bg fx-zoom" data-fx="" data-fx-span="0.5">
+            <div className="lp-cta fx-zoom" data-fx="" data-fx-span="0.5">
+              <div className="lp-cta__logo" aria-hidden="true"><KlarisLogo size={340} inverted /></div>
               <h2 className="kl-display kl-h1" style={{ fontSize: "clamp(2.6rem, 1.4rem + 4.4vw, 4.75rem)" }}>
                 Essayez Klaris sur <em>votre prochain dossier.</em>
               </h2>
@@ -265,16 +270,16 @@ export default function LandingPage() {
               <div className="lp-cta__btns">
                 {!isSignedIn ? (
                   <>
-                    <button type="button" onClick={signUp} className="kl-btn kl-btn--onfield kl-btn--lg">
+                    <button type="button" onClick={signUp} className="kl-btn kl-btn--white kl-btn--lg">
                       Créer mon compte <ArrowRight width={16} height={16} className="kl-arrow" />
                     </button>
-                    <button type="button" onClick={openDemo} className="kl-btn kl-btn--ghost kl-btn--lg">
+                    <button type="button" onClick={openDemo} className="kl-btn kl-btn--glass kl-btn--lg">
                       <Play width={12} height={12} fill="currentColor" strokeWidth={0} />
                       Voir la démo d&apos;abord
                     </button>
                   </>
                 ) : (
-                  <Link href="/dashboard" className="kl-btn kl-btn--onfield kl-btn--lg">
+                  <Link href="/dashboard" className="kl-btn kl-btn--white kl-btn--lg">
                     Aller au tableau de bord <ArrowRight width={16} height={16} className="kl-arrow" />
                   </Link>
                 )}

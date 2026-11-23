@@ -132,7 +132,7 @@ export default function CGUPage() {
       <Section title="Article 10 — Données personnelles">
         <P>
           Le traitement des données personnelles est régi par notre{" "}
-          <a href="/legal/confidentialite" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">Politique de confidentialité</a>, qui fait partie intégrante des présentes CGU.
+          <a href="/legal/confidentialite" className="text-violet-600 hover:text-violet-700 underline underline-offset-2">Politique de confidentialité</a>, qui fait partie intégrante des présentes CGU.
         </P>
       </Section>
 
@@ -165,7 +165,7 @@ export default function CGUPage() {
         <P>
           L'Utilisateur peut résilier son compte à tout moment depuis l'espace abonnement. Les
           modalités financières sont régies par les{" "}
-          <a href="/legal/cgv" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">CGV</a>.
+          <a href="/legal/cgv" className="text-violet-600 hover:text-violet-700 underline underline-offset-2">CGV</a>.
         </P>
         <P>
           L'Éditeur peut suspendre ou résilier un compte en cas de violation grave des présentes

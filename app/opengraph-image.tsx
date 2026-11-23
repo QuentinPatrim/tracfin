@@ -10,7 +10,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const BARS = [
-  { n: "1", label: "Vigilance standard", c: "#1F9A68", w: 300, fg: "#fff" },
+  { n: "1", label: "Vigilance standard", c: "#16A06A", w: 300, fg: "#fff" },
   { n: "2", label: "Vigilance renforcée", c: "#D9980A", w: 350, fg: "#2A1D00" },
   { n: "3", label: "Examen renforcé", c: "#DD6B20", w: 400, fg: "#fff" },
   { n: "4", label: "Interdiction", c: "#C23630", w: 450, fg: "#fff" },
@@ -27,9 +27,9 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "68px 76px",
-          backgroundColor: "#0B0A10",
+          backgroundColor: "#0B1435",
           backgroundImage:
-            "radial-gradient(900px 420px at 50% 0%, rgba(88,71,232,0.22), transparent)",
+            "radial-gradient(900px 420px at 50% 0%, rgba(47,91,255,0.22), transparent)",
           fontFamily: "sans-serif",
         }}
       >
@@ -44,14 +44,14 @@ export default function OpengraphImage() {
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: "#FFFFFF",
-              color: "#121118",
+              color: "#0B1435",
               fontSize: 36,
               fontWeight: 800,
             }}
           >
             K
           </div>
-          <div style={{ display: "flex", color: "#F3F2FE", fontSize: 38, fontWeight: 700, letterSpacing: -1 }}>
+          <div style={{ display: "flex", color: "#F0F4FF", fontSize: 38, fontWeight: 700, letterSpacing: -1 }}>
             Klaris
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 40 }}>
           {/* Titre */}
           <div style={{ display: "flex", flexDirection: "column", gap: 22, maxWidth: 600 }}>
-            <div style={{ display: "flex", fontSize: 72, fontWeight: 800, letterSpacing: -2, lineHeight: 1.03, color: "#F3F2FE" }}>
+            <div style={{ display: "flex", fontSize: 72, fontWeight: 800, letterSpacing: -2, lineHeight: 1.03, color: "#F0F4FF" }}>
               Vos dossiers LCB-FT en ordre, sans stress.
             </div>
             <div style={{ display: "flex", fontSize: 28, lineHeight: 1.35, color: "rgba(244,242,255,0.76)" }}>

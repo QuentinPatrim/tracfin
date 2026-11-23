@@ -116,7 +116,7 @@ export default function ProductStory() {
                 className="ps-step"
                 data-on={i === active ? "" : undefined}
               >
-                <span className="ps-step__n kl-display" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                <span className="ps-step__n kl-display" aria-hidden="true">{i + 1}</span>
                 <h3 className="kl-display ps-step__t">{s.t}</h3>
                 <p className="kl-body ps-step__p">{s.p}</p>
               </li>

@@ -194,10 +194,10 @@ export default function ConfidentialitePage() {
         </div>
         <P>
           Pour exercer ces droits, contactez-nous à{" "}
-          <a href={`mailto:${EDITEUR.emailRgpd}`} className="text-violet-300 hover:text-violet-200 underline underline-offset-2">{EDITEUR.emailRgpd}</a>.
+          <a href={`mailto:${EDITEUR.emailRgpd}`} className="text-violet-600 hover:text-violet-700 underline underline-offset-2">{EDITEUR.emailRgpd}</a>.
           Nous vous répondrons sous <Strong>30 jours maximum</Strong>. Si vous estimez que vos
           droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL
-          (<a href="https://www.cnil.fr" target="_blank" rel="noreferrer noopener" className="text-violet-300 hover:text-violet-200 underline underline-offset-2">www.cnil.fr</a>).
+          (<a href="https://www.cnil.fr" target="_blank" rel="noreferrer noopener" className="text-violet-600 hover:text-violet-700 underline underline-offset-2">www.cnil.fr</a>).
         </P>
       </Section>
 

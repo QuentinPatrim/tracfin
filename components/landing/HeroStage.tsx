@@ -10,6 +10,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Check, FileCheck2 } from "lucide-react";
 import AppMock, { MOCK_W, MOCK_H } from "./AppMock";
 import KycPhone, { PHONE_SCREEN_W, PHONE_SCREEN_H } from "./KycPhone";
 
@@ -70,6 +71,15 @@ export default function HeroStage() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="hs-chip hs-chip--a" aria-hidden="true">
+        <i style={{ background: "#16A06A" }}><Check width={18} height={18} strokeWidth={3} /></i>
+        <span>Fiche reçue<small>Camille Rousseau · à l&apos;instant</small></span>
+      </div>
+      <div className="hs-chip hs-chip--b" aria-hidden="true">
+        <i style={{ background: "linear-gradient(135deg, #2F5BFF, #FF6A4D)" }}><FileCheck2 width={17} height={17} /></i>
+        <span>Attestation prête<small>horodatée, archivée 5 ans</small></span>
       </div>
 
       <div className="hs-phone" style={{ "--pw": PHONE_SCREEN_W, "--ph": PHONE_SCREEN_H } as React.CSSProperties}>

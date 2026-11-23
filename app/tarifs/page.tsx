@@ -406,13 +406,13 @@ function PlanCard({
 
   return (
     <div
-      className="relative rounded-2xl p-8 sm:p-9 flex flex-col"
+      className="relative rounded-[32px] p-8 sm:p-9 flex flex-col transition-transform duration-300 hover:-translate-y-1"
       style={{
-        background: popular ? "var(--kl-night)" : "var(--lp-card-bg)",
-        color: popular ? "var(--kl-on-field)" : undefined,
+        background: popular ? "radial-gradient(70% 60% at 100% 0%, rgba(255,106,77,0.75), transparent 60%), radial-gradient(60% 60% at 0% 100%, rgba(123,99,242,0.6), transparent 65%), #2F5BFF" : "var(--lp-card-bg)",
+        color: popular ? "#fff" : undefined,
         boxShadow: popular
-          ? "0 0 0 1px rgba(255,255,255,0.06), 0 40px 80px -40px rgba(18,17,24,0.6)"
-          : "0 0 0 1px var(--lp-border-2), 0 1px 2px rgba(18,17,24,0.04)",
+          ? "0 40px 80px -36px rgba(47,91,255,0.7)"
+          : "0 0 0 1px var(--lp-border-2), 0 1px 2px rgba(11,20,53,0.04)",
       }}
     >
       <div className="flex items-center justify-between gap-3">
@@ -420,17 +420,17 @@ function PlanCard({
         {popular && (
           <span
             className="text-[12px] font-medium px-2.5 py-1 rounded-md"
-            style={{ background: "rgba(255,255,255,0.08)", color: "var(--kl-on-field)" }}
+            style={{ background: "rgba(255,255,255,0.08)", color: "#fff" }}
           >
             Recommandé pour les agences
           </span>
         )}
       </div>
-      <p className="mt-2 text-[14px]" style={{ color: popular ? "var(--kl-on-field-2)" : "var(--lp-text-3)" }}>{tagline}</p>
+      <p className="mt-2 text-[14px]" style={{ color: popular ? "rgba(255,255,255,0.85)" : "var(--lp-text-3)" }}>{tagline}</p>
 
       <div className="flex items-baseline gap-1.5 mt-8">
-        <span className="kl-display kl-num" style={{ fontSize: "4.25rem", lineHeight: 0.9 }}>{price} €</span>
-        <span className="text-[14px]" style={{ color: popular ? "var(--kl-on-field-2)" : "var(--lp-text-4)" }}>/ mois</span>
+        <span className="kl-display kl-num" style={{ fontSize: "4.25rem", lineHeight: 0.9, color: "inherit" }}>{price} €</span>
+        <span className="text-[14px]" style={{ color: popular ? "rgba(255,255,255,0.85)" : "var(--lp-text-4)" }}>/ mois</span>
       </div>
       {period === "yearly" ? (
         <div className="text-[12.5px] font-medium mt-3" style={{ color: popular ? "#7FD7AE" : "var(--lp-success)" }}>
@@ -444,7 +444,7 @@ function PlanCard({
         type="button"
         onClick={onClick}
         disabled={loading || isCurrent}
-        className={`kl-btn kl-btn--lg w-full mt-7 disabled:opacity-60 disabled:cursor-default ${popular ? "kl-btn--onfield" : "kl-btn--primary"}`}
+        className={`kl-btn kl-btn--lg w-full mt-7 disabled:opacity-60 disabled:cursor-default ${popular ? "kl-btn--white" : "kl-btn--primary"}`}
         style={isCurrent ? { background: "var(--lp-success-bg)", color: "var(--lp-success)", boxShadow: "inset 0 0 0 1px var(--lp-success-border)" } : undefined}
       >
         {loading ? "Redirection…" : cta}
@@ -452,7 +452,7 @@ function PlanCard({
         {isCurrent && <Check className="w-4 h-4" strokeWidth={3} />}
       </button>
 
-      <div className="text-center text-[12px] mt-3 leading-snug" style={{ color: popular ? "var(--kl-on-field-3)" : "var(--lp-text-4)" }}>
+      <div className="text-center text-[12px] mt-3 leading-snug" style={{ color: popular ? "rgba(255,255,255,0.7)" : "var(--lp-text-4)" }}>
         {isCurrent ? (
           <span style={{ color: popular ? "#7FD7AE" : "var(--lp-success)" }}>Vous êtes sur ce plan</span>
         ) : isUpgrade ? (
@@ -462,9 +462,9 @@ function PlanCard({
         )}
       </div>
 
-      <ul className="mt-8 pt-7 space-y-3 border-t" style={{ borderColor: popular ? "var(--kl-on-field-line)" : "var(--lp-border-1)" }}>
+      <ul className="mt-8 pt-7 space-y-3 border-t" style={{ borderColor: popular ? "rgba(255,255,255,0.2)" : "var(--lp-border-1)" }}>
         {features.map((f) => (
-          <li key={f} className="flex items-start gap-3 text-[14px]" style={{ color: popular ? "var(--kl-on-field-2)" : "var(--lp-text-2)" }}>
+          <li key={f} className="flex items-start gap-3 text-[14px]" style={{ color: popular ? "rgba(255,255,255,0.85)" : "var(--lp-text-2)" }}>
             <Check className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={2.5} style={{ color: popular ? "#fff" : "var(--lp-text)" }} />
             <span>{f}</span>
           </li>

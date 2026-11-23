@@ -40,11 +40,11 @@ export default function LegalFooter() {
       <div className="kl-wrap grid gap-12 pt-16 pb-12 md:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)] md:gap-16">
         <div>
           <Link href="/" className="inline-flex items-center gap-2.5" aria-label="Klaris, accueil">
-            <KlarisLogo size={28} />
+            <KlarisLogo size={30} />
             <span className="kl-wordmark" style={{ color: "var(--lp-text)" }}>Klaris</span>
           </Link>
           <p
-            className="kl-display mt-6 max-w-[20rem] text-[1.6rem] leading-[1.15]"
+            className="kl-display mt-6 max-w-[20rem] text-[1.55rem] leading-[1.15]"
             style={{ color: "var(--lp-text)" }}
           >
             La tenue de vos dossiers LCB‑FT, <em>sans y passer vos soirées.</em>

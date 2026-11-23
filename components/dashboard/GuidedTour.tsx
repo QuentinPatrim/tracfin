@@ -48,7 +48,7 @@ const GAP = 14; // espace entre la cible et la carte
 
 // Petite flèche blanche pointant vers la cible, selon l'arête de la carte.
 function arrowStyle(edge: "top" | "bottom" | "left" | "right", offset: number): React.CSSProperties {
-  const base: React.CSSProperties = { position: "absolute", width: 0, height: 0, filter: "drop-shadow(0 0 0.5px rgba(88,71,232,0.18))" };
+  const base: React.CSSProperties = { position: "absolute", width: 0, height: 0, filter: "drop-shadow(0 0 0.5px rgba(47,91,255,0.18))" };
   const S = 9; // taille
   if (edge === "top") {
     return { ...base, top: -S, left: offset - S, borderLeft: `${S}px solid transparent`, borderRight: `${S}px solid transparent`, borderBottom: `${S}px solid #ffffff` };
@@ -239,8 +239,8 @@ export default function GuidedTour({
           overflowY: "auto",
           background: "#ffffff",
           borderRadius: 18,
-          border: "1px solid rgba(88,71,232,0.16)",
-          boxShadow: "0 24px 70px -16px rgba(18,17,24,0.40), 0 0 0 1px rgba(255,255,255,0.6) inset",
+          border: "1px solid rgba(47,91,255,0.16)",
+          boxShadow: "0 24px 70px -16px rgba(11,20,53,0.40), 0 0 0 1px rgba(255,255,255,0.6) inset",
           padding: 20,
           // Glissement fluide entre les plans (effet "film") + apparition.
           transition: "top 420ms cubic-bezier(0.16,1,0.3,1), left 420ms cubic-bezier(0.16,1,0.3,1)",
@@ -254,12 +254,12 @@ export default function GuidedTour({
 
         {/* Barre de temps (lecture auto) */}
         {playing && (
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, borderRadius: "18px 18px 0 0", overflow: "hidden", background: "rgba(88,71,232,0.08)" }}>
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, borderRadius: "18px 18px 0 0", overflow: "hidden", background: "rgba(47,91,255,0.08)" }}>
             <div
               key={`${index}-${playing}`}
               style={{
                 height: "100%",
-                background: "#121118",
+                background: "#0B1435",
                 animation: `klaris-tour-time ${stepDurationMs}ms linear forwards`,
               }}
             />
@@ -272,17 +272,17 @@ export default function GuidedTour({
             <div
               style={{
                 width: 34, height: 34, borderRadius: 10, display: "grid", placeItems: "center",
-                background: "#121118", color: "white",
-                boxShadow: "0 4px 12px rgba(18,17,24,0.12)",
+                background: "#2F5BFF", color: "white",
+                boxShadow: "0 4px 12px rgba(11,20,53,0.12)",
               }}
             >
               <Sparkles size={16} />
             </div>
             <div>
-              <div style={{ fontSize: 9.5, fontWeight: 700, color: "#A9A2F6" }}>
+              <div style={{ fontSize: 9.5, fontWeight: 700, color: "#A8BAFF" }}>
                 Visite guidée
               </div>
-              <div style={{ fontSize: 10.5, color: "#9C99A3", fontWeight: 600 }}>
+              <div style={{ fontSize: 10.5, color: "#98A0BD", fontWeight: 600 }}>
                 Étape {index + 1} / {steps.length}
               </div>
             </div>
@@ -291,7 +291,7 @@ export default function GuidedTour({
             type="button"
             onClick={finish}
             aria-label="Fermer la visite"
-            style={{ background: "transparent", border: 0, color: "#CFCDC6", cursor: "pointer", padding: 4, borderRadius: 6, lineHeight: 0 }}
+            style={{ background: "transparent", border: 0, color: "#D3DAEE", cursor: "pointer", padding: 4, borderRadius: 6, lineHeight: 0 }}
           >
             <X size={16} />
           </button>
@@ -305,13 +305,13 @@ export default function GuidedTour({
         )}
 
         {/* Eyebrow + titre + corps */}
-        <div style={{ fontSize: 10.5, fontWeight: 700, color: "#4A3AD6", marginBottom: 5 }}>
+        <div style={{ fontSize: 10.5, fontWeight: 700, color: "#1F45E0", marginBottom: 5 }}>
           {step.eyebrow}
         </div>
-        <h3 style={{ fontSize: 17, fontWeight: 700, color: "#121118", margin: "0 0 8px", lineHeight: 1.25 }}>
+        <h3 style={{ fontSize: 17, fontWeight: 700, color: "#0B1435", margin: "0 0 8px", lineHeight: 1.25 }}>
           {step.title}
         </h3>
-        <div style={{ fontSize: 13, color: "#52505B", lineHeight: 1.55 }}>
+        <div style={{ fontSize: 13, color: "#47507A", lineHeight: 1.55 }}>
           {step.body}
         </div>
 
@@ -339,8 +339,8 @@ export default function GuidedTour({
               style={{
                 height: 5, flex: i === index ? 2.2 : 1, borderRadius: 999,
                 background: i === index
-                  ? "#121118"
-                  : i < index ? "rgba(88,71,232,0.35)" : "rgba(18,17,24,0.10)",
+                  ? "#0B1435"
+                  : i < index ? "rgba(47,91,255,0.35)" : "rgba(11,20,53,0.10)",
                 transition: "all 240ms ease",
               }}
             />
@@ -357,8 +357,8 @@ export default function GuidedTour({
               title={playing ? "Pause" : "Lecture"}
               style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center",
-                width: 30, height: 30, borderRadius: 8, background: "rgba(88,71,232,0.08)",
-                border: "1px solid rgba(88,71,232,0.20)", color: "#4A3AD6", cursor: "pointer",
+                width: 30, height: 30, borderRadius: 8, background: "rgba(47,91,255,0.08)",
+                border: "1px solid rgba(47,91,255,0.20)", color: "#1F45E0", cursor: "pointer",
               }}
             >
               {playing ? <Pause size={13} /> : <Play size={13} />}
@@ -366,7 +366,7 @@ export default function GuidedTour({
             <button
               type="button"
               onClick={finish}
-              style={{ background: "transparent", border: 0, color: "#9C99A3", fontSize: 12.5, fontWeight: 500, cursor: "pointer", padding: "6px 8px" }}
+              style={{ background: "transparent", border: 0, color: "#98A0BD", fontSize: 12.5, fontWeight: 500, cursor: "pointer", padding: "6px 8px" }}
             >
               Passer
             </button>
@@ -378,7 +378,7 @@ export default function GuidedTour({
                 onClick={prev}
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 5, padding: "8px 13px", borderRadius: 9,
-                  background: "white", border: "1px solid #E3E2DC", color: "#52505B", fontSize: 12.5, fontWeight: 600, cursor: "pointer",
+                  background: "white", border: "1px solid #E2E8F7", color: "#47507A", fontSize: 12.5, fontWeight: 600, cursor: "pointer",
                 }}
               >
                 <ArrowLeft size={13} /> Précédent
@@ -389,9 +389,9 @@ export default function GuidedTour({
               onClick={next}
               style={{
                 display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 15px", borderRadius: 9,
-                background: "#121118", color: "white", border: 0,
+                background: "#2F5BFF", color: "white", border: 0,
                 fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-                boxShadow: "0 4px 14px rgba(18,17,24,0.12)",
+                boxShadow: "0 4px 14px rgba(11,20,53,0.12)",
               }}
             >
               {isLast ? <>Terminer <Check size={14} /></> : <>Suivant <ArrowRight size={14} /></>}

@@ -360,7 +360,7 @@ export default function DashboardClient({
                 const ab = niveauBadge(d);
                 return (
                   <Link key={d.id} href={`/dashboard/${d.id}`} className="alert-pill">
-                    <span className="risk-dot" style={{ background: ab.tone === "critical" ? "#121118" : "#CF3F39" }} />
+                    <span className="risk-dot" style={{ background: ab.tone === "critical" ? "#0B1435" : "#CF3F39" }} />
                     <span className="alert-name">{d.nom_prenom}</span>
                     <span className="muted small">{ab.label}</span>
                     <ChevronRight width={12} height={12} style={{ opacity: 0.6 }} />
@@ -503,10 +503,10 @@ export default function DashboardClient({
           style={{
             position: "fixed", top: 10, left: "50%", transform: "translateX(-50%)",
             zIndex: 9999, pointerEvents: "none",
-            background: "#121118", color: "white",
+            background: "#0B1435", color: "white",
             fontSize: 12, fontWeight: 600,
             padding: "7px 14px", borderRadius: 8,
-            boxShadow: "0 12px 28px -10px rgba(18,17,24,0.6)",
+            boxShadow: "0 12px 28px -10px rgba(11,20,53,0.6)",
           }}
         >
           Mode démonstration · données fictives
@@ -555,7 +555,7 @@ function ConfirmArchiveModal({
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(18,17,24,0.45)",
+        background: "rgba(11,20,53,0.45)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         zIndex: 100,
@@ -570,26 +570,26 @@ function ConfirmArchiveModal({
         style={{
           width: "min(480px, 100%)",
           background: "#ffffff",
-          border: "1px solid rgba(18,17,24,0.10)",
+          border: "1px solid rgba(11,20,53,0.10)",
           borderRadius: 14,
           padding: 24,
-          boxShadow: "0 30px 80px -20px rgba(18,17,24,0.35)",
+          boxShadow: "0 30px 80px -20px rgba(11,20,53,0.35)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <div
             style={{
               width: 40, height: 40, borderRadius: 10,
-              background: "#F3F2EF",
+              background: "#F0F4FF",
               display: "grid", placeItems: "center",
-              color: "#121118",
+              color: "#0B1435",
             }}
           >
             <Archive width={20} height={20} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 16, color: "#121118" }}>Archiver ce dossier ?</div>
-            <div style={{ fontSize: 13, color: "#6C6975", marginTop: 2 }}>
+            <div style={{ fontWeight: 700, fontSize: 16, color: "#0B1435" }}>Archiver ce dossier ?</div>
+            <div style={{ fontSize: 13, color: "#5B6487", marginTop: 2 }}>
               Dossier de <strong>{dossier.nom_prenom}</strong>
             </div>
           </div>
@@ -603,11 +603,11 @@ function ConfirmArchiveModal({
             border: "1px solid rgba(30,158,106,0.30)",
             borderRadius: 10,
             fontSize: 12.5,
-            color: "#3A3842",
+            color: "#2A3459",
             lineHeight: 1.5,
           }}
         >
-          <strong style={{ color: "#146B48" }}>Conservation assurée (L.561-12 CMF).</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
+          <strong style={{ color: "#0F7A4F" }}>Conservation assurée (L.561-12 CMF).</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
         </div>
 
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
@@ -617,9 +617,9 @@ function ConfirmArchiveModal({
             style={{
               padding: "8px 16px",
               borderRadius: 9,
-              border: "1px solid #E8E7E2",
+              border: "1px solid #E8EDF9",
               background: "#ffffff",
-              color: "#3A3842",
+              color: "#2A3459",
               fontWeight: 500,
               fontSize: 13,
               cursor: "pointer",
@@ -634,7 +634,7 @@ function ConfirmArchiveModal({
               padding: "8px 16px",
               borderRadius: 9,
               border: 0,
-              background: "#121118",
+              background: "#2F5BFF",
               color: "white",
               fontWeight: 600,
               fontSize: 13,
@@ -691,9 +691,9 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
             className="preview-risk-label"
             style={{
               color:
-                b.tone === "success" ? "#146B48"
+                b.tone === "success" ? "#0F7A4F"
                 : b.tone === "warn" ? "#B87A00"
-                : b.tone === "critical" ? "#121118"
+                : b.tone === "critical" ? "#0B1435"
                 : "#C23630",
             }}
           >
@@ -722,9 +722,9 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
           alignItems: "flex-start",
           gap: 10,
           padding: "12px 14px",
-          background: "#F3F2FE",
-          border: "1px solid #E9E7FD",
-          color: "#3D30B0",
+          background: "#F0F4FF",
+          border: "1px solid #E6ECFF",
+          color: "#1A35B5",
           borderRadius: 10,
           fontSize: 12.5,
           lineHeight: 1.5,
@@ -754,7 +754,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
       {/* Pièces justificatives */}
       {d.kyc_status === "received" && (
         <div className="preview-section">
-          <div className="preview-label">Pièces justificatives <span style={{ marginLeft: 4, color: "#9C99A3", fontWeight: 500 }}>({files.length})</span></div>
+          <div className="preview-label">Pièces justificatives <span style={{ marginLeft: 4, color: "#98A0BD", fontWeight: 500 }}>({files.length})</span></div>
           <DocumentsList files={files} mode="compact" />
         </div>
       )}

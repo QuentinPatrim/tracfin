@@ -68,7 +68,7 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(18,17,24,0.45)",
+        background: "rgba(11,20,53,0.45)",
         backdropFilter: "blur(14px) saturate(180%)",
         WebkitBackdropFilter: "blur(14px) saturate(180%)",
         zIndex: 200,
@@ -88,14 +88,14 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
           padding: "8px 14px",
           borderRadius: 10,
           background: "rgba(255,255,255,0.85)",
-          border: "1px solid rgba(18,17,24,0.10)",
-          color: "#3A3842",
+          border: "1px solid rgba(11,20,53,0.10)",
+          color: "#2A3459",
           fontSize: 12.5,
           fontWeight: 600,
           cursor: "pointer",
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
-          boxShadow: "0 4px 12px rgba(18,17,24,0.08)",
+          boxShadow: "0 4px 12px rgba(11,20,53,0.08)",
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
@@ -117,10 +117,10 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
           backdropFilter: "blur(28px) saturate(180%)",
           WebkitBackdropFilter: "blur(28px) saturate(180%)",
           borderRadius: 20,
-          border: "1px solid rgba(88,71,232,0.18)",
+          border: "1px solid rgba(47,91,255,0.18)",
           overflow: "hidden",
           boxShadow:
-            "0 1px 0 rgba(255,255,255,0.9) inset, 0 30px 80px -20px rgba(18,17,24,0.12), 0 12px 40px -8px rgba(18,17,24,0.12)",
+            "0 1px 0 rgba(255,255,255,0.9) inset, 0 30px 80px -20px rgba(11,20,53,0.12), 0 12px 40px -8px rgba(11,20,53,0.12)",
         }}
       >
         {/* halos ambient */}
@@ -130,7 +130,7 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
         {/* Top accent bar gradient */}
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 4,
-          background: "#121118",
+          background: "#2F5BFF",
         }} />
 
         {/* Contenu (scroll si besoin) */}
@@ -146,7 +146,7 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
             alignItems: "center",
             justifyContent: "space-between",
             padding: "20px 32px",
-            borderTop: "1px solid rgba(88,71,232,0.10)",
+            borderTop: "1px solid rgba(47,91,255,0.10)",
             background: "rgba(246,245,250,0.6)",
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
@@ -167,16 +167,16 @@ export default function OnboardingGuide({ open, onClose, onComplete }: Props) {
                   borderRadius: 999,
                   border: 0,
                   background: i === step
-                    ? "#121118"
+                    ? "#0B1435"
                     : i < step
-                      ? "rgba(88,71,232,0.45)"
-                      : "rgba(18,17,24,0.10)",
+                      ? "rgba(47,91,255,0.45)"
+                      : "rgba(11,20,53,0.10)",
                   cursor: "pointer",
                   transition: "width 0.25s, background 0.25s",
                 }}
               />
             ))}
-            <span style={{ marginLeft: 12, fontSize: 11.5, color: "#6C6975", fontWeight: 500 }}>
+            <span style={{ marginLeft: 12, fontSize: 11.5, color: "#5B6487", fontWeight: 500 }}>
               {step + 1} / {N_SLIDES}
             </span>
           </div>
@@ -228,8 +228,8 @@ const navBtnStyle = {
     color: "white",
     fontWeight: 600,
     fontSize: 13,
-    background: "#121118",
-    boxShadow: "0 1px 0 rgba(255,255,255,0.25) inset, 0 6px 16px rgba(18,17,24,0.12)",
+    background: "#0B1435",
+    boxShadow: "0 1px 0 rgba(255,255,255,0.25) inset, 0 6px 16px rgba(11,20,53,0.12)",
     cursor: "pointer",
   },
   secondary: {
@@ -238,8 +238,8 @@ const navBtnStyle = {
     gap: 6,
     padding: "9px 14px",
     borderRadius: 10,
-    border: "1px solid rgba(18,17,24,0.10)",
-    color: "#3A3842",
+    border: "1px solid rgba(11,20,53,0.10)",
+    color: "#2A3459",
     fontWeight: 500,
     fontSize: 13,
     background: "rgba(255,255,255,0.7)",
@@ -255,10 +255,10 @@ const SLIDES = [
   // ─── 1) BIENVENUE ─────────────────────────────────────────────────────
   (
     <div key="welcome" style={{ textAlign: "center", maxWidth: 640, margin: "0 auto" }}>
-      <div style={iconCircle("#5847E8")}>
+      <div style={iconCircle("#2F5BFF")}>
         <BookOpen width={28} height={28} color="white" />
       </div>
-      <Eyebrow color="#5847E8">Bienvenue dans Klaris</Eyebrow>
+      <Eyebrow color="#2F5BFF">Bienvenue dans Klaris</Eyebrow>
       <H1>En 5 minutes, comprenez vos obligations LCB-FT</H1>
       <P>
         Klaris a été conçu pour vous aider à être <strong>en règle</strong> avec vos obligations légales
@@ -272,19 +272,19 @@ const SLIDES = [
   // ─── 2) HISTORIQUE LCB-FT ────────────────────────────────────────────
   (
     <div key="history">
-      <Eyebrow color="#5847E8">Module 01 · Contexte</Eyebrow>
+      <Eyebrow color="#2F5BFF">Module 01 · Contexte</Eyebrow>
       <H1>D'où vient la LCB-FT ?</H1>
       <P>
         La lutte contre le blanchiment est un effort <strong>mondial</strong>, coordonné depuis 1989.
         Les professionnels de l'immobilier y sont assujettis en France depuis 1998.
       </P>
       <Timeline items={[
-        { year: "1989", color: "#5847E8", title: "Création du GAFI", desc: "Groupe d'Action Financière, organisme international piloté par le G7 pour fixer les standards anti-blanchiment." },
-        { year: "1991", color: "#5847E8", title: "1ʳᵉ directive UE", desc: "Premier cadre européen contre l'utilisation du système financier aux fins de blanchiment." },
-        { year: "1998", color: "#5847E8", title: "Professionnels de l'immobilier assujettis", desc: "Vous êtes intégré au dispositif. Aujourd'hui : article L.561-2 8° du Code monétaire et financier." },
-        { year: "2001", color: "#5847E8", title: "Post 11-Septembre", desc: "Renforcement mondial pour lutter contre le financement du terrorisme (CFT)." },
-        { year: "2018", color: "#5847E8", title: "5ᵉ directive UE", desc: "Directive (UE) 2018/843 : elle modifie la 4ᵉ directive (UE) 2015/849, qui a posé le principe des registres des bénéficiaires effectifs." },
-        { year: "2020", color: "#5847E8", title: "Directive (UE) 2018/1673", desc: "Lutte contre le blanchiment au moyen du droit pénal, à transposer au plus tard le 3 décembre 2020." },
+        { year: "1989", color: "#2F5BFF", title: "Création du GAFI", desc: "Groupe d'Action Financière, organisme international piloté par le G7 pour fixer les standards anti-blanchiment." },
+        { year: "1991", color: "#2F5BFF", title: "1ʳᵉ directive UE", desc: "Premier cadre européen contre l'utilisation du système financier aux fins de blanchiment." },
+        { year: "1998", color: "#2F5BFF", title: "Professionnels de l'immobilier assujettis", desc: "Vous êtes intégré au dispositif. Aujourd'hui : article L.561-2 8° du Code monétaire et financier." },
+        { year: "2001", color: "#2F5BFF", title: "Post 11-Septembre", desc: "Renforcement mondial pour lutter contre le financement du terrorisme (CFT)." },
+        { year: "2018", color: "#2F5BFF", title: "5ᵉ directive UE", desc: "Directive (UE) 2018/843 : elle modifie la 4ᵉ directive (UE) 2015/849, qui a posé le principe des registres des bénéficiaires effectifs." },
+        { year: "2020", color: "#2F5BFF", title: "Directive (UE) 2018/1673", desc: "Lutte contre le blanchiment au moyen du droit pénal, à transposer au plus tard le 3 décembre 2020." },
         { year: "2024", color: "#CF3F39", title: "Paquet AML 2024", desc: "Règlement (UE) 2024/1624, directive (UE) 2024/1640 et création de l'AMLA (autorité européenne). Le règlement est applicable à partir du 10 juillet 2027." },
       ]} />
     </div>
@@ -293,7 +293,7 @@ const SLIDES = [
   // ─── 3) POURQUOI VOUS ─────────────────────────────────────────────────
   (
     <div key="why-you">
-      <Eyebrow color="#5847E8">Module 02 · Votre rôle</Eyebrow>
+      <Eyebrow color="#2F5BFF">Module 02 · Votre rôle</Eyebrow>
       <H1>Pourquoi êtes-vous concerné ?</H1>
       <P>
         L'immobilier est un véhicule privilégié de blanchiment : montants élevés, opacité possible des
@@ -303,7 +303,7 @@ const SLIDES = [
         { value: "1998", label: "année où vous êtes devenus assujettis", src: "Tracfin, brochure immobilier 2026 · Art. L.561-2 8° CMF" },
         { value: "5 ans", label: "obligation de conservation des dossiers KYC", src: "Art. L.561-12 CMF" },
       ]} />
-      <Callout color="#5847E8" icon={<ShieldCheck width={18} height={18} />}>
+      <Callout color="#2F5BFF" icon={<ShieldCheck width={18} height={18} />}>
         <strong>Votre mission :</strong> être les « yeux et oreilles » de Bercy <em>avant</em> que l'argent
         douteux ne soit lessivé via la pierre. Identifier, vérifier, signaler.
       </Callout>
@@ -313,7 +313,7 @@ const SLIDES = [
   // ─── 4) 5 OBLIGATIONS ─────────────────────────────────────────────────
   (
     <div key="obligations">
-      <Eyebrow color="#5847E8">Module 03 · Vos obligations</Eyebrow>
+      <Eyebrow color="#2F5BFF">Module 03 · Vos obligations</Eyebrow>
       <H1>Vos 5 obligations clés</H1>
       <P>
         Tout est codifié dans le Code monétaire et financier, articles L.561-1 à L.561-50.
@@ -322,7 +322,7 @@ const SLIDES = [
       <CardsGrid items={[
         {
           n: "01",
-          color: "#5847E8",
+          color: "#2F5BFF",
           icon: <CheckCircle2 width={18} height={18} />,
           title: "Identifier votre client",
           desc: "Pièce d'identité + justif de domicile (PP) ou Kbis + statuts + bénéficiaire effectif (PM : plus de 25 % du capital ou des droits de vote).",
@@ -330,7 +330,7 @@ const SLIDES = [
         },
         {
           n: "02",
-          color: "#5847E8",
+          color: "#2F5BFF",
           icon: <Clock width={18} height={18} />,
           title: "Vigilance constante",
           desc: "Réévaluer le risque tout au long de la relation : changement de situation, opération atypique, PPE détectée…",
@@ -338,7 +338,7 @@ const SLIDES = [
         },
         {
           n: "03",
-          color: "#5847E8",
+          color: "#2F5BFF",
           icon: <FileWarning width={18} height={18} />,
           title: "Conserver 5 ans",
           desc: "Tous les documents et pièces conservés 5 ans après la fin de la relation d'affaires. Klaris s'en charge automatiquement.",
@@ -354,7 +354,7 @@ const SLIDES = [
         },
         {
           n: "05",
-          color: "#5847E8",
+          color: "#2F5BFF",
           icon: <BookOpen width={18} height={18} />,
           title: "Former vos équipes",
           desc: "Formation à l'embauche puis régulière des collaborateurs qui participent à la LCB-FT (D.561-38-1-1), en complément des procédures internes (L.561-32).",
@@ -367,7 +367,7 @@ const SLIDES = [
   // ─── 5) 4 NIVEAUX KLARIS — QUE FAIRE ? ────────────────────────────────
   (
     <div key="levels">
-      <Eyebrow color="#5847E8">Module 04 · Réflexes</Eyebrow>
+      <Eyebrow color="#2F5BFF">Module 04 · Réflexes</Eyebrow>
       <H1>Les 4 niveaux Klaris : que faire ?</H1>
       <P>
         Klaris analyse chaque dossier sur 12 critères et vous indique le niveau de
@@ -375,7 +375,7 @@ const SLIDES = [
       </P>
       <LevelRows items={[
         {
-          color: "#146B48", bgColor: "#EDF8F3", bdColor: "#B5E6D2",
+          color: "#0F7A4F", bgColor: "#EDF8F3", bdColor: "#B5E6D2",
           dot: "🟢",
           name: "Vigilance standard",
           ref: "CMF L.561-5 à L.561-8",
@@ -396,7 +396,7 @@ const SLIDES = [
           action: "Suspendre immédiatement la transaction. Délibération formalisée avec votre responsable LCB-FT. Décision motivée avant toute reprise.",
         },
         {
-          color: "#121118", bgColor: "#F1F0EC", bdColor: "#9C99A3",
+          color: "#0B1435", bgColor: "#F1F4FD", bdColor: "#98A0BD",
           dot: "⚫",
           name: "Interdiction & déclaration",
           ref: "CMF L.562-4 (gel des avoirs) · L.561-8",
@@ -435,7 +435,7 @@ const SLIDES = [
           ref: "Art. L.561-40 CMF",
         },
         {
-          color: "#121118", icon: <Gavel width={18} height={18} />,
+          color: "#0B1435", icon: <Gavel width={18} height={18} />,
           title: "Pénale",
           items: [
             "Jusqu'à 5 ans de prison",
@@ -454,10 +454,10 @@ const SLIDES = [
   // ─── 7) KLARIS VOUS AIDE ─────────────────────────────────────────────
   (
     <div key="klaris-helps" style={{ textAlign: "center", maxWidth: 720, margin: "0 auto" }}>
-      <div style={iconCircle("#1F9A68")}>
+      <div style={iconCircle("#16A06A")}>
         <Sparkles width={28} height={28} color="white" />
       </div>
-      <Eyebrow color="#1F9A68">Vous êtes prêt</Eyebrow>
+      <Eyebrow color="#16A06A">Vous êtes prêt</Eyebrow>
       <H1>Klaris fait le gros du travail pour vous</H1>
       <P>
         À chaque dossier, l'application applique automatiquement les bons réflexes réglementaires.
@@ -503,7 +503,7 @@ function H1({ children }: { children: React.ReactNode }) {
   return (
     <h1 style={{
       fontSize: 28, fontWeight: 700, letterSpacing: "-0.025em", lineHeight: 1.2,
-      margin: "0 0 16px 0", color: "#121118",
+      margin: "0 0 16px 0", color: "#0B1435",
     }}>{children}</h1>
   );
 }
@@ -511,7 +511,7 @@ function H1({ children }: { children: React.ReactNode }) {
 function P({ children }: { children: React.ReactNode }) {
   return (
     <p style={{
-      fontSize: 14.5, lineHeight: 1.6, color: "#3A3842",
+      fontSize: 14.5, lineHeight: 1.6, color: "#2A3459",
       margin: "0 0 22px 0", maxWidth: 720,
     }}>{children}</p>
   );
@@ -524,9 +524,9 @@ function Note({ children, style }: { children: React.ReactNode; style?: React.CS
       marginTop: 12,
       padding: "10px 16px",
       borderRadius: 10,
-      background: "rgba(88,71,232,0.06)",
-      border: "1px solid rgba(88,71,232,0.18)",
-      color: "#3D30B0", fontSize: 12.5, lineHeight: 1.5,
+      background: "rgba(47,91,255,0.06)",
+      border: "1px solid rgba(47,91,255,0.18)",
+      color: "#1A35B5", fontSize: 12.5, lineHeight: 1.5,
       ...style,
     }}>
       {children}
@@ -544,7 +544,7 @@ function Callout({ color, icon, children }: { color: string; icon: React.ReactNo
       marginTop: 20,
     }}>
       <div style={{ color, flexShrink: 0, marginTop: 1 }}>{icon}</div>
-      <div style={{ fontSize: 13.5, lineHeight: 1.6, color: "#3A3842" }}>{children}</div>
+      <div style={{ fontSize: 13.5, lineHeight: 1.6, color: "#2A3459" }}>{children}</div>
     </div>
   );
 }
@@ -563,8 +563,8 @@ function Timeline({ items }: { items: Array<{ year: string; color: string; title
           </div>
           <div style={{ width: 8, height: 8, borderRadius: "50%", background: it.color, marginTop: 8, flexShrink: 0, boxShadow: `0 0 0 4px ${it.color}22` }} />
           <div style={{ flex: 1, paddingBottom: 4 }}>
-            <div style={{ fontWeight: 600, color: "#121118", fontSize: 14 }}>{it.title}</div>
-            <div style={{ fontSize: 12.5, color: "#6C6975", marginTop: 2, lineHeight: 1.5 }}>{it.desc}</div>
+            <div style={{ fontWeight: 600, color: "#0B1435", fontSize: 14 }}>{it.title}</div>
+            <div style={{ fontSize: 12.5, color: "#5B6487", marginTop: 2, lineHeight: 1.5 }}>{it.desc}</div>
           </div>
         </div>
       ))}
@@ -578,16 +578,16 @@ function Stats({ items }: { items: Array<{ value: string; label: string; src: st
       {items.map((s, i) => (
         <div key={i} style={{
           padding: 16, borderRadius: 12,
-          background: "linear-gradient(180deg, rgba(88,71,232,0.06), rgba(88,71,232,0.03))",
-          border: "1px solid rgba(88,71,232,0.15)",
+          background: "linear-gradient(180deg, rgba(47,91,255,0.06), rgba(47,91,255,0.03))",
+          border: "1px solid rgba(47,91,255,0.15)",
         }}>
           <div style={{
             fontSize: 28, fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1,
-            color: "#4A3AD6",
+            color: "#1F45E0",
             marginBottom: 6, fontVariantNumeric: "tabular-nums",
           }}>{s.value}</div>
-          <div style={{ fontSize: 12, color: "#3A3842", lineHeight: 1.45 }}>{s.label}</div>
-          <div style={{ fontSize: 10.5, color: "#9C99A3", marginTop: 6, fontStyle: "italic" }}>{s.src}</div>
+          <div style={{ fontSize: 12, color: "#2A3459", lineHeight: 1.45 }}>{s.label}</div>
+          <div style={{ fontSize: 10.5, color: "#98A0BD", marginTop: 6, fontStyle: "italic" }}>{s.src}</div>
         </div>
       ))}
     </div>
@@ -601,8 +601,8 @@ function CardsGrid({ items }: { items: Array<{ n: string; color: string; icon: R
         <div key={i} style={{
           padding: 16, borderRadius: 14,
           background: "rgba(255,255,255,0.7)",
-          border: "1px solid rgba(88,71,232,0.10)",
-          boxShadow: "0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 12px -6px rgba(18,17,24,0.12)",
+          border: "1px solid rgba(47,91,255,0.10)",
+          boxShadow: "0 1px 0 rgba(255,255,255,0.8) inset, 0 4px 12px -6px rgba(11,20,53,0.12)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
             <div style={{
@@ -617,8 +617,8 @@ function CardsGrid({ items }: { items: Array<{ n: string; color: string; icon: R
               background: `${c.color}10`, border: `1px solid ${c.color}22`,
             }}>{c.n}</div>
           </div>
-          <div style={{ fontWeight: 600, color: "#121118", fontSize: 13.5, marginBottom: 4 }}>{c.title}</div>
-          <div style={{ fontSize: 12.5, color: "#6C6975", lineHeight: 1.5, marginBottom: 8 }}>{c.desc}</div>
+          <div style={{ fontWeight: 600, color: "#0B1435", fontSize: 13.5, marginBottom: 4 }}>{c.title}</div>
+          <div style={{ fontSize: 12.5, color: "#5B6487", lineHeight: 1.5, marginBottom: 8 }}>{c.desc}</div>
           <div style={{ fontSize: 10.5, color: c.color, fontWeight: 600 }}>CMF {c.ref}</div>
         </div>
       ))}
@@ -641,7 +641,7 @@ function LevelRows({ items }: { items: Array<{ color: string; bgColor: string; b
               <div style={{ fontWeight: 700, color: l.color, fontSize: 14.5 }}>{l.name}</div>
               <div style={{ fontSize: 10.5, color: l.color, opacity: 0.8, fontWeight: 600 }}>{l.ref}</div>
             </div>
-            <div style={{ fontSize: 13, color: "#3A3842", lineHeight: 1.5 }}>{l.action}</div>
+            <div style={{ fontSize: 13, color: "#2A3459", lineHeight: 1.5 }}>{l.action}</div>
           </div>
         </div>
       ))}
@@ -667,7 +667,7 @@ function SanctionCards({ items }: { items: Array<{ color: string; icon: React.Re
           </div>
           <ul style={{ listStyle: "none", padding: 0, margin: "0 0 10px 0", display: "flex", flexDirection: "column", gap: 4 }}>
             {s.items.map((it, j) => (
-              <li key={j} style={{ fontSize: 12.5, color: "#3A3842", lineHeight: 1.5, paddingLeft: 14, position: "relative" }}>
+              <li key={j} style={{ fontSize: 12.5, color: "#2A3459", lineHeight: 1.5, paddingLeft: 14, position: "relative" }}>
                 <span style={{ position: "absolute", left: 0, top: 8, width: 4, height: 4, borderRadius: "50%", background: s.color }} />
                 {it}
               </li>
@@ -688,10 +688,10 @@ function FeaturesList({ items }: { items: Array<{ icon: string; text: string }> 
           display: "flex", alignItems: "center", gap: 14,
           padding: "12px 16px", borderRadius: 12,
           background: "rgba(255,255,255,0.7)",
-          border: "1px solid rgba(88,71,232,0.10)",
+          border: "1px solid rgba(47,91,255,0.10)",
         }}>
           <div style={{ fontSize: 22, flexShrink: 0 }}>{f.icon}</div>
-          <div style={{ fontSize: 13.5, color: "#3A3842", lineHeight: 1.5 }}>{f.text}</div>
+          <div style={{ fontSize: 13.5, color: "#2A3459", lineHeight: 1.5 }}>{f.text}</div>
         </div>
       ))}
     </div>
