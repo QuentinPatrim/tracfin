@@ -288,7 +288,9 @@ export default function NewDossierForm() {
                   value={nomPrenom}
                   onChange={(e) => setNomPrenom(e.target.value)}
                   placeholder={typeClient === "morale" ? "Ex: ACME SAS" : "Ex: Martin Claire"}
-                  autoComplete={typeClient === "morale" ? "organization" : "name"}
+                  autoComplete="off" /* on saisit le client, pas soi-même */
+                  autoCapitalize="words"
+                  spellCheck={false}
                 />
               </div>
 
@@ -299,7 +301,10 @@ export default function NewDossierForm() {
                 </label>
                 <input
                   type="email"
-                  autoComplete="email"
+                  autoComplete="off"
+                  inputMode="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   className={inputStyle}
                   value={emailContact}
                   onChange={(e) => setEmailContact(e.target.value)}

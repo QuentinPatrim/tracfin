@@ -453,3 +453,45 @@ body {
   letter-spacing: -0.005em;
   font-size: max(0.8rem, 1em);
 }
+
+/* ═══════════ Installer l'app (components/pwa/InstallApp.tsx) ═══════════
+   Feuille du bas sur téléphone, fenêtre centrée sur ordinateur. Rendue dans <body>
+   (portail) pour échapper aux transformations des pages. */
+.kl-inst { position: fixed; inset: 0; z-index: 400; display: grid; align-items: end; justify-items: center; font-family: var(--font-sans-face), system-ui, sans-serif; color: #0B1435; }
+.kl-inst__veil { position: absolute; inset: 0; border: 0; background: rgba(11,20,53,0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: kl-inst-fade .25s ease both; cursor: default; }
+.kl-inst__box {
+  position: relative; width: 100%; max-width: 520px; max-height: 92dvh; overflow-y: auto;
+  padding: 30px 24px calc(26px + env(safe-area-inset-bottom)); border-radius: 30px 30px 0 0; background: #fff;
+  box-shadow: 0 -30px 70px -24px rgba(11,20,53,0.4); text-align: center; animation: kl-inst-up .45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.kl-inst__x { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 999px; background: #F5F7FF; color: #0B1435; cursor: pointer; }
+.kl-inst__icon { display: block; margin: 0 auto; width: 64px; height: 64px; border-radius: 18px; box-shadow: 0 0 0 1px rgba(11,20,53,0.06), 0 16px 30px -14px rgba(30,50,140,0.5); }
+.kl-inst__t { margin: 16px 0 6px; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.035em; line-height: 1.15; }
+.kl-inst__p { margin: 0 auto; max-width: 380px; color: #5B6487; line-height: 1.5; font-size: 0.95rem; }
+.kl-inst__steps { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 8px; text-align: left; }
+.kl-inst__steps li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 18px; background: #F5F7FF; font-size: 0.95rem; line-height: 1.4; }
+.kl-inst__n { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 10px; background: linear-gradient(135deg, #2F5BFF, #7B63F2); color: #fff; font-weight: 800; font-size: 0.85rem; }
+.kl-inst__ico { display: inline-grid; place-items: center; width: 26px; height: 26px; margin: 0 2px; vertical-align: middle; border-radius: 8px; background: #fff; color: #1F45E0; box-shadow: 0 0 0 1px rgba(11,20,53,0.08); }
+.kl-inst__qr { display: flex; gap: 20px; align-items: center; margin-top: 22px; padding: 18px; border-radius: 22px; background: #F5F7FF; text-align: left; }
+.kl-inst__qr img { flex: none; width: 148px; height: 148px; padding: 12px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px rgba(11,20,53,0.06); }
+.kl-inst__qr b { font-size: 1.02rem; font-weight: 800; letter-spacing: -0.02em; }
+.kl-inst__qr p { margin: 6px 0 10px; color: #5B6487; font-size: 0.9rem; line-height: 1.45; }
+.kl-inst__url { font-family: var(--font-jetbrains-mono), monospace; font-size: 0.82rem; color: #1F45E0; }
+.kl-inst__perks { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; font-size: 0.82rem; font-weight: 600; color: #5B6487; }
+.kl-inst__perks li { display: inline-flex; align-items: center; gap: 5px; }
+.kl-inst__perks svg { color: #16A06A; }
+@media (min-width: 901px) and (pointer: fine) {
+  .kl-inst { align-items: center; padding: 24px; }
+  .kl-inst__box { border-radius: 30px; padding: 34px 32px 28px; animation-name: kl-inst-pop; }
+}
+@keyframes kl-inst-fade { from { opacity: 0; } }
+@keyframes kl-inst-up { from { transform: translateY(100%); } }
+@keyframes kl-inst-pop { from { opacity: 0; transform: translateY(16px) scale(0.97); } }
+@media (prefers-reduced-motion: reduce) { .kl-inst__veil, .kl-inst__box { animation: none; } }
+/* Menu mobile du site : rangée « Installer l'app » */
+.kl-menu-app { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 14px 10px 10px; border: 0; border-radius: 22px; background: #EEF2FF; color: #0B1435; font: inherit; text-align: left; cursor: pointer; }
+.kl-menu-app img { flex: none; width: 40px; height: 40px; border-radius: 12px; box-shadow: 0 0 0 1px rgba(11,20,53,0.06), 0 8px 16px -10px rgba(30,50,140,0.5); }
+.kl-menu-app span { flex: 1; display: flex; flex-direction: column; line-height: 1.25; }
+.kl-menu-app b { font-weight: 800; letter-spacing: -0.02em; }
+.kl-menu-app small { font-size: 0.8rem; color: #5B6487; }
+.kl-menu-app > svg { color: #1F45E0; }

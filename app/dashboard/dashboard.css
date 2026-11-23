@@ -484,3 +484,42 @@
   .k-shell:has(.preview[data-sheet]) .k-tabs { transform: translateY(140%); opacity: 0; pointer-events: none; }
   .k-shell:has(.preview[data-sheet]) .k-mbar { opacity: 0; pointer-events: none; }
 }
+
+/* Installer l'app : entrée du menu et rappel sur téléphone */
+button.k-side-link { width: 100%; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
+.k-inst-banner { display: none; }
+@media (max-width: 900px) {
+  .k-inst-banner {
+    display: flex; align-items: center; gap: 12px; margin: 12px 10px 0; padding: 10px 10px 10px 12px;
+    border-radius: 22px; background: #fff; box-shadow: 0 0 0 1px rgba(11,20,53,0.06), 0 14px 30px -20px rgba(30,50,140,0.45);
+    animation: k-fade .4s ease both;
+  }
+  .k-inst-banner img { flex: none; width: 40px; height: 40px; border-radius: 12px; box-shadow: 0 0 0 1px rgba(11,20,53,0.06); }
+  .k-inst-banner__t { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+  .k-inst-banner__t b { font-size: 13.5px; font-weight: 800; letter-spacing: -0.02em; color: var(--k-fg); }
+  .k-inst-banner__t span { font-size: 12px; color: var(--k-muted); }
+  .k-inst-banner__go { flex: none; height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: #2F5BFF; color: #fff; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .k-inst-banner__x { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 999px; background: var(--k-surface-2); color: var(--k-muted); cursor: pointer; }
+  /* App installée : le bandeau du haut tient compte de l'encoche. */
+  @media (display-mode: standalone) { .k-mbar { top: calc(8px + env(safe-area-inset-top)); } }
+}
+
+/* Téléphone : la liste des dossiers d'abord. Les indicateurs deviennent un bandeau
+   compact qu'on fait défiler ; « Archives » est déjà dans les onglets du bas. */
+@media (max-width: 900px) {
+  .list-h .ghost-btn { display: none; }
+  .list-h .seg { flex: 1; min-width: 0; }
+}
+@media (max-width: 640px) {
+  .kpi-row { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -10px; padding: 2px 10px 6px; }
+  .kpi-row::-webkit-scrollbar { display: none; }
+  .kpi { flex: none; min-width: 138px; padding: 11px 14px 12px; border-radius: 18px; scroll-snap-align: start; }
+  .kpi-label { font-size: 11.5px; gap: 6px; white-space: nowrap; }
+  .kpi-value { font-size: 26px; margin-top: 6px; }
+  .kpi-delta { display: none; }
+  .alerts { padding: 12px 14px; border-radius: 20px; }
+  .alerts-list { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -14px; padding: 2px 14px; }
+  .alerts-list::-webkit-scrollbar { display: none; }
+  .alerts-list > * { flex: none; }
+}
+@media (max-width: 900px), (pointer: coarse) { .topbar-v2-tools .search kbd { display: none; } }

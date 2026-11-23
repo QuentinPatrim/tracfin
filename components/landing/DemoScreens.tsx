@@ -9,7 +9,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Upload, ShieldCheck, FileText, Camera } from "lucide-react";
+import { Check, Upload, ShieldCheck, FileText, Camera, Folder, ShieldAlert, Plus, Archive, Menu, Search } from "lucide-react";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 import "./demo.css";
 
@@ -164,6 +164,49 @@ export function AttestationMock() {
       </div>
       <div className="am-lines"><i /><i /><i style={{ width: "62%" }} /></div>
       <div className="am-foot"><span>Émis le 20 nov. 2026</span><code>SHA-256 · 9f2c…e41b</code></div>
+    </div>
+  );
+}
+
+/* ─── L'application installée sur le téléphone de l'agent ───
+   Mêmes éléments que l'app réelle sur téléphone (AppShell, DashboardClient) :
+   bandeau, liste des dossiers avec leur niveau, onglets du bas. Noms fictifs. */
+const APP_ROWS: Array<{ ini: string; name: string; sub: string; badge: string; tone: string }> = [
+  { ini: "CR", name: "Camille Rousseau", sub: "Personne physique · Acquéreur", badge: "Standard", tone: "ok" },
+  { ini: "ST", name: "SCI Les Tilleuls", sub: "Personne morale · Acquéreur", badge: "Renforcée", tone: "warn" },
+  { ini: "ML", name: "Marc Lefèvre", sub: "Personne physique · Vendeur", badge: "Standard", tone: "ok" },
+  { ini: "JM", name: "Julien Mercier", sub: "Lien envoyé il y a 2 h", badge: "En attente", tone: "wait" },
+];
+
+export function PhoneApp() {
+  return (
+    <div className="kl-phone" aria-hidden="true">
+      <div className="kl-phone__screen pa">
+        <span className="kl-phone__island" />
+        <div className="pa-bar"><KlarisLogo size={24} /><b>klaris</b></div>
+        <div className="pa-h">Tableau de bord</div>
+        <div className="pa-search"><Search width={16} height={16} /> Rechercher un client</div>
+        <div className="pa-new">
+          <span className="pa-new__i"><Check width={14} height={14} strokeWidth={3} /></span>
+          <div><b>Dossier créé</b><small>Lien envoyé à Julien Mercier par WhatsApp</small></div>
+        </div>
+        <ul className="pa-rows">
+          {APP_ROWS.map((r) => (
+            <li key={r.ini}>
+              <span className="pa-av">{r.ini}</span>
+              <div><b>{r.name}</b><small>{r.sub}</small></div>
+              <span className="pa-badge" data-tone={r.tone}>{r.badge}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="pa-tabs">
+          <span data-on=""><Folder width={19} height={19} />Dossiers</span>
+          <span><ShieldAlert width={19} height={19} />Risques</span>
+          <span className="pa-plus"><i><Plus width={22} height={22} strokeWidth={2.6} /></i>Nouveau</span>
+          <span><Archive width={19} height={19} />Archives</span>
+          <span><Menu width={19} height={19} />Menu</span>
+        </div>
+      </div>
     </div>
   );
 }

@@ -10,9 +10,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Folder, ShieldAlert, UserCheck, Plug, Archive, CreditCard, Tag, Menu, X, ArrowUpRight, Plus } from "lucide-react";
+import { Folder, ShieldAlert, UserCheck, Plug, Archive, CreditCard, Tag, Menu, X, ArrowUpRight, Plus, Smartphone } from "lucide-react";
 import { UserButton, OrganizationSwitcher, useAuth } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
+import InstallApp from "@/components/pwa/InstallApp";
+import InstallBanner from "@/components/pwa/InstallBanner";
 
 interface Sub {
   state: string;
@@ -92,6 +94,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <span>{n.label}</span>
           </Link>
         ))}
+        <InstallApp className="k-side-link" onOpen={() => setOpen(false)}>
+          <Smartphone width={16} height={16} />
+          <span>Installer l&apos;app</span>
+        </InstallApp>
       </nav>
 
       <div className="k-side-foot">
@@ -133,7 +139,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <div className="k-shell-main">{children}</div>
+      <div className="k-shell-main">
+        {pathname === "/dashboard" && <InstallBanner />}
+        {children}
+      </div>
 
       {/* Téléphone : onglets en bas d'écran */}
       <nav className="k-tabs" aria-label="Navigation rapide">
@@ -143,7 +152,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <Link href="/dashboard/cartographie" className={`k-tab ${is("/dashboard/cartographie") ? "is-on" : ""}`}>
           <ShieldAlert width={20} height={20} /><span>Risques</span>
         </Link>
-        <Link href={sub && !sub.isActive ? "/tarifs" : "/dashboard/nouveau"} className="k-tab k-tab--new" aria-label="Nouveau dossier">
+        <Link href={sub && !sub.isActive ? "/tarifs" : "/dashboard/nouveau"} className={`k-tab k-tab--new ${is("/dashboard/nouveau") ? "is-on" : ""}`} aria-label="Nouveau dossier">
           <span className="k-tab-plus"><Plus width={22} height={22} strokeWidth={2.6} /></span><span>Nouveau</span>
         </Link>
         <Link href="/dashboard/archives" className={`k-tab ${is("/dashboard/archives") ? "is-on" : ""}`}>

@@ -46,6 +46,9 @@ const isPublicRoute = createRouteMatcher([
   "/sitemap.xml",
   "/opengraph-image(.*)",
   "/icon(.*)",
+  "/apple-icon(.*)",
+  // Entrée de l'app installée : connexion sur place, puis /dashboard.
+  "/app",
   // Auth Clerk (sign-in / sign-up hébergés par Clerk via routes catch-all)
   "/sign-in(.*)",
   "/sign-up(.*)",

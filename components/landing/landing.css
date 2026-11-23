@@ -2,9 +2,9 @@
    Importé par app/page.tsx. Les jetons viennent de app/globals.css. */
 
 /* ════════ HAUT DE PAGE ════════ */
-.lp-hero { position: relative; isolation: isolate; padding-top: clamp(7rem, 5rem + 5vw, 9rem); overflow: hidden; background: #fff; }
+.lp-hero { position: relative; isolation: isolate; padding-top: clamp(6.5rem, 4.5rem + 4vw, 8rem); overflow: hidden; background: #fff; }
 .lp-hero__inner { display: flex; flex-direction: column; }
-.lp-hero__grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); align-items: center; gap: clamp(2rem, 4vw, 4.5rem); min-height: min(68vh, 640px); }
+.lp-hero__grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); align-items: center; gap: clamp(2rem, 4vw, 4.5rem); }
 .lp-hero__text { min-width: 0; }
 @media (max-width: 1023px) { .lp-hero__grid { grid-template-columns: minmax(0, 1fr); min-height: 0; } }
 
@@ -33,49 +33,65 @@
   .lp-announce:hover svg { transform: translateX(3px); }
 }
 
-.lp-hero h1 { max-width: 14ch; margin-top: 1.5rem; font-size: clamp(2.6rem, 1.4rem + 4.2vw, 4.75rem); }
+.lp-hero h1 { max-width: 14ch; margin-top: 1.3rem; font-size: clamp(2.5rem, 1.4rem + 3.6vw, 4.2rem); }
 .lp-hero h1 em { display: block; }
 .lp-hero .kl-lede { margin-top: 1.4rem; max-width: 50ch; }
 .lp-hero__ctas { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .lp-hero__fine { margin-top: 1.1rem; font-size: 0.88rem; font-weight: 500; color: var(--lp-text-4); }
 .lp-hero__fine button { color: var(--kl-cobalt-text); font-weight: 650; }
+.lp-hero__by { margin-top: 1.4rem; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.9rem 0.4rem 0.45rem; border-radius: 999px; background: rgba(255,255,255,0.7); box-shadow: 0 0 0 1px rgba(11,20,53,0.06); font-size: 0.86rem; font-weight: 600; color: var(--lp-text-2); }
+.lp-hero__by span { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--kl-grad); color: #fff; }
 @media (max-width: 520px) {
   .lp-hero__ctas { flex-direction: column; align-items: stretch; width: 100%; }
 }
 
-/* ════════ LE K QUI SE DÉPLOIE (HeroMark) ════════
-   Unité --u = 1/100 du logo. Fût 18u × 80u ; barres 14u de haut, 2,5u d'écart ;
-   bord gauche d'une barre = fût + décalage (30, 18, 5, 18, 30) : on lit le K. */
-.hm { --u: 4.6px; position: relative; width: 100%; max-width: 560px; height: calc(80 * var(--u)); justify-self: end; }
+/* ════════ LE K ET SES ÉTIQUETTES (HeroMark) ════════
+   Unité --u = 1/100 du logo. Fût 18u × 80u ; barres 32u × 14u, 2,5u d'écart ;
+   bord gauche d'une barre = fût + décalage (30, 18, 5, 18, 30) : on lit le K.
+   Les étiquettes s'alignent sur une colonne juste après la barre la plus à droite. */
+.hm { --u: 3.7px; --gap: 18px; justify-self: end; display: flex; flex-direction: column; gap: 1.4rem; }
+.hm-k { position: relative; width: calc(80 * var(--u) + var(--gap) + 12.5rem); height: calc(80 * var(--u)); }
 .hm-stem { position: absolute; left: 0; top: 0; width: calc(18 * var(--u)); height: 100%; border-radius: 999px; background: #0B1435; transform-origin: 50% 100%; animation: hm-stem 650ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .hm-bars { position: absolute; inset: 0; list-style: none; margin: 0; padding: 0; }
-.hm-bars li { position: absolute; left: calc((18 + var(--off)) * var(--u)); right: 0; top: calc(var(--i) * 16.5 * var(--u)); height: calc(14 * var(--u)); }
+.hm-bars li { position: absolute; left: 0; right: 0; top: calc(var(--i) * 16.5 * var(--u)); height: calc(14 * var(--u)); }
 .hm-bar {
-  position: absolute; left: 0; top: 0; bottom: 0; width: 100%;
-  display: flex; align-items: center; gap: 0.75rem; padding: 0 1.1rem 0 calc(3.2 * var(--u));
-  border-radius: 999px; background: var(--c); color: #fff; overflow: hidden; white-space: nowrap;
-  box-shadow: 0 14px 30px -18px var(--c);
-  animation: hm-in 520ms cubic-bezier(0.34, 1.56, 0.64, 1) both, hm-grow 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(380ms + var(--i) * 80ms), calc(1150ms + var(--i) * 90ms);
-  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 220ms ease, filter 200ms ease;
+  position: absolute; top: 0; left: calc((18 + var(--off)) * var(--u)); width: calc(32 * var(--u)); height: 100%;
+  border-radius: 999px; background: var(--c); box-shadow: 0 12px 26px -16px var(--c);
+  animation: hm-in 560ms cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: calc(380ms + var(--i) * 80ms);
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.hm-bar__n { flex: none; display: grid; place-items: center; width: calc(8 * var(--u)); height: calc(8 * var(--u)); border-radius: 999px; background: rgba(255,255,255,0.22); font-weight: 800; font-size: 0.85rem; }
-.hm-bar__t { font-weight: 750; font-size: clamp(0.92rem, 0.8rem + 0.35vw, 1.08rem); letter-spacing: -0.02em; animation: hm-txt 500ms ease both; animation-delay: calc(1500ms + var(--i) * 90ms); }
+/* Le filet : de la fin de la barre à l'étiquette (un fil d'étiquette). */
+.hm-lead {
+  position: absolute; top: 50%; height: 2px; margin-top: -1px; border-radius: 2px;
+  left: calc((50 + var(--off)) * var(--u) + 5px); width: calc((30 - var(--off)) * var(--u) + var(--gap) - 10px);
+  background: linear-gradient(90deg, var(--c), color-mix(in srgb, var(--c) 25%, transparent));
+  transform-origin: 0 50%; animation: hm-draw 520ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(1050ms + var(--i) * 90ms);
+}
+.hm-lead::after { content: ""; position: absolute; right: -4px; top: -2px; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+.hm-lab {
+  position: absolute; top: 50%; left: calc(80 * var(--u) + var(--gap)); translate: 0 -50%;
+  display: inline-flex; align-items: baseline; gap: 0.55rem; white-space: nowrap;
+  font-size: clamp(0.95rem, 0.85rem + 0.3vw, 1.08rem); font-weight: 700; letter-spacing: -0.02em; color: var(--lp-text);
+  animation: hm-txt 520ms ease both; animation-delay: calc(1250ms + var(--i) * 90ms);
+  transition: color 180ms ease;
+}
+.hm-lab__n { font-family: var(--font-jetbrains-mono), monospace; font-size: 0.72em; font-weight: 600; color: var(--c); }
 @media (hover: hover) {
-  .hm-bar:hover { transform: translateX(8px); box-shadow: 0 18px 36px -14px var(--c); filter: saturate(1.1); }
-  .hm-bars:hover .hm-bar:not(:hover) { filter: saturate(0.6) opacity(0.7); }
+  .hm-bars li:has(.hm-lab:hover) .hm-bar { transform: translateX(6px); }
+  .hm-lab:hover { color: var(--kl-cobalt-text); }
 }
-.hm-cap { position: absolute; left: calc(18 * var(--u) + 1rem); bottom: calc(-2.6rem); font-size: 0.86rem; font-weight: 600; color: var(--lp-text-4); animation: hm-txt 600ms ease 2100ms both; }
+.hm-lab:focus-visible { outline: 2px solid var(--kl-cobalt); outline-offset: 4px; border-radius: 6px; }
+.hm-cap { padding-left: calc(18 * var(--u) + 2px); font-size: 0.86rem; font-weight: 600; color: var(--lp-text-4); animation: hm-txt 600ms ease 1900ms both; }
 @keyframes hm-stem { from { transform: scaleY(0); } }
 @keyframes hm-in { from { opacity: 0; transform: translateX(-24px) scale(0.5); } }
-@keyframes hm-grow { from { width: calc(32 * var(--u)); } }
+@keyframes hm-draw { from { transform: scaleX(0); } }
 @keyframes hm-txt { from { opacity: 0; transform: translateX(-8px); } }
-@media (max-width: 1023px) { .hm { --u: 3.6px; justify-self: start; margin-top: 1.5rem; margin-bottom: 2.5rem; } }
-@media (max-width: 480px) { .hm { --u: 2.7px; margin-top: 0.5rem; } .hm-bar { padding-right: 0.8rem; gap: 0.55rem; } .hm-bar__t { font-size: 0.88rem; } }
-@media (prefers-reduced-motion: reduce) { .hm-stem, .hm-bar, .hm-bar__t, .hm-cap { animation: none; } }
+@media (max-width: 1023px) { .hm { --u: 2.6px; --gap: 14px; justify-self: start; margin-top: 2.5rem; } .hm-k { width: calc(80 * var(--u) + var(--gap) + 11rem); } }
+@media (max-width: 480px) { .hm { --u: 1.9px; --gap: 12px; margin-top: 2rem; gap: 1rem; } .hm-lab { font-size: 0.92rem; } .hm-cap { padding-left: 0; } }
+@media (prefers-reduced-motion: reduce) { .hm-stem, .hm-bar, .hm-lead, .hm-lab, .hm-cap { animation: none; } }
 
 /* Scène : la fenêtre du tableau de bord, le téléphone du client */
-.hs { --p: 0; --ps: 0.62; position: relative; z-index: 0; width: 100%; margin-top: clamp(3.5rem, 2rem + 3vw, 5rem); text-align: left; }
+.hs { --p: 0; --ps: 0.62; position: relative; z-index: 0; width: 100%; margin-top: clamp(2.5rem, 1.5rem + 2.5vw, 3.75rem); text-align: left; }
 .hs::before { content: ""; position: absolute; z-index: -1; left: -50vw; right: -50vw; bottom: -1px; height: 30%; background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 70%); }
 .hs-tilt {
   width: 86%;
@@ -264,3 +280,27 @@
   .ps-plane { transition: none; filter: none; }
   .lp-blobs span, .hs-chip { animation: none; }
 }
+
+/* ════════ SUR LE TÉLÉPHONE (#app) ════════ */
+.lp-app__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: clamp(2.5rem, 5vw, 5rem); align-items: center; }
+.lp-app__list { list-style: none; margin: 1.8rem 0 0; padding: 0; display: grid; gap: 0.9rem; }
+.lp-app__list li { position: relative; padding-left: 1.6rem; color: var(--lp-text-3); line-height: 1.55; }
+.lp-app__list li::before { content: ""; position: absolute; left: 0; top: 0.45em; width: 0.7rem; height: 0.7rem; border-radius: 999px; background: var(--kl-grad); }
+.lp-app__list b { color: var(--lp-text); font-weight: 700; }
+.lp-app__ctas { margin-top: 2.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; }
+.lp-app__qr { display: flex; align-items: center; gap: 0.85rem; padding: 0.5rem 1rem 0.5rem 0.5rem; border-radius: 22px; background: #F5F7FF; font-size: 0.85rem; font-weight: 600; color: var(--lp-text-3); line-height: 1.35; }
+.lp-app__qr img { width: 88px; height: 88px; padding: 8px; border-radius: 16px; background: #fff; box-shadow: 0 0 0 1px rgba(11,20,53,0.06); }
+.lp-app__stage {
+  position: relative; display: grid; place-items: center; min-height: 640px; border-radius: 40px; overflow: hidden;
+  background: radial-gradient(55% 50% at 85% 10%, rgba(255,201,186,0.9), transparent 70%), radial-gradient(60% 55% at 10% 95%, rgba(191,208,255,0.95), transparent 70%), #F5F7FF;
+}
+.lp-app__phone { width: 404px; height: 800px; transform: scale(0.74) rotate(-4deg); margin: -104px -53px; }
+@media (max-width: 1023px) {
+  .lp-app__grid { grid-template-columns: minmax(0, 1fr); }
+  .lp-app__stage { min-height: 560px; }
+  .lp-app__phone { transform: scale(0.66) rotate(-3deg); margin: -136px -69px; }
+}
+/* Sur téléphone, le QR code ne sert à rien : on est déjà sur le téléphone. */
+@media (max-width: 900px), (pointer: coarse) { .lp-app__qr { display: none; } }
+@media (max-width: 520px) { .lp-app__ctas .kl-btn { width: 100%; } .lp-app__stage { min-height: 500px; border-radius: 30px; } .lp-app__phone { transform: scale(0.58) rotate(-3deg); margin: -168px -85px; } }
+@media (max-width: 520px) { .lp-hero__by { border-radius: 18px; align-items: flex-start; } .lp-hero__by span { flex: none; margin-top: 1px; } }

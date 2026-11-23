@@ -15,7 +15,9 @@
 
 import Link from "next/link";
 import { useClerk, useAuth } from "@clerk/nextjs";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, KeyRound } from "lucide-react";
+import InstallApp from "@/components/pwa/InstallApp";
+import { PhoneApp } from "@/components/landing/DemoScreens";
 import FloatingNav from "@/components/landing/FloatingNav";
 import LegalFooter from "@/components/legal/LegalFooter";
 import ScrollFx from "@/components/landing/ScrollFx";
@@ -86,6 +88,10 @@ export default function LandingPage() {
                   {" "}· <button type="button" onClick={signIn}>Se connecter</button>
                 </>
               )}
+            </p>
+            <p className="lp-hero__by kl-enter" style={{ "--d": "260ms" } as React.CSSProperties}>
+              <span aria-hidden="true"><KeyRound width={12} height={12} strokeWidth={2.4} /></span>
+              Conçu par un négociateur immobilier en activité, pour les agences.
             </p>
             </div>
             <HeroMark />
@@ -219,6 +225,39 @@ export default function LandingPage() {
               Pour aller plus loin, <Link href="/guides" className="kl-link">nos guides</Link> détaillent
               les textes et leurs évolutions.
             </p>
+          </div>
+        </section>
+
+        {/* ───────── SUR LE TÉLÉPHONE ───────── */}
+        <section id="app" className="lp-app kl-section kl-section--white">
+          <div className="kl-wrap lp-app__grid">
+            <div>
+              <p className="kl-kicker">Sur votre téléphone</p>
+              <h2 className="kl-display kl-h2 mt-5">
+                Un dossier lancé <em>entre deux visites.</em>
+              </h2>
+              <p className="kl-lede mt-6">
+                Installez Klaris sur l&apos;écran d&apos;accueil de votre téléphone. Vous créez le
+                dossier, le lien part au client par e-mail, WhatsApp ou message, et vous suivez
+                sa fiche depuis la voiture.
+              </p>
+              <ul className="lp-app__list">
+                <li><b>Une icône, comme une application.</b> Klaris s&apos;ouvre en plein écran, directement sur vos dossiers.</li>
+                <li><b>Rien à chercher dans un store.</b> L&apos;installation se fait depuis le site, en deux gestes.</li>
+                <li><b>Toujours à jour.</b> Vos dossiers restent hébergés en Union européenne, pas sur le téléphone.</li>
+              </ul>
+              <div className="lp-app__ctas">
+                <InstallApp className="kl-btn kl-btn--primary kl-btn--lg" label="Installer l'app Klaris" />
+                <div className="lp-app__qr" aria-hidden="true">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/pwa/qr-app.svg" alt="" width={88} height={88} />
+                  <span>Ou scannez avec<br />votre téléphone</span>
+                </div>
+              </div>
+            </div>
+            <div className="lp-app__stage fx-head" data-fx="">
+              <div className="lp-app__phone"><PhoneApp /></div>
+            </div>
           </div>
         </section>
 

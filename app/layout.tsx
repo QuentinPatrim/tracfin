@@ -1,8 +1,9 @@
 import { ClerkProvider } from '@clerk/nextjs'
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import CookieNotice from '@/components/legal/CookieNotice'
+import PwaRegister from '@/components/pwa/PwaRegister'
 
 // Identité « Étiquette » (voir DESIGN.md) : une seule famille, Plus Jakarta Sans,
 // du texte courant (400) aux grands titres (800). JetBrains Mono pour les vraies données.
@@ -27,6 +28,8 @@ export const metadata: Metadata = {
   title: 'Klaris — Conformité LCB-FT pour agences immobilières',
   description: SITE_DESC,
   applicationName: 'Klaris',
+  // Installée sur l'écran d'accueil (voir app/manifest.ts) : plein écran sur iPhone.
+  appleWebApp: { capable: true, title: 'Klaris', statusBarStyle: 'default' },
   keywords: [
     'LCB-FT', 'KYC', 'conformité', 'agent immobilier', 'TRACFIN', 'DGCCRF',
     'attestation', 'lutte anti-blanchiment', 'vigilance', 'RGPD',
@@ -53,6 +56,13 @@ export const metadata: Metadata = {
     title: 'Klaris — Conformité LCB-FT, sans stress',
     description: SITE_DESC,
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#F5F7FF',
+  // L'app installée occupe tout l'écran ; les marges de sécurité (encoche, barre
+  // d'accueil) sont gérées en CSS avec env(safe-area-inset-*).
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -107,6 +117,7 @@ export default function RootLayout({
           />
           {children}
           <CookieNotice />
+          <PwaRegister />
         </body>
       </html>
     </ClerkProvider>

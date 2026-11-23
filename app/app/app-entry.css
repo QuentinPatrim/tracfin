@@ -1,0 +1,11 @@
+/* app/app/app-entry.css — Écran d'accueil de l'app installée. Identité : DESIGN.md. */
+.ae { position: relative; min-height: 100dvh; overflow: hidden; display: grid; place-items: center; padding: calc(28px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom)); background: #F5F7FF; color: #0B1435; }
+.ae-blob { position: absolute; width: 420px; height: 420px; border-radius: 50%; filter: blur(70px); opacity: 0.55; pointer-events: none; }
+.ae-blob--a { top: -160px; left: -140px; background: #B9C8FF; }
+.ae-blob--b { bottom: -170px; right: -150px; background: #FFC9BD; }
+.ae-in { position: relative; width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; }
+.ae-brand { display: flex; align-items: center; gap: 12px; }
+.ae-word { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.05em; }
+.ae-lede { margin: 10px 0 24px; color: #5B6487; font-size: 1rem; }
+.ae-card { width: 100%; border-radius: 28px; background: #fff; box-shadow: 0 0 0 1px rgba(11,20,53,0.05), 0 30px 60px -30px rgba(30,50,140,0.4); overflow: hidden; }
+.ae-card .cl-rootBox, .ae-card .cl-cardBox { width: 100%; max-width: none; }

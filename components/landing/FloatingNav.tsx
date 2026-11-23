@@ -7,8 +7,9 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Play, Menu, X } from "lucide-react";
+import { Play, Menu, X, ArrowRight } from "lucide-react";
 import { useClerk, useAuth, UserButton } from "@clerk/nextjs";
+import InstallApp from "@/components/pwa/InstallApp";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 
 // Démo guidée chargée à la demande (film 3D + sa feuille de style) : exclue du
@@ -18,6 +19,7 @@ const DemoModal = dynamic(() => import("./DemoModal"), { ssr: false });
 const NAV_LINKS = [
   { href: "/#how", label: "Fonctionnement" },
   { href: "/#vigilance", label: "Vigilance" },
+  { href: "/#app", label: "App mobile" },
   { href: "/tarifs", label: "Tarifs" },
   { href: "/guides", label: "Guides" },
 ];
@@ -203,6 +205,12 @@ function MobileMenu({
       </nav>
 
       <div className="kl-wrap pb-6 pt-4 flex flex-col gap-3 shrink-0">
+        <InstallApp className="kl-menu-app">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/pwa/icon-192.png" alt="" width={40} height={40} />
+          <span><b>Installer l&apos;app Klaris</b><small>Sur l&apos;écran d&apos;accueil de ce téléphone</small></span>
+          <ArrowRight width={17} height={17} />
+        </InstallApp>
         {!isSignedIn ? (
           <>
             <button type="button" onClick={onSignUp} className="kl-btn kl-btn--primary w-full">

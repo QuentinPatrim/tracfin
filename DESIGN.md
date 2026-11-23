@@ -47,10 +47,11 @@ Le mouvement raconte le produit, il ne décore pas. **Le défilement n'est jamai
 capté** : un geste fait défiler la page, rien d'autre.
 
 - **Haut de page** : le texte à gauche et, à droite, le K du logo en grand
-  (`components/landing/HeroMark.tsx`). Le fût se dresse, puis les cinq barres se
-  déplient en cinq obligations (identifier, évaluer, conserver, déclarer, justifier) ;
-  les deux premières mènent aux sections correspondantes. Sur téléphone, le K passe
-  sous les boutons. Dessous, `HeroStage.tsx` : le tableau de bord posé en perspective
+  (`components/landing/HeroMark.tsx`). Le logo reste un logo : barres pleines, sans
+  texte dedans. Un filet relie chaque barre à une étiquette en petit (01 Identifier le
+  client… 05 Justifier au contrôle), qui mène à la section correspondante. Sur
+  téléphone, le K passe sous les boutons, en version compacte. Sous les boutons, la
+  pastille « Conçu par un négociateur immobilier en activité ». Dessous, `HeroStage.tsx` : le tableau de bord posé en perspective
   se redresse au défilement, le téléphone du client remonte en parallaxe.
 - **Entrées** : montée avec léger flou (`.kl-enter`), ressort sur les survols
   (`--kl-ease-spring`), barres du logo qui glissent en place (`animated`).
@@ -84,12 +85,28 @@ capté** : un geste fait défiler la page, rien d'autre.
   conservés ; `.btn-grad` est un bouton cobalt en pilule).
 - **Indicateurs** : quatre cartes, la première en dégradé de marque.
 - **Aperçu d'un dossier** : l'étiquette de vigilance compacte (`VigilanceMini`). Sur
-  téléphone, il s'ouvre en feuille glissante depuis le bas au toucher d'un dossier
+  téléphone, les indicateurs deviennent un bandeau compact défilant pour que la liste
+  arrive tout de suite ; l'aperçu s'ouvre en feuille glissante depuis le bas au toucher d'un dossier
   (poignée, croix, voile, Échap) ; les onglets s'effacent derrière.
 - **Cartes et pilules** : la pilule est réservée aux boutons, badges et champs d'une
   ligne. Une carte qui contient plusieurs lignes prend un rayon de 20 à 28 px.
 - **Niveaux dans l'application** : vert (standard), ambre (renforcée), orange (examen
   renforcé), rouge plein (interdiction).
+
+## App installable (téléphone)
+
+- Klaris s'installe sur l'écran d'accueil depuis le site, sans store : manifeste
+  `app/manifest.ts`, icônes `public/pwa/` (générées depuis le monogramme), icône
+  Apple `app/apple-icon.png`, service worker `public/sw.js`.
+- **Le service worker ne met aucune donnée en cache** : seule la page
+  `public/offline.html` (« Pas de connexion ») est gardée.
+- L'app s'ouvre sur `/app` (`app/app/`) : connexion sur place (composant Clerk
+  intégré, même domaine, indispensable sur iPhone), puis `/dashboard`.
+- Bouton « Installer l'app » : `components/pwa/InstallApp.tsx`. Android : invite du
+  navigateur. iPhone : feuille avec les gestes Safari. Ordinateur : QR code
+  (`public/pwa/qr-app.svg`, vers www.klaris-app.fr/app). Masqué une fois installée.
+  Présent dans la section `#app` du site, le menu mobile du site, le menu de l'app
+  et un bandeau refermable sur le tableau de bord (téléphone).
 
 ## PDF
 
