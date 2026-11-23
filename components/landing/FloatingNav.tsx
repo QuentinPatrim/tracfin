@@ -18,9 +18,8 @@ const DemoModal = dynamic(() => import("./DemoModal"), { ssr: false });
 const NAV_LINKS = [
   { href: "/#how", label: "Fonctionnement" },
   { href: "/#vigilance", label: "Vigilance" },
-  { href: "/guides", label: "Guides" },
-  { href: "/confiance", label: "Confiance" },
   { href: "/tarifs", label: "Tarifs" },
+  { href: "/guides", label: "Guides" },
 ];
 
 export default function FloatingNav({ over = "paper" }: { over?: "paper" | "field" }) {
@@ -81,7 +80,7 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
         <div className="kl-wrap">
         <div className="kl-nav__bar flex items-center justify-between gap-3 h-[3.6rem]">
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Klaris, accueil">
-            <KlarisLogo size={30} animated />
+            <KlarisLogo size={36} animated />
             <span className="kl-wordmark">Klaris</span>
           </Link>
 

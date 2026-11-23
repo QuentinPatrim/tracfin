@@ -93,7 +93,7 @@ export default function AbonnementActions({
         {/* Changer de plan — toujours accessible */}
         <Link
           href="/tarifs"
-          className="rounded-full p-5 transition-all border"
+          className="rounded-[22px] p-5 transition-all border"
           style={{
             background: "white",
             borderColor: "rgba(11,20,53,0.10)",
@@ -129,7 +129,7 @@ export default function AbonnementActions({
             type="button"
             onClick={cancelSubscription}
             disabled={loading !== null}
-            className="rounded-full p-5 text-left transition-all border disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-[22px] p-5 text-left transition-all border disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: "white",
               borderColor: "rgba(197,48,44,0.18)",
@@ -164,7 +164,7 @@ export default function AbonnementActions({
             type="button"
             onClick={reactivateSubscription}
             disabled={loading !== null}
-            className="rounded-full p-5 text-left transition-all border disabled:opacity-50 disabled:cursor-not-allowed"
+            className="rounded-[22px] p-5 text-left transition-all border disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: "linear-gradient(135deg, #16A06A, #0F7A4F)",
               borderColor: "transparent",
@@ -225,7 +225,7 @@ export default function AbonnementActions({
           type="button"
           onClick={openPortal}
           disabled={loading !== null}
-          className="w-full rounded-full p-4 transition-all border text-left flex items-center gap-3 disabled:opacity-50"
+          className="w-full rounded-[22px] p-4 transition-all border text-left flex items-center gap-3 disabled:opacity-50"
           style={{
             background: "rgba(255,255,255,0.6)",
             borderColor: "rgba(11,20,53,0.08)",

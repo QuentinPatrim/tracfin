@@ -340,6 +340,8 @@ body {
     backdrop-filter: saturate(180%) blur(16px); -webkit-backdrop-filter: saturate(180%) blur(16px);
     transition: background-color 220ms ease, box-shadow 220ms ease;
   }
+  /* En haut de page, la barre s'efface : le logo et le bouton suffisent. */
+  .kl-nav[data-solid="false"] .kl-nav__bar { background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
   .kl-nav[data-solid="true"] .kl-nav__bar, .kl-nav[data-solid="field"] .kl-nav__bar { background: rgba(255,255,255,0.9); box-shadow: 0 0 0 1px rgba(11,20,53,0.07), 0 16px 40px -20px rgba(11,20,53,0.35); }
   .kl-nav__link { font-size: 0.92rem; font-weight: 600; padding: 0.55rem 0.85rem; border-radius: 999px; color: var(--lp-text-3); transition: color 160ms ease, background-color 160ms ease; }
   @media (hover: hover) { .kl-nav__link:hover { color: var(--lp-text); background: var(--lp-surface-2); } }
@@ -347,7 +349,7 @@ body {
   .kl-nav__icon:active { transform: scale(0.94); }
   @media (hover: hover) { .kl-nav__icon:hover { background: var(--lp-surface-2); } }
 
-  .kl-wordmark { font-family: var(--font-sans-face), ui-sans-serif, system-ui, sans-serif; font-size: 1.5rem; line-height: 1; letter-spacing: -0.05em; font-weight: 800; text-transform: lowercase; }
+  .kl-wordmark { font-family: var(--font-sans-face), ui-sans-serif, system-ui, sans-serif; font-size: 1.7rem; line-height: 1; letter-spacing: -0.05em; font-weight: 800; text-transform: lowercase; }
 
   .kl-sheet { background: var(--kl-sheet); border-radius: var(--kl-r-paper); box-shadow: var(--kl-sheet-shadow); overflow: hidden; position: relative; }
   .kl-card { background: var(--lp-card-bg); border-radius: var(--kl-r-card); box-shadow: 0 0 0 1px var(--lp-card-border), var(--lp-card-shadow); }

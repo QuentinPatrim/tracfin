@@ -528,7 +528,7 @@ function CompactView({
   return (
     <Link
       href={`/dashboard/${dossierId}`}
-      className="block rounded-full p-4 transition-transform hover:-translate-y-0.5"
+      className="block rounded-[22px] p-4 transition-transform hover:-translate-y-0.5"
       style={{
         background: c.bgSoft,
         border: `1px solid ${c.border}`,

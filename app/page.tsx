@@ -21,6 +21,7 @@ import LegalFooter from "@/components/legal/LegalFooter";
 import ScrollFx from "@/components/landing/ScrollFx";
 import LegalRef from "@/components/landing/LegalRef";
 import HeroStage from "@/components/landing/HeroStage";
+import HeroMark from "@/components/landing/HeroMark";
 import ProductStory from "@/components/landing/ProductStory";
 import { VigilanceExplorer } from "@/components/landing/VigilanceScale";
 import KlarisLogo from "@/components/ui/KlarisLogo";
@@ -41,9 +42,11 @@ export default function LandingPage() {
 
       <main>
         {/* ───────── HAUT DE PAGE ───────── */}
-        <section className="lp-hero kl-grid-bg">
+        <section className="lp-hero">
           <div className="lp-blobs" aria-hidden="true"><span /><span /><span /></div>
           <div className="kl-wrap lp-hero__inner">
+            <div className="lp-hero__grid">
+            <div className="lp-hero__text">
             <Link href="/guides/decret-tracfin-2026" className="lp-announce kl-enter">
               <b>Guide</b>
               <span>Décret Tracfin 2026<span className="hidden sm:inline"> : ce qui change pour les agences</span></span>
@@ -84,6 +87,9 @@ export default function LandingPage() {
                 </>
               )}
             </p>
+            </div>
+            <HeroMark />
+            </div>
 
             <div className="kl-enter w-full" style={{ "--d": "320ms" } as React.CSSProperties}>
               <HeroStage />

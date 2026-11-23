@@ -1,7 +1,8 @@
 // components/dashboard/AppShell.tsx — Cadre commun des écrans connectés
 //
 // Une barre latérale fixe (marque, organisation, navigation, essai, compte) et la
-// page à droite. Sur téléphone, la barre devient un bandeau avec un menu.
+// page à droite. Sur téléphone : un bandeau en haut et une barre d'onglets en bas,
+// à portée de pouce (Dossiers, Cartographie, Nouveau, Archives, Menu).
 // L'écran d'attente du client (/dashboard/[id]/wait) garde son plein écran sombre.
 
 "use client";
@@ -9,7 +10,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Folder, ShieldAlert, UserCheck, Plug, Archive, CreditCard, Tag, Menu, X, ArrowUpRight } from "lucide-react";
+import { Folder, ShieldAlert, UserCheck, Plug, Archive, CreditCard, Tag, Menu, X, ArrowUpRight, Plus } from "lucide-react";
 import { UserButton, OrganizationSwitcher, useAuth } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 
@@ -133,6 +134,25 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       )}
 
       <div className="k-shell-main">{children}</div>
+
+      {/* Téléphone : onglets en bas d'écran */}
+      <nav className="k-tabs" aria-label="Navigation rapide">
+        <Link href="/dashboard" className={`k-tab ${is("/dashboard") ? "is-on" : ""}`}>
+          <Folder width={20} height={20} /><span>Dossiers</span>
+        </Link>
+        <Link href="/dashboard/cartographie" className={`k-tab ${is("/dashboard/cartographie") ? "is-on" : ""}`}>
+          <ShieldAlert width={20} height={20} /><span>Risques</span>
+        </Link>
+        <Link href={sub && !sub.isActive ? "/tarifs" : "/dashboard/nouveau"} className="k-tab k-tab--new" aria-label="Nouveau dossier">
+          <span className="k-tab-plus"><Plus width={22} height={22} strokeWidth={2.6} /></span><span>Nouveau</span>
+        </Link>
+        <Link href="/dashboard/archives" className={`k-tab ${is("/dashboard/archives") ? "is-on" : ""}`}>
+          <Archive width={20} height={20} /><span>Archives</span>
+        </Link>
+        <button type="button" className="k-tab" onClick={() => setOpen(true)} aria-label="Ouvrir le menu">
+          <Menu width={20} height={20} /><span>Menu</span>
+        </button>
+      </nav>
     </div>
   );
 }

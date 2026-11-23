@@ -3,14 +3,14 @@
 // Le texte défile normalement ; à côté (ou au-dessus, sur téléphone), une scène
 // reste épinglée et change de plan quand une étape passe au milieu de l'écran.
 // Le défilement n'est jamais capté : un geste fait défiler la page, rien d'autre.
-// Les écrans montrés sont ceux du produit : le vrai formulaire client (/kyc/demo)
-// et la vraie attestation (/pdf-render/attestation/demo).
+// Les écrans montrés reprennent ceux du produit, en version légère (pas d'iframe) :
+// components/landing/DemoScreens.tsx.
 
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { Check, Link2, MessageCircle, Mail, MessageSquare, FileArchive, AlertCircle } from "lucide-react";
-import KycPhone from "./KycPhone";
+import { PhoneForm, AttestationMock } from "./DemoScreens";
 import { LEVELS } from "./VigilanceScale";
 
 const STEPS = [
@@ -40,17 +40,7 @@ export default function ProductStory() {
   const stageRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<Array<HTMLLIElement | null>>([]);
   const [active, setActive] = useState(0);
-  const [near, setNear] = useState(false);
   const [scale, setScale] = useState(1);
-
-  /* Charge les écrans lourds (iframes) seulement quand la section approche. */
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); io.disconnect(); } }, { rootMargin: "100% 0px" });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   /* Étape active : celle qui croise la ligne de lecture (au milieu de l'écran sur
      ordinateur, plus bas sur téléphone, sous la scène épinglée). */
@@ -96,10 +86,10 @@ export default function ProductStory() {
               <div className="ps-design" style={{ width: DESIGN_W, height: DESIGN_H, transform: `translate(-50%, -50%) scale(${scale})` }}>
                 <Plane on={active === 0}><SharePlane /></Plane>
                 <Plane on={active === 1}>
-                  <div className="ps-phone">{near && <KycPhone playing={active === 1} interval={1900} />}</div>
+                  <div className="ps-phone"><PhoneForm playing={active === 1} interval={1700} /></div>
                 </Plane>
                 <Plane on={active === 2}><AnalysisPlane /></Plane>
-                <Plane on={active === 3}><AttestationPlane load={near} /></Plane>
+                <Plane on={active === 3}><AttestationPlane /></Plane>
               </div>
             </div>
             <div className="ps-dots" aria-hidden="true">
@@ -134,7 +124,7 @@ function Plane({ on, children }: { on: boolean; children: React.ReactNode }) {
 
 /* 1 — L'écran « Dossier créé » (mêmes libellés que app/dashboard/nouveau) et le
    message qui arrive chez le client. */
-function SharePlane() {
+export function SharePlane() {
   return (
     <div className="ps-share">
       <div className="ps-card">
@@ -160,7 +150,7 @@ function SharePlane() {
 }
 
 /* 3 — L'analyse de risque (sections de components/tracfin/Step2) et l'étiquette. */
-function AnalysisPlane() {
+export function AnalysisPlane() {
   const rows: Array<[string, string, boolean]> = [
     ["Risque géographique", "France", true],
     ["Origine des fonds", "Prêt bancaire et apport personnel", true],
@@ -201,19 +191,11 @@ function AnalysisPlane() {
 }
 
 /* 4 — La vraie attestation, et l'archive du dossier. */
-function AttestationPlane({ load }: { load: boolean }) {
+export function AttestationPlane() {
   return (
     <div className="ps-att">
       <div className="ps-att__sheet kl-sheet">
-        {load && (
-          <iframe
-            src="/pdf-render/attestation/demo"
-            title="Attestation générée par Klaris (exemple fictif)"
-            tabIndex={-1}
-            scrolling="no"
-            loading="lazy"
-          />
-        )}
+        <AttestationMock />
       </div>
       <div className="ps-att__zip">
         <span className="ps-att__zipico"><FileArchive size={18} /></span>

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight, FileDown, Archive, Mail, FileCheck,
-  ChevronRight, AlertTriangle, Send, ExternalLink, Package, Check,
+  ChevronRight, AlertTriangle, Send, ExternalLink, Package, Check, X,
 } from "lucide-react";
 import Topbar from "./Topbar";
 import KpiRow from "./KpiRow";
@@ -239,6 +239,14 @@ export default function DashboardClient({
     return received?.id ?? dossiers[0]?.id ?? null;
   }, [dossiers]);
   const [selectedId, setSelectedId] = useState<string | null>(defaultSelected);
+  // Téléphone : l'aperçu s'ouvre en feuille glissante depuis le bas.
+  const [sheet, setSheet] = useState(false);
+  useEffect(() => {
+    if (!sheet) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setSheet(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [sheet]);
 
   // État d'archivage (soft-delete conforme L.561-12 : conservation 5 ans)
   const [confirmArchive, setConfirmArchive] = useState<DossierItem | null>(null);
@@ -409,7 +417,7 @@ export default function DashboardClient({
                   <button
                     key={d.id}
                     className={`row card-row ${isSelected ? "selected" : ""}`}
-                    onClick={() => setSelectedId(d.id)}
+                    onClick={() => { setSelectedId(d.id); setSheet(true); }}
                   >
                     <div className="row-l">
                       <span className="row-avatar">{initials(d.nom_prenom)}</span>
@@ -453,7 +461,14 @@ export default function DashboardClient({
           </section>
 
           {/* ─── PREVIEW PANE ─── */}
-          <aside className="card preview">
+          {sheet && <button type="button" className="sheet-veil" aria-label="Fermer l'aperçu" onClick={() => setSheet(false)} />}
+          <aside className="card preview" data-sheet={sheet ? "open" : undefined}>
+            <div className="preview-grab">
+              <span />
+              <button type="button" className="preview-x" onClick={() => setSheet(false)} aria-label="Fermer l'aperçu">
+                <X width={17} height={17} />
+              </button>
+            </div>
             {selected ? (
               <SelectedPreview
                 dossier={selected}

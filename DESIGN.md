@@ -46,17 +46,25 @@ Une seule famille : **Plus Jakarta Sans** (`--font-sans-face`), 400 à 800. Titr
 Le mouvement raconte le produit, il ne décore pas. **Le défilement n'est jamais
 capté** : un geste fait défiler la page, rien d'autre.
 
-- **Haut de page** (`components/landing/HeroStage.tsx`) : brume de couleur qui dérive
-  lentement ; le tableau de bord posé en perspective se redresse au défilement ; le
-  téléphone du client (vrai formulaire qui avance seul) remonte en parallaxe ; deux
-  pastilles flottent autour.
+- **Haut de page** : le texte à gauche et, à droite, le K du logo en grand
+  (`components/landing/HeroMark.tsx`). Le fût se dresse, puis les cinq barres se
+  déplient en cinq obligations (identifier, évaluer, conserver, déclarer, justifier) ;
+  les deux premières mènent aux sections correspondantes. Sur téléphone, le K passe
+  sous les boutons. Dessous, `HeroStage.tsx` : le tableau de bord posé en perspective
+  se redresse au défilement, le téléphone du client remonte en parallaxe.
 - **Entrées** : montée avec léger flou (`.kl-enter`), ressort sur les survols
   (`--kl-ease-spring`), barres du logo qui glissent en place (`animated`).
 - **Comment ça marche** (`components/landing/ProductStory.tsx`) : quatre étapes ; une
   scène reste épinglée à côté du texte (au-dessus sur téléphone) et change de plan
   quand une étape passe au milieu de l'écran.
-- **Démo guidée** : le film en 3D (`components/landing/DemoModal.tsx`,
-  `demo-film.css`) ; les chapitres alternent un fond cobalt et un fond brume.
+- **Démo guidée** (`components/landing/DemoModal.tsx`, styles `.dg-*` de `demo.css`) :
+  quatre chapitres façon « stories », texte à gauche et écran à droite (au-dessus sur
+  téléphone). Une barre par chapitre : son animation CSS porte le temps, la pause la
+  fige, sa fin passe au chapitre suivant. Toucher à gauche / à droite, flèches, espace,
+  Échap. Fin : un panneau cobalt avec l'appel à l'essai.
+- **Aucune iframe dans le site public.** Les écrans (formulaire du client, attestation)
+  sont reconstitués en HTML léger dans `DemoScreens.tsx` et partagés par le haut de
+  page, « Comment ça marche » et la démo.
 - **Sous les sections** : un geste par section (`ScrollFx.tsx`, bloc « Effets liés au
   défilement » de `globals.css`).
 - Règles : seuls `transform`, `opacity` et `clip-path` sont animés ; le texte est
@@ -69,12 +77,17 @@ capté** : un geste fait défiler la page, rien d'autre.
 ## Application connectée
 
 - **Cadre** : `components/dashboard/AppShell.tsx`, posé par `app/dashboard/layout.tsx`.
-  Barre latérale blanche (logo, organisation, navigation, essai, compte) ; sur
-  téléphone, une pilule flottante et un tiroir.
+  Barre latérale blanche (logo, organisation, navigation, essai, compte). Sur
+  téléphone (≤ 900 px) : un bandeau en pilule en haut et une barre d'onglets flottante
+  en bas (Dossiers, Risques, « + » Nouveau, Archives, Menu → tiroir).
 - **Jetons** : `--k-*` dans `app/dashboard/dashboard.css` (noms de classes d'origine
   conservés ; `.btn-grad` est un bouton cobalt en pilule).
 - **Indicateurs** : quatre cartes, la première en dégradé de marque.
-- **Aperçu d'un dossier** : l'étiquette de vigilance compacte (`VigilanceMini`).
+- **Aperçu d'un dossier** : l'étiquette de vigilance compacte (`VigilanceMini`). Sur
+  téléphone, il s'ouvre en feuille glissante depuis le bas au toucher d'un dossier
+  (poignée, croix, voile, Échap) ; les onglets s'effacent derrière.
+- **Cartes et pilules** : la pilule est réservée aux boutons, badges et champs d'une
+  ligne. Une carte qui contient plusieurs lignes prend un rayon de 20 à 28 px.
 - **Niveaux dans l'application** : vert (standard), ambre (renforcée), orange (examen
   renforcé), rouge plein (interdiction).
 
@@ -96,7 +109,8 @@ page inchangés. La police reste Inter.
 
 - Jetons et classes `.kl-*` : `app/globals.css`. Page d'accueil : `app/page.tsx` et
   `components/landing/landing.css`.
-- Haut de page : `HeroStage.tsx`, `AppMock.tsx`, `KycPhone.tsx`. Étapes :
+- Haut de page : `HeroMark.tsx`, `HeroStage.tsx`, `AppMock.tsx`, `KycPhone.tsx`.
+  Écrans légers : `DemoScreens.tsx` + `demo.css`. Démo : `DemoModal.tsx`. Étapes :
   `ProductStory.tsx`. Échelle : `VigilanceScale.tsx` (ses textes décrivent les règles
   de `lib/tracfin.ts` : si le moteur change, ils changent aussi).
 - Navigation : `components/landing/FloatingNav.tsx`. Pied de page :

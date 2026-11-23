@@ -389,7 +389,7 @@ function PartieButton({
     <button
       type="button"
       onClick={onClick}
-      className="rounded-full px-4 py-3 text-left transition-all border"
+      className="rounded-[20px] px-4 py-3 text-left transition-all border"
       style={{
         background: active
           ? "linear-gradient(180deg, rgba(47,91,255,0.10), rgba(47,91,255,0.04))"
