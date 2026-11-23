@@ -1,167 +1,133 @@
-# Identité de Klaris : « Papier & encre »
+# Identité de Klaris : « Registre »
 
 Ce fichier décrit les choix visuels du site public (accueil, tarifs, confiance,
 sécurité, guides, pages légales), du formulaire client, de l'application connectée
-(tableau de bord et écrans de dossier) et des PDF. Tous partagent la même palette et
-la même typographie ; l'application garde sa propre feuille de style
-(`app/dashboard/dashboard.css`) et sa disposition d'origine.
-
-À lire avant toute modification visuelle, par un humain ou par un agent.
+et des PDF. À lire avant toute modification visuelle, par un humain ou par un agent.
 
 ## L'idée
 
-Klaris s'adresse à des professionnels de l'immobilier, pas à des startups. Le site
-parle donc leur langue visuelle :
+Klaris tient le registre LCB-FT d'une agence immobilière. L'identité en prend la
+tenue : celle d'un document notarié bien composé, pas celle d'une start-up.
 
-- **Le document, pas la carte à icône.** On montre la vraie attestation
-  (`/pdf-render/attestation/demo`) et le vrai formulaire client (`/kyc/demo`),
-  mis en scène au défilement.
+- **Encre et papier.** Un fond papier clair, du texte d'encre, des filets fins. Les
+  sections de nuit (haut de page, hébergement, appel final) rythment la page.
+- **Une seule couleur d'accent : l'iris** (`#5847E8`), utilisée avec parcimonie
+  (liens, sélection, focus, petites marques). Le bouton principal est **d'encre**
+  sur papier, **blanc** sur la nuit.
+- **Le dégradé violet → rose ne survit qu'à un endroit** : le petit losange du
+  monogramme. Nulle part ailleurs : ni bouton, ni texte, ni halo. C'est ce dégradé
+  partout qui donnait l'impression d'un logiciel « généré ».
+- **Le produit, pas des cartes à icône.** On montre le vrai formulaire client
+  (`/kyc/demo`), la vraie attestation (`/pdf-render/attestation/demo`) et une
+  reproduction fidèle du tableau de bord (`components/landing/AppMock.tsx`).
 - **L'échelle de vigilance** reprend la grammaire de l'étiquette énergie. C'est la
-  signature du site. Elle n'apparaît que là où elle a un sens (niveau d'un dossier).
-- **Papier et encre.** Fond clair par défaut, des champs pleins en indigo nuit,
-  éclairés d'une lueur violet / rose, pour rythmer la page.
+  signature du produit : sur le site, dans l'aperçu d'un dossier, dans les maquettes.
 
 ## Couleurs
 
-Palette « Iris » : les couleurs de la marque (logo, vidéos). Toutes passent par des
-variables CSS dans `app/globals.css`.
-
-| Rôle | Clair | Variable |
+| Rôle | Valeur | Variable |
 |---|---|---|
-| Fond papier | `#F6F5FA` | `--lp-bg` |
-| Feuille, cartes | `#FFFFFF` | `--lp-card-bg`, `--kl-sheet` |
-| Texte | `#17123A` | `--lp-text` (puis `-2`, `-3`, `-4`) |
-| Violet (principal) | `#6D5EF6`, en texte `#5B46E0` | `--lp-accent`, `--lp-accent-text` |
-| Rose (second) | `#EC4899`, en texte `#BE185D` | `--lp-accent-2`, `--lp-accent-2-text` |
-| Indigo (appoint) | `#4F46E5` | `--lp-accent-3` |
-| Champ d'encre | `#110E30` + lueur | `--kl-field`, `--kl-field-glow` |
-| Dégradé du bouton principal | `#6D5EF6 → #A548D8 → #DB2777` | `--lp-cta-grad` |
-| Vigilance 1 à 4 | `#1E9E6A` `#E3A008` `#DD6B20` `#C5302C` | `--kl-v1` … `--kl-v4` |
+| Encre (texte, bouton principal) | `#121118` | `--kl-ink`, `--lp-text`, `--k-fg` |
+| Papier (fond) | `#F6F6F3` | `--kl-paper`, `--lp-bg` |
+| Feuille (cartes) | `#FFFFFF` | `--lp-card-bg`, `--k-surface` |
+| Barre latérale de l'application | `#F1F0EC` | `--k-side-bg` |
+| Nuit (sections sombres) | `#0B0A10` | `--kl-night`, `--kl-field` |
+| Iris (accent) | `#5847E8`, en texte `#4A3AD6` | `--lp-accent`, `--lp-accent-text`, `--k-accent` |
+| Vigilance 1 à 4 | `#1F9A68` `#D9980A` `#D86A21` `#C23630` | `--kl-v1…4`, `--k-v1…4` |
 
 Règles :
 
-- **Le dégradé violet → rose est réservé à quatre endroits** : la lueur des champs
-  d'encre, le bouton principal, les chiffres d'étape de la séquence, le logo. Pas de
-  dégradé sur du texte courant ni sur les titres de la page d'accueil.
-- **Le blanc doit rester lisible sur tout le bouton** : c'est pour cela que le
-  dégradé du bouton finit sur un rose plus soutenu (`#DB2777`) que le rose de marque.
-- **Les couleurs de vigilance portent un sens.** Elles ne servent jamais de décor.
-- Pas d'effet verre (`backdrop-filter` décoratif), pas de halo flou derrière les
-  cartes.
+- Les couleurs de vigilance portent un sens. Jamais de décor.
+- Les utilitaires Tailwind `slate`, `violet`, `indigo`, `emerald`, `red` sont
+  redéfinis dans `app/globals.css` (`@theme`) : `text-slate-500` donne le gris
+  d'encre, `bg-violet-500` l'iris.
+- Pas d'effet verre décoratif, pas de halo flou derrière les cartes, pas d'ombre
+  colorée. Une carte, c'est un fond blanc et un filet (`0 0 0 1px` à 8 %).
+- Thème sombre du site : mêmes règles, le bouton principal passe à l'iris.
 
 ## Typographie
 
-- **Titres : Bricolage Grotesque** (`--font-display`), graisse 700, légèrement
-  étroitisée (`font-variation-settings: "wdth" 90`). Classe `.kl-display`, tailles
-  `.kl-h1`, `.kl-h2`, `.kl-h3`. Tous les `h1`/`h2` des pages publiques la reçoivent
-  automatiquement.
-- **Texte : Inter** (`--font-inter`).
-- **JetBrains Mono** uniquement pour de vraies données (empreinte, référence de
-  dossier), jamais comme habillage.
-- Pas d'étiquette en capitales espacées au-dessus des titres. Pas de mot du titre
-  mis en couleur.
+- **Titres : Instrument Serif** (`--font-serif-face`), une seule graisse. Classe
+  `.kl-display`, tailles `.kl-h1`, `.kl-h2`. Tous les `h1`/`h2` du site public la
+  reçoivent automatiquement. `font-synthesis: none` : jamais de faux gras.
+- **Mise en relief : l'italique de la serif** (`<em>` dans un titre). Pas de mot
+  coloré, pas de dégradé sur du texte.
+- **Texte et interface : Instrument Sans** (`--font-sans-face`).
+- **JetBrains Mono** uniquement pour de vraies données : référence d'article,
+  empreinte, numéro de dossier, numéro d'étape.
+- Pas de petites capitales espacées (le grand marqueur des interfaces générées).
+  Une règle hors couche dans `globals.css` les neutralise sur les pages anciennes.
+  Pour légender une section : `.kl-kicker` (une phrase courte précédée d'un filet).
+- Dans l'application : titres de page et chiffres des indicateurs en serif, tout le
+  reste en Instrument Sans.
 
 ## Formes
 
-- Documents et feuilles : coins presque vifs (`--kl-r-paper`, 4 px).
-- Boutons et champs : `--kl-r-ctl` (10 px). Pas de bouton « pilule ».
-- La numérotation est réservée aux vraies séquences (les quatre étapes).
+- Boutons et champs : 8 px de rayon. Cartes : 12 px. Documents : 3 px.
+- Pastilles de statut : 6 px, à plat, un point de couleur devant le libellé.
+- Monogramme : `components/ui/KlarisLogo.tsx` (variantes `inverted`, `mono`,
+  `noBackground`), même dessin dans le favicon (`app/icon.tsx`) et les PDF
+  (`klarisLogoSvg` dans `lib/pdf-helpers.ts`). Mot-symbole : `.kl-wordmark` (serif).
 
 ## Mouvement
 
-Le mouvement raconte le produit, il ne décore pas.
+Le mouvement raconte le produit, il ne décore pas. **Le défilement n'est jamais
+capté** : un geste fait défiler la page, rien d'autre.
 
-- **Haut de page : une séquence en quatre plans** (`components/landing/ScrollStory.tsx`).
-  La scène occupe un écran. Chaque étape a son propre cadrage, pour qu'on ne les
-  confonde pas : (1) l'écran « Dossier créé » au premier plan, le téléphone du client
-  au loin, le lien part de l'un vers l'autre ; (2) on entre dans le téléphone, le vrai
-  formulaire avance tout seul ; (3) le téléphone sort, l'étiquette de vigilance se
-  construit ; (4) l'attestation se relève et l'étiquette vient s'y coller.
-- **Un geste = une étape.** Tant que la page est tout en haut, un glissement du doigt,
-  un coup de molette ou une flèche du clavier fait avancer d'un plan, jamais de deux,
-  même avec un grand geste (demande explicite : sur téléphone, un seul glissement
-  faisait défiler les trois étapes d'un coup). Après le dernier plan, la page défile
-  normalement ; revenu tout en haut, on remonte les plans. Le lien « Passer » et les
-  repères sur le bord droit (ordinateur) restent toujours disponibles.
-- **Démo guidée : un film en 3D** (`components/landing/DemoModal.tsx`, styles dans
-  `components/landing/demo-film.css`). Les écrans du produit sont posés dans un décor
-  en trois dimensions ; une caméra vole de l'un à l'autre (tableau de bord, téléphone
-  du client, analyse de risque et étiquette, attestation et archive). Les fonds
-  alternent encre et papier d'un chapitre à l'autre. Tout se déduit d'une seule
-  horloge : pause, retour et saut de chapitre reviennent à changer l'heure.
-  Deux précautions de mise en scène : un objet n'entre jamais dans le champ à moitié
-  coupé (l'archive est accrochée au bas de l'attestation, les décors sont assez
-  espacés pour ne pas laisser traîner celui du chapitre précédent), et la barre du
-  haut est opaque, pour qu'un document qui passe dessous ne paraisse pas flou.
-- **Sous la séquence : un geste par section** (`components/landing/ScrollFx.tsx` et
-  le bloc « Effets liés au défilement » de `globals.css`). Les barres de l'échelle
-  se déploient, les lignes du tableau s'inscrivent une à une, le champ d'encre de
-  l'hébergement s'ouvre d'un panneau vers la pleine largeur. Pas d'apparition
-  identique plaquée sur tout.
-- **Règles** :
-  - le défilement n'est capté qu'à un seul endroit, la séquence du haut de page, et
-    seulement quand la page est tout en haut. Partout ailleurs, la page suit le doigt ;
-  - seuls `transform`, `opacity` et `clip-path` sont animés ;
-  - le texte est toujours dans le DOM et lisible sans JavaScript ;
-  - `prefers-reduced-motion` : la séquence s'affiche à plat et ne capte aucun geste,
-    la démo passe d'un plan fixe au suivant sans vol de caméra, les effets de section
-    sont désactivés ;
-  - interface (boutons, survols) sous 300 ms, courbe `--kl-ease-out`, retour au clic
-    par `scale(0.97)`, survol dans `@media (hover: hover)`.
-- **On ne montre que ce que le produit fait.** L'envoi du lien passe par la messagerie
-  de l'agent (e-mail, WhatsApp, message) ; le niveau de vigilance vient de l'analyse
-  saisie par l'agent ; aucun contrôle n'est présenté comme automatique s'il ne l'est
-  pas. Les libellés des écrans reconstitués reprennent ceux du produit
-  (`app/dashboard/nouveau/NewDossierForm.tsx`, `components/tracfin/Step2.tsx`).
-- Pour régler la séquence : durées dans `DUR_FWD`, poses dans `render()`, pages du
-  formulaire dans `FORM_PLAY`. Pour régler le film : chapitres dans `CHAPTERS`, plans
-  de caméra dans `shots()`, scénario dans `T`, place des objets dans `WORLD`.
+- **Haut de page** (`components/landing/HeroStage.tsx`) : le tableau de bord est posé
+  en perspective et se redresse à mesure qu'on défile, jusqu'à être à plat face au
+  lecteur. Le téléphone du client, avec le vrai formulaire qui avance seul, remonte
+  un peu plus vite (parallaxe).
+- **Comment ça marche** (`components/landing/ProductStory.tsx`) : quatre étapes ; une
+  scène reste épinglée à côté du texte (au-dessus sur téléphone) et change de plan
+  quand une étape passe au milieu de l'écran.
+- **Démo guidée** : le film en 3D (`components/landing/DemoModal.tsx`,
+  `demo-film.css`), inchangé dans sa mécanique, recoloré.
+- **Sous les sections** : un geste par section (`ScrollFx.tsx`, bloc « Effets liés au
+  défilement » de `globals.css`).
+- Règles : seuls `transform`, `opacity` et `clip-path` sont animés ; le texte est
+  toujours dans le DOM ; `prefers-reduced-motion` met tout à plat ; interface sous
+  250 ms, courbe `--kl-ease-out`, retour au clic par `scale(0.98)`.
+- **On ne montre que ce que le produit fait.** Les libellés des écrans reconstitués
+  reprennent ceux du produit (`app/dashboard/nouveau/NewDossierForm.tsx`,
+  `components/tracfin/Step2.tsx`, `components/dashboard/demoData.ts`).
 
-## Application connectée et PDF
+## Application connectée
 
-L'application a reçu l'habillage de l'identité, sans changement de disposition ni de
-fonctionnement.
+- **Cadre** : `components/dashboard/AppShell.tsx`, posé une fois par
+  `app/dashboard/layout.tsx`. Barre latérale (marque, organisation, navigation,
+  compte, essai, utilisateur) ; sur téléphone, un bandeau et un menu. L'écran
+  d'attente du client (`/dashboard/[id]/wait`) garde son plein écran.
+- **Jetons** : `--k-*` dans `app/dashboard/dashboard.css`. Les noms de classes
+  d'origine sont conservés (`.btn-grad` est désormais un bouton d'encre plein).
+- **Indicateurs** : un seul bandeau, quatre cases séparées par des filets, chiffres
+  en serif, un petit carré de couleur de vigilance.
+- **Aperçu d'un dossier** : l'étiquette de vigilance compacte (`VigilanceMini`).
+- **Niveaux dans l'application** : vert (standard), ambre (renforcée), rouge (examen
+  renforcé), encre (interdiction). Toute harmonisation avec l'échelle du site est une
+  décision produit, pas un détail d'habillage.
 
-- **Jetons** : `--k-*` dans `app/dashboard/dashboard.css` (violet `#6D5EF6`, texte
-  violet `#5B46E0`, dégradé du bouton `#6D5EF6 → #A548D8 → #DB2777`, encre `#17123A`,
-  fond papier `#F6F5FA`). Les cartes sont pleines, comme des feuilles : plus d'effet
-  verre, plus de halo flou en fond, plus de dégradé animé.
-- **Titres** en Bricolage, par la classe `k-app` posée par `app/dashboard/layout.tsx`
-  (et sur `app/abonnement`). Pas de dégradé sur le texte des titres.
-- **Boutons** : rayon 10 px, pas de pilule. Les pastilles de statut restent arrondies.
-- **Couleurs Tailwind** : les nuances `violet`, `indigo`, `slate`, `emerald` et `red`
-  utilisées dans l'application sont redéfinies dans `app/globals.css` (`@theme`) pour
-  donner les teintes Iris. Écrire `text-slate-500` donne donc le gris-violet de la
-  palette.
-- **Pages sombres** (attente du client) : le champ d'encre du site, avec sa lueur fixe
-  (`components/tracfin/AmbientOrbs.tsx`).
-- **Niveaux de vigilance dans l'application** : vert (standard), ambre (renforcée),
-  rouge (examen renforcé), encre sombre (interdiction). C'est la convention d'origine
-  du produit, conservée. Elle diffère de l'échelle du site (vert, jaune, orange,
-  rouge) : toute harmonisation est une décision produit, pas un détail d'habillage.
-- **PDF** (`app/pdf-render/`) : mêmes couleurs, contenu et mise en page inchangés. La
-  police reste Inter : pas de police supplémentaire à charger au moment du rendu.
-- **Origine du site côté navigateur** : passer par `lib/use-origin.ts`, jamais par
-  `typeof window !== "undefined" ? window.location.origin : …` (écart d'hydratation).
+## PDF
+
+Mêmes couleurs, contenu et mise en page inchangés, plus de dégradé. La police reste
+Inter : pas de police supplémentaire à charger au moment du rendu.
 
 ## Textes
 
 - Klaris **aide** à être conforme. Jamais « conformité garantie », « certifié »,
   « opposable ».
 - Aucun chiffre sans source officielle vérifiée.
-- Chaque article de loi cité est un lien vers Légifrance : composant
-  `components/landing/LegalRef.tsx`, table `lib/legal-refs.ts`. Pas d'URL dans la
-  table, pas de lien.
+- Chaque article de loi cité est un lien vers Légifrance :
+  `components/landing/LegalRef.tsx`, table `lib/legal-refs.ts`.
 - Ton rassurant. On n'ouvre pas sur les sanctions.
 
 ## Où sont les choses
 
-- Variables et classes `.kl-*` : `app/globals.css` (dans `@layer components`, pour
-  qu'un utilitaire Tailwind posé sur l'élément garde le dernier mot).
-- Page d'accueil : `app/page.tsx`. Haut de page animé : `components/landing/ScrollStory.tsx`.
-  Démo guidée : `components/landing/DemoModal.tsx` et `components/landing/demo-film.css`.
-- Échelle de vigilance : `components/landing/VigilanceScale.tsx`. Ses textes
-  décrivent les règles de `lib/tracfin.ts` : si le moteur change, ils changent aussi.
+- Jetons et classes `.kl-*` : `app/globals.css`. Page d'accueil : `app/page.tsx` et
+  `components/landing/landing.css`.
+- Haut de page : `HeroStage.tsx`, `AppMock.tsx`, `KycPhone.tsx`. Étapes :
+  `ProductStory.tsx`. Échelle : `VigilanceScale.tsx` (ses textes décrivent les règles
+  de `lib/tracfin.ts` : si le moteur change, ils changent aussi).
 - Navigation : `components/landing/FloatingNav.tsx`. Pied de page :
   `components/legal/LegalFooter.tsx`.
-- Logo : `<KlarisLogo />`, en dégradé, le même partout (site, tableau de bord, PDF).
+- Origine du site côté navigateur : `lib/use-origin.ts`.

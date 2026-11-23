@@ -638,7 +638,7 @@ export default function DemoModal({ open, onClose, onCta }: Props) {
 
               <div ref={cursorRef} className="dm-cursor">
                 <i ref={rippleRef} />
-                <MousePointer2 width={30} height={30} fill="#17123A" stroke="#fff" strokeWidth={1.6} />
+                <MousePointer2 width={30} height={30} fill="#121118" stroke="#fff" strokeWidth={1.6} />
               </div>
             </div>
           </div>

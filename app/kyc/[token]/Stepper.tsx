@@ -35,7 +35,7 @@ export default function Stepper({ steps, current, onJumpBack }: Props) {
             <KlarisLogo size={28} />
             <div className="text-[14px] font-bold tracking-tight" style={{ color: "var(--lp-text)" }}>Klaris</div>
           </div>
-          <div className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--lp-text-4)" }}>
+          <div className="text-[12px] font-semibold" style={{ color: "var(--lp-text-4)" }}>
             Étape {current + 1} / {total}
           </div>
         </div>

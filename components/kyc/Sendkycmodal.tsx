@@ -79,7 +79,7 @@ export default function SendKycModal({ dossierId, nomPrenom, onClose }: Props) {
               Vous pourrez le partager par e-mail ou WhatsApp, ou copier le lien. Le client n'aura pas besoin de créer un compte.
             </p>
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-4 mb-6 text-xs text-white/50 leading-relaxed">
-              <div className="text-[10px] uppercase tracking-widest text-white/40 mb-2 font-bold">Bon à savoir</div>
+              <div className="text-[11.5px] text-white/40 mb-2 font-bold">Bon à savoir</div>
               Le lien expire après 30 jours. Vous serez notifié dès que le client aura complété sa fiche, et les données rempliront automatiquement votre formulaire Tracfin.
             </div>
             <button
@@ -87,7 +87,7 @@ export default function SendKycModal({ dossierId, nomPrenom, onClose }: Props) {
               disabled={generating}
               className="w-full px-6 py-3 rounded-full text-white text-sm font-bold transition-transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-wait"
               style={{
-                background: "linear-gradient(135deg,#4F46E5,#8676F7,#06B6D4)",
+                background: "linear-gradient(135deg,#4A3AD6,#7B6EF0,#06B6D4)",
                 boxShadow: "0 4px 20px rgba(79,70,229,0.45)",
               }}
             >
@@ -119,7 +119,7 @@ export default function SendKycModal({ dossierId, nomPrenom, onClose }: Props) {
               </button>
             </div>
 
-            <div className="text-[11px] uppercase tracking-widest text-white/40 mb-3 font-bold">Partager via</div>
+            <div className="text-[12px] text-white/40 mb-3 font-bold">Partager via</div>
             <div className="grid grid-cols-3 gap-2 mb-5">
               <a
                 href={mailtoLink}

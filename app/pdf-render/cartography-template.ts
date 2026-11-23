@@ -80,49 +80,49 @@ export function buildCartographyHtml(params: BuildParams): string {
 <style>
   @page { size: A4; margin: 18mm 16mm 20mm; }
   * { box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; color: #17123A; margin: 0; font-size: 11pt; line-height: 1.45; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; color: #121118; margin: 0; font-size: 11pt; line-height: 1.45; }
 
-  .header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 14px; border-bottom: 2px solid #5B46E0; margin-bottom: 18px; }
+  .header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 14px; border-bottom: 2px solid #4A3AD6; margin-bottom: 18px; }
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-name { font-size: 18pt; font-weight: 800; letter-spacing: -0.5px; }
-  .brand-sub { font-size: 8.5pt; color: #6F6A8A; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 1px; }
-  .meta { text-align: right; font-size: 9pt; color: #55506F; line-height: 1.6; }
-  .meta strong { color: #17123A; }
+  .brand-sub { font-size: 8.5pt; color: #6C6975; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 1px; }
+  .meta { text-align: right; font-size: 9pt; color: #52505B; line-height: 1.6; }
+  .meta strong { color: #121118; }
 
   h1 { font-size: 19pt; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 6px; }
-  h2 { font-size: 12pt; font-weight: 700; margin: 24px 0 10px; padding-bottom: 5px; border-bottom: 1px solid #E9E6F3; color: #5B46E0; text-transform: uppercase; letter-spacing: 1px; }
+  h2 { font-size: 12pt; font-weight: 700; margin: 24px 0 10px; padding-bottom: 5px; border-bottom: 1px solid #E8E7E2; color: #4A3AD6; text-transform: uppercase; letter-spacing: 1px; }
 
-  .subtitle { font-size: 10pt; color: #55506F; margin-bottom: 18px; }
+  .subtitle { font-size: 10pt; color: #52505B; margin-bottom: 18px; }
 
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-  .kpi { padding: 10px 12px; border: 1px solid #E9E6F3; border-radius: 8px; background: #F8F7FC; }
-  .kpi-label { font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.4px; color: #5B46E0; margin-bottom: 3px; }
-  .kpi-value { font-size: 22pt; font-weight: 800; line-height: 1; color: #17123A; }
-  .kpi-sub { font-size: 8.5pt; color: #6F6A8A; margin-top: 2px; }
+  .kpi { padding: 10px 12px; border: 1px solid #E8E7E2; border-radius: 8px; background: #F8F8F6; }
+  .kpi-label { font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.4px; color: #4A3AD6; margin-bottom: 3px; }
+  .kpi-value { font-size: 22pt; font-weight: 800; line-height: 1; color: #121118; }
+  .kpi-sub { font-size: 8.5pt; color: #6C6975; margin-top: 2px; }
 
   table { width: 100%; border-collapse: collapse; font-size: 9.5pt; margin-bottom: 10px; }
-  th { text-align: left; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #6F6A8A; padding: 7px 8px; border-bottom: 2px solid #E9E6F3; }
-  td { padding: 7px 8px; border-bottom: 1px solid #F4F2FA; }
+  th { text-align: left; font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #6C6975; padding: 7px 8px; border-bottom: 2px solid #E8E7E2; }
+  td { padding: 7px 8px; border-bottom: 1px solid #F3F2EF; }
   td.num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
-  td.muted { color: #9792B4; font-style: italic; }
+  td.muted { color: #9C99A3; font-style: italic; }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-  .panel { border: 1px solid #E9E6F3; border-radius: 8px; padding: 12px; }
-  .panel-title { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #5B46E0; margin: 0 0 8px; }
+  .panel { border: 1px solid #E8E7E2; border-radius: 8px; padding: 12px; }
+  .panel-title { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #4A3AD6; margin: 0 0 8px; }
 
   .badge { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 8.5pt; font-weight: 600; }
-  .badge-green { background: #EDF8F3; color: #177A52; }
+  .badge-green { background: #EDF8F3; color: #146B48; }
   .badge-amber { background: #FAEFC8; color: #8F5A00; }
   .badge-red { background: #F9E1DF; color: #A3241F; }
-  .badge-black { background: #17123A; color: #fff; }
+  .badge-black { background: #121118; color: #fff; }
 
-  .legal { margin-top: 24px; padding: 12px; background: #F8F7FC; border: 1px dashed #C7C0FF; border-radius: 8px; font-size: 9pt; color: #55506F; line-height: 1.55; }
-  .legal strong { color: #5B46E0; }
+  .legal { margin-top: 24px; padding: 12px; background: #F8F8F6; border: 1px dashed #C9C4FA; border-radius: 8px; font-size: 9pt; color: #52505B; line-height: 1.55; }
+  .legal strong { color: #4A3AD6; }
 
-  .footer { margin-top: 30px; padding-top: 14px; border-top: 1px solid #E9E6F3; display: flex; justify-content: space-between; align-items: flex-end; font-size: 8pt; color: #9792B4; }
-  .footer .hash { font-family: "JetBrains Mono", "Courier New", monospace; color: #55506F; }
+  .footer { margin-top: 30px; padding-top: 14px; border-top: 1px solid #E8E7E2; display: flex; justify-content: space-between; align-items: flex-end; font-size: 8pt; color: #9C99A3; }
+  .footer .hash { font-family: "JetBrains Mono", "Courier New", monospace; color: #52505B; }
 </style>
 </head>
 <body>

@@ -12,25 +12,25 @@ export function Sect({ title, sub, children }: { title: string; sub?: string; ch
       className="relative rounded-2xl mb-6 overflow-hidden"
       style={{
         background: "white",
-        border: "1px solid rgba(109,94,246,0.10)",
-        boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 14px rgba(109,94,246,0.06)",
+        border: "1px solid rgba(88,71,232,0.10)",
+        boxShadow: "0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 14px rgba(18,17,24,0.12)",
       }}
     >
       <div
         className="px-6 py-3.5 flex items-center justify-between"
         style={{
-          background: "linear-gradient(90deg, rgba(109,94,246,0.06) 0%, rgba(236,72,153,0.02) 100%)",
-          borderBottom: "1px solid rgba(109,94,246,0.10)",
+          background: "linear-gradient(90deg, rgba(88,71,232,0.06) 0%, rgba(88,71,232,0.02) 100%)",
+          borderBottom: "1px solid rgba(88,71,232,0.10)",
         }}
       >
         <span
-          className="font-bold uppercase tracking-[0.15em] text-[10px]"
-          style={{ color: "#5B46E0" }}
+          className="font-bold text-[11.5px]"
+          style={{ color: "#4A3AD6" }}
         >
           {title}
         </span>
         {sub && (
-          <span className="text-[10px] uppercase tracking-widest" style={{ color: "#9792B4" }}>
+          <span className="text-[11.5px]" style={{ color: "#9C99A3" }}>
             {sub}
           </span>
         )}
@@ -49,7 +49,7 @@ export function Field({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">{label}</label>
+      <label className="text-[12px] font-semibold text-slate-500">{label}</label>
       {children}
       {hint && <p className="text-[11.5px] text-slate-500 leading-relaxed">{hint}</p>}
     </div>
@@ -75,11 +75,11 @@ export function Toggle({
             className="flex-1 py-3 rounded-xl text-sm font-semibold transition-all border"
             style={{
               background: active
-                ? "linear-gradient(180deg, rgba(109,94,246,0.10), rgba(236,72,153,0.06))"
+                ? "linear-gradient(180deg, rgba(88,71,232,0.10), rgba(88,71,232,0.06))"
                 : "white",
-              borderColor: active ? "rgba(109,94,246,0.45)" : "rgba(23,18,58,0.10)",
-              color: active ? "#5B46E0" : "#55506F",
-              boxShadow: active ? "0 4px 14px rgba(109,94,246,0.15)" : "none",
+              borderColor: active ? "rgba(88,71,232,0.45)" : "rgba(18,17,24,0.10)",
+              color: active ? "#4A3AD6" : "#52505B",
+              boxShadow: active ? "0 4px 14px rgba(88,71,232,0.15)" : "none",
             }}
           >
             {o.label}
@@ -104,8 +104,8 @@ export function Check({
         onClick={() => onChange(!checked)}
         className="w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all shrink-0"
         style={{
-          background: checked ? "#1E9E6A" : "white",
-          borderColor: checked ? "#1E9E6A" : "#D5D1E6",
+          background: checked ? "#1F9A68" : "white",
+          borderColor: checked ? "#1F9A68" : "#CFCDC6",
         }}
       >
         {checked && (
@@ -166,15 +166,15 @@ export function BinaryField({
     if (!isActive) {
       return {
         background: "white",
-        border: "1px solid rgba(23,18,58,0.10)",
-        color: "#55506F",
+        border: "1px solid rgba(18,17,24,0.10)",
+        color: "#52505B",
       };
     }
     const isGreen = isPositiveAnswer;
     return {
       background: isGreen ? "rgba(30,158,106,0.08)" : "rgba(197,48,44,0.08)",
       border: `1px solid ${isGreen ? "rgba(30,158,106,0.45)" : "rgba(197,48,44,0.45)"}`,
-      color: isGreen ? "#177A52" : "#A3241F",
+      color: isGreen ? "#146B48" : "#A3241F",
       boxShadow: `0 4px 12px ${isGreen ? "rgba(30,158,106,0.18)" : "rgba(197,48,44,0.18)"}`,
     };
   };

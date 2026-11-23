@@ -104,8 +104,8 @@ export default function ValidationSection({ dossierId, niveau, isArchived }: Pro
   const canRequest = !isArchived && (!latest || isRejected);
 
   const tone = isApproved ? "green" : isRejected ? "red" : "violet";
-  const bg = isApproved ? "rgba(30,158,106,0.04)" : isRejected ? "rgba(197,48,44,0.04)" : "rgba(109,94,246,0.04)";
-  const border = isApproved ? "rgba(30,158,106,0.30)" : isRejected ? "rgba(197,48,44,0.25)" : "rgba(109,94,246,0.22)";
+  const bg = isApproved ? "rgba(30,158,106,0.04)" : isRejected ? "rgba(197,48,44,0.04)" : "rgba(88,71,232,0.04)";
+  const border = isApproved ? "rgba(30,158,106,0.30)" : isRejected ? "rgba(197,48,44,0.25)" : "rgba(88,71,232,0.22)";
 
   return (
     <section style={panelStyle(bg, border)}>
@@ -146,7 +146,7 @@ export default function ValidationSection({ dossierId, niveau, isArchived }: Pro
       {canRequest && (
         <div style={{ marginTop: 14 }}>
           <button type="button" onClick={requestValidation} disabled={busy}
-            style={btnStyle("linear-gradient(135deg, #6D5EF6, #A548D8)", busy)}>
+            style={btnStyle("#121118", busy)}>
             {busy ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
             {isRejected ? "Redemander une validation" : "Demander la validation du correspondant"}
           </button>
@@ -155,7 +155,7 @@ export default function ValidationSection({ dossierId, niveau, isArchived }: Pro
 
       {/* En attente, et je ne peux pas décider (je suis le demandeur, ou pas correspondant) */}
       {isPending && !canDecideThis && (
-        <div style={{ marginTop: 12, fontSize: 12.5, color: "#5B46E0" }}>
+        <div style={{ marginTop: 12, fontSize: 12.5, color: "#4A3AD6" }}>
           {iAmRequester
             ? "Vous avez soumis ce dossier. Un correspondant distinct doit le valider (principe des quatre yeux)."
             : "En attente de la décision d'un correspondant LCB-FT habilité."}
@@ -164,8 +164,8 @@ export default function ValidationSection({ dossierId, niveau, isArchived }: Pro
 
       {/* Décision (correspondant ≠ demandeur) */}
       {canDecideThis && (
-        <div style={{ marginTop: 14, padding: 12, background: "white", border: "1px solid rgba(109,94,246,0.20)", borderRadius: 10 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#5B46E0", marginBottom: 8 }}>
+        <div style={{ marginTop: 14, padding: 12, background: "white", border: "1px solid rgba(88,71,232,0.20)", borderRadius: 10 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#4A3AD6", marginBottom: 8 }}>
             Votre décision (correspondant LCB-FT)
           </div>
           <textarea
@@ -173,15 +173,15 @@ export default function ValidationSection({ dossierId, niveau, isArchived }: Pro
             onChange={(e) => setComment(e.target.value)}
             placeholder="Commentaire (motivé en cas de refus, recommandé en cas d'approbation)…"
             rows={3}
-            style={{ width: "100%", padding: 10, border: "1px solid rgba(23,18,58,0.15)", borderRadius: 8, fontSize: 13, fontFamily: "inherit", resize: "vertical", background: "#F8F7FC", marginBottom: 10 }}
+            style={{ width: "100%", padding: 10, border: "1px solid rgba(18,17,24,0.15)", borderRadius: 8, fontSize: 13, fontFamily: "inherit", resize: "vertical", background: "#F8F8F6", marginBottom: 10 }}
           />
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
             <button type="button" onClick={() => decide("rejected")} disabled={busy}
-              style={btnStyle("linear-gradient(135deg, #D9443F, #C5302C)", busy)}>
+              style={btnStyle("linear-gradient(135deg, #CF3F39, #C23630)", busy)}>
               <XCircle size={14} /> Refuser
             </button>
             <button type="button" onClick={() => decide("approved")} disabled={busy}
-              style={btnStyle("linear-gradient(135deg, #1E9E6A, #177A52)", busy)}>
+              style={btnStyle("linear-gradient(135deg, #1F9A68, #146B48)", busy)}>
               <ShieldCheck size={14} /> Valider le dossier
             </button>
           </div>
@@ -199,18 +199,18 @@ function panelStyle(bg: string, border: string): React.CSSProperties {
 function Header({ icon, tone, eyebrow, title, desc }: {
   icon: React.ReactNode; tone: "violet" | "green" | "red"; eyebrow: string; title: string; desc: string;
 }) {
-  const c = tone === "green" ? { fg: "#177A52", bg: "rgba(30,158,106,0.10)", bd: "rgba(30,158,106,0.25)" }
+  const c = tone === "green" ? { fg: "#146B48", bg: "rgba(30,158,106,0.10)", bd: "rgba(30,158,106,0.25)" }
     : tone === "red" ? { fg: "#A3241F", bg: "rgba(197,48,44,0.10)", bd: "rgba(197,48,44,0.25)" }
-    : { fg: "#5B46E0", bg: "rgba(109,94,246,0.10)", bd: "rgba(109,94,246,0.25)" };
+    : { fg: "#4A3AD6", bg: "rgba(88,71,232,0.10)", bd: "rgba(88,71,232,0.25)" };
   return (
     <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
       <div style={{ width: 40, height: 40, borderRadius: 10, background: c.bg, display: "grid", placeItems: "center", color: c.fg, border: `1px solid ${c.bd}`, flexShrink: 0 }}>
         {icon}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: c.fg, marginBottom: 4 }}>{eyebrow}</div>
-        <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#17123A" }}>{title}</h2>
-        <p style={{ fontSize: 12.5, color: "#6F6A8A", margin: "4px 0 0", lineHeight: 1.5 }}>{desc}</p>
+        <div style={{ fontSize: 10.5, fontWeight: 700, color: c.fg, marginBottom: 4 }}>{eyebrow}</div>
+        <h2 style={{ fontSize: 17, fontWeight: 700, margin: 0, color: "#121118" }}>{title}</h2>
+        <p style={{ fontSize: 12.5, color: "#6C6975", margin: "4px 0 0", lineHeight: 1.5 }}>{desc}</p>
       </div>
     </div>
   );
@@ -219,7 +219,7 @@ function Header({ icon, tone, eyebrow, title, desc }: {
 function btnStyle(bg: string, busy: boolean): React.CSSProperties {
   return {
     display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px", borderRadius: 9,
-    background: busy ? "rgba(109,94,246,0.40)" : bg, color: "white", fontWeight: 600, fontSize: 13,
+    background: busy ? "rgba(88,71,232,0.40)" : bg, color: "white", fontWeight: 600, fontSize: 13,
     border: 0, cursor: busy ? "wait" : "pointer",
   };
 }

@@ -1,38 +1,40 @@
-// components/ui/KlarisLogo.tsx — Logo Klaris officiel (K géométrique à 4 facettes)
+// components/ui/KlarisLogo.tsx — Monogramme Klaris
+//
+// Un K dessiné comme un repère de registre : un fût droit et un chevron détaché,
+// reliés par un petit losange iris → rose (la seule trace de dégradé de la marque).
 //
 // Variantes :
-//  - default : carré arrondi gradient violet→magenta + K blanc + losange pivot
-//  - mono    : carré sombre + K blanc (pour PDF / impression / contexte mono)
+//  - défaut   : pavé d'encre, K blanc
+//  - inverted : pavé blanc, K d'encre (sur fond de nuit)
+//  - mono     : pavé d'encre, losange blanc (PDF, impression)
+//  - noBackground : le glyphe seul, couleur héritée (currentColor)
 //
-// Le composant est auto-suffisant (gère son propre fond). On l'utilise partout :
-// landing, dashboard, footers, PDF, KYC public, etc.
+// Même API qu'avant : le composant est utilisé partout (site, application, PDF).
 
 import { useId } from "react";
 
 interface Props {
   size?: number;
   mono?: boolean;
+  inverted?: boolean;
   className?: string;
-  /** Désactive le bg carré arrondi (pour ne garder que le glyphe sur fond externe) */
+  /** Pas de pavé : on ne garde que le glyphe, dans la couleur du texte. */
   noBackground?: boolean;
 }
 
 export default function KlarisLogo({
   size = 32,
   mono = false,
+  inverted = false,
   className = "",
   noBackground = false,
 }: Props) {
   const uid = useId();
-  const id = `klogo-${uid}`;
+  const id = `klogo-${uid.replace(/:/g, "")}`;
 
-  const bgFill = mono
-    ? "#0f172a"
-    : noBackground
-    ? "transparent"
-    : `url(#${id})`;
-
-  const fgFill = "#ffffff";
+  const tile = inverted ? "#FFFFFF" : "#121118";
+  const glyph = noBackground ? "currentColor" : inverted ? "#121118" : "#FFFFFF";
+  const jewel = mono ? glyph : `url(#${id})`;
 
   return (
     <svg
@@ -40,61 +42,26 @@ export default function KlarisLogo({
       height={size}
       viewBox="0 0 48 48"
       className={className}
+      role="img"
       aria-label="Klaris"
     >
-      {!mono && !noBackground && (
+      {!mono && (
         <defs>
-          <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#7c3aed" />
-            <stop offset="55%" stopColor="#a855f7" />
-            <stop offset="100%" stopColor="#ec4899" />
+          <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#7B6CFF" />
+            <stop offset="100%" stopColor="#EC4899" />
           </linearGradient>
         </defs>
       )}
 
-      {/* Fond carré arrondi (sauf si noBackground) */}
-      {!noBackground && (
-        <rect x="2" y="2" width="44" height="44" rx="11" fill={bgFill} />
-      )}
+      {!noBackground && <rect x="1" y="1" width="46" height="46" rx="11" fill={tile} />}
 
-      {/* Highlight haut subtil (relief) — couleur seulement, sans bg externe */}
-      {!mono && !noBackground && (
-        <rect x="2" y="2" width="44" height="22" rx="11" fill="white" opacity="0.10" />
-      )}
-
-      {/* Barre verticale du K */}
-      <rect
-        x="11"
-        y="11"
-        width="5"
-        height="26"
-        rx="1.5"
-        fill={noBackground ? bgFill : fgFill}
-      />
-
-      {/* Triangle haut (diagonale haute) */}
-      <path
-        d="M 16 24 L 31 11 L 35 11 L 20 24 Z"
-        fill={noBackground ? bgFill : fgFill}
-      />
-
-      {/* Triangle bas (diagonale basse) */}
-      <path
-        d="M 16 24 L 31 37 L 35 37 L 20 24 Z"
-        fill={noBackground ? bgFill : fgFill}
-      />
-
-      {/* Losange au point de pivot (signature distinctive) */}
-      <rect
-        x="17.5"
-        y="22.5"
-        width="3"
-        height="3"
-        transform="rotate(45 19 24)"
-        fill={mono ? "#0f172a" : noBackground ? bgFill : `url(#${id})`}
-        stroke={noBackground ? bgFill : fgFill}
-        strokeWidth="0.5"
-      />
+      {/* Fût */}
+      <rect x="12.5" y="11.5" width="5.2" height="25" rx="1.2" fill={glyph} />
+      {/* Chevron, détaché du fût */}
+      <path d="M32.6 11.5H38.6L26.1 24L38.6 36.5H32.6L20.1 24Z" fill={glyph} />
+      {/* Losange au point de pivot */}
+      <rect x="18.35" y="21.75" width="4.5" height="4.5" rx="0.6" transform="rotate(45 20.6 24)" fill={jewel} />
     </svg>
   );
 }

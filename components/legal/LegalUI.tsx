@@ -16,27 +16,14 @@ export function LegalTitle({
 }) {
   return (
     <div className="mb-12">
-      <div
-        className="inline-block px-2.5 py-1 rounded-md text-[10.5px] uppercase tracking-widest mb-5"
-        style={{ background: "var(--lp-surface-2)", border: "1px solid var(--lp-border-2)", color: "var(--lp-text-3)" }}
-      >
-        {eyebrow}
-      </div>
-      <h1
-        className="text-[34px] md:text-[42px] leading-[1.05] font-bold tracking-tight"
-        style={{
-          background: "var(--lp-heading)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          color: "transparent",
-        }}
-      >
+      <p className="kl-kicker mb-5">{eyebrow}</p>
+      <h1 className="kl-display" style={{ fontSize: "clamp(2.4rem, 1.6rem + 2.8vw, 3.6rem)", color: "var(--lp-text)" }}>
         {title}
       </h1>
       {subtitle && (
         <p className="mt-4 text-[15px] leading-relaxed max-w-2xl" style={{ color: "var(--lp-text-3)" }}>{subtitle}</p>
       )}
-      <p className="mt-5 text-[11.5px] uppercase tracking-widest" style={{ color: "var(--lp-text-4)" }}>
+      <p className="mt-5 text-[0.84rem]" style={{ color: "var(--lp-text-4)" }}>
         Dernière mise à jour : {updatedAt}
       </p>
     </div>
@@ -46,8 +33,7 @@ export function LegalTitle({
 export function Section({ id, title, children }: { id?: string; title: string; children: ReactNode }) {
   return (
     <section id={id} className="mb-12">
-      <h2 className="text-[18px] md:text-[20px] font-semibold tracking-tight mb-4 flex items-center gap-3" style={{ color: "var(--lp-text)" }}>
-        <span className="inline-block w-1 h-5 rounded-full" style={{ background: "var(--lp-cta-grad)" }} />
+      <h2 className="kl-display mb-4 pt-6 border-t" style={{ fontSize: "1.75rem", color: "var(--lp-text)", borderColor: "var(--lp-border-1)" }}>
         {title}
       </h2>
       <div className="text-[14px] leading-relaxed space-y-3 prose-legal" style={{ color: "var(--lp-text-3)" }}>
@@ -91,7 +77,7 @@ export function Callout({
   return (
     <div className="rounded-xl p-4 my-2" style={{ border: `1px solid ${styles.border}`, background: styles.bg }}>
       {title && (
-        <div className="text-[12px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: styles.titleColor }}>
+        <div className="text-[0.9rem] font-semibold mb-1.5" style={{ color: styles.titleColor }}>
           {title}
         </div>
       )}
@@ -107,7 +93,7 @@ export function List({ children }: { children: ReactNode }) {
 export function LI({ children }: { children: ReactNode }) {
   return (
     <li className="flex gap-3 items-start">
-      <span className="inline-block w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "var(--lp-cta-grad)" }} />
+      <span className="inline-block w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: "var(--lp-text-3)" }} />
       <span>{children}</span>
     </li>
   );
@@ -116,7 +102,7 @@ export function LI({ children }: { children: ReactNode }) {
 export function DefCard({ term, children }: { term: string; children: ReactNode }) {
   return (
     <div className="rounded-lg p-3.5" style={{ background: "var(--lp-surface)", border: "1px solid var(--lp-border-2)" }}>
-      <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: "var(--lp-text-4)" }}>{term}</div>
+      <div className="text-[0.8rem] font-medium mb-1" style={{ color: "var(--lp-text-4)" }}>{term}</div>
       <div className="text-[13.5px] leading-relaxed" style={{ color: "var(--lp-text-2)" }}>{children}</div>
     </div>
   );
@@ -133,7 +119,7 @@ export function TableWrap({ children }: { children: ReactNode }) {
 export function TH({ children }: { children: ReactNode }) {
   return (
     <th
-      className="px-4 py-2.5 font-medium text-[11.5px] uppercase tracking-widest border-b"
+      className="px-4 py-2.5 font-medium text-[0.8rem] border-b"
       style={{ background: "var(--lp-surface)", color: "var(--lp-text-3)", borderColor: "var(--lp-border-1)" }}
     >
       {children}

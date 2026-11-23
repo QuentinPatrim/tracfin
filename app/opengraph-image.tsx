@@ -10,10 +10,10 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const BARS = [
-  { n: "1", label: "Vigilance standard", c: "#1E9E6A", w: 300, fg: "#fff" },
-  { n: "2", label: "Vigilance renforcée", c: "#E3A008", w: 350, fg: "#2A1D00" },
+  { n: "1", label: "Vigilance standard", c: "#1F9A68", w: 300, fg: "#fff" },
+  { n: "2", label: "Vigilance renforcée", c: "#D9980A", w: 350, fg: "#2A1D00" },
   { n: "3", label: "Examen renforcé", c: "#DD6B20", w: 400, fg: "#fff" },
-  { n: "4", label: "Interdiction", c: "#C5302C", w: 450, fg: "#fff" },
+  { n: "4", label: "Interdiction", c: "#C23630", w: 450, fg: "#fff" },
 ];
 
 export default function OpengraphImage() {
@@ -27,9 +27,9 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "68px 76px",
-          backgroundColor: "#110E30",
+          backgroundColor: "#0B0A10",
           backgroundImage:
-            "radial-gradient(1100px 520px at 96% 0%, rgba(236,72,153,0.34), transparent), radial-gradient(1000px 620px at 0% 100%, rgba(109,94,246,0.52), transparent)",
+            "radial-gradient(900px 420px at 50% 0%, rgba(88,71,232,0.22), transparent)",
           fontFamily: "sans-serif",
         }}
       >
@@ -43,15 +43,15 @@ export default function OpengraphImage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              backgroundImage: "linear-gradient(135deg, #7C3AED, #A855F7 55%, #EC4899)",
-              color: "#fff",
+              backgroundColor: "#FFFFFF",
+              color: "#121118",
               fontSize: 36,
               fontWeight: 800,
             }}
           >
             K
           </div>
-          <div style={{ display: "flex", color: "#F4F2FF", fontSize: 38, fontWeight: 700, letterSpacing: -1 }}>
+          <div style={{ display: "flex", color: "#F3F2FE", fontSize: 38, fontWeight: 700, letterSpacing: -1 }}>
             Klaris
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 40 }}>
           {/* Titre */}
           <div style={{ display: "flex", flexDirection: "column", gap: 22, maxWidth: 600 }}>
-            <div style={{ display: "flex", fontSize: 72, fontWeight: 800, letterSpacing: -2, lineHeight: 1.03, color: "#F4F2FF" }}>
+            <div style={{ display: "flex", fontSize: 72, fontWeight: 800, letterSpacing: -2, lineHeight: 1.03, color: "#F3F2FE" }}>
               Vos dossiers LCB-FT en ordre, sans stress.
             </div>
             <div style={{ display: "flex", fontSize: 28, lineHeight: 1.35, color: "rgba(244,242,255,0.76)" }}>

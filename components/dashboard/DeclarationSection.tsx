@@ -36,10 +36,10 @@ interface Props {
 }
 
 const STATUT_CFG: Record<Declaration["statut"], { label: string; color: string; bg: string; border: string }> = {
-  draft:        { label: "Brouillon",         color: "#55506F", bg: "rgba(151,146,180,0.10)", border: "rgba(151,146,180,0.30)" },
+  draft:        { label: "Brouillon",         color: "#52505B", bg: "rgba(151,146,180,0.10)", border: "rgba(151,146,180,0.30)" },
   submitted:    { label: "Soumise à TRACFIN", color: "#8F5A00", bg: "rgba(227,160,8,0.10)",  border: "rgba(227,160,8,0.30)" },
-  acknowledged: { label: "Accusée par TRACFIN", color: "#177A52", bg: "rgba(30,158,106,0.10)", border: "rgba(30,158,106,0.30)" },
-  closed:       { label: "Clôturée",          color: "#17123A", bg: "rgba(23,18,58,0.08)",    border: "rgba(23,18,58,0.20)" },
+  acknowledged: { label: "Accusée par TRACFIN", color: "#146B48", bg: "rgba(30,158,106,0.10)", border: "rgba(30,158,106,0.30)" },
+  closed:       { label: "Clôturée",          color: "#121118", bg: "rgba(18,17,24,0.08)",    border: "rgba(18,17,24,0.20)" },
 };
 
 export default function DeclarationSection({ dossierId, niveau, isArchived }: Props) {
@@ -116,15 +116,15 @@ export default function DeclarationSection({ dossierId, niveau, isArchived }: Pr
           <FileWarning size={20} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: niveau === "interdiction" ? "#A3241F" : "#8F5A00", marginBottom: 4 }}>
+          <div style={{ fontSize: 10.5, fontWeight: 700, color: niveau === "interdiction" ? "#A3241F" : "#8F5A00", marginBottom: 4 }}>
             Déclaration de soupçon · L.561-15 CMF
           </div>
-          <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#17123A" }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: "#121118" }}>
             {niveau === "interdiction"
               ? "Une déclaration TRACFIN est obligatoire pour ce dossier"
               : "Le niveau de vigilance recommande une déclaration TRACFIN"}
           </h2>
-          <p style={{ fontSize: 13, color: "#6F6A8A", margin: "4px 0 0", lineHeight: 1.5 }}>
+          <p style={{ fontSize: 13, color: "#6C6975", margin: "4px 0 0", lineHeight: 1.5 }}>
             {niveau === "interdiction"
               ? "La déclaration se fait avant l'exécution de l'opération, ou sans délai si elle a déjà été réalisée (CMF L.561-16). Klaris pré-remplit le dossier ERMES avec toutes les données déjà saisies."
               : "Si vos vérifications complémentaires n'ont pas levé le soupçon, vous devez déclarer à TRACFIN. Klaris prépare le dossier pour vous."}
@@ -133,7 +133,7 @@ export default function DeclarationSection({ dossierId, niveau, isArchived }: Pr
       </div>
 
       {loading && (
-        <div style={{ padding: 12, textAlign: "center", color: "#9792B4", fontSize: 13 }}>
+        <div style={{ padding: 12, textAlign: "center", color: "#9C99A3", fontSize: 13 }}>
           <Loader2 className="animate-spin inline" size={14} /> Chargement…
         </div>
       )}
@@ -157,7 +157,7 @@ export default function DeclarationSection({ dossierId, niveau, isArchived }: Pr
             borderRadius: 10,
             background: creating
               ? "rgba(197,48,44,0.40)"
-              : "linear-gradient(135deg, #C5302C, #A3241F)",
+              : "linear-gradient(135deg, #C23630, #A3241F)",
             color: "white",
             fontWeight: 600,
             fontSize: 13,
@@ -303,7 +303,7 @@ function DeclarationCard({
         background: "white",
         border: `1px solid ${cfg.border}`,
         borderRadius: 10,
-        boxShadow: "0 1px 0 rgba(23,18,58,0.04)",
+        boxShadow: "0 1px 0 rgba(18,17,24,0.04)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
@@ -312,8 +312,6 @@ function DeclarationCard({
             style={{
               fontSize: 10.5,
               fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.14em",
               padding: "3px 9px",
               borderRadius: 999,
               background: cfg.bg,
@@ -323,11 +321,11 @@ function DeclarationCard({
           >
             {cfg.label}
           </span>
-          <span style={{ fontSize: 11.5, color: "#6F6A8A" }}>
+          <span style={{ fontSize: 11.5, color: "#6C6975" }}>
             Créée le {new Date(declaration.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
           </span>
         </div>
-        <span style={{ fontSize: 10.5, color: "#9792B4", fontFamily: "monospace" }}>
+        <span style={{ fontSize: 10.5, color: "#9C99A3", fontFamily: "monospace" }}>
           {declaration.id.slice(0, 8).toUpperCase()}
         </span>
       </div>
@@ -349,13 +347,13 @@ function DeclarationCard({
             style={{
               width: "100%",
               padding: 10,
-              border: "1px solid rgba(23,18,58,0.15)",
+              border: "1px solid rgba(18,17,24,0.15)",
               borderRadius: 8,
               fontSize: 13,
               fontFamily: "inherit",
               lineHeight: 1.55,
               resize: "vertical",
-              background: "#F8F7FC",
+              background: "#F8F8F6",
             }}
           />
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
@@ -363,7 +361,7 @@ function DeclarationCard({
               type="button"
               onClick={onClose}
               disabled={saving}
-              style={{ padding: "7px 14px", borderRadius: 8, background: "white", border: "1px solid #E4E0F3", fontSize: 12.5, cursor: "pointer" }}
+              style={{ padding: "7px 14px", borderRadius: 8, background: "white", border: "1px solid #E3E2DC", fontSize: 12.5, cursor: "pointer" }}
             >
               Annuler
             </button>
@@ -374,7 +372,7 @@ function DeclarationCard({
               style={{
                 padding: "7px 14px",
                 borderRadius: 8,
-                background: "linear-gradient(135deg, #6D5EF6, #A548D8)",
+                background: "#121118",
                 color: "white",
                 border: 0,
                 fontSize: 12.5,
@@ -390,11 +388,11 @@ function DeclarationCard({
         <div
           style={{
             padding: 10,
-            background: "#F8F7FC",
-            border: "1px dashed #C7C0FF",
+            background: "#F8F8F6",
+            border: "1px dashed #C9C4FA",
             borderRadius: 6,
             fontSize: 12.5,
-            color: "#17123A",
+            color: "#121118",
             whiteSpace: "pre-wrap",
             lineHeight: 1.55,
             maxHeight: 200,
@@ -411,7 +409,7 @@ function DeclarationCard({
           <button
             type="button"
             onClick={onEdit}
-            style={{ padding: "7px 12px", borderRadius: 8, background: "white", border: "1px solid #D5D1E6", color: "#55506F", fontSize: 12.5, fontWeight: 500, cursor: "pointer" }}
+            style={{ padding: "7px 12px", borderRadius: 8, background: "white", border: "1px solid #CFCDC6", color: "#52505B", fontSize: 12.5, fontWeight: 500, cursor: "pointer" }}
           >
             Modifier les faits
           </button>
@@ -425,7 +423,7 @@ function DeclarationCard({
             style={{
               padding: "7px 14px",
               borderRadius: 8,
-              background: "linear-gradient(135deg, #C5302C, #A3241F)",
+              background: "linear-gradient(135deg, #C23630, #A3241F)",
               color: "white",
               border: 0,
               fontSize: 12.5,
@@ -453,7 +451,7 @@ function DeclarationCard({
             borderRadius: 8,
           }}
         >
-          <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#8F5A00", marginBottom: 6 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#8F5A00", marginBottom: 6 }}>
             Étape suivante — Confirmation TRACFIN
           </div>
           <p style={{ fontSize: 12, color: "#7A4C00", margin: "0 0 10px", lineHeight: 1.5 }}>
@@ -469,7 +467,7 @@ function DeclarationCard({
               style={{
                 flex: 1,
                 padding: "7px 10px",
-                border: "1px solid #E3A008",
+                border: "1px solid #D9980A",
                 borderRadius: 6,
                 fontSize: 12.5,
                 background: "white",
@@ -482,7 +480,7 @@ function DeclarationCard({
               style={{
                 padding: "7px 14px",
                 borderRadius: 6,
-                background: ermesRef.trim() ? "linear-gradient(135deg, #1E9E6A, #177A52)" : "rgba(30,158,106,0.30)",
+                background: ermesRef.trim() ? "linear-gradient(135deg, #1F9A68, #146B48)" : "rgba(30,158,106,0.30)",
                 color: "white",
                 border: 0,
                 fontSize: 12.5,
@@ -513,9 +511,9 @@ function DeclarationCard({
             gap: 10,
           }}
         >
-          <CheckCircle2 size={16} style={{ color: "#177A52", flexShrink: 0 }} />
+          <CheckCircle2 size={16} style={{ color: "#146B48", flexShrink: 0 }} />
           <div style={{ flex: 1, fontSize: 12.5 }}>
-            <div style={{ fontWeight: 600, color: "#177A52" }}>
+            <div style={{ fontWeight: 600, color: "#146B48" }}>
               Déclaration acceptée par TRACFIN
             </div>
             <div style={{ color: "#0E5C3D", marginTop: 2, fontFamily: "monospace", fontSize: 11.5 }}>

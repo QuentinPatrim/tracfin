@@ -75,7 +75,7 @@ export default function WaitingView({
   const opened = !!openedAt;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0C0A24", fontFamily: "Inter, sans-serif" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#0B0A10", fontFamily: "var(--font-sans-face), system-ui, sans-serif" }}>
       <AmbientOrbs />
 
       <header className="relative z-10 border-b border-white/[0.06] backdrop-blur-xl bg-black/20">
@@ -101,15 +101,15 @@ export default function WaitingView({
             <div
               className="relative w-20 h-20 rounded-full flex items-center justify-center"
               style={{
-                background: "linear-gradient(180deg, rgba(165,72,216,0.20), rgba(165,72,216,0.08))",
-                boxShadow: "0 0 0 1px rgba(165,72,216,0.40), 0 0 50px rgba(165,72,216,0.30), 0 1px 0 rgba(255,255,255,0.20) inset",
+                background: "linear-gradient(180deg, rgba(88,71,232,0.20), rgba(88,71,232,0.08))",
+                boxShadow: "0 0 0 1px rgba(18,17,24,0.12), 0 0 50px rgba(18,17,24,0.12), 0 1px 0 rgba(255,255,255,0.20) inset",
               }}
             >
               {/* Anneau qui pulse */}
               <span
                 className="absolute inset-0 rounded-full"
                 style={{
-                  border: "2px solid rgba(165,72,216,0.40)",
+                  border: "2px solid rgba(88,71,232,0.40)",
                   animation: "pulse-ring 2s ease-out infinite",
                 }}
               />
@@ -119,7 +119,7 @@ export default function WaitingView({
 
           <div className="text-center mb-10">
             {/* Couleur explicite : sans elle le titre héritait du texte sombre de la page et restait illisible sur le fond d'encre. */}
-            <h1 className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-3" style={{ color: "#F4F2FF" }}>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-3" style={{ color: "#F3F2FE" }}>
               En attente du client
             </h1>
             <p className="text-white/55 leading-relaxed text-sm md:text-base max-w-md mx-auto">
@@ -135,7 +135,7 @@ export default function WaitingView({
               background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
               backdropFilter: "blur(28px) saturate(180%)",
               WebkitBackdropFilter: "blur(28px) saturate(180%)",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.10) inset, 0 20px 40px -12px rgba(165,72,216,0.30)",
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.10) inset, 0 20px 40px -12px rgba(18,17,24,0.12)",
             }}
           >
             <div className="absolute inset-x-6 top-0 h-px rounded-full"
@@ -143,7 +143,7 @@ export default function WaitingView({
             />
 
             <div className="relative">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-violet-300 font-bold mb-4">
+              <div className="text-[11.5px] text-violet-300 font-bold mb-4">
                 Statut du lien
               </div>
 
@@ -182,7 +182,7 @@ export default function WaitingView({
             />
 
             <div className="relative">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-white/50 font-bold mb-3">
+              <div className="text-[11.5px] text-white/50 font-bold mb-3">
                 Lien sécurisé à partager
               </div>
 
@@ -206,7 +206,7 @@ export default function WaitingView({
                 </button>
               </div>
 
-              <div className="text-[11px] uppercase tracking-widest text-white/40 mb-3 font-bold">
+              <div className="text-[12px] text-white/40 mb-3 font-bold">
                 Renvoyer via
               </div>
               <div className="grid grid-cols-3 gap-2">

@@ -49,20 +49,20 @@ export default async function AbonnementPage() {
     : "danger";
 
   const toneColors = {
-    ok:     { fg: "#177A52", bg: "rgba(30,158,106,0.08)", border: "rgba(30,158,106,0.30)", dot: "#1E9E6A" },
-    info:   { fg: "#5B46E0", bg: "rgba(109,94,246,0.08)", border: "rgba(109,94,246,0.30)", dot: "#6D5EF6" },
-    warn:   { fg: "#8F5A00", bg: "rgba(227,160,8,0.08)", border: "rgba(227,160,8,0.30)", dot: "#E3A008" },
-    danger: { fg: "#A3241F", bg: "rgba(197,48,44,0.08)", border: "rgba(197,48,44,0.30)", dot: "#C5302C" },
+    ok:     { fg: "#146B48", bg: "rgba(30,158,106,0.08)", border: "rgba(30,158,106,0.30)", dot: "#1F9A68" },
+    info:   { fg: "#4A3AD6", bg: "rgba(88,71,232,0.08)", border: "rgba(88,71,232,0.30)", dot: "#5847E8" },
+    warn:   { fg: "#8F5A00", bg: "rgba(227,160,8,0.08)", border: "rgba(227,160,8,0.30)", dot: "#D9980A" },
+    danger: { fg: "#A3241F", bg: "rgba(197,48,44,0.08)", border: "rgba(197,48,44,0.30)", dot: "#C23630" },
   }[tone];
 
   return (
     <div
       className="k-app"
       style={{
-        background: "#F6F5FA",
+        background: "#F6F6F3",
         minHeight: "100vh",
-        fontFamily: "Inter, sans-serif",
-        color: "#17123A",
+        fontFamily: "var(--font-sans-face), system-ui, sans-serif",
+        color: "#121118",
       }}
     >
 
@@ -73,14 +73,14 @@ export default async function AbonnementPage() {
           background: "rgba(255,255,255,0.85)",
           backdropFilter: "blur(18px) saturate(170%)",
           WebkitBackdropFilter: "blur(18px) saturate(170%)",
-          borderBottom: "1px solid rgba(109,94,246,0.10)",
+          borderBottom: "1px solid rgba(88,71,232,0.10)",
         }}
       >
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 text-sm font-medium"
-            style={{ color: "#6F6A8A" }}
+            style={{ color: "#6C6975" }}
           >
             <ArrowLeft className="w-4 h-4" />
             Retour au dashboard
@@ -97,11 +97,11 @@ export default async function AbonnementPage() {
         {/* Eyebrow + titre — adapté au scope courant */}
         <div className="mb-8">
           <div
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10.5px] uppercase tracking-widest font-semibold mb-3"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] font-semibold mb-3"
             style={{
-              background: scope.isOrgContext ? "rgba(30,158,106,0.08)" : "rgba(109,94,246,0.08)",
-              border: `1px solid ${scope.isOrgContext ? "rgba(30,158,106,0.30)" : "rgba(109,94,246,0.18)"}`,
-              color: scope.isOrgContext ? "#177A52" : "#5B46E0",
+              background: scope.isOrgContext ? "rgba(30,158,106,0.08)" : "rgba(88,71,232,0.08)",
+              border: `1px solid ${scope.isOrgContext ? "rgba(30,158,106,0.30)" : "rgba(88,71,232,0.18)"}`,
+              color: scope.isOrgContext ? "#146B48" : "#4A3AD6",
             }}
           >
             {scope.isOrgContext ? (
@@ -111,7 +111,7 @@ export default async function AbonnementPage() {
               </>
             ) : (
               <>
-                <span className="w-1 h-1 rounded-full" style={{ background: "#6D5EF6" }} />
+                <span className="w-1 h-1 rounded-full" style={{ background: "#5847E8" }} />
                 <span>Espace personnel</span>
               </>
             )}
@@ -119,12 +119,12 @@ export default async function AbonnementPage() {
           <h1
             className="text-[34px] font-bold tracking-tight"
             style={{
-              color: "#17123A",
+              color: "#121118",
             }}
           >
             {scope.isOrgContext ? `Abonnement ${orgName ?? "de l'organisation"}` : "Mon abonnement"}
           </h1>
-          <p className="text-[14.5px] mt-2 leading-relaxed" style={{ color: "#6F6A8A" }}>
+          <p className="text-[14.5px] mt-2 leading-relaxed" style={{ color: "#6C6975" }}>
             {scope.isOrgContext
               ? "Plan Agence partagé par tous les membres. Seul un administrateur peut modifier l'abonnement."
               : "Gérez votre plan, vos factures, votre moyen de paiement et votre résiliation depuis l'espace sécurisé Stripe."}
@@ -137,7 +137,7 @@ export default async function AbonnementPage() {
           style={{
             background: toneColors.bg,
             borderColor: toneColors.border,
-            boxShadow: "0 1px 0 rgba(255,255,255,0.85) inset, 0 4px 14px rgba(109,94,246,0.06)",
+            boxShadow: "0 1px 0 rgba(255,255,255,0.85) inset, 0 4px 14px rgba(18,17,24,0.12)",
           }}
         >
           <div className="flex items-start gap-4 mb-5">
@@ -149,7 +149,7 @@ export default async function AbonnementPage() {
               }}
             />
             <div className="flex-1 min-w-0">
-              <div className="text-[11px] uppercase tracking-widest font-semibold mb-1" style={{ color: toneColors.fg, opacity: 0.7 }}>
+              <div className="text-[12px] font-semibold mb-1" style={{ color: toneColors.fg, opacity: 0.7 }}>
                 Statut
               </div>
               <div className="text-[24px] font-bold leading-tight" style={{ color: toneColors.fg }}>
@@ -229,16 +229,16 @@ export default async function AbonnementPage() {
           className="mt-8 rounded-2xl p-5 sm:p-6 border"
           style={{
             background: "rgba(255,255,255,0.65)",
-            borderColor: "rgba(109,94,246,0.15)",
+            borderColor: "rgba(88,71,232,0.15)",
           }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <Info className="w-4 h-4" style={{ color: "#5B46E0" }} />
-            <h2 className="text-[14px] font-bold tracking-tight" style={{ color: "#17123A" }}>
+            <Info className="w-4 h-4" style={{ color: "#4A3AD6" }} />
+            <h2 className="text-[14px] font-bold tracking-tight" style={{ color: "#121118" }}>
               Comment fonctionne la facturation
             </h2>
           </div>
-          <ul className="space-y-3 text-[13px] leading-relaxed" style={{ color: "#55506F" }}>
+          <ul className="space-y-3 text-[13px] leading-relaxed" style={{ color: "#52505B" }}>
             <BillingPoint title="Essai gratuit de 14 jours" desc="Lors de votre première souscription, Stripe ne vous prélève rien pendant 14 jours. La carte est enregistrée uniquement pour automatiser le renouvellement à la fin de l'essai." />
             <BillingPoint title="Premier prélèvement à J14" desc="Sauf annulation préalable, vous êtes prélevé du montant du plan choisi à la fin des 14 jours. Vous recevez un e-mail Stripe quelques jours avant pour vous prévenir." />
             <BillingPoint title="Annulation à tout moment, 1 clic" desc="Depuis cette page (bouton Annuler). Si vous annulez pendant l'essai, aucun débit n'est effectué. Si vous annulez après, vous gardez l'accès jusqu'à la fin de la période payée." />
@@ -252,11 +252,11 @@ export default async function AbonnementPage() {
           className="mt-6 rounded-lg p-4 flex items-start gap-2.5 text-[12.5px]"
           style={{
             background: "rgba(255,255,255,0.6)",
-            border: "1px dashed rgba(109,94,246,0.20)",
-            color: "#55506F",
+            border: "1px dashed rgba(88,71,232,0.20)",
+            color: "#52505B",
           }}
         >
-          <Lock className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#5B46E0" }} />
+          <Lock className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#4A3AD6" }} />
           <span>
             La gestion de votre paiement (CB, prélèvement SEPA, factures, résiliation) se fait dans
             l'espace sécurisé <strong>Stripe</strong> (hébergement UE — Dublin). Aucune donnée bancaire
@@ -269,7 +269,7 @@ export default async function AbonnementPage() {
           <button
             type="button"
             className="inline-flex items-center gap-1.5 text-[12.5px] font-medium"
-            style={{ color: "#9792B4" }}
+            style={{ color: "#9C99A3" }}
             disabled
             title="Disponible directement dans le portail Stripe"
           >
@@ -296,11 +296,11 @@ function BillingPoint({ title, desc }: { title: string; desc: string }) {
           border: "1px solid rgba(30,158,106,0.30)",
         }}
       >
-        <Check className="w-3 h-3" style={{ color: "#177A52" }} strokeWidth={3} />
+        <Check className="w-3 h-3" style={{ color: "#146B48" }} strokeWidth={3} />
       </div>
       <div>
-        <div className="font-semibold text-[13px]" style={{ color: "#17123A" }}>{title}</div>
-        <div className="text-[12.5px] mt-0.5" style={{ color: "#6F6A8A" }}>{desc}</div>
+        <div className="font-semibold text-[13px]" style={{ color: "#121118" }}>{title}</div>
+        <div className="text-[12.5px] mt-0.5" style={{ color: "#6C6975" }}>{desc}</div>
       </div>
     </li>
   );
@@ -322,17 +322,17 @@ function InfoRow({
       className="rounded-xl p-3"
       style={{
         background: accent ? "rgba(227,160,8,0.08)" : "rgba(255,255,255,0.65)",
-        border: `1px solid ${accent ? "rgba(227,160,8,0.30)" : "rgba(23,18,58,0.08)"}`,
+        border: `1px solid ${accent ? "rgba(227,160,8,0.30)" : "rgba(18,17,24,0.08)"}`,
       }}
     >
-      <div className="flex items-center gap-1.5 text-[10.5px] uppercase tracking-widest font-semibold mb-1" style={{ color: accent ? "#7A4C00" : "#9792B4" }}>
+      <div className="flex items-center gap-1.5 text-[12px] font-semibold mb-1" style={{ color: accent ? "#7A4C00" : "#9C99A3" }}>
         <Icon className="w-3 h-3" />
         {label}
       </div>
       <div
         className="text-[14px] font-semibold"
         style={{
-          color: accent ? "#7A4C00" : "#17123A",
+          color: accent ? "#7A4C00" : "#121118",
           fontFamily: mono ? "var(--font-jetbrains-mono, ui-monospace, monospace)" : undefined,
         }}
       >

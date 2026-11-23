@@ -66,7 +66,7 @@ export default async function ArchivesPage() {
           <div style={{ padding: "24px 28px 80px" }}>
             <Link
               href="/dashboard"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#6F6A8A", fontSize: 13, textDecoration: "none", marginBottom: 10 }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#6C6975", fontSize: 13, textDecoration: "none", marginBottom: 10 }}
             >
               <ArrowLeft size={14} /> Retour au dashboard
             </Link>
@@ -78,13 +78,11 @@ export default async function ArchivesPage() {
                 gap: 6,
                 padding: "3px 9px",
                 borderRadius: 6,
-                background: "rgba(109,94,246,0.08)",
-                border: "1px solid rgba(109,94,246,0.18)",
-                color: "#5B46E0",
+                background: "rgba(88,71,232,0.08)",
+                border: "1px solid rgba(88,71,232,0.18)",
+                color: "#4A3AD6",
                 fontSize: 10.5,
                 fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.16em",
                 marginBottom: 10,
               }}
             >
@@ -97,12 +95,12 @@ export default async function ArchivesPage() {
                 fontWeight: 700,
                 letterSpacing: "-0.02em",
                 margin: 0,
-                color: "#17123A",
+                color: "#121118",
               }}
             >
               Dossiers archivés
             </h1>
-            <p style={{ color: "#6F6A8A", fontSize: 13.5, marginTop: 6, lineHeight: 1.5, maxWidth: 720 }}>
+            <p style={{ color: "#6C6975", fontSize: 13.5, marginTop: 6, lineHeight: 1.5, maxWidth: 720 }}>
               {rows.length === 0 ? (
                 <>Aucun dossier archivé. Les dossiers que vous archiverez apparaîtront ici en lecture seule, conservés <strong>5 ans</strong> conformément à l&apos;art. <strong>L.561-12 du CMF</strong>.</>
               ) : (
@@ -114,14 +112,14 @@ export default async function ArchivesPage() {
               <div
                 style={{
                   marginTop: 24,
-                  border: "1px solid rgba(23,18,58,0.08)",
+                  border: "1px solid rgba(18,17,24,0.08)",
                   borderRadius: 12,
                   overflowX: "auto",
                   background: "white",
                 }}
               >
                 <table style={{ width: "100%", minWidth: 620, borderCollapse: "collapse", fontSize: 13 }}>
-                  <thead style={{ background: "rgba(23,18,58,0.03)" }}>
+                  <thead style={{ background: "rgba(18,17,24,0.03)" }}>
                     <tr>
                       <th style={th}>Client</th>
                       <th style={th}>Type</th>
@@ -138,23 +136,23 @@ export default async function ArchivesPage() {
                       const retentionUntil = new Date(archivedAt);
                       retentionUntil.setFullYear(retentionUntil.getFullYear() + 5);
                       return (
-                        <tr key={d.id} style={{ borderTop: "1px solid rgba(23,18,58,0.05)" }}>
+                        <tr key={d.id} style={{ borderTop: "1px solid rgba(18,17,24,0.05)" }}>
                           <td style={td}>
-                            <div style={{ fontWeight: 500, color: "#17123A" }}>{d.nom_prenom}</div>
-                            <div style={{ fontSize: 11, color: "#9792B4", marginTop: 1 }}>
+                            <div style={{ fontWeight: 500, color: "#121118" }}>{d.nom_prenom}</div>
+                            <div style={{ fontSize: 11, color: "#9C99A3", marginTop: 1 }}>
                               Créé le {formatDate(d.created_at)}
                             </div>
                           </td>
-                          <td style={{ ...td, color: "#6F6A8A" }}>
+                          <td style={{ ...td, color: "#6C6975" }}>
                             {d.type_client === "morale" ? "Personne morale" : "Personne physique"}
                           </td>
                           <td style={td}>
-                            {niv ? <NiveauBadge n={niv} /> : <span style={{ color: "#9792B4" }}>—</span>}
+                            {niv ? <NiveauBadge n={niv} /> : <span style={{ color: "#9C99A3" }}>—</span>}
                           </td>
-                          <td style={{ ...td, color: "#6F6A8A" }}>{formatDate(d.archived_at)}</td>
-                          <td style={{ ...td, color: "#6F6A8A", fontWeight: 500 }}>
+                          <td style={{ ...td, color: "#6C6975" }}>{formatDate(d.archived_at)}</td>
+                          <td style={{ ...td, color: "#6C6975", fontWeight: 500 }}>
                             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                              <FileCheck size={12} style={{ color: "#1E9E6A" }} />
+                              <FileCheck size={12} style={{ color: "#1F9A68" }} />
                               {formatDate(retentionUntil.toISOString())}
                             </span>
                           </td>
@@ -162,13 +160,13 @@ export default async function ArchivesPage() {
                             {d.kyc_status === "received" ? (
                               <Link
                                 href={`/dashboard/${d.id}`}
-                                style={{ color: "#6D5EF6", display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12.5 }}
+                                style={{ color: "#5847E8", display: "inline-flex", alignItems: "center", gap: 3, fontSize: 12.5 }}
                                 title="Consulter le dossier en lecture seule"
                               >
                                 Consulter <ArrowRight size={12} />
                               </Link>
                             ) : (
-                              <span style={{ color: "#D5D1E6", fontSize: 12 }}>KYC incomplet</span>
+                              <span style={{ color: "#CFCDC6", fontSize: 12 }}>KYC incomplet</span>
                             )}
                           </td>
                         </tr>
@@ -183,15 +181,15 @@ export default async function ArchivesPage() {
               style={{
                 marginTop: 24,
                 padding: 14,
-                background: "rgba(109,94,246,0.04)",
-                border: "1px dashed rgba(109,94,246,0.20)",
+                background: "rgba(88,71,232,0.04)",
+                border: "1px dashed rgba(88,71,232,0.20)",
                 borderRadius: 10,
                 fontSize: 12,
-                color: "#55506F",
+                color: "#52505B",
                 lineHeight: 1.55,
               }}
             >
-              <strong style={{ color: "#5B46E0" }}>Ce que dit la loi.</strong>{" "}
+              <strong style={{ color: "#4A3AD6" }}>Ce que dit la loi.</strong>{" "}
               L&apos;art. <strong>L.561-12 du CMF</strong> impose la conservation des pièces et données du KYC pendant <strong>5 ans</strong> à compter de la fin de la relation d&apos;affaires. Klaris bloque toute modification et conserve l&apos;intégralité du dossier (pièces, attestations, journal d&apos;audit) jusqu&apos;à expiration du délai légal. Aucune action n&apos;est requise de votre côté.
             </div>
           </div>
@@ -206,9 +204,7 @@ const th: React.CSSProperties = {
   padding: "10px 14px",
   fontSize: 10.5,
   fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.14em",
-  color: "#6F6A8A",
+  color: "#6C6975",
 };
 
 const td: React.CSSProperties = { padding: "12px 14px", verticalAlign: "top" };

@@ -6,4 +6,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Site public
 
-Avant toute modification visuelle du site public (accueil, tarifs, confiance, sécurité, guides, pages légales, formulaire client), lire `DESIGN.md`.
+Avant toute modification visuelle (site public, formulaire client, application connectée, PDF), lire `DESIGN.md`.

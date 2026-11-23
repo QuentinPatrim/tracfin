@@ -94,7 +94,7 @@ export default function FileUpload({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-[11.5px] font-semibold text-[color:var(--lp-text-3)] uppercase tracking-[0.10em]">
+      <label className="text-[11.5px] font-semibold text-[color:var(--lp-text-3)]">
         {label} {required && <span className="text-[color:var(--lp-danger)]">*</span>}
       </label>
 

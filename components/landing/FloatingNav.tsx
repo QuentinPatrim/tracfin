@@ -1,7 +1,8 @@
 // components/landing/FloatingNav.tsx — Barre de navigation du site public
-// Identité « Papier & encre » : barre pleine largeur, transparente en haut de page,
-// pleine au défilement. Sur la page d'accueil elle repose sur le champ d'encre du
-// hero (prop over="field") : le texte est clair tant qu'on n'a pas défilé.
+// Identité « Registre » : barre pleine largeur, transparente en haut de page, pleine
+// (papier dépoli) au défilement. Sur la page d'accueil elle repose sur la section de
+// nuit du haut de page (prop over="field") : texte clair et bouton blanc tant qu'elle
+// passe au-dessus.
 
 "use client";
 
@@ -82,8 +83,8 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
       <header className="kl-nav" data-solid={!scrolled ? "false" : onField ? "field" : "true"} data-over={over}>
         <div className="kl-wrap flex items-center justify-between gap-3 h-16">
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Klaris, accueil">
-            <KlarisLogo size={28} />
-            <span className="kl-display text-[1.25rem]" style={{ lineHeight: 1 }}>Klaris</span>
+            <KlarisLogo size={28} inverted={onField} />
+            <span className="kl-wordmark">Klaris</span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5" aria-label="Navigation principale">
@@ -112,7 +113,7 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
                 <button
                   type="button"
                   onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}
-                  className={`kl-btn kl-btn--sm ml-1 ${onField ? "kl-btn--onfield" : "kl-btn--primary"}`}
+                  className="kl-btn kl-btn--sm kl-btn--primary ml-1.5"
                 >
                   <span className="hidden sm:inline">Essayer gratuitement</span>
                   <span className="sm:hidden">Essai gratuit</span>
@@ -124,7 +125,7 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
               <>
                 <Link
                   href="/dashboard"
-                  className={`kl-btn kl-btn--sm ml-1 ${onField ? "kl-btn--onfield" : "kl-btn--primary"}`}
+                  className="kl-btn kl-btn--sm kl-btn--primary ml-1.5"
                 >
                   Tableau de bord
                 </Link>
@@ -181,7 +182,7 @@ function MobileMenu({
       <div className="kl-wrap flex items-center justify-between h-16 shrink-0">
         <Link href="/" onClick={onClose} className="flex items-center gap-2.5">
           <KlarisLogo size={28} />
-          <span className="kl-display text-[1.25rem]" style={{ lineHeight: 1 }}>Klaris</span>
+          <span className="kl-wordmark">Klaris</span>
         </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
@@ -197,7 +198,7 @@ function MobileMenu({
             key={l.href}
             href={l.href}
             onClick={onClose}
-            className="kl-display py-4 text-[1.75rem] border-b"
+            className="kl-display py-4 text-[2rem] border-b"
             style={{ borderColor: "var(--lp-border-2)" }}
           >
             {l.label}

@@ -176,26 +176,9 @@ export default function TarifsPage() {
 
       <main className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-24">
         <div className="text-center mb-12">
-          {/* Badge "14 jours gratuits" très visible, bien au-dessus du titre */}
-          <div
-            className="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full"
-            style={{
-              background: "var(--lp-success-bg)",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 0 0 1px var(--lp-success-border), 0 1px 0 rgba(255,255,255,0.10) inset, 0 0 28px -4px rgba(30,158,106,0.40)",
-            }}
-          >
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{ background: "#1E9E6A", boxShadow: "0 0 0 4px rgba(30,158,106,0.30)" }}
-            />
-            <span className="text-[12px] font-bold tracking-[0.14em] uppercase text-[color:var(--lp-success)]">
-              14 jours gratuits · annulable en 1 clic
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-[-0.03em] mb-5 leading-[1.05]">
-            Essayez Klaris,<br />
-            sans engagement.
+          <p className="kl-kicker mb-6">14 jours gratuits, annulable en un clic</p>
+          <h1 className="kl-display mb-6" style={{ fontSize: "clamp(2.8rem, 1.6rem + 4.4vw, 5rem)" }}>
+            Essayez Klaris, <em>sans engagement.</em>
           </h1>
           <p className="text-[color:var(--lp-text-3)] text-base md:text-lg leading-relaxed max-w-xl mx-auto">
             <strong className="text-[color:var(--lp-text)]">Aucun prélèvement pendant 14 jours.</strong>{" "}
@@ -206,30 +189,26 @@ export default function TarifsPage() {
         {/* Toggle */}
         <div className="flex justify-center mb-12">
           <div
-            className="inline-flex p-1 rounded-[12px]"
-            style={{
-              background: "var(--lp-surface-2)",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 0 0 1px var(--lp-border-2), 0 1px 0 rgba(255,255,255,0.10) inset",
-            }}
+            className="inline-flex p-1 rounded-[10px]"
+            style={{ background: "var(--lp-surface-2)", boxShadow: "inset 0 0 0 1px var(--lp-border-1)" }}
           >
             <button
               onClick={() => setPeriod("monthly")}
-              className={`px-5 py-2 rounded-[10px] text-[13px] font-bold transition-all ${
-                period === "monthly" ? "bg-white text-slate-950 shadow-lg" : "text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)]"
+              className={`px-5 py-2 rounded-[8px] text-[13.5px] font-semibold transition-all ${
+                period === "monthly" ? "bg-[var(--lp-card-bg)] text-[color:var(--lp-text)] shadow-sm" : "text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)]"
               }`}
             >
               Mensuel
             </button>
             <button
               onClick={() => setPeriod("yearly")}
-              className={`px-5 py-2 rounded-[10px] text-[13px] font-bold transition-all flex items-center gap-2 ${
-                period === "yearly" ? "bg-white text-slate-950 shadow-lg" : "text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)]"
+              className={`px-5 py-2 rounded-[8px] text-[13.5px] font-semibold transition-all flex items-center gap-2 ${
+                period === "yearly" ? "bg-[var(--lp-card-bg)] text-[color:var(--lp-text)] shadow-sm" : "text-[color:var(--lp-text-3)] hover:text-[color:var(--lp-text)]"
               }`}
             >
               Annuel
               <span
-                className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                className={`text-[11px] font-semibold px-1.5 py-0.5 rounded-md ${
                   period === "yearly" ? "bg-[var(--lp-success-bg)] text-[color:var(--lp-success)]" : "bg-[var(--lp-success-bg)] text-[color:var(--lp-success)]"
                 }`}
               >
@@ -274,9 +253,9 @@ export default function TarifsPage() {
             }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#1E9E6A", boxShadow: "0 0 0 4px rgba(30,158,106,0.20)" }} />
+              <div className="w-2 h-2 rounded-full" style={{ background: "var(--kl-v1)" }} />
               <div>
-                <div className="text-[11px] font-bold tracking-widest uppercase text-[color:var(--lp-success)]">
+                <div className="text-[12.5px] font-semibold text-[color:var(--lp-success)]">
                   {status.state === "trialing" ? "Essai gratuit en cours" : "Abonnement actif"}
                 </div>
                 <div className="text-sm text-[color:var(--lp-text-2)]">
@@ -359,13 +338,10 @@ export default function TarifsPage() {
         {/* Explication de la facturation — sous les cards, bien visible */}
         {!hasActiveSubscription && (
           <div
-            className="max-w-4xl mx-auto mt-8 rounded-2xl p-5 sm:p-6"
-            style={{
-              background: "var(--lp-success-bg)",
-              border: "1px solid var(--lp-success-border)",
-            }}
+            className="max-w-4xl mx-auto mt-14 pt-10 border-t"
+            style={{ borderColor: "var(--lp-border-2)" }}
           >
-            <div className="grid sm:grid-cols-3 gap-5">
+            <div className="grid sm:grid-cols-3 gap-8">
               <BillingStep
                 step="Aujourd'hui"
                 title="0 €"
@@ -388,23 +364,11 @@ export default function TarifsPage() {
         {/* FAQ */}
         <div className="mt-24 max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <div
-              className="inline-block mb-3 text-[11px] font-bold tracking-[0.2em] uppercase"
-              style={{
-                background: "linear-gradient(90deg, #6D5EF6, #A548D8 55%, #DB2777)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Questions fréquentes
-            </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-[-0.025em]">
-              Tout ce qu'il faut savoir
-            </h2>
+            <p className="kl-kicker mb-5">Questions fréquentes</p>
+            <h2 className="kl-display kl-h2">Tout ce qu&apos;il faut <em>savoir.</em></h2>
           </div>
 
-          <div className="space-y-3">
+          <div className="border-t" style={{ borderColor: "var(--lp-border-2)" }}>
             <FaqItem
               q="Quand est-ce que je suis prélevé ?"
               a="Pas avant la fin de l'essai de 14 jours. La carte est enregistrée à l'inscription uniquement pour automatiser le renouvellement. Aucun débit n'est effectué pendant les 14 premiers jours. Le premier prélèvement intervient à J14, sauf si vous annulez avant."
@@ -442,156 +406,92 @@ function PlanCard({
 
   return (
     <div
-      className="relative rounded-3xl p-8"
+      className="relative rounded-2xl p-8 sm:p-9 flex flex-col"
       style={{
-        background: "var(--lp-card-bg)",
-        backdropFilter: "blur(28px) saturate(180%)",
-        WebkitBackdropFilter: "blur(28px) saturate(180%)",
+        background: popular ? "var(--kl-night)" : "var(--lp-card-bg)",
+        color: popular ? "var(--kl-on-field)" : undefined,
         boxShadow: popular
-          ? [
-              "0 0 0 1px rgba(165,72,216,0.40)",
-              "0 1px 0 rgba(255,255,255,0.20) inset",
-              "0 30px 80px -20px rgba(165,72,216,0.50)",
-              "0 12px 30px -8px rgba(0,0,0,0.5)",
-            ].join(", ")
-          : [
-              "0 0 0 1px var(--lp-border-2)",
-              "0 1px 0 rgba(255,255,255,0.10) inset",
-              "0 20px 40px -12px rgba(0,0,0,0.4)",
-            ].join(", "),
-        transform: popular ? "scale(1.03)" : undefined,
+          ? "0 0 0 1px rgba(255,255,255,0.06), 0 40px 80px -40px rgba(18,17,24,0.6)"
+          : "0 0 0 1px var(--lp-border-2), 0 1px 2px rgba(18,17,24,0.04)",
       }}
     >
-      {/* Highlight top */}
-      <div
-        className="absolute inset-x-8 top-0 h-px rounded-full"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.30) 50%, transparent)" }}
-      />
-
-      {popular && (
-        <>
-          <div
-            className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] text-white"
-            style={{
-              background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.20) inset, 0 4px 20px rgba(165,72,216,0.60)",
-            }}
+      <div className="flex items-center justify-between gap-3">
+        <div className="kl-display text-[2rem] leading-none">{name.charAt(0) + name.slice(1).toLowerCase()}</div>
+        {popular && (
+          <span
+            className="text-[12px] font-medium px-2.5 py-1 rounded-md"
+            style={{ background: "rgba(255,255,255,0.08)", color: "var(--kl-on-field)" }}
           >
-            Le plus populaire
-          </div>
-        </>
+            Recommandé pour les agences
+          </span>
+        )}
+      </div>
+      <p className="mt-2 text-[14px]" style={{ color: popular ? "var(--kl-on-field-2)" : "var(--lp-text-3)" }}>{tagline}</p>
+
+      <div className="flex items-baseline gap-1.5 mt-8">
+        <span className="kl-display kl-num" style={{ fontSize: "4.25rem", lineHeight: 0.9 }}>{price} €</span>
+        <span className="text-[14px]" style={{ color: popular ? "var(--kl-on-field-2)" : "var(--lp-text-4)" }}>/ mois</span>
+      </div>
+      {period === "yearly" ? (
+        <div className="text-[12.5px] font-medium mt-3" style={{ color: popular ? "#7FD7AE" : "var(--lp-success)" }}>
+          Soit {price * 12} €/an, économisez {(priceMonthly - priceYearly) * 12} €
+        </div>
+      ) : (
+        <div className="mt-3 h-[18px]" />
       )}
 
-      <div className="relative">
-        <div className="mb-1 text-[11px] font-bold tracking-[0.18em] uppercase text-[color:var(--lp-text-4)]">{name}</div>
-        <p className="text-[color:var(--lp-text-4)] text-sm mb-6">{tagline}</p>
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={loading || isCurrent}
+        className={`kl-btn kl-btn--lg w-full mt-7 disabled:opacity-60 disabled:cursor-default ${popular ? "kl-btn--onfield" : "kl-btn--primary"}`}
+        style={isCurrent ? { background: "var(--lp-success-bg)", color: "var(--lp-success)", boxShadow: "inset 0 0 0 1px var(--lp-success-border)" } : undefined}
+      >
+        {loading ? "Redirection…" : cta}
+        {!loading && !isCurrent && <ArrowRight className="w-4 h-4 kl-arrow" />}
+        {isCurrent && <Check className="w-4 h-4" strokeWidth={3} />}
+      </button>
 
-        <div className="flex items-baseline gap-1 mb-1">
-          <span className="text-5xl font-extrabold tracking-tight">{price}€</span>
-          <span className="text-[color:var(--lp-text-4)] text-sm">/mois</span>
-        </div>
-        {period === "yearly" ? (
-          <div className="text-[11px] text-[color:var(--lp-success)] font-semibold mb-6">
-            Soit {price * 12}€/an, économisez {(priceMonthly - priceYearly) * 12}€
-          </div>
+      <div className="text-center text-[12px] mt-3 leading-snug" style={{ color: popular ? "var(--kl-on-field-3)" : "var(--lp-text-4)" }}>
+        {isCurrent ? (
+          <span style={{ color: popular ? "#7FD7AE" : "var(--lp-success)" }}>Vous êtes sur ce plan</span>
+        ) : isUpgrade ? (
+          <span>Prorata appliqué, pas de double facturation</span>
         ) : (
-          <div className="mb-6 h-[14px]" />
+          <span>0 € aujourd&apos;hui · {price} €/mois après 14 jours · annulable à tout moment</span>
         )}
-
-        <button
-          onClick={onClick}
-          disabled={loading || isCurrent}
-          className="group w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-[10px] text-[14px] font-bold transition-transform hover:scale-[1.02] mb-2 disabled:opacity-60 disabled:cursor-default disabled:hover:scale-100"
-          style={
-            isCurrent
-              ? {
-                  background: "var(--lp-success-bg)",
-                  color: "var(--lp-success)",
-                  boxShadow: "0 0 0 1px var(--lp-success-border), 0 1px 0 rgba(255,255,255,0.10) inset",
-                }
-              : popular
-              ? {
-                  background: "var(--lp-cta-grad)",
-                  color: "white",
-                  boxShadow:
-                    "0 0 0 1px rgba(255,255,255,0.10) inset, 0 1px 0 rgba(255,255,255,0.30) inset, 0 10px 30px rgba(165,72,216,0.50)",
-                }
-              : { background: "white", color: "#17123A" }
-          }
-        >
-          {loading ? "Redirection…" : cta}
-          {!loading && !isCurrent && <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />}
-          {isCurrent && <Check className="w-4 h-4" strokeWidth={3} />}
-        </button>
-
-        {/* Sous-texte explicatif : selon le contexte */}
-        <div className="text-center text-[11px] mb-6 leading-snug" style={{ color: "var(--lp-text-4)" }}>
-          {isCurrent ? (
-            <span style={{ color: "var(--lp-success)" }}>✓ Vous êtes sur ce plan</span>
-          ) : isUpgrade ? (
-            <span>Prorata Stripe appliqué · pas de double facturation</span>
-          ) : (
-            <span>0 € aujourd'hui · {price}€/mois après 14 jours · annulable à tout moment</span>
-          )}
-        </div>
-
-        <ul className="space-y-3">
-          {features.map((f) => (
-            <li key={f} className="flex items-start gap-3 text-[13px] text-[color:var(--lp-text-3)]">
-              <div
-                className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5"
-                style={
-                  popular
-                    ? {
-                        background: "rgba(165,72,216,0.20)",
-                        boxShadow: "0 0 0 1px rgba(165,72,216,0.40), 0 0 8px rgba(165,72,216,0.30)",
-                        color: "#C7C0FF",
-                      }
-                    : {
-                        background: "rgba(61,190,139,0.15)",
-                        boxShadow: "0 0 0 1px rgba(61,190,139,0.40), 0 0 8px rgba(61,190,139,0.20)",
-                        color: "#3DBE8B",
-                      }
-                }
-              >
-                <Check className="w-3 h-3" strokeWidth={3} />
-              </div>
-              <span>{f}</span>
-            </li>
-          ))}
-        </ul>
       </div>
+
+      <ul className="mt-8 pt-7 space-y-3 border-t" style={{ borderColor: popular ? "var(--kl-on-field-line)" : "var(--lp-border-1)" }}>
+        {features.map((f) => (
+          <li key={f} className="flex items-start gap-3 text-[14px]" style={{ color: popular ? "var(--kl-on-field-2)" : "var(--lp-text-2)" }}>
+            <Check className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={2.5} style={{ color: popular ? "#fff" : "var(--lp-text)" }} />
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
 function BillingStep({ step, title, desc }: { step: string; title: string; desc: string }) {
   return (
-    <div className="text-center sm:text-left">
-      <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-[color:var(--lp-success)] mb-1.5">
-        {step}
-      </div>
-      <div className="text-[15px] font-bold text-[color:var(--lp-text)] mb-1">{title}</div>
-      <div className="text-[12.5px] text-[color:var(--lp-text-3)] leading-relaxed">{desc}</div>
+    <div className="text-left">
+      <div className="text-[12.5px] font-medium mb-2" style={{ color: "var(--lp-text-4)" }}>{step}</div>
+      <div className="kl-display text-[1.6rem] leading-tight mb-2" style={{ color: "var(--lp-text)" }}>{title}</div>
+      <div className="text-[13.5px] leading-relaxed" style={{ color: "var(--lp-text-3)" }}>{desc}</div>
     </div>
   );
 }
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <details
-      className="group rounded-2xl overflow-hidden"
-      style={{
-        background: "var(--lp-card-bg)",
-        backdropFilter: "blur(20px)",
-        boxShadow: "0 0 0 1px var(--lp-border-1), 0 1px 0 rgba(255,255,255,0.08) inset",
-      }}
-    >
-      <summary className="cursor-pointer px-6 py-5 font-bold text-[15px] tracking-tight flex items-center justify-between hover:bg-[var(--lp-surface)] transition list-none">
+    <details className="group border-b" style={{ borderColor: "var(--lp-border-2)" }}>
+      <summary className="cursor-pointer py-6 font-semibold text-[16px] tracking-tight flex items-center justify-between list-none">
         {q}
-        <span className="text-[color:var(--lp-text-4)] group-open:rotate-45 transition-transform text-2xl leading-none ml-4">+</span>
+        <span className="text-[color:var(--lp-text-4)] group-open:rotate-45 transition-transform text-2xl leading-none ml-4 font-light">+</span>
       </summary>
-      <div className="px-6 pb-5 text-[color:var(--lp-text-3)] text-[14px] leading-relaxed">{a}</div>
+      <div className="pb-6 -mt-1 text-[color:var(--lp-text-3)] text-[15px] leading-relaxed max-w-[62ch]">{a}</div>
     </details>
   );
 }

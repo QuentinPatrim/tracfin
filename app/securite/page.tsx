@@ -13,8 +13,7 @@ import {
 } from "lucide-react";
 import { HEBERGEURS_DONNEES, SOUS_TRAITANTS } from "@/lib/legal";
 import LegalFooter from "@/components/legal/LegalFooter";
-import KlarisLogo from "@/components/ui/KlarisLogo";
-import ThemeToggle from "@/components/ui/ThemeToggle";
+import FloatingNav from "@/components/landing/FloatingNav";
 
 export const metadata: Metadata = {
   title: "Sécurité & cadre réglementaire — Klaris",
@@ -46,22 +45,9 @@ export default function SecuritePage() {
       />
 
       {/* Header */}
-      <header className="relative z-10 border-b border-[color:var(--lp-border-1)]">
-        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <KlarisLogo size={32} />
-            <span className="font-bold tracking-tight text-[15px]">Klaris</span>
-          </Link>
-          <nav className="flex items-center gap-5 text-[12.5px] text-[color:var(--lp-text-3)]">
-            <Link href="/confiance" className="hover:text-[color:var(--lp-text)] transition">Confiance</Link>
-            <Link href="/tarifs" className="hover:text-[color:var(--lp-text)] transition">Tarifs</Link>
-            <Link href="/" className="hover:text-[color:var(--lp-text)] transition">Accueil</Link>
-            <ThemeToggle />
-          </nav>
-        </div>
-      </header>
+      <FloatingNav />
 
-      <main className="relative z-10">
+      <main className="relative z-10 pt-16">
         {/* Hero */}
         <section className="max-w-6xl mx-auto px-6 pt-16 md:pt-24 pb-12">
           <div className="text-center">

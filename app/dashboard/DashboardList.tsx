@@ -47,8 +47,8 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
           d.kyc_status === "received" && cfg
             ? cfg.color
             : d.kyc_status === "sent"
-            ? "#A548D8"
-            : "#4F46E5";
+            ? "#5847E8"
+            : "#4A3AD6";
 
         return (
           <Link
@@ -96,7 +96,7 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
 
             <div className="relative">
               <div className="flex justify-between items-start mb-4">
-                <div className="text-[10px] uppercase tracking-[0.15em] text-white/40 font-semibold">
+                <div className="text-[11.5px] text-white/40 font-semibold">
                   {d.type_client === "morale" ? "Personne morale" : "Personne physique"}
                 </div>
                 <div className="flex items-center gap-2 relative z-10">
@@ -136,7 +136,7 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
 
                 {/* Cas 2 : KYC reçu mais score pas encore calculé */}
                 {d.kyc_status === "received" && !cfg && (
-                  <Badge color="#3DBE8B" bg="rgba(61,190,139,0.10)" border="rgba(61,190,139,0.35)">
+                  <Badge color="#42B486" bg="rgba(61,190,139,0.10)" border="rgba(61,190,139,0.35)">
                     <Mail className="w-3 h-3" />
                     KYC reçu — à analyser
                   </Badge>
@@ -144,7 +144,7 @@ export default function DashboardList({ dossiers }: { dossiers: DossierListItem[
 
                 {/* Cas 3 : En attente du KYC client */}
                 {d.kyc_status !== "received" && (
-                  <Badge color="#C7C0FF" bg="rgba(165,72,216,0.12)" border="rgba(165,72,216,0.40)">
+                  <Badge color="#C9C4FA" bg="rgba(88,71,232,0.12)" border="rgba(88,71,232,0.40)">
                     <Clock className="w-3 h-3" />
                     En attente du KYC
                   </Badge>
@@ -188,7 +188,7 @@ function Badge({
   const rgb = hexToRgb(color);
   return (
     <span
-      className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest inline-flex items-center gap-1"
+      className="px-2.5 py-1 rounded-full text-[11.5px] font-bold inline-flex items-center gap-1"
       style={{
         background: bg,
         color,

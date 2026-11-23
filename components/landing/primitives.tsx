@@ -6,18 +6,8 @@ import type { ReactNode, ComponentType } from "react";
 
 /* ───────────────────── Eyebrow (étiquette de section) ───────────────────── */
 export function Eyebrow({ children }: { children: ReactNode }) {
-  return (
-    <div
-      className="inline-block px-2.5 py-1 rounded-md text-[10.5px] uppercase tracking-widest"
-      style={{
-        background: "var(--lp-surface-2)",
-        border: "1px solid var(--lp-border-2)",
-        color: "var(--lp-text-3)",
-      }}
-    >
-      {children}
-    </div>
-  );
+  // Légende de section : une phrase courte précédée d'un filet (pas de capitales espacées).
+  return <p className="kl-kicker">{children}</p>;
 }
 
 /* ───────────────────── Section wrapper ───────────────────── */
@@ -50,15 +40,7 @@ export function Section({
 
 export function H1({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <h1
-      className={`text-[34px] sm:text-[44px] md:text-[56px] lg:text-[64px] leading-[1.04] font-bold tracking-tight ${className}`}
-      style={{
-        background: "var(--lp-heading)",
-        WebkitBackgroundClip: "text",
-        backgroundClip: "text",
-        color: "transparent",
-      }}
-    >
+    <h1 className={`kl-display ${className}`} style={{ fontSize: "clamp(2.5rem, 1.5rem + 3.6vw, 4.25rem)", color: "var(--lp-text)" }}>
       {children}
     </h1>
   );
@@ -66,15 +48,7 @@ export function H1({ children, className = "" }: { children: ReactNode; classNam
 
 export function H2({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <h2
-      className={`text-[26px] sm:text-[32px] md:text-[38px] leading-[1.1] font-bold tracking-tight ${className}`}
-      style={{
-        background: "var(--lp-heading)",
-        WebkitBackgroundClip: "text",
-        backgroundClip: "text",
-        color: "transparent",
-      }}
-    >
+    <h2 className={`kl-display ${className}`} style={{ fontSize: "clamp(1.9rem, 1.3rem + 2vw, 2.75rem)", color: "var(--lp-text)" }}>
       {children}
     </h2>
   );
@@ -170,11 +144,9 @@ export function Card({
 }) {
   return (
     <div
-      className={`rounded-2xl p-5 sm:p-6 border transition-all ${className}`}
+      className={`rounded-xl p-5 sm:p-6 border transition-colors ${className}`}
       style={{
         background: accent ? "var(--lp-card-bg-accent)" : "var(--lp-card-bg)",
-        backdropFilter: "blur(20px) saturate(160%)",
-        WebkitBackdropFilter: "blur(20px) saturate(160%)",
         borderColor: accent ? "var(--lp-card-border-accent)" : "var(--lp-card-border)",
         boxShadow: "var(--lp-card-shadow)",
       }}
@@ -202,7 +174,7 @@ export function IconCircle({
   }[tone];
   return (
     <div
-      className="grid place-items-center rounded-xl shrink-0"
+      className="grid place-items-center rounded-lg shrink-0"
       style={{
         width: dim,
         height: dim,
@@ -230,35 +202,11 @@ interface CtaProps {
 }
 
 export function CTA({ children, href, onClick, variant = "primary", size = "md", className = "" }: CtaProps) {
-  const sizeCls = size === "lg" ? "px-6 py-3.5 text-[14.5px]" : "px-5 py-3 text-[13.5px]";
-
-  const styleByVariant: Record<"primary" | "ghost", React.CSSProperties> = {
-    primary: {
-      background: "var(--lp-cta-grad)",
-      color: "white",
-      boxShadow: "var(--lp-cta-shadow)",
-    },
-    ghost: {
-      background: "var(--lp-surface)",
-      color: "var(--lp-text-2)",
-      border: "1px solid var(--lp-border-2)",
-    },
-  };
-
-  const cls = `inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-transform duration-150 hover:-translate-y-0.5 ${sizeCls} ${className}`;
-
+  const cls = `kl-btn ${variant === "primary" ? "kl-btn--primary" : "kl-btn--ghost"} ${size === "lg" ? "kl-btn--lg" : ""} ${className}`;
   if (href) {
-    return (
-      <Link href={href} className={cls} style={styleByVariant[variant]}>
-        {children}
-      </Link>
-    );
+    return <Link href={href} className={cls}>{children}</Link>;
   }
-  return (
-    <button onClick={onClick} className={cls} style={styleByVariant[variant]}>
-      {children}
-    </button>
-  );
+  return <button type="button" onClick={onClick} className={cls}>{children}</button>;
 }
 
 /* ───────────────────── Citation légale (référence CMF, etc.) ───────────────────── */
@@ -266,14 +214,13 @@ export function CTA({ children, href, onClick, variant = "primary", size = "md",
 export function LegalRef({ children }: { children: ReactNode }) {
   return (
     <span
-      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10.5px] uppercase tracking-widest font-medium align-middle"
+      className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded font-mono text-[0.74rem] align-middle"
       style={{
         background: "var(--lp-legalref-bg)",
         border: "1px solid var(--lp-legalref-border)",
         color: "var(--lp-legalref-text)",
       }}
     >
-      <span className="w-1 h-1 rounded-full" style={{ background: "currentColor" }} />
       {children}
     </span>
   );

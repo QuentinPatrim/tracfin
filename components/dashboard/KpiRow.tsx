@@ -1,4 +1,4 @@
-// components/dashboard/KpiRow.tsx — 4 cartes KPI (top accent + halo, sans sparkline)
+// components/dashboard/KpiRow.tsx — Bandeau des quatre indicateurs du tableau de bord
 
 interface Props {
   total: number;
@@ -10,58 +10,34 @@ interface Props {
 interface CardProps {
   label: string;
   value: number;
-  delta: string;
-  deltaSign?: "up" | "down" | "flat";
-  tone: "accent" | "success" | "warn" | "danger";
+  note: string;
+  level?: 1 | 2 | 3 | 4;
 }
 
-function Kpi({ label, value, delta, deltaSign = "flat", tone }: CardProps) {
+/* Un indicateur : libellé, chiffre en serif, une ligne d'explication. La couleur ne
+   sert qu'à rappeler le niveau de vigilance (petit carré), jamais de décor. */
+function Kpi({ label, value, note, level }: CardProps) {
   return (
-    <div className={`kpi tone-${tone}`}>
-      <div className="kpi-label">{label}</div>
-      <div className="kpi-line">
-        <div className="kpi-value">{value}</div>
-        <div className={`kpi-delta ${deltaSign === "up" ? "up" : deltaSign === "down" ? "down" : ""}`}>
-          {deltaSign === "up" ? "▲" : deltaSign === "down" ? "▼" : "•"} {delta}
-        </div>
+    <div className="kpi">
+      <div className="kpi-label">
+        {level ? <i className="kpi-mark" style={{ background: `var(--k-v${level})` }} /> : null}
+        {label}
       </div>
+      <div className="kpi-value">{value}</div>
+      <div className="kpi-delta">{note}</div>
     </div>
   );
 }
 
 export default function KpiRow({ total, conformes, vigilance, critique }: Props) {
-  const conformesPct = total > 0 ? Math.round((conformes / total) * 100) : 0;
+  const pct = (n: number) => (total > 0 ? `${Math.round((n / total) * 100)} % des dossiers` : "—");
 
   return (
     <div className="kpi-row">
-      <Kpi
-        label="Total dossiers"
-        value={total}
-        delta={total > 0 ? "tous statuts confondus" : "—"}
-        deltaSign="flat"
-        tone="accent"
-      />
-      <Kpi
-        label="Conformes"
-        value={conformes}
-        delta={total > 0 ? `${conformesPct}%` : "—"}
-        deltaSign={conformes > 0 ? "up" : "flat"}
-        tone="success"
-      />
-      <Kpi
-        label="Vigilance"
-        value={vigilance}
-        delta={vigilance > 0 ? "à analyser" : "aucune alerte"}
-        deltaSign="flat"
-        tone="warn"
-      />
-      <Kpi
-        label="Critique"
-        value={critique}
-        delta={critique > 0 ? "action requise" : "aucune"}
-        deltaSign={critique > 0 ? "down" : "flat"}
-        tone="danger"
-      />
+      <Kpi label="Dossiers actifs" value={total} note={total > 0 ? "tous niveaux confondus" : "aucun dossier"} />
+      <Kpi label="Vigilance standard" value={conformes} note={pct(conformes)} level={1} />
+      <Kpi label="Vigilance renforcée" value={vigilance} note={vigilance > 0 ? "à documenter" : "aucun dossier"} level={2} />
+      <Kpi label="Action requise" value={critique} note={critique > 0 ? "examen renforcé ou interdiction" : "aucun dossier"} level={critique > 0 ? 4 : 3} />
     </div>
   );
 }

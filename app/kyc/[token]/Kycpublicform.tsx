@@ -395,7 +395,7 @@ export default function KycPublicForm({ token, dossierId, partie, pappersEnabled
             Vos informations sont arrivées à votre conseiller, chiffrées et hébergées en France.
             Vous serez recontacté(e) prochainement.
           </p>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] text-[11px] uppercase tracking-widest text-[color:var(--lp-text-4)]">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--lp-surface)] border border-[color:var(--lp-border-2)] text-[12px] text-[color:var(--lp-text-4)]">
             <Lock className="w-3 h-3" />
             Données conservées 5 ans (L.561-12 CMF)
           </div>
@@ -473,7 +473,7 @@ function Step0_Vous({ form, set, cnilOpen, setCnilOpen, isVendeur }: {
       {/* Badge rôle visible dès l'ouverture */}
       <div className="mb-5 flex justify-center">
         <span
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] uppercase tracking-widest font-bold"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-bold"
           style={{
             background: "var(--lp-card-bg-accent)",
             border: "1px solid var(--lp-card-border-accent)",
@@ -1048,7 +1048,7 @@ function BeneficiairesEffectifsEditor({ value, onChange }: {
           style={{ background: "var(--lp-surface)", borderColor: "var(--lp-border-2)" }}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-widest text-[color:var(--lp-text-4)]">
+            <span className="text-[12px] font-semibold text-[color:var(--lp-text-4)]">
               Bénéficiaire #{i + 1}
             </span>
             <button
@@ -1369,7 +1369,7 @@ function RecapBlock({ label, items, onEdit }: {
       style={{ background: "var(--lp-surface)", borderColor: "var(--lp-border-2)" }}
     >
       <div className="flex items-center justify-between mb-2">
-        <div className="text-[11px] uppercase tracking-widest text-[color:var(--lp-text-4)] font-semibold">{label}</div>
+        <div className="text-[12px] text-[color:var(--lp-text-4)] font-semibold">{label}</div>
         <button
           type="button"
           onClick={onEdit}

@@ -1,21 +1,23 @@
 import { ClerkProvider } from '@clerk/nextjs'
-import { Inter, JetBrains_Mono, Bricolage_Grotesque } from 'next/font/google'
+import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import type { Metadata } from 'next'
 import CookieNotice from '@/components/legal/CookieNotice'
 
-const inter = Inter({
+// Identité « Registre » (voir DESIGN.md) : texte et interface en Instrument Sans,
+// grands titres en Instrument Serif, vraies données en JetBrains Mono.
+const sans = Instrument_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  axes: ['wdth'],
+  variable: '--font-sans-face',
   display: 'swap',
 })
 
-// Police de titres du site public (identité « Papier & encre »). Variable :
-// l'axe wdth permet de l'étroitiser légèrement (cf. .kl-display dans globals.css).
-const bricolage = Bricolage_Grotesque({
+const serif = Instrument_Serif({
   subsets: ['latin'],
-  axes: ['opsz', 'wdth'],
-  variable: '--font-display',
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-serif-face',
   display: 'swap',
 })
 
@@ -69,7 +71,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="fr" className={`${inter.variable} ${jetbrainsMono.variable} ${bricolage.variable}`} suppressHydrationWarning>
+      <html lang="fr" className={`${sans.variable} ${serif.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
         <body>
           {/* Thème public clair/sombre appliqué avant le premier rendu (anti-FOUC).
               Défaut = préférence système ; sinon choix mémorisé. N'affecte que les

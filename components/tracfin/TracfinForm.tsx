@@ -122,10 +122,10 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
   };
 
   const statusGradients: Record<string, string> = {
-    valid: "linear-gradient(135deg,#3DBE8B,#177A52)",
+    valid: "linear-gradient(135deg,#42B486,#146B48)",
     vigilance: "linear-gradient(135deg,#F0924D,#DD6B20)",
     stop: "linear-gradient(135deg,#F0924D,#DD6B20)",
-    critical: "linear-gradient(135deg,#E8807B,#C5302C)",
+    critical: "linear-gradient(135deg,#E8807B,#C23630)",
   };
   const statusGlows: Record<string, string> = {
     valid: "rgba(61,190,139,0.35)",
@@ -137,13 +137,13 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
   return (
     <div
       className="min-h-screen flex flex-col relative"
-      style={{ background: "#F6F5FA", fontFamily: "Inter, sans-serif", color: "#17123A" }}
+      style={{ background: "#F6F6F3", fontFamily: "var(--font-sans-face), system-ui, sans-serif", color: "#121118" }}
     >
 
       <header
         className="relative z-10 backdrop-blur-xl"
         style={{
-          borderBottom: "1px solid rgba(109,94,246,0.10)",
+          borderBottom: "1px solid rgba(88,71,232,0.10)",
           background: "rgba(255,255,255,0.85)",
         }}
       >
@@ -151,9 +151,9 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
           <Link
             href="/dashboard"
             className="flex items-center gap-2 transition text-sm font-medium"
-            style={{ color: "#6F6A8A" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#5B46E0")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6F6A8A")}
+            style={{ color: "#6C6975" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#4A3AD6")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#6C6975")}
           >
             <ArrowLeft className="w-4 h-4" />
             Retour au dashboard
@@ -161,11 +161,11 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
           <div className="flex items-center gap-3">
             {hasKyc && (
               <div
-                className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 border"
+                className="px-2.5 py-1 rounded-full text-[11.5px] font-bold flex items-center gap-1.5 border"
                 style={{
                   background: "rgba(30,158,106,0.08)",
                   borderColor: "rgba(30,158,106,0.30)",
-                  color: "#177A52",
+                  color: "#146B48",
                 }}
               >
                 <Mail className="w-3 h-3" />
@@ -173,8 +173,8 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
               </div>
             )}
             <div
-              className="text-[10px] uppercase tracking-[0.2em]"
-              style={{ color: "#9792B4" }}
+              className="text-[11.5px]"
+              style={{ color: "#9C99A3" }}
             >
               {dossierId ? "Édition" : "Nouveau dossier"}
             </div>
@@ -192,21 +192,21 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all border"
                   style={{
-                    background: active ? "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)" : "white",
-                    borderColor: active ? "rgba(109,94,246,0.45)" : "rgba(23,18,58,0.12)",
-                    color: active ? "white" : "#9792B4",
-                    boxShadow: active ? "0 4px 14px rgba(109,94,246,0.30)" : "none",
+                    background: active ? "#121118" : "white",
+                    borderColor: active ? "rgba(88,71,232,0.45)" : "rgba(18,17,24,0.12)",
+                    color: active ? "white" : "#9C99A3",
+                    boxShadow: active ? "0 4px 14px rgba(88,71,232,0.30)" : "none",
                   }}
                 >
                   {i + 1}
                 </div>
                 {i < 2 && (
-                  <div className="flex-1 h-px relative" style={{ background: "rgba(23,18,58,0.08)" }}>
+                  <div className="flex-1 h-px relative" style={{ background: "rgba(18,17,24,0.08)" }}>
                     <div
                       className="absolute inset-y-0 left-0 transition-all duration-500"
                       style={{
                         width: i < step ? "100%" : "0%",
-                        background: "linear-gradient(90deg, #6D5EF6, #A548D8 55%, #DB2777)",
+                        background: "#121118",
                       }}
                     />
                   </div>
@@ -223,12 +223,12 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
             <h1
               className="text-[26px] font-bold tracking-tight mb-2"
               style={{
-                color: "#17123A",
+                color: "#121118",
               }}
             >
               {titles[step]}
             </h1>
-            <p className="text-sm leading-relaxed" style={{ color: "#6F6A8A" }}>
+            <p className="text-sm leading-relaxed" style={{ color: "#6C6975" }}>
               {subs[step]}
             </p>
           </div>
@@ -244,7 +244,7 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
       <div
         className="fixed bottom-0 left-0 right-0 z-20 backdrop-blur-2xl"
         style={{
-          borderTop: "1px solid rgba(109,94,246,0.10)",
+          borderTop: "1px solid rgba(88,71,232,0.10)",
           background: "rgba(255,255,255,0.92)",
         }}
       >
@@ -256,8 +256,8 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
             className="px-5 py-[10px] rounded-[10px] text-sm font-medium transition-all border disabled:opacity-40 disabled:cursor-not-allowed"
             style={{
               background: "white",
-              borderColor: "rgba(23,18,58,0.12)",
-              color: step === 0 ? "#9792B4" : "#55506F",
+              borderColor: "rgba(18,17,24,0.12)",
+              color: step === 0 ? "#9C99A3" : "#52505B",
             }}
           >
             Précédent
@@ -271,8 +271,8 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
                 style={{
                   width: i === step ? 22 : 5,
                   background: i === step
-                    ? "linear-gradient(90deg, #6D5EF6, #A548D8 55%, #DB2777)"
-                    : i < step ? "rgba(109,94,246,0.45)" : "rgba(23,18,58,0.10)",
+                    ? "#121118"
+                    : i < step ? "rgba(88,71,232,0.45)" : "rgba(18,17,24,0.10)",
                 }}
               />
             ))}
@@ -286,9 +286,9 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
                 disabled={exporting}
                 className="px-4 py-2.5 rounded-[10px] text-sm font-semibold transition-all flex items-center gap-2 disabled:opacity-50 border"
                 style={{
-                  background: "rgba(109,94,246,0.08)",
-                  borderColor: "rgba(109,94,246,0.25)",
-                  color: "#5B46E0",
+                  background: "rgba(88,71,232,0.08)",
+                  borderColor: "rgba(88,71,232,0.25)",
+                  color: "#4A3AD6",
                 }}
               >
                 <FileDown className="w-4 h-4" />
@@ -303,8 +303,8 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
                 disabled={step === 0 ? !canNext0 : !canNext1}
                 className="px-6 py-2.5 rounded-[10px] text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
-                  background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)",
-                  boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 20px rgba(109,94,246,0.35)",
+                  background: "#121118",
+                  boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 20px rgba(18,17,24,0.12)",
                 }}
               >
                 Suivant

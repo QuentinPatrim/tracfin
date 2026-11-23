@@ -45,59 +45,59 @@ export function buildDeclarationHtml(params: BuildParams): string {
 <style>
   @page { size: A4; margin: 18mm 16mm 22mm; }
   * { box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; color: #17123A; margin: 0; font-size: 10.5pt; line-height: 1.5; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif; color: #121118; margin: 0; font-size: 10.5pt; line-height: 1.5; }
 
   .header { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 14px; border-bottom: 3px solid #A3241F; margin-bottom: 18px; }
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-name { font-size: 18pt; font-weight: 800; }
-  .brand-sub { font-size: 8pt; color: #6F6A8A; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 1px; }
-  .meta { text-align: right; font-size: 8.5pt; color: #55506F; line-height: 1.55; }
-  .meta strong { color: #17123A; }
+  .brand-sub { font-size: 8pt; color: #6C6975; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 1px; }
+  .meta { text-align: right; font-size: 8.5pt; color: #52505B; line-height: 1.55; }
+  .meta strong { color: #121118; }
 
   h1 { font-size: 18pt; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 6px; color: #A3241F; }
-  h2 { font-size: 11pt; font-weight: 700; margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #E9E6F3; color: #A3241F; text-transform: uppercase; letter-spacing: 1px; }
+  h2 { font-size: 11pt; font-weight: 700; margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #E8E7E2; color: #A3241F; text-transform: uppercase; letter-spacing: 1px; }
 
-  .subtitle { font-size: 9.5pt; color: #55506F; margin-bottom: 16px; line-height: 1.55; }
-  .subtitle strong { color: #17123A; }
+  .subtitle { font-size: 9.5pt; color: #52505B; margin-bottom: 16px; line-height: 1.55; }
+  .subtitle strong { color: #121118; }
 
   .urgency { background: #F9E1DF; border-left: 4px solid #A3241F; padding: 10px 12px; margin: 10px 0 18px; font-size: 9.5pt; color: #7A1A16; }
   .urgency strong { color: #8A1E1A; }
 
   table.kv { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
-  table.kv td { padding: 5px 0; vertical-align: top; border-bottom: 1px solid #F4F2FA; }
-  table.kv td.k { width: 40%; color: #6F6A8A; font-weight: 500; }
-  table.kv td.v { color: #17123A; font-weight: 500; }
-  table.kv td.v.muted { color: #9792B4; font-style: italic; font-weight: 400; }
+  table.kv td { padding: 5px 0; vertical-align: top; border-bottom: 1px solid #F3F2EF; }
+  table.kv td.k { width: 40%; color: #6C6975; font-weight: 500; }
+  table.kv td.v { color: #121118; font-weight: 500; }
+  table.kv td.v.muted { color: #9C99A3; font-style: italic; font-weight: 400; }
 
-  .panel { border: 1px solid #E9E6F3; border-radius: 6px; padding: 12px; }
+  .panel { border: 1px solid #E8E7E2; border-radius: 6px; padding: 12px; }
   .panel-title { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #A3241F; margin: 0 0 8px; }
 
   .indices-list { list-style: none; padding: 0; margin: 0; font-size: 9.5pt; }
   .indice { padding: 8px 10px; margin-bottom: 6px; border-left: 3px solid #A3241F; background: #FCF1F0; border-radius: 0 4px 4px 0; }
-  .indice.rouge { border-color: #C5302C; }
-  .indice.orange { border-color: #E3A008; background: #FDF7E6; }
-  .indice.gate { border-color: #17123A; background: #F1EFF8; }
+  .indice.rouge { border-color: #C23630; }
+  .indice.orange { border-color: #D9980A; background: #FDF7E6; }
+  .indice.gate { border-color: #121118; background: #F1F0EC; }
   .indice-type { font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #A3241F; margin-bottom: 2px; }
-  .indice-type.gate { color: #17123A; }
+  .indice-type.gate { color: #121118; }
   .indice-type.orange { color: #8F5A00; }
-  .indice-desc { color: #17123A; }
+  .indice-desc { color: #121118; }
 
-  .expose { background: #F8F7FC; padding: 12px; border-radius: 6px; border: 1px solid #C7C0FF; font-size: 10pt; line-height: 1.6; }
-  .expose strong { color: #5B46E0; }
+  .expose { background: #F8F8F6; padding: 12px; border-radius: 6px; border: 1px solid #C9C4FA; font-size: 10pt; line-height: 1.6; }
+  .expose strong { color: #4A3AD6; }
 
   .pieces-list { font-size: 9.5pt; }
   .piece-item { display: flex; align-items: center; gap: 6px; padding: 4px 0; }
   .piece-bullet { width: 6px; height: 6px; border-radius: 50%; background: #A3241F; flex-shrink: 0; }
 
-  .ack-section { background: #EDF8F3; border: 2px solid #1E9E6A; padding: 12px; margin-top: 14px; border-radius: 6px; }
-  .ack-section .label { font-size: 8.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #177A52; margin-bottom: 4px; }
+  .ack-section { background: #EDF8F3; border: 2px solid #1F9A68; padding: 12px; margin-top: 14px; border-radius: 6px; }
+  .ack-section .label { font-size: 8.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #146B48; margin-bottom: 4px; }
   .ack-section .value { font-size: 11pt; font-weight: 700; color: #0E5C3D; font-family: "JetBrains Mono", monospace; }
 
-  .legal { margin-top: 24px; padding: 12px; background: #F8F7FC; border: 1px dashed #C7C0FF; border-radius: 6px; font-size: 8.5pt; color: #55506F; line-height: 1.55; }
-  .legal strong { color: #5B46E0; }
+  .legal { margin-top: 24px; padding: 12px; background: #F8F8F6; border: 1px dashed #C9C4FA; border-radius: 6px; font-size: 8.5pt; color: #52505B; line-height: 1.55; }
+  .legal strong { color: #4A3AD6; }
 
-  .footer { margin-top: 26px; padding-top: 12px; border-top: 1px solid #E9E6F3; display: flex; justify-content: space-between; align-items: flex-end; font-size: 7.5pt; color: #9792B4; }
-  .footer .hash { font-family: "JetBrains Mono", "Courier New", monospace; color: #55506F; }
+  .footer { margin-top: 26px; padding-top: 12px; border-top: 1px solid #E8E7E2; display: flex; justify-content: space-between; align-items: flex-end; font-size: 7.5pt; color: #9C99A3; }
+  .footer .hash { font-family: "JetBrains Mono", "Courier New", monospace; color: #52505B; }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 </style>
@@ -200,7 +200,7 @@ export function buildDeclarationHtml(params: BuildParams): string {
   <!-- 5. Indices détectés (automatique) -->
   <h2>${isMorale && draft.beneficiairesEffectifs.length > 0 ? "5" : "4"}. Indices détectés (algorithme Klaris v2)</h2>
   ${draft.indices.length === 0
-    ? `<p style="color:#9792B4; font-style: italic;">Aucun indice automatiquement détecté. La déclaration repose sur l&apos;appréciation directe du déclarant — voir exposé des faits ci-dessous.</p>`
+    ? `<p style="color:#9C99A3; font-style: italic;">Aucun indice automatiquement détecté. La déclaration repose sur l&apos;appréciation directe du déclarant — voir exposé des faits ci-dessous.</p>`
     : `<ul class="indices-list">
         ${draft.indices.map((idx) => `
           <li class="indice ${idx.severite}">

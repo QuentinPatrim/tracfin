@@ -96,11 +96,11 @@ function initials(name: string): string {
 const TOUR_STEPS: TourStep[] = [
   {
     eyebrow: "Bienvenue",
-    title: "Découvrez Klaris en situation 👋",
+    title: "Découvrez Klaris en situation",
     body: "Le temps de cette visite, on a rempli votre tableau de bord avec des dossiers d'exemple (fictifs) pour vous montrer l'app comme si vous l'utilisiez déjà. Vous pouvez passer à tout moment.",
   },
   {
-    selector: ".topbar-v2-nav",
+    selector: ".k-side-nav",
     eyebrow: "Navigation",
     title: "Vos onglets, en bref",
     body: "Dossiers — vos clients et leur suivi KYC. Cartographie — la synthèse des risques de votre portefeuille. Intégrations — votre CRM. Abonnement & Tarifs — votre formule. (Survolez un onglet pour un rappel.)",
@@ -360,7 +360,7 @@ export default function DashboardClient({
                 const ab = niveauBadge(d);
                 return (
                   <Link key={d.id} href={`/dashboard/${d.id}`} className="alert-pill">
-                    <span className="risk-dot" style={{ background: ab.tone === "critical" ? "#17123A" : "#D9443F" }} />
+                    <span className="risk-dot" style={{ background: ab.tone === "critical" ? "#121118" : "#CF3F39" }} />
                     <span className="alert-name">{d.nom_prenom}</span>
                     <span className="muted small">{ab.label}</span>
                     <ChevronRight width={12} height={12} style={{ opacity: 0.6 }} />
@@ -389,20 +389,7 @@ export default function DashboardClient({
               {archivedCount > 0 && (
                 <Link
                   href="/dashboard/archives"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "#5B46E0",
-                    padding: "5px 11px",
-                    borderRadius: 8,
-                    background: "rgba(109,94,246,0.06)",
-                    border: "1px solid rgba(109,94,246,0.22)",
-                    textDecoration: "none",
-                    whiteSpace: "nowrap",
-                  }}
+                  className="ghost-btn small"
                   title="Dossiers archivés (lecture seule, conservés 5 ans — L.561-12 CMF)"
                 >
                   <Archive width={12} height={12} />
@@ -432,20 +419,11 @@ export default function DashboardClient({
                           <span>{d.type_client === "morale" ? "Personne morale" : "Personne physique"}</span>
                           {d.partie && (
                             <>
-                              <span className="dot-sep">•</span>
-                              <span
-                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] uppercase tracking-widest font-bold"
-                                style={{
-                                  background: d.partie === "vendeur" ? "rgba(109,94,246,0.08)" : "rgba(236,72,153,0.08)",
-                                  border: `1px solid ${d.partie === "vendeur" ? "rgba(109,94,246,0.25)" : "rgba(236,72,153,0.25)"}`,
-                                  color: d.partie === "vendeur" ? "#5B46E0" : "#be185d",
-                                }}
-                              >
-                                {d.partie === "vendeur" ? "Vendeur" : "Acquéreur"}
-                              </span>
+                              <span className="dot-sep">·</span>
+                              <span>{d.partie === "vendeur" ? "Vendeur" : "Acquéreur"}</span>
                             </>
                           )}
-                          <span className="dot-sep">•</span>
+                          <span className="dot-sep">·</span>
                           <span>Maj. {formatDate(d.updated_at)}</span>
                         </div>
                       </div>
@@ -453,29 +431,16 @@ export default function DashboardClient({
                     <div className="row-r">
                       {alertSet.has(d.id) && (
                         <span
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-                          style={{
-                            background: "rgba(197,48,44,0.10)",
-                            border: "1px solid rgba(197,48,44,0.40)",
-                            color: "#A3241F",
-                            animation: "pulse-alert 2s ease-in-out infinite",
-                          }}
+                          className="badge tone-alert"
                           title="Nouvelle correspondance sanctions détectée — vigilance L.561-6"
                         >
-                          🚨 Alerte
+                          <span className="risk-dot" />
+                          Alerte sanctions
                         </span>
                       )}
                       {marcheCompletedIds.has(d.id) && (b.tone === "danger" || b.tone === "warn" || b.tone === "critical") && (
-                        <span
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
-                          style={{
-                            background: "rgba(30,158,106,0.10)",
-                            border: "1px solid rgba(30,158,106,0.30)",
-                            color: "#177A52",
-                          }}
-                          title="Marche à suivre terminée"
-                        >
-                          <Check width={9} height={9} strokeWidth={3} />
+                        <span className="badge tone-neutral" title="Marche à suivre terminée">
+                          <Check width={11} height={11} strokeWidth={3} />
                           Traité
                         </span>
                       )}
@@ -538,13 +503,13 @@ export default function DashboardClient({
           style={{
             position: "fixed", top: 10, left: "50%", transform: "translateX(-50%)",
             zIndex: 9999, pointerEvents: "none",
-            background: "linear-gradient(135deg, #6D5EF6, #A548D8 55%, #DB2777)", color: "white",
-            fontSize: 11.5, fontWeight: 700, letterSpacing: "0.04em",
-            padding: "6px 14px", borderRadius: 999,
-            boxShadow: "0 8px 24px -6px rgba(109,94,246,0.6)",
+            background: "#121118", color: "white",
+            fontSize: 12, fontWeight: 600,
+            padding: "7px 14px", borderRadius: 8,
+            boxShadow: "0 12px 28px -10px rgba(18,17,24,0.6)",
           }}
         >
-          ✦ Mode démonstration — données fictives
+          Mode démonstration · données fictives
         </div>
       )}
 
@@ -590,7 +555,7 @@ function ConfirmArchiveModal({
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(23,18,58,0.45)",
+        background: "rgba(18,17,24,0.45)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         zIndex: 100,
@@ -605,27 +570,26 @@ function ConfirmArchiveModal({
         style={{
           width: "min(480px, 100%)",
           background: "#ffffff",
-          border: "1px solid rgba(109,94,246,0.22)",
-          borderRadius: 16,
+          border: "1px solid rgba(18,17,24,0.10)",
+          borderRadius: 14,
           padding: 24,
-          boxShadow: "0 30px 80px rgba(23,18,58,0.18), 0 0 0 1px rgba(255,255,255,0.6) inset",
+          boxShadow: "0 30px 80px -20px rgba(18,17,24,0.35)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <div
             style={{
-              width: 40, height: 40, borderRadius: 12,
-              background: "rgba(109,94,246,0.10)",
+              width: 40, height: 40, borderRadius: 10,
+              background: "#F3F2EF",
               display: "grid", placeItems: "center",
-              color: "#5B46E0",
-              border: "1px solid rgba(109,94,246,0.22)",
+              color: "#121118",
             }}
           >
             <Archive width={20} height={20} />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 16, color: "#17123A" }}>Archiver ce dossier ?</div>
-            <div style={{ fontSize: 13, color: "#6F6A8A", marginTop: 2 }}>
+            <div style={{ fontWeight: 700, fontSize: 16, color: "#121118" }}>Archiver ce dossier ?</div>
+            <div style={{ fontSize: 13, color: "#6C6975", marginTop: 2 }}>
               Dossier de <strong>{dossier.nom_prenom}</strong>
             </div>
           </div>
@@ -639,11 +603,11 @@ function ConfirmArchiveModal({
             border: "1px solid rgba(30,158,106,0.30)",
             borderRadius: 10,
             fontSize: 12.5,
-            color: "#3B3560",
+            color: "#3A3842",
             lineHeight: 1.5,
           }}
         >
-          <strong style={{ color: "#177A52" }}>✓ Action conforme L.561-12 CMF.</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
+          <strong style={{ color: "#146B48" }}>Conservation assurée (L.561-12 CMF).</strong> Le dossier disparaîtra de votre liste active, mais les pièces justificatives, l'audit log et l'attestation seront <strong>conservés 5 ans</strong> et restent accessibles en cas de contrôle DGCCRF. La suppression définitive sera automatique à l'expiration du délai légal.
         </div>
 
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
@@ -653,9 +617,9 @@ function ConfirmArchiveModal({
             style={{
               padding: "8px 16px",
               borderRadius: 9,
-              border: "1px solid #E9E7F2",
+              border: "1px solid #E8E7E2",
               background: "#ffffff",
-              color: "#3B3560",
+              color: "#3A3842",
               fontWeight: 500,
               fontSize: 13,
               cursor: "pointer",
@@ -670,12 +634,11 @@ function ConfirmArchiveModal({
               padding: "8px 16px",
               borderRadius: 9,
               border: 0,
-              background: "linear-gradient(135deg, #6D5EF6, #A548D8)",
+              background: "#121118",
               color: "white",
               fontWeight: 600,
               fontSize: 13,
               cursor: loading ? "wait" : "pointer",
-              boxShadow: "0 4px 14px rgba(109,94,246,0.30), 0 1px 0 rgba(255,255,255,0.20) inset",
               opacity: loading ? 0.7 : 1,
               display: "inline-flex",
               alignItems: "center",
@@ -711,16 +674,10 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
             <div className="muted small flex items-center gap-2 flex-wrap">
               <span>{d.type_client === "morale" ? "Personne morale" : "Personne physique"}</span>
               {d.partie && (
-                <span
-                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] uppercase tracking-widest font-bold"
-                  style={{
-                    background: d.partie === "vendeur" ? "rgba(109,94,246,0.08)" : "rgba(236,72,153,0.08)",
-                    border: `1px solid ${d.partie === "vendeur" ? "rgba(109,94,246,0.25)" : "rgba(236,72,153,0.25)"}`,
-                    color: d.partie === "vendeur" ? "#5B46E0" : "#be185d",
-                  }}
-                >
-                  {d.partie === "vendeur" ? "Vendeur" : "Acquéreur"}
-                </span>
+                <>
+                  <span className="dot-sep">·</span>
+                  <span>{d.partie === "vendeur" ? "Vendeur" : "Acquéreur"}</span>
+                </>
               )}
             </div>
           </div>
@@ -734,26 +691,19 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
             className="preview-risk-label"
             style={{
               color:
-                b.tone === "success" ? "#177A52"
+                b.tone === "success" ? "#146B48"
                 : b.tone === "warn" ? "#B87A00"
-                : b.tone === "critical" ? "#17123A"
-                : "#C5302C",
+                : b.tone === "critical" ? "#121118"
+                : "#C23630",
             }}
           >
             {cfg.label}
           </div>
           <div className="muted small" style={{ marginBottom: 14 }}>{cfg.ref}</div>
 
-          {/* Disque coloré plein (vert/orange/rouge selon niveau) + action recommandée */}
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
-            <NiveauDisc tone={b.tone} />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11, color: "var(--k-muted)", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
-                Verdict
-              </div>
-              <p style={{ margin: 0, fontSize: 13, color: "var(--k-fg-2)", lineHeight: 1.5 }}>{cfg.action}</p>
-            </div>
-          </div>
+          {/* Étiquette de vigilance (même grammaire que le site) + conduite à tenir */}
+          <VigilanceMini tone={b.tone} />
+          <p style={{ margin: "14px 0 14px", fontSize: 13, color: "var(--k-fg-2)", lineHeight: 1.55 }}>{cfg.action}</p>
 
           {/* Guide d'actions concret par niveau (compact dans le preview) */}
           <MarcheASuivre
@@ -772,9 +722,9 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
           alignItems: "flex-start",
           gap: 10,
           padding: "12px 14px",
-          background: "#F6F3FF",
-          border: "1px solid #E9E5FF",
-          color: "#4A38C8",
+          background: "#F3F2FE",
+          border: "1px solid #E9E7FD",
+          color: "#3D30B0",
           borderRadius: 10,
           fontSize: 12.5,
           lineHeight: 1.5,
@@ -804,7 +754,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
       {/* Pièces justificatives */}
       {d.kyc_status === "received" && (
         <div className="preview-section">
-          <div className="preview-label">Pièces justificatives <span style={{ marginLeft: 4, color: "#9792B4", fontWeight: 500 }}>({files.length})</span></div>
+          <div className="preview-label">Pièces justificatives <span style={{ marginLeft: 4, color: "#9C99A3", fontWeight: 500 }}>({files.length})</span></div>
           <DocumentsList files={files} mode="compact" />
         </div>
       )}
@@ -823,10 +773,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
             target="_blank"
             rel="noreferrer noopener"
             className="btn-grad small block"
-            style={{
-              background: "linear-gradient(135deg, #C5302C, #D9443F, #f43f5e)",
-              boxShadow: "0 4px 14px rgba(197,48,44,0.35), 0 1px 0 rgba(255,255,255,0.25) inset",
-            }}
+            style={{ background: "#B3322D" }}
           >
             <AlertTriangle width={12} height={12} />
             Déclarer à TRACFIN (ERMES)
@@ -872,7 +819,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
         <button
           onClick={onAskArchive}
           className="ghost-btn small block"
-          style={{ justifyContent: "center", color: "#5B46E0", borderColor: "rgba(109,94,246,0.20)" }}
+          style={{ justifyContent: "center", color: "var(--k-muted)" }}
           title="Retire le dossier de la liste active. Conservation 5 ans (L.561-12)."
         >
           <Archive width={12} height={12} />
@@ -883,51 +830,18 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
   );
 }
 
-/* Disque coloré plein qui matérialise visuellement le NIVEAU de vigilance.
-   Pas de pourcentage, pas de score — juste la couleur du verdict. */
-function NiveauDisc({ tone }: { tone: "success" | "warn" | "danger" | "critical" | "pending" }) {
-  const cfg =
-    tone === "success"  ? { from: "#1E9E6A", to: "#3DBE8B", glow: "rgba(30,158,106,0.40)" }
-    : tone === "warn"   ? { from: "#E3A008", to: "#EDB52E", glow: "rgba(227,160,8,0.40)" }
-    : tone === "danger" ? { from: "#C5302C", to: "#f43f5e", glow: "rgba(197,48,44,0.40)" }
-    : tone === "critical" ? { from: "#17123A", to: "#241E4E", glow: "rgba(197,48,44,0.45)" }
-    : { from: "#6D5EF6", to: "#DB2777", glow: "rgba(109,94,246,0.40)" };
-
+/* Étiquette de vigilance compacte : quatre barres, la flèche d'encre sur le niveau
+   du dossier. Pas de pourcentage, pas de score, la grammaire de l'étiquette énergie. */
+function VigilanceMini({ tone }: { tone: "success" | "warn" | "danger" | "critical" | "pending" }) {
+  const level = tone === "success" ? 1 : tone === "warn" ? 2 : tone === "danger" ? 3 : tone === "critical" ? 4 : 0;
   return (
-    <div
-      style={{
-        width: 56,
-        height: 56,
-        borderRadius: "50%",
-        background: `linear-gradient(135deg, ${cfg.from} 0%, ${cfg.to} 100%)`,
-        boxShadow: `0 0 0 4px ${cfg.glow}, 0 6px 18px ${cfg.glow}, 0 1px 0 rgba(255,255,255,0.40) inset`,
-        flexShrink: 0,
-        position: "relative",
-      }}
-      aria-hidden="true"
-    >
-      {/* Highlight haut pour donner du relief */}
-      <div
-        style={{
-          position: "absolute",
-          top: 6, left: 8, right: 8, height: 18,
-          borderRadius: "50%",
-          background: "linear-gradient(180deg, rgba(255,255,255,0.45), transparent)",
-          opacity: 0.7,
-        }}
-      />
-      {/* Accent rouge pulsé pour le mode critical (interdiction) */}
-      {tone === "critical" && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderRadius: "50%",
-            boxShadow: "0 0 0 1.5px rgba(197,48,44,0.55) inset",
-            pointerEvents: "none",
-          }}
-        />
-      )}
+    <div className="vmini" aria-hidden="true">
+      {[1, 2, 3, 4].map((l) => (
+        <div key={l} className="vmini-row">
+          <span className="vmini-bar" data-l={l} data-on={l === level ? "" : undefined} />
+          {l === level && <span className="vmini-ptr">{l}</span>}
+        </div>
+      ))}
     </div>
   );
 }
