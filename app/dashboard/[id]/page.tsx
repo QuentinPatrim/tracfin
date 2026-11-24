@@ -16,6 +16,7 @@ import ValidationSection from "@/components/dashboard/ValidationSection";
 import { FEATURES } from "@/lib/features";
 import KycClientSummary, { type KycSummaryData } from "@/components/dashboard/KycClientSummary";
 import DossierHeader, { K } from "@/components/dashboard/dossier/DossierHeader";
+import DossierProgress from "@/components/dashboard/dossier/DossierProgress";
 import "@/components/dashboard/dossier/dossier.css";
 import type { BeneficiaireEffectif } from "@/lib/kyc";
 
@@ -307,6 +308,14 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
         filesCount={files.length}
       />
 
+      <DossierProgress
+        id={id}
+        name={dossier.nom_prenom}
+        partie={summary.partie}
+        niveau={niveauEffectif}
+        receivedLabel={kyc.submitted_at ? `Le ${new Date(kyc.submitted_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}` : null}
+      />
+
       <div className="kd-grid">
         <div className="kd-main">
           {niveauEffectif && (
@@ -331,7 +340,7 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
             </section>
           )}
           <section id="analyse" className="kd-sec">
-            <h2 className="kd-h"><i style={{ background: K.evaluer }} />Analyse de risque<small>Pré-remplie avec la fiche du client</small></h2>
+            <h2 className="kd-h"><i style={{ background: K.evaluer }} />Analyse de risque<small>{niveauEffectif ? "Vérifiée · vous pouvez la modifier" : "À vérifier · pré-remplie avec la fiche du client"}</small></h2>
             <TracfinForm initialData={rowToForm(dossier, kyc)} dossierId={id} hasKyc screeningEnabled={FEATURES.screening} />
           </section>
           <div className="kd-sec" style={{ display: "contents" }}>

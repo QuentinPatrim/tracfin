@@ -128,6 +128,16 @@ capté** : un geste fait défiler la page, rien d'autre.
   (pièces), déclarer (déclaration). L'analyse (`TracfinForm`) est une carte avec
   ses trois étapes cliquables vers l'arrière et une barre d'actions collante en
   pilule (au-dessus des onglets sur téléphone).
+- **Où en est un dossier** (`components/dashboard/dossierStage.ts`) : quatre étapes,
+  toujours les mêmes — lien envoyé, fiche reçue, analyse vérifiée, suite donnée — et
+  une seule « prochaine action » en mots simples. À la réception de la fiche, le
+  niveau n'est **pas** encore calculé : l'agent vérifie l'analyse pré-remplie et
+  l'enregistre, c'est là que Klaris calcule le niveau. La prochaine action apparaît
+  sous chaque nom dans la liste (et un filtre « À faire »), en tête de l'aperçu, et
+  sur la fiche dans `DossierProgress.tsx` (fil + bouton qui mène à la bonne section).
+  Après « Enregistrer ce niveau », l'agent reste sur la fiche.
+- **Vocabulaire de l'app** : « fiche client » plutôt que « KYC » à l'écran
+  (« Fiche attendue », « À vérifier »).
 - **Page d'attente** (`app/dashboard/[id]/wait`) : dans le cadre de l'app, même
   bouton « ← Dossiers » que la fiche.
 - **Visite guidée** (`components/dashboard/GuidedTour.tsx`, `tour.css`) : six plans

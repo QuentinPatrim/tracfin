@@ -25,6 +25,7 @@ export default function TracfinForm({ initialData, dossierId, screeningEnabled =
   const [anim, setAnim] = useState(false);
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [form, setForm] = useState<DossierForm>({ ...initialForm, ...initialData });
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -85,8 +86,17 @@ export default function TracfinForm({ initialData, dossierId, screeningEnabled =
         const detail = await res.json().catch(() => ({}));
         throw new Error(detail.error || `HTTP ${res.status}`);
       }
-      router.push("/dashboard");
-      router.refresh();
+      if (dossierId) {
+        // On reste sur la fiche : le niveau calculé et la suite à donner s'affichent en haut.
+        router.refresh();
+        setSaving(false);
+        setSaved(true);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => setSaved(false), 4000);
+      } else {
+        router.push("/dashboard");
+        router.refresh();
+      }
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Erreur inconnue";
       alert(`Erreur lors de la sauvegarde : ${msg}`);
@@ -188,7 +198,7 @@ export default function TracfinForm({ initialData, dossierId, screeningEnabled =
             disabled={saving}
             style={{ background: statusBg[score.statutKey], boxShadow: "none" }}
           >
-            {saving ? "Enregistrement…" : dossierId ? "Enregistrer" : "Valider le dossier"}
+            {saving ? "Enregistrement…" : saved ? "Enregistré" : dossierId ? "Enregistrer ce niveau" : "Valider le dossier"}
           </button>
         )}
       </div>

@@ -23,7 +23,7 @@ export const DEMO_DOSSIERS: DossierItem[] = [
   },
   {
     id: "demo-3", nom_prenom: "Marc Lefèvre", type_client: "physique", partie: "vendeur",
-    algo_version: "v2", niveau: "vigilance_standard", statut: null, score_pct: 88,
+    algo_version: "v2", niveau: null, statut: null, score_pct: 0,
     created_at: now, updated_at: now, kyc_status: "received",
   },
   {
@@ -45,7 +45,7 @@ export const DEMO_DOSSIERS: DossierItem[] = [
 
 export const DEMO_COUNTS = {
   total: DEMO_DOSSIERS.length,
-  conformes: 2,   // Camille + Marc
+  conformes: 1,   // Camille (Marc : fiche reçue, analyse à vérifier)
   vigilance: 1,   // SCI Les Tilleuls
   critique: 2,    // Nadia (examen) + Holding (interdiction)
 };

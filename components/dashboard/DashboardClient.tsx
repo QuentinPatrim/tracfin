@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowRight, FileDown, Archive, Mail, FileCheck,
+  ArrowRight, FileDown, Archive, FileCheck,
   ChevronRight, AlertTriangle, Send, ExternalLink, Package, Check, X,
 } from "lucide-react";
 import Topbar from "./Topbar";
@@ -21,6 +21,7 @@ import DashboardFooter from "./DashboardFooter";
 import { EmptyState } from "./primitives";
 import { FolderPlus, BookOpen, Lock } from "lucide-react";
 import MarcheASuivre, { isMarcheTerminee } from "./MarcheASuivre";
+import { nextAction, type NextAction } from "./dossierStage";
 import { NIVEAU_CFG, type Niveau, type StatutKey, V1_TO_NIVEAU } from "@/lib/tracfin";
 import type { DossierFile } from "@/lib/dossier-files";
 
@@ -55,7 +56,7 @@ interface Props {
   };
 }
 
-type FilterKey = "all" | "attente" | "vigilance" | "critique" | "conforme";
+type FilterKey = "all" | "afaire" | "attente" | "vigilance" | "critique" | "conforme";
 
 // Résout le niveau effectif d'un dossier (rétro-compat v1 → v2)
 function resolveNiveau(d: DossierItem): Niveau | null {
@@ -65,9 +66,9 @@ function resolveNiveau(d: DossierItem): Niveau | null {
 }
 
 function niveauBadge(d: DossierItem): { tone: "success" | "warn" | "danger" | "critical" | "pending"; label: string } {
-  if (d.kyc_status !== "received") return { tone: "pending", label: "En attente du KYC" };
+  if (d.kyc_status !== "received") return { tone: "pending", label: "Fiche attendue" };
   const n = resolveNiveau(d);
-  if (!n) return { tone: "pending", label: "À analyser" };
+  if (!n) return { tone: "pending", label: "À vérifier" };
   if (n === "vigilance_standard") return { tone: "success", label: "Vigilance standard" };
   if (n === "vigilance_renforcee") return { tone: "warn", label: "Vigilance renforcée" };
   if (n === "examen_renforce") return { tone: "danger", label: "Examen renforcé" };
@@ -131,7 +132,7 @@ const TOUR_STEPS: TourStep[] = [
     color: KC[2],
     eyebrow: "Vos dossiers",
     title: "Chaque client, son niveau de vigilance",
-    body: "Klaris calcule le niveau dès que la fiche du client arrive. Ici, Nadia Benali est en examen renforcé et Julien Mercier n'a pas encore rempli sa fiche.",
+    body: "Sous chaque nom, la prochaine action, en clair. Quand la fiche du client arrive, l'analyse est pré-remplie : vous la vérifiez, Klaris calcule le niveau et affiche la marche à suivre.",
   },
   {
     selector: ".preview",
@@ -199,14 +200,19 @@ export default function DashboardClient({
 
   // ─── Marches à suivre terminées (synchronisation localStorage) ───────
   const [marcheCompletedIds, setMarcheCompletedIds] = useState<Set<string>>(new Set());
+  // Prochaine action de chaque dossier (lit la marche à suivre dans le navigateur).
+  const [actions, setActions] = useState<Record<string, NextAction>>({});
   useEffect(() => {
     const recompute = () => {
       const s = new Set<string>();
+      const acts: Record<string, NextAction> = {};
       for (const d of dossiers) {
         const n = resolveNiveau(d);
         if (n && isMarcheTerminee(d.id, n)) s.add(d.id);
+        acts[d.id] = nextAction({ id: d.id, name: d.nom_prenom, partie: d.partie, kycReceived: d.kyc_status === "received", niveau: n });
       }
       setMarcheCompletedIds(s);
+      setActions(acts);
     };
     recompute();
     window.addEventListener("klaris:marche-updated", recompute);
@@ -266,6 +272,7 @@ export default function DashboardClient({
     return dossiers.filter((d) => {
       if (query && !d.nom_prenom.toLowerCase().includes(query.toLowerCase())) return false;
       if (filter === "all") return true;
+      if (filter === "afaire") { const st = actions[d.id]?.stage; return st === "verifier" || st === "suite"; }
       if (filter === "attente") return d.kyc_status !== "received";
       const n = resolveNiveau(d);
       if (filter === "vigilance") return n === "vigilance_renforcee";
@@ -273,7 +280,7 @@ export default function DashboardClient({
       if (filter === "conforme") return n === "vigilance_standard";
       return true;
     });
-  }, [dossiers, filter, query]);
+  }, [dossiers, filter, query, actions]);
 
   const selected = useMemo(
     () => dossiers.find((d) => d.id === selectedId) ?? filtered[0] ?? null,
@@ -282,6 +289,7 @@ export default function DashboardClient({
 
   const filters: Array<{ id: FilterKey; label: string; count: number }> = [
     { id: "all",       label: "Tous",       count: counts.total },
+    { id: "afaire",    label: "À faire",    count: Object.values(actions).filter((a) => a.stage === "verifier" || a.stage === "suite").length },
     { id: "attente",   label: "En attente", count: dossiers.filter((d) => d.kyc_status !== "received").length },
     { id: "vigilance", label: "Vigilance",  count: counts.vigilance },
     { id: "critique",  label: "Critique",   count: counts.critique },
@@ -294,7 +302,7 @@ export default function DashboardClient({
     <>
       <Topbar
         title="Tableau de bord"
-        subtitle={`${counts.total} dossier${counts.total > 1 ? "s" : ""} KYC · mise à jour à l'instant`}
+        subtitle={`${counts.total} dossier${counts.total > 1 ? "s" : ""} · mis à jour à l'instant`}
         query={query}
         onQueryChange={setQuery}
         newHref={newHref}
@@ -309,12 +317,12 @@ export default function DashboardClient({
             <EmptyState
               icon={FolderPlus}
               eyebrow="Premier pas"
-              title="Créez votre premier dossier KYC"
+              title="Créez votre premier dossier"
               description={
                 <>
-                  Klaris vous accompagne pas à pas dans la conformité LCB-FT. Créez un dossier
-                  pour un client, envoyez-lui le lien sécurisé, recevez son KYC et obtenez votre
-                  attestation signée — en moins de 10 minutes.
+                  1. Créez le dossier de votre client. 2. Envoyez-lui le lien : il remplit sa fiche
+                  sur son téléphone. 3. Vérifiez l&apos;analyse pré-remplie : Klaris calcule le niveau
+                  de vigilance et vous dit quoi faire ensuite.
                 </>
               }
               primaryAction={
@@ -366,7 +374,7 @@ export default function DashboardClient({
         <div className="split">
           {/* ─── LIST ─── */}
           <section className="card list-card">
-            <header className="card-h list-h" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+            <header className="card-h list-h" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "nowrap" }}>
               <div className="seg flex-wrap">
                 {filters.map((f) => (
                   <button
@@ -438,6 +446,11 @@ export default function DashboardClient({
                       )}
                       <span className={`badge tone-${b.tone}`}>{b.label}</span>
                     </div>
+                    {actions[d.id] && (
+                      <div className="row-next" data-stage={actions[d.id].stage}>
+                        <ArrowRight width={12} height={12} />{actions[d.id].label}
+                      </div>
+                    )}
                   </button>
                 );
               })}
@@ -456,6 +469,7 @@ export default function DashboardClient({
             {selected ? (
               <SelectedPreview
                 dossier={selected}
+                action={actions[selected.id]}
                 files={filesByDossier[selected.id] ?? []}
                 onAskArchive={() => setConfirmArchive(selected)}
               />
@@ -640,7 +654,7 @@ function ConfirmArchiveModal({
 
 /* ─── Preview d'un dossier sélectionné ─────────────────────────────── */
 
-function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: DossierItem; files: DossierFile[]; onAskArchive: () => void }) {
+function SelectedPreview({ dossier: d, action, files, onAskArchive }: { dossier: DossierItem; action?: NextAction; files: DossierFile[]; onAskArchive: () => void }) {
   const b = niveauBadge(d);
   const niveau = resolveNiveau(d);
   const cfg = niveau ? NIVEAU_CFG[niveau] : null;
@@ -667,6 +681,15 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
           </div>
         </div>
       </div>
+
+      {/* Prochaine étape, en une phrase */}
+      {action && (
+        <div className="preview-next" data-stage={action.stage}>
+          <small>{action.stage === "fait" ? "Dossier à jour" : "Prochaine étape"}</small>
+          <b>{action.label}</b>
+          <span>{action.hint}</span>
+        </div>
+      )}
 
       {/* Niveau de vigilance (verdict qualitatif) */}
       {d.kyc_status === "received" && cfg && niveau && (
@@ -700,23 +723,6 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
         </div>
       )}
 
-      {d.kyc_status !== "received" && (
-        <div style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 10,
-          padding: "12px 14px",
-          background: "#F0F4FF",
-          border: "1px solid #E6ECFF",
-          color: "#1A35B5",
-          borderRadius: 10,
-          fontSize: 12.5,
-          lineHeight: 1.5,
-        }}>
-          <Mail width={14} height={14} style={{ marginTop: 2, flexShrink: 0 }} />
-          <span>Le client n'a pas encore complété sa fiche KYC. L'analyse sera disponible dès réception.</span>
-        </div>
-      )}
 
       {/* Métadonnées */}
       <div className="preview-section">
@@ -728,10 +734,6 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
         <div className="preview-tx">
           <span className="preview-tx-kind muted small">Mis à jour</span>
           <span className="preview-tx-amt small">{formatDate(d.updated_at)}</span>
-        </div>
-        <div className="preview-tx">
-          <span className="preview-tx-kind muted small">Algorithme</span>
-          <span className="preview-tx-amt small">Klaris {d.algo_version.toUpperCase()}</span>
         </div>
       </div>
 
@@ -746,7 +748,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
       {/* Actions */}
       <div className="preview-actions">
         <Link href={d.kyc_status === "received" ? `/dashboard/${d.id}` : `/dashboard/${d.id}/wait`} className="btn-grad small block">
-          {d.kyc_status === "received" ? "Ouvrir le dossier" : "Voir le lien KYC"}
+          {d.kyc_status === "received" ? "Ouvrir le dossier" : "Voir le lien du client"}
           <ArrowRight width={12} height={12} />
         </Link>
 
@@ -796,7 +798,7 @@ function SelectedPreview({ dossier: d, files, onAskArchive }: { dossier: Dossier
             style={{ justifyContent: "center" }}
           >
             <FileCheck width={12} height={12} />
-            Fiche KYC PDF
+            Fiche client PDF
           </a>
         )}
 

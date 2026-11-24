@@ -401,6 +401,20 @@ export function isMarcheTerminee(dossierId: string, niveau: Niveau): boolean {
   return s.doneSteps.length >= target;
 }
 
+/** Où en est la marche à suivre d'un dossier (lu dans le navigateur) :
+ *  l'étape en cours (null si tout est fait), le nombre d'étapes faites et le total. */
+export function marcheProgress(
+  dossierId: string,
+  niveau: Niveau,
+  clientName: string,
+  partie: "vendeur" | "acquereur" = "acquereur",
+): { current: string | null; done: number; total: number } {
+  const w = buildWizard(niveau, clientName, dossierId, partie);
+  const s = loadState(dossierId, niveau);
+  const idx = w.steps.findIndex((_, i) => !s.doneSteps.includes(i));
+  return { current: idx === -1 ? null : w.steps[idx].title, done: Math.min(s.doneSteps.length, w.steps.length), total: w.steps.length };
+}
+
 /** Clé localStorage pour mémoriser le niveau d'origine avant transition manuelle. */
 function prevNiveauKey(dossierId: string): string {
   return `klaris-prev-niveau-${dossierId}`;

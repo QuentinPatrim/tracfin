@@ -64,13 +64,14 @@ export default function DossierHeader({ id, name, morale, vendeur, niveau, recei
           </div>
         </div>
         <div className="kd-side">
+          {!lv && <span className="kd-level kd-level--todo"><i aria-hidden />Niveau à calculer</span>}
           {lv && (
             <span className="kd-level" style={{ ["--lv-fg" as string]: lv.fg, ["--lv-bg" as string]: lv.bg, ["--lv-dot" as string]: lv.dot }}>
               <i aria-hidden />{lv.label}
             </span>
           )}
           <a href={`/api/dossiers/${id}/zip`} className="kd-btn"><Package width={16} height={16} />Dossier .zip</a>
-          <a href={`/api/dossiers/${id}/pdf`} download className="kd-btn kd-btn--pri"><FileDown width={16} height={16} />Attestation PDF</a>
+          {niveau && <a href={`/api/dossiers/${id}/pdf`} download className="kd-btn kd-btn--pri"><FileDown width={16} height={16} />Attestation PDF</a>}
         </div>
       </div>
 
