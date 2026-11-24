@@ -10,6 +10,11 @@
 // aperçu de ce que fait Klaris pour cette obligation s'affiche sous le K.
 // Téléphone : pas de survol, la légende reste ; chaque ligne reste un lien.
 //
+// Clic : défilement fait ici (pas par l'ancre du navigateur), pour que chaque clic
+// marche, même deux fois de suite vers la même cible, et que le sujet soit bien
+// cadré : centré s'il tient dans l'écran, sinon calé sous la barre de navigation.
+// Une ligne du tableau des obligations s'allume un instant dans la couleur de la barre.
+//
 // Animation d'entrée en CSS (landing.css, bloc « Le K et ses étiquettes ») : rien ne
 // bloque l'affichage, et « réduire les animations » montre directement l'état final.
 
@@ -25,10 +30,36 @@ import { Check, Lock, ArrowRight } from "lucide-react";
 const BARS: Array<{ off: number; c: string; ct: string; label: string; href: string; text: string }> = [
   { off: 30, c: "#2F5BFF", ct: "#1F45E0", label: "Identifier le client", href: "#how", text: "Votre client remplit sa fiche en ligne, sans compte. Ses pièces arrivent en photo, chiffrées." },
   { off: 18, c: "#5468FF", ct: "#3F50E6", label: "Évaluer le risque", href: "#vigilance", text: "Klaris en déduit le niveau de vigilance sur quatre, avec la conduite à tenir." },
-  { off: 5, c: "#9A6BEB", ct: "#7B4FD6", label: "Conserver cinq ans", href: "#features", text: "Fiche, pièces et attestation archivées, chiffrées, hébergées dans l'UE. Suppression bloquée jusqu'au terme légal." },
-  { off: 18, c: "#EC6A93", ct: "#D2457A", label: "Déclarer un soupçon", href: "#features", text: "Pour un dossier à risque, Klaris prépare le brouillon de déclaration à déposer sur ERMES." },
-  { off: 30, c: "#FF6A4D", ct: "#E5502F", label: "Justifier au contrôle", href: "#features", text: "Attestation horodatée et archive du dossier, prêtes à présenter en cas de contrôle." },
+  { off: 5, c: "#9A6BEB", ct: "#7B4FD6", label: "Conserver cinq ans", href: "#obligation-conserver", text: "Fiche, pièces et attestation archivées, chiffrées, hébergées dans l'UE. Suppression bloquée jusqu'au terme légal." },
+  { off: 18, c: "#EC6A93", ct: "#D2457A", label: "Déclarer un soupçon", href: "#obligation-declarer", text: "Pour un dossier à risque, Klaris prépare le brouillon de déclaration à déposer sur ERMES." },
+  { off: 30, c: "#FF6A4D", ct: "#E5502F", label: "Justifier au contrôle", href: "#obligation-justifier", text: "Attestation horodatée et archive du dossier, prêtes à présenter en cas de contrôle." },
 ];
+
+/** Fait défiler jusqu'à la cible et la cadre ; allume une ligne de tableau visée. */
+function goTo(e: React.MouseEvent<HTMLAnchorElement>, href: string, color: string) {
+  const el = document.querySelector<HTMLElement>(href);
+  if (!el) return;
+  e.preventDefault();
+  const isRow = el.tagName === "TR";
+  /* Une section se cadre sur son contenu (sans ses grandes marges intérieures). */
+  const box = isRow ? el : (el.querySelector<HTMLElement>(".kl-wrap") ?? el);
+  const nav = (document.querySelector(".kl-nav__bar")?.getBoundingClientRect().bottom ?? 72) + 12;
+  const r = box.getBoundingClientRect();
+  const avail = window.innerHeight - nav;
+  const top = r.height <= avail - 48
+    ? window.scrollY + r.top - nav - (avail - r.height) / 2
+    : window.scrollY + r.top - nav - 16;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+  history.replaceState(null, "", href);
+  if (isRow) {
+    el.style.setProperty("--flash", color);
+    el.removeAttribute("data-flash");
+    void el.offsetWidth; // relance l'animation si on reclique
+    el.setAttribute("data-flash", "");
+    window.setTimeout(() => el.removeAttribute("data-flash"), 2200);
+  }
+}
 
 export default function HeroMark() {
   const [active, setActive] = useState<number | null>(null);
@@ -58,6 +89,7 @@ export default function HeroMark() {
                 onPointerEnter={(e) => { if (e.pointerType === "mouse") setActive(i); }}
                 onFocus={() => setActive(i)}
                 onBlur={() => setActive(null)}
+                onClick={(e) => goTo(e, b.href, b.c)}
               >
                 <span className="hm-lab">
                   <span className="hm-lab__n">{String(i + 1).padStart(2, "0")}</span>

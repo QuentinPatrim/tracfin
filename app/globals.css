@@ -401,6 +401,12 @@ body {
   .kl-table td:nth-child(2) { color: var(--lp-text-3); line-height: 1.6; font-size: 0.98rem; }
   .kl-table tbody tr { transition: transform 300ms var(--kl-ease-spring); }
   @media (hover: hover) { .kl-table tbody tr:hover { transform: translateX(6px); } }
+  /* Ligne visée depuis le K du haut de page : elle s'allume dans la couleur de sa barre. */
+  .kl-table tbody tr[data-flash] td { animation: kl-row-flash 2s ease both; }
+  @keyframes kl-row-flash {
+    0%, 60% { background: color-mix(in srgb, var(--flash, #2F5BFF) 13%, #fff); border-color: var(--flash, #2F5BFF); }
+    100% { background: #fff; }
+  }
   @media (max-width: 760px) {
     .kl-table thead { display: none; }
     .kl-table, .kl-table tbody, .kl-table tr, .kl-table td { display: block; width: 100% !important; }

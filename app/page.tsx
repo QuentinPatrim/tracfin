@@ -169,7 +169,7 @@ export default function LandingPage() {
               </thead>
               <tbody>
                 {OBLIGATIONS.map((o) => (
-                  <tr key={o.title}>
+                  <tr key={o.title} id={`obligation-${o.id}`}>
                     <td>{o.title}</td>
                     <td>{o.text}</td>
                     <td><LegalRef code={o.ref} /></td>
@@ -343,26 +343,31 @@ export default function LandingPage() {
    réelle ; pas de fonctionnalité « gadget » dans ce tableau. */
 const OBLIGATIONS = [
   {
+    id: "identifier",
     title: "Identifier votre client",
     text: "Un formulaire envoyé par lien recueille l'identité, les bénéficiaires effectifs, les justificatifs et le consentement RGPD.",
     ref: "CMF L.561-5",
   },
   {
+    id: "evaluer",
     title: "Évaluer le risque",
     text: "Chaque dossier est classé sur quatre niveaux de vigilance, selon des critères documentés. La version des règles appliquées est conservée.",
     ref: "CMF L.561-4-1",
   },
   {
+    id: "conserver",
     title: "Conserver cinq ans",
     text: "Fiches et pièces sont stockées chiffrées. La suppression est bloquée jusqu'au terme légal.",
     ref: "CMF L.561-12",
   },
   {
+    id: "declarer",
     title: "Déclarer un soupçon",
     text: "Klaris prépare un export structuré du dossier et vous envoie vers ERMES, la plateforme de Tracfin.",
     ref: "CMF L.561-15",
   },
   {
+    id: "justifier",
     title: "Justifier vos diligences",
     text: "Une attestation PDF horodatée, avec empreinte SHA-256, et une archive complète du dossier à présenter en cas de contrôle.",
     ref: "CMF L.561-12",
