@@ -10,8 +10,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Folder, ShieldAlert, UserCheck, Plug, Archive, CreditCard, Tag, Menu, X, ArrowUpRight, Plus, Smartphone } from "lucide-react";
-import { UserButton, OrganizationSwitcher, useAuth } from "@clerk/nextjs";
+import { Folder, ShieldAlert, UserCheck, Plug, Archive, CreditCard, Tag, Menu, X, ArrowUpRight, Plus, Smartphone, Inbox } from "lucide-react";
+import { UserButton, OrganizationSwitcher, useAuth, useUser } from "@clerk/nextjs";
 import KlarisLogo from "@/components/ui/KlarisLogo";
 import InstallApp from "@/components/pwa/InstallApp";
 import InstallBanner from "@/components/pwa/InstallBanner";
@@ -49,12 +49,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const is = (href: string) => (href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href));
 
+  const { user } = useUser();
+  const isAdmin = (user?.primaryEmailAddress?.emailAddress ?? "").toLowerCase() === "quentindel2002@gmail.com";
   const nav = [
     { href: "/dashboard", label: "Dossiers", icon: Folder, tip: "Vos clients et le suivi de leurs dossiers" },
     { href: "/dashboard/cartographie", label: "Cartographie", icon: ShieldAlert, tip: "Cartographie des risques (L.561-4-1)" },
     ...(orgId ? [{ href: "/dashboard/validations", label: "Validations", icon: UserCheck, tip: "Validation par le correspondant LCB-FT (L.561-32)" }] : []),
     { href: "/dashboard/integrations", label: "Intégrations", icon: Plug, tip: "Connectez votre CRM" },
     { href: "/dashboard/archives", label: "Archives", icon: Archive, tip: "Dossiers archivés, conservés cinq ans" },
+    // Demandes du site : affiché pour le fondateur seulement (la page vérifie aussi côté serveur).
+    ...(isAdmin ? [{ href: "/dashboard/demandes", label: "Demandes", icon: Inbox, tip: "Contacts et rendez-vous laissés sur le site" }] : []),
   ];
   const account = [
     { href: "/abonnement", label: "Abonnement", icon: CreditCard },

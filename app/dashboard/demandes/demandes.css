@@ -1,0 +1,27 @@
+/* app/dashboard/demandes/demandes.css — Page « Demandes » (admin) */
+.ld { max-width: 980px; margin: 0 auto; padding: 26px 32px 64px; font-family: var(--font-sans-face), system-ui, sans-serif; color: #0B1435; }
+.ld-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.ld-top h1 { margin: 0; font-size: 2rem; font-weight: 800; letter-spacing: -0.045em; }
+.ld-top p { margin: 4px 0 0; color: #5B6487; font-size: 0.95rem; }
+.ld-tabs { margin-top: 22px; display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 1px rgba(11,20,53,0.07); }
+.ld-tabs button { height: 38px; padding: 0 16px; border-radius: 999px; border: 0; background: transparent; font: inherit; font-size: 14px; font-weight: 700; color: #5B6487; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.ld-tabs button b { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: #EEF1F8; color: #2A3459; }
+.ld-tabs button[data-on] { background: #0B1435; color: #fff; }
+.ld-tabs button[data-on] b { background: rgba(255,255,255,0.18); color: #fff; }
+.ld-empty { margin-top: 18px; padding: 40px 20px; border-radius: 24px; background: #fff; text-align: center; color: #8189A8; box-shadow: 0 0 0 1px rgba(11,20,53,0.06); }
+.ld-list { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 12px; }
+.ld-card { padding: 18px 20px; border-radius: 24px; background: #fff; box-shadow: 0 0 0 1px rgba(11,20,53,0.06), 0 20px 40px -34px rgba(11,20,53,0.4); border-left: 6px solid #2F5BFF; }
+.ld-card[data-topic="demo"] { border-left-color: #9A6BEB; }
+.ld-card[data-topic="question"] { border-left-color: #FF6A4D; }
+.ld-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ld-tag { height: 26px; display: inline-flex; align-items: center; padding: 0 10px; border-radius: 999px; background: #EAEFFF; color: #1F45E0; font-size: 12px; font-weight: 800; }
+.ld-h small { font-size: 12.5px; color: #8189A8; font-weight: 600; }
+.ld-name { display: block; margin-top: 10px; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; }
+.ld-agency { margin-top: 2px; font-size: 0.92rem; color: #47507A; }
+.ld-msg { margin: 10px 0 0; padding: 12px 14px; border-radius: 16px; background: #F5F7FF; font-size: 0.92rem; line-height: 1.55; white-space: pre-wrap; }
+.ld-acts { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.ld-btn { display: inline-flex; align-items: center; gap: 7px; height: 40px; padding: 0 14px; border-radius: 999px; border: 0; font: inherit; font-size: 13.5px; font-weight: 700; color: #0B1435; background: #F5F7FF; text-decoration: none; cursor: pointer; }
+.ld-btn:hover { background: #EAEFFF; }
+.ld-btn:disabled { opacity: 0.5; }
+.ld-btn--ok { color: #0F7A4F; background: #EAF7F1; }
+@media (max-width: 900px) { .ld { padding: 18px 14px 40px; } .ld-top h1 { font-size: 1.6rem; } }

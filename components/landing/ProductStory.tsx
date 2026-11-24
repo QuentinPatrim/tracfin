@@ -8,7 +8,7 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Check, Link2, MessageCircle, Mail, MessageSquare, FileArchive, AlertCircle } from "lucide-react";
 import { PhoneForm, AttestationMock } from "./DemoScreens";
 import { LEVELS } from "./VigilanceScale";
@@ -35,7 +35,61 @@ const STEPS = [
 const DESIGN_W = 560;
 const DESIGN_H = 660;
 
+const narrowQuery = "(max-width: 1023px)";
+const subscribeNarrow = (cb: () => void) => {
+  const mq = window.matchMedia(narrowQuery);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+
+/** Les quatre plans, dans l'ordre des étapes. */
+function scene(i: number, on: boolean) {
+  if (i === 0) return <SharePlane />;
+  if (i === 1) return <div className="ps-phone"><PhoneForm playing={on} interval={1700} /></div>;
+  if (i === 2) return <AnalysisPlane />;
+  return <AttestationPlane />;
+}
+
+/* Téléphone : chaque étape avec son propre visuel juste dessous, sans scène
+   épinglée (la scène collée en haut prenait la moitié de l'écran et les textes
+   passaient dessous). Le visuel s'anime quand il arrive à l'écran. */
+function MobileStep({ i, s }: { i: number; s: (typeof STEPS)[number] }) {
+  const ref = useRef<HTMLLIElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [on, setOn] = useState(false);
+  const [k, setK] = useState(0.6);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setOn(e.isIntersecting), { rootMargin: "-25% 0px -25% 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setK(Math.min(1, entry.contentRect.width / DESIGN_W)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return (
+    <li ref={ref} className="ps-m" data-on={on ? "" : undefined}>
+      <div className="ps-m__head">
+        <span className="ps-step__n kl-display" aria-hidden="true">{i + 1}</span>
+        <h3 className="kl-display ps-step__t">{s.t}</h3>
+      </div>
+      <p className="kl-body ps-step__p">{s.p}</p>
+      <div ref={boxRef} className="ps-m__stage" style={{ height: DESIGN_H * k }} aria-hidden="true">
+        <div style={{ position: "absolute", left: "50%", top: 0, width: DESIGN_W, height: DESIGN_H, transform: `translateX(-50%) scale(${k})`, transformOrigin: "50% 0" }}>
+          <Plane on={on}>{scene(i, on)}</Plane>
+        </div>
+      </div>
+    </li>
+  );
+}
+
 export default function ProductStory() {
+  const narrow = useSyncExternalStore(subscribeNarrow, () => window.matchMedia(narrowQuery).matches, () => false);
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<Array<HTMLLIElement | null>>([]);
@@ -80,6 +134,11 @@ export default function ProductStory() {
           </h2>
         </div>
 
+        {narrow ? (
+          <ol className="ps-mlist">
+            {STEPS.map((s, i) => <MobileStep key={s.t} i={i} s={s} />)}
+          </ol>
+        ) : (
         <div className="ps-grid">
           <div className="ps-stage-wrap">
             <div ref={stageRef} className="ps-stage" aria-hidden="true">
@@ -113,6 +172,7 @@ export default function ProductStory() {
             ))}
           </ol>
         </div>
+        )}
       </div>
     </section>
   );

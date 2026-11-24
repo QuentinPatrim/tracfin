@@ -91,6 +91,11 @@ export default function ConfidentialitePage() {
               <TD>Exécution du contrat + obligation comptable</TD>
             </tr>
             <tr>
+              <TD>Demandes de contact du site (nom, agence, e-mail, téléphone, message, créneau souhaité)</TD>
+              <TD>Vous recontacter au sujet de votre demande (rappel, démonstration, question)</TD>
+              <TD>Consentement (art. 6.1.a RGPD), recueilli dans le formulaire</TD>
+            </tr>
+            <tr>
               <TD>Logs techniques (IP, horodatage, route appelée)</TD>
               <TD>Sécurité, détection d'abus, debugging</TD>
               <TD>Intérêt légitime (sécurité du service)</TD>

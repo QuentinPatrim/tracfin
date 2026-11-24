@@ -15,6 +15,7 @@ import KlarisLogo from "@/components/ui/KlarisLogo";
 // Démo guidée chargée à la demande (film 3D + sa feuille de style) : exclue du
 // bundle initial de chaque page publique, tirée seulement à l'ouverture.
 const DemoModal = dynamic(() => import("./DemoModal"), { ssr: false });
+const ContactModal = dynamic(() => import("./contact/ContactModal"), { ssr: false });
 
 const K_COLORS = ["#2F5BFF", "#5468FF", "#9A6BEB", "#EC6A93", "#FF6A4D"];
 
@@ -76,6 +77,7 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
 
   return (
     <>
+      <ContactModal />
       {demoOpen && (
         <DemoModal
           open={demoOpen}
@@ -120,10 +122,19 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
                 <button
                   type="button"
                   onClick={() => openSignUp({ fallbackRedirectUrl: "/dashboard" })}
+                  className="kl-nav__link hidden lg:block"
+                >
+                  Essai gratuit
+                </button>
+                {/* La démo d'abord : on montre avant de faire s'inscrire. */}
+                <button
+                  type="button"
+                  onClick={() => setDemoOpen(true)}
                   className="kl-btn kl-btn--sm kl-btn--primary ml-1.5"
                 >
-                  <span className="hidden sm:inline">Essayer gratuitement</span>
-                  <span className="sm:hidden">Essai gratuit</span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor" /></svg>
+                  <span className="hidden sm:inline">Voir la démo</span>
+                  <span className="sm:hidden">Démo</span>
                 </button>
               </>
             )}
@@ -225,12 +236,19 @@ function MobileMenu({
         </InstallApp>
         {!isSignedIn ? (
           <>
-            <button type="button" onClick={onSignUp} className="kl-btn kl-btn--primary w-full">
-              Essayer 14 jours gratuits
-            </button>
-            <button type="button" onClick={onOpenDemo} className="kl-btn kl-btn--ghost w-full">
+            <button type="button" onClick={onOpenDemo} className="kl-btn kl-btn--primary w-full">
               <Play width={13} height={13} fill="currentColor" strokeWidth={0} />
               Voir la démo guidée
+            </button>
+            <button
+              type="button"
+              onClick={() => { onClose(); window.dispatchEvent(new CustomEvent("klaris:open-contact", { detail: { topic: "rappel", source: "menu" } })); }}
+              className="kl-btn kl-btn--ghost w-full"
+            >
+              Prendre rendez-vous
+            </button>
+            <button type="button" onClick={onSignUp} className="kl-btn kl-btn--ghost w-full">
+              Essayer 14 jours gratuits
             </button>
             <button type="button" onClick={onSignIn} className="py-2 text-[0.95rem]" style={{ color: "var(--lp-text-3)" }}>
               Déjà un compte ? <span className="kl-link">Se connecter</span>

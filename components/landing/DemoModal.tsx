@@ -200,6 +200,12 @@ export default function DemoModal({ open, onClose, onCta }: Props) {
                   <button type="button" onClick={() => { onClose(); onCta?.(); }}>
                     Essayer 14 jours gratuits <ArrowRight width={16} height={16} />
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => { onClose(); window.dispatchEvent(new CustomEvent("klaris:open-contact", { detail: { topic: "demo", source: "demo" } })); }}
+                  >
+                    Prendre rendez-vous
+                  </button>
                   <button type="button" onClick={() => go(0)}>
                     <RotateCcw width={15} height={15} /> Revoir
                   </button>

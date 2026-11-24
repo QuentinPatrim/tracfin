@@ -390,6 +390,21 @@ export default function TarifsPage() {
               a="Le compteur se réinitialise au début de chaque cycle de facturation. Vous pouvez basculer vers le plan Agence à tout moment si vous avez besoin de plus — avec prorata appliqué."
             />
           </div>
+
+          {/* Une question qui n'est pas ici : on en parle */}
+          <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-5 justify-between rounded-[28px] p-6 sm:p-7" style={{ background: "#F5F7FF" }}>
+            <div>
+              <p className="kl-display text-[1.35rem] leading-tight">Vous hésitez entre deux plans ?</p>
+              <p className="mt-1.5 text-[0.95rem]" style={{ color: "var(--lp-text-3)" }}>On vous rappelle, ou on vous montre Klaris en visio sur un de vos cas.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent("klaris:open-contact", { detail: { topic: "rappel", source: "tarifs" } }))}
+              className="kl-btn kl-btn--primary shrink-0"
+            >
+              Prendre rendez-vous <ArrowRight width={16} height={16} className="kl-arrow" />
+            </button>
+          </div>
         </div>
       </main>
     </div>

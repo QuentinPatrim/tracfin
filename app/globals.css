@@ -322,7 +322,7 @@ body {
   .kl-link {
     color: var(--kl-cobalt-text); font-weight: 650;
     text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.25em;
-    text-decoration-color: rgba(47,91,255,0.25);
+    text-decoration-color: rgba(47,91,255,0.5);
     transition: text-decoration-color 160ms ease;
   }
   @media (hover: hover) { .kl-link:hover { text-decoration-color: currentColor; } }
@@ -334,7 +334,20 @@ body {
     background: var(--lp-surface-2);
     transition: color 160ms ease, background-color 160ms ease;
   }
-  @media (hover: hover) { a.kl-ref:hover { color: var(--kl-cobalt-text); background: var(--kl-cobalt-soft); } }
+  /* Une référence qui mène au texte officiel doit se lire comme un lien : bleu,
+     soulignée, avec la flèche « s'ouvre ailleurs ». Sans lien : pastille grise. */
+  a.kl-ref {
+    color: var(--kl-cobalt-text); background: rgba(47,91,255,0.07);
+    text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.22em;
+    text-decoration-color: rgba(31,69,224,0.45); white-space: normal; gap: 0.3rem;
+  }
+  a.kl-ref::after {
+    content: ""; flex: none; width: 0.72em; height: 0.72em;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M8 7h9v9'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  @media (hover: hover) { a.kl-ref:hover { background: var(--kl-cobalt-soft); text-decoration-color: currentColor; } }
 
   /* ── Barre de navigation : une pilule flottante ── */
   .kl-nav { position: fixed; inset: 0.75rem 0 auto 0; z-index: 50; color: var(--lp-text); pointer-events: none; }
@@ -550,3 +563,42 @@ body {
    position: sticky, contrairement à « hidden ». */
 html, body { overflow-x: clip; }
 @media (max-width: 359px) { .kl-nav .kl-wordmark { display: none; } }
+
+/* ── Échelle de vigilance : on voit que ça se touche ──
+   Tous les niveaux gardent leur couleur (l'ancien 40 % d'opacité les faisait
+   paraître désactivés) ; une flèche au bout de chaque étiquette ; sur téléphone,
+   le détail s'ouvre dans une feuille du bas (.kl-lvsheet). */
+button.kl-scale__bar[aria-pressed="false"] { opacity: 0.62; }
+.kl-scale[data-narrow] button.kl-scale__bar { opacity: 1; }
+.kl-scale__go { flex: none; opacity: 0.85; transition: transform 200ms ease; }
+button.kl-scale__bar[aria-pressed="true"] .kl-scale__go { opacity: 0; }
+button.kl-scale__bar { box-shadow: 0 10px 22px -16px var(--c); }
+button.kl-scale__bar:active { transform: scale(0.98); }
+@media (hover: hover) {
+  button.kl-scale__bar:hover .kl-scale__go { transform: translateX(3px); }
+  button.kl-scale__bar[aria-pressed="false"]:hover { opacity: 1; }
+}
+.kl-scale__hint { display: flex; align-items: center; gap: 8px; margin-top: 1.1rem; font-size: 0.88rem; font-weight: 600; color: var(--kl-cobalt-text, #1F45E0); }
+.kl-scale__hint svg { flex: none; }
+
+.kl-lvsheet { position: fixed; inset: 0; z-index: 120; display: flex; align-items: flex-end; }
+.kl-lvsheet__veil { position: absolute; inset: 0; border: 0; background: rgba(11,20,53,0.45); animation: kl-lv-fade 240ms ease both; }
+.kl-lvsheet__box { position: relative; width: 100%; max-height: 86dvh; overflow-y: auto; overscroll-behavior: contain;
+  padding: 26px 22px calc(18px + env(safe-area-inset-bottom)); border-radius: 30px 30px 0 0; background: #fff;
+  box-shadow: 0 -20px 60px -20px rgba(11,20,53,0.45); border-top: 6px solid var(--c);
+  animation: kl-lv-up 380ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.kl-lvsheet[data-closing] .kl-lvsheet__box { animation: kl-lv-down 220ms ease-in both; }
+.kl-lvsheet[data-closing] .kl-lvsheet__veil { animation: kl-lv-fade 220ms ease reverse both; }
+.kl-lvsheet__grab { position: absolute; left: 50%; top: 9px; width: 42px; height: 5px; margin-left: -21px; border-radius: 5px; background: #DDE2EE; }
+.kl-lvsheet__x { position: absolute; right: 14px; top: 14px; width: 38px; height: 38px; border-radius: 999px; border: 0; display: grid; place-items: center; background: #F5F7FF; color: #2A3459; }
+.kl-lvsheet__in { padding-right: 34px; }
+.kl-lvsheet__nav { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 14px; border-top: 1px solid rgba(11,20,53,0.07); }
+.kl-lvsheet__nav button { height: 40px; padding: 0 14px; border-radius: 999px; border: 0; background: #F5F7FF; font: inherit; font-size: 13.5px; font-weight: 750; color: #0B1435; }
+.kl-lvsheet__nav button:disabled { opacity: 0.35; }
+.kl-lvsheet__nav > div { display: flex; gap: 5px; }
+.kl-lvsheet__nav i { width: 8px; height: 8px; border-radius: 8px; opacity: 0.35; transition: width 240ms ease, opacity 240ms ease; }
+.kl-lvsheet__nav i[data-on] { width: 22px; opacity: 1; }
+@keyframes kl-lv-up { from { transform: translateY(100%); } }
+@keyframes kl-lv-down { to { transform: translateY(100%); } }
+@keyframes kl-lv-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .kl-lvsheet__box, .kl-lvsheet__veil { animation: none !important; } }

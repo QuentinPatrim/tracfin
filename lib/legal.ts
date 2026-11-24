@@ -159,6 +159,11 @@ export interface ConservationEntry {
 
 export const CONSERVATION: readonly ConservationEntry[] = [
   {
+    categorie: "Demandes de contact laissées sur le site (prospects)",
+    duree: "3 ans à compter du dernier échange, ou jusqu'à votre demande de suppression",
+    base: "Consentement (art. 6.1.a RGPD) ; durée recommandée par la CNIL pour les données de prospects",
+  },
+  {
     categorie: "Compte professionnel utilisateur (toi, le pro assujetti)",
     duree: "Toute la durée du contrat + 30 jours après résiliation pour permettre l'export",
     base: "Exécution du contrat (art. 6.1.b RGPD)",

@@ -54,6 +54,8 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   // API publiques nécessaires sans auth
   "/api/checkout",
+  // Formulaire « en savoir plus / rendez-vous » du site public (POST seulement).
+  "/api/leads",
   "/api/webhooks/(.*)",
   // Routes KYC publiques (accessibles sans authentification, token signé en URL)
   "/kyc/(.*)",

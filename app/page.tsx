@@ -20,6 +20,7 @@ import InstallApp from "@/components/pwa/InstallApp";
 import { PhoneApp } from "@/components/landing/DemoScreens";
 import FloatingNav from "@/components/landing/FloatingNav";
 import LegalFooter from "@/components/legal/LegalFooter";
+import ContactForm from "@/components/landing/contact/ContactForm";
 import ScrollFx from "@/components/landing/ScrollFx";
 import LegalRef from "@/components/landing/LegalRef";
 import HeroStage from "@/components/landing/HeroStage";
@@ -66,27 +67,30 @@ export default function LandingPage() {
             </p>
 
             <div className="lp-hero__ctas kl-enter" style={{ "--d": "180ms" } as React.CSSProperties}>
-              {isSignedIn ? (
-                <Link href="/dashboard" className="kl-btn kl-btn--primary kl-btn--lg">
-                  Mon tableau de bord <ArrowRight width={16} height={16} className="kl-arrow" />
-                </Link>
-              ) : (
-                <button type="button" onClick={signUp} className="kl-btn kl-btn--primary kl-btn--lg">
-                  Essayer 14 jours gratuits <ArrowRight width={16} height={16} className="kl-arrow" />
-                </button>
-              )}
-              <button type="button" onClick={openDemo} className="kl-btn kl-btn--ghost kl-btn--lg">
+              {/* La démo d'abord : on voit Klaris avant de s'inscrire. */}
+              <button type="button" onClick={openDemo} className="kl-btn kl-btn--primary kl-btn--lg">
                 <Play width={12} height={12} fill="currentColor" strokeWidth={0} />
                 Voir la démo guidée
               </button>
+              {isSignedIn ? (
+                <Link href="/dashboard" className="kl-btn kl-btn--ghost kl-btn--lg">
+                  Mon tableau de bord <ArrowRight width={16} height={16} className="kl-arrow" />
+                </Link>
+              ) : (
+                <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("klaris:open-contact", { detail: { topic: "rappel", source: "hero" } }))} className="kl-btn kl-btn--ghost kl-btn--lg">
+                  Prendre rendez-vous <ArrowRight width={16} height={16} className="kl-arrow" />
+                </button>
+              )}
             </div>
 
             <p className="lp-hero__fine kl-enter" style={{ "--d": "220ms" } as React.CSSProperties}>
-              Aucun prélèvement avant le 14ᵉ jour · Sans engagement
-              {!isSignedIn && (
+              {!isSignedIn ? (
                 <>
-                  {" "}· <button type="button" onClick={signIn}>Se connecter</button>
+                  Ou <button type="button" onClick={signUp}>essayez 14 jours gratuits</button>, sans engagement ·{" "}
+                  <button type="button" onClick={signIn}>Se connecter</button>
                 </>
+              ) : (
+                "Démo de quelques minutes, sans inscription"
               )}
             </p>
             <p className="lp-hero__by kl-enter" style={{ "--d": "260ms" } as React.CSSProperties}>
@@ -301,6 +305,30 @@ export default function LandingPage() {
           </div></div>
         </section>
 
+        {/* ───────── PARLER À KLARIS (formulaire de contact / rendez-vous) ───────── */}
+        <section id="contact" className="kl-section">
+          <div className="kl-wrap">
+            <div className="lp-contact">
+              <div className="lp-contact__txt">
+                <p className="kl-kicker kl-kicker--k">Parler à Klaris</p>
+                <h2 className="kl-display kl-h2 mt-5">Une question, <em>un rendez-vous ?</em></h2>
+                <p className="kl-lede mt-5">
+                  Laissez vos coordonnées : on vous rappelle, ou on vous montre Klaris en visio sur
+                  un cas qui vous ressemble. Sans engagement.
+                </p>
+                <ul className="lp-contact__pts">
+                  <li><i style={{ background: "#2F5BFF" }} />Un échange avec quelqu&apos;un du métier</li>
+                  <li><i style={{ background: "#9A6BEB" }} />Vos questions sur vos propres dossiers</li>
+                  <li><i style={{ background: "#FF6A4D" }} />Au moment qui vous arrange</li>
+                </ul>
+              </div>
+              <div className="lp-contact__form">
+                <ContactForm source="accueil" />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ───────── APPEL FINAL ───────── */}
         <section className="kl-section">
           <div className="kl-wrap">
@@ -310,17 +338,17 @@ export default function LandingPage() {
                 Essayez Klaris sur <em>votre prochain dossier.</em>
               </h2>
               <p className="kl-lede">
-                14 jours gratuits, aucun prélèvement avant le 14ᵉ jour, sans engagement.
+                Voyez-la en quelques minutes, puis essayez-la 14 jours gratuitement, sans engagement.
               </p>
               <div className="lp-cta__btns">
                 {!isSignedIn ? (
                   <>
-                    <button type="button" onClick={signUp} className="kl-btn kl-btn--white kl-btn--lg">
-                      Créer mon compte <ArrowRight width={16} height={16} className="kl-arrow" />
-                    </button>
-                    <button type="button" onClick={openDemo} className="kl-btn kl-btn--glass kl-btn--lg">
+                    <button type="button" onClick={openDemo} className="kl-btn kl-btn--white kl-btn--lg">
                       <Play width={12} height={12} fill="currentColor" strokeWidth={0} />
-                      Voir la démo d&apos;abord
+                      Voir la démo
+                    </button>
+                    <button type="button" onClick={signUp} className="kl-btn kl-btn--glass kl-btn--lg">
+                      Créer mon compte <ArrowRight width={16} height={16} className="kl-arrow" />
                     </button>
                   </>
                 ) : (

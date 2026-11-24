@@ -38,7 +38,7 @@
 .lp-hero .kl-lede { margin-top: 1.4rem; max-width: 50ch; }
 .lp-hero__ctas { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .lp-hero__fine { margin-top: 1.1rem; font-size: 0.88rem; font-weight: 500; color: var(--lp-text-4); }
-.lp-hero__fine button { color: var(--kl-cobalt-text); font-weight: 650; }
+.lp-hero__fine button { color: var(--kl-cobalt-text); font-weight: 650; text-decoration: underline; text-decoration-color: rgba(31,69,224,0.4); text-underline-offset: 0.2em; }
 .lp-hero__by { margin-top: 1.4rem; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.9rem 0.4rem 0.45rem; border-radius: 999px; background: rgba(255,255,255,0.7); box-shadow: 0 0 0 1px rgba(11,20,53,0.06); font-size: 0.86rem; font-weight: 600; color: var(--lp-text-2); }
 .lp-hero__by span { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--kl-grad); color: #fff; }
 @media (max-width: 520px) {
@@ -51,7 +51,7 @@
    Les étiquettes s'alignent sur une colonne juste après la barre la plus à droite. */
 .hm { --u: 3.7px; --gap: 18px; justify-self: end; display: flex; flex-direction: column; gap: 1.4rem; }
 .hm-k { position: relative; width: calc(80 * var(--u) + var(--gap) + 12.5rem); height: calc(80 * var(--u)); }
-.hm-stem { position: absolute; left: 0; top: 0; width: calc(18 * var(--u)); height: 100%; border-radius: 999px; background: #0B1435; transform-origin: 50% 100%; animation: hm-stem 650ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hm-stem { position: absolute; left: 0; top: 0; width: calc(18 * var(--u)); height: 100%; border-radius: 999px; background: linear-gradient(180deg, #2F5BFF 0%, #5468FF 25%, #9A6BEB 50%, #EC6A93 75%, #FF6A4D 100%); transform-origin: 50% 100%; animation: hm-stem 650ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .hm-bars { position: absolute; inset: 0; list-style: none; margin: 0; padding: 0; }
 .hm-bars li { position: absolute; left: 0; right: 0; top: calc(var(--i) * 16.5 * var(--u)); height: calc(14 * var(--u)); transition: opacity 220ms ease; }
 .hm-bar {
@@ -356,3 +356,23 @@
 @media (max-width: 900px), (pointer: coarse) { .lp-app__qr { display: none; } }
 @media (max-width: 520px) { .lp-app__ctas .kl-btn { width: 100%; } .lp-app__stage { min-height: 500px; border-radius: 30px; } .lp-app__phone { transform: scale(0.58) rotate(-3deg); margin: -168px -85px; } }
 @media (max-width: 520px) { .lp-hero__by { border-radius: 18px; align-items: flex-start; } .lp-hero__by span { flex: none; margin-top: 1px; } }
+
+/* « Comment ça marche » sur téléphone : étapes empilées, chacune avec son visuel */
+.ps-mlist { list-style: none; margin: 1.75rem 0 0; padding: 0; display: grid; gap: 2.75rem; }
+.ps-m__head { display: flex; align-items: center; gap: 0.85rem; }
+.ps-m .ps-step__n { flex: none; transition: transform 500ms var(--kl-ease-spring), background 300ms ease; }
+.ps-m[data-on] .ps-step__n { background: var(--kl-grad); transform: rotate(-6deg); box-shadow: 0 12px 24px -12px rgba(47,91,255,0.7); }
+.ps-m .ps-step__t { margin: 0; font-size: 1.35rem; line-height: 1.15; }
+.ps-m .ps-step__p { margin-top: 0.75rem; }
+.ps-m__stage { position: relative; margin-top: 1.1rem; border-radius: 26px; overflow: hidden;
+  background: radial-gradient(60% 55% at 85% 10%, rgba(255,106,77,0.16), transparent 70%), radial-gradient(60% 60% at 10% 95%, rgba(47,91,255,0.18), transparent 70%), #F5F7FF; }
+
+/* Parler à Klaris : formulaire de contact / rendez-vous dans la page */
+.lp-contact { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start;
+  padding: clamp(1.75rem, 4vw, 3.25rem); border-radius: 40px;
+  background: radial-gradient(60% 70% at 100% 0%, rgba(47,91,255,0.10), transparent 70%), radial-gradient(50% 60% at 0% 100%, rgba(255,106,77,0.10), transparent 70%), #F5F7FF; }
+.lp-contact__pts { list-style: none; margin: 1.6rem 0 0; padding: 0; display: grid; gap: 0.7rem; }
+.lp-contact__pts li { display: flex; align-items: center; gap: 0.8rem; font-weight: 650; color: var(--lp-text-2); }
+.lp-contact__pts i { flex: none; width: 26px; height: 10px; border-radius: 999px; }
+.lp-contact__form { padding: clamp(1.1rem, 2.5vw, 1.75rem); border-radius: 30px; background: #fff; box-shadow: 0 0 0 1px rgba(11,20,53,0.05), 0 30px 60px -40px rgba(11,20,53,0.4); }
+@media (max-width: 1023px) { .lp-contact { grid-template-columns: minmax(0, 1fr); border-radius: 30px; } }

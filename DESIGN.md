@@ -221,3 +221,25 @@ chargées par l'image), titre du site et le K avec ses cinq obligations. Titre p
 « Klaris · Chaque client identifié, chaque dossier prêt ». Les messageries gardent
 l'ancien aperçu en cache un moment : pour tester, partager une adresse jamais
 envoyée (ex. `klaris-app.fr/?v=2`).
+
+## Site public : ce qui se clique doit se voir
+
+- **Références d'articles** (`a.kl-ref`) : bleu, soulignées, avec la flèche ↗ ; une
+  référence sans lien reste une pastille grise.
+- **Échelle de vigilance** (`VigilanceExplorer`) : chaque niveau porte une flèche ;
+  sur ordinateur le détail s'affiche à côté, sur téléphone dans une feuille du bas
+  (`.kl-lvsheet`, niveau précédent / suivant).
+- **Grand K de l'accueil** : fût en dégradé des cinq couleurs (le logo garde son fût
+  bleu nuit).
+- **« Comment ça marche » sur téléphone** : pas de scène épinglée ; chaque étape a son
+  visuel juste dessous (`MobileStep`).
+
+## Démo d'abord, puis contact
+
+- Bouton principal partout : « Voir la démo guidée ». L'essai gratuit passe en second
+  (lien sous les boutons, menu, appel final).
+- **Formulaire « Parler à Klaris »** (`components/landing/contact/`) : section `#contact`
+  de l'accueil, fenêtre ouverte par `klaris:open-contact` (accueil, menu, tarifs, fin
+  de la démo). Les demandes vont dans la table `leads` (créée à la première demande)
+  et s'affichent dans l'app, page « Demandes », réservée à `ADMIN_EMAILS`
+  (par défaut quentindel2002@gmail.com). Mentionné dans la politique de confidentialité.
