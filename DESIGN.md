@@ -75,11 +75,17 @@ capté** : un geste fait défiler la page, rien d'autre.
 - **Comment ça marche** (`components/landing/ProductStory.tsx`) : quatre étapes ; une
   scène reste épinglée à côté du texte (au-dessus sur téléphone) et change de plan
   quand une étape passe au milieu de l'écran.
-- **Démo guidée** (`components/landing/DemoModal.tsx`, styles `.dg-*` de `demo.css`) :
-  quatre chapitres façon « stories », texte à gauche et écran à droite (au-dessus sur
-  téléphone). Une barre par chapitre : son animation CSS porte le temps, la pause la
-  fige, sa fin passe au chapitre suivant. Toucher à gauche / à droite, flèches, espace,
-  Échap. Fin : un panneau cobalt avec l'appel à l'essai.
+- **Démo guidée** (`components/landing/DemoModal.tsx`, styles `.dg-*` et `.dq-*` de
+  `demo.css`) : cinq chapitres, un par barre du K et dans le même ordre (identifier,
+  évaluer, conserver cinq ans, déclarer, justifier). Chaque chapitre occupe tout le
+  cadre dans la couleur de sa barre (assombrie pour porter du texte blanc) : titre à
+  gauche, une seule grande carte d'interface blanche, à plat, à droite (au-dessus sur
+  téléphone). Pas de téléphone, pas de fenêtre de navigateur, pas de grille de points.
+  Les cartes sont dessinées à 560 × 640 puis mises à l'échelle ; chaque geste (saisie,
+  appui, coche, jauge) est une animation CSS décalée par `--t`. Entre deux chapitres,
+  le volet aux 5 couleurs du K (comme dans le reel). Une barre de progression par
+  chapitre porte le temps ; la pause fige barres et cartes. Toucher à gauche / à
+  droite, flèches, espace, Échap. Fin : le panneau cobalt avec l'appel à l'essai.
 - **Aucune iframe dans le site public.** Les écrans (formulaire du client, attestation)
   sont reconstitués en HTML léger dans `DemoScreens.tsx` et partagés par le haut de
   page, « Comment ça marche » et la démo.
