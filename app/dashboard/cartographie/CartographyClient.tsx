@@ -2,6 +2,7 @@
 
 "use client";
 
+import { downloadFile } from "@/components/dashboard/docs/download";
 import Link from "next/link";
 import { useState } from "react";
 import { FileDown, ShieldAlert, MapPin, AlertTriangle, Users, Building2, Activity, ArrowRight, ArrowLeft } from "lucide-react";
@@ -34,15 +35,7 @@ export default function CartographyClient({ carto }: Props) {
   const exportPdf = async () => {
     setExporting(true);
     try {
-      const res = await fetch("/api/cartography/pdf");
-      if (!res.ok) throw new Error("Échec de l'export");
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `cartographie-risques-klaris-${new Date().toISOString().slice(0, 10)}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadFile("/api/cartography/pdf", `cartographie-risques-klaris-${new Date().toISOString().slice(0, 10)}.pdf`);
     } catch (e) {
       alert(e instanceof Error ? e.message : "Erreur lors de l'export");
     } finally {
@@ -95,6 +88,15 @@ export default function CartographyClient({ carto }: Props) {
           </p>
         </div>
 
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {total > 0 && (
+          <Link
+            href="/dashboard/document?d=cartographie"
+            style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 16px", borderRadius: 10, background: "white", color: "#0B1435", fontWeight: 600, fontSize: 13, textDecoration: "none", border: "1px solid rgba(11,20,53,0.12)" }}
+          >
+            Voir le document
+          </Link>
+        )}
         <button
           type="button"
           onClick={exportPdf}
@@ -120,6 +122,7 @@ export default function CartographyClient({ carto }: Props) {
           <FileDown size={14} />
           {exporting ? "Génération…" : "Export PDF pour contrôle"}
         </button>
+        </div>
       </div>
 
       {/* ─── KPI principaux ─────────────────────────────────────────── */}

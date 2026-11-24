@@ -136,6 +136,20 @@ capté** : un geste fait défiler la page, rien d'autre.
   sous chaque nom dans la liste (et un filtre « À faire »), en tête de l'aperçu, et
   sur la fiche dans `DossierProgress.tsx` (fil + bouton qui mène à la bonne section).
   Après « Enregistrer ce niveau », l'agent reste sur la fiche.
+- **Documents** (`/dashboard/document`, `components/dashboard/docs/`) : on voit avant
+  de télécharger. Les documents Klaris (attestation, fiche client, déclaration,
+  cartographie) s'affichent depuis leur HTML (`?view=html`, `lib/doc-view.ts`),
+  identique au PDF ; les pièces du client : image telle quelle, PDF dessiné page par
+  page avec pdf.js (`public/pdfjs/pdf.worker.min.mjs`, à recopier depuis
+  `node_modules/pdfjs-dist/build/` si la version change). Aucun lien direct vers un
+  fichier « attachment » : dans l'app installée sur iPhone, il ouvre une page noire
+  sans retour. On passe par `downloadFile()` : feuille de partage sur téléphone,
+  téléchargement classique sur ordinateur.
+- **E-mails de la marche à suivre** (`components/dashboard/mail/`) : pas de « mailto »
+  nu (sans logiciel de messagerie, il ne se passe rien). Une fenêtre pré-remplie
+  (destinataire, nom, bien, signature de l'agent) avec des cases qui adaptent le
+  texte, puis « Ma messagerie », Gmail, Outlook, partager ou copier. Modèles sans IA
+  dans `templates.ts`. Le refus ne mentionne jamais Tracfin (L.561-18).
 - **Vocabulaire de l'app** : « fiche client » plutôt que « KYC » à l'écran
   (« Fiche attendue », « À vérifier »).
 - **Page d'attente** (`app/dashboard/[id]/wait`) : dans le cadre de l'app, même
@@ -193,3 +207,9 @@ page inchangés. La police reste Inter.
 - Navigation : `components/landing/FloatingNav.tsx`. Pied de page :
   `components/legal/LegalFooter.tsx`.
 - Origine du site côté navigateur : `lib/use-origin.ts`.
+
+## Téléphone : largeur
+
+Rien ne doit dépasser la largeur de l'écran : sur iPhone, un seul élément trop large
+fait dézoomer toute la page. `html, body { overflow-x: clip }` sert de filet ; la
+barre du site connecté affiche « Mon espace » sans avatar sur téléphone.

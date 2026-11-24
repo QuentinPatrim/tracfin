@@ -22,6 +22,7 @@ import { EmptyState } from "./primitives";
 import { FolderPlus, BookOpen, Lock } from "lucide-react";
 import MarcheASuivre, { isMarcheTerminee } from "./MarcheASuivre";
 import { nextAction, type NextAction } from "./dossierStage";
+import DownloadButton from "./docs/DownloadButton";
 import { NIVEAU_CFG, type Niveau, type StatutKey, V1_TO_NIVEAU } from "@/lib/tracfin";
 import type { DossierFile } from "@/lib/dossier-files";
 
@@ -768,38 +769,35 @@ function SelectedPreview({ dossier: d, action, files, onAskArchive }: { dossier:
         )}
 
         {d.kyc_status === "received" && (
-          <a
-            href={`/api/dossiers/${d.id}/zip`}
+          <DownloadButton
+            url={`/api/dossiers/${d.id}/zip`}
+            filename={`dossier-klaris-${d.id.slice(0, 8)}.zip`}
             className="ghost-btn small block"
             style={{ justifyContent: "center" }}
           >
             <Package width={12} height={12} />
             Télécharger le dossier complet (ZIP)
-          </a>
+          </DownloadButton>
         )}
         {d.kyc_status === "received" && (
-          <a
-            href={`/api/dossiers/${d.id}/pdf`}
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            href={`/dashboard/document?d=attestation&id=${d.id}`}
             className="ghost-btn small block"
             style={{ justifyContent: "center" }}
           >
             <FileDown width={12} height={12} />
-            Attestation PDF
-          </a>
+            Voir l&apos;attestation
+          </Link>
         )}
         {d.kyc_status === "received" && (
-          <a
-            href={`/api/dossiers/${d.id}/kyc-pdf`}
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            href={`/dashboard/document?d=fiche&id=${d.id}`}
             className="ghost-btn small block"
             style={{ justifyContent: "center" }}
           >
             <FileCheck width={12} height={12} />
-            Fiche client PDF
-          </a>
+            Voir la fiche client
+          </Link>
         )}
 
         <button

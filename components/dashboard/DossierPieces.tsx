@@ -3,7 +3,9 @@
 
 "use client";
 
+import Link from "next/link";
 import { ArrowUpRight, Package } from "lucide-react";
+import DownloadButton from "./docs/DownloadButton";
 import type { DossierFile } from "@/lib/dossier-files";
 
 interface Props {
@@ -19,18 +21,22 @@ export default function DossierPieces({ dossierId, files }: Props) {
       ) : (
         <div className="kd-files">
           {files.map((f) => (
-            <a key={f.key} href={f.url} target="_blank" rel="noreferrer noopener" className="kd-file">
+            <Link
+              key={f.key}
+              href={`/dashboard/document?d=piece&id=${dossierId}&src=${encodeURIComponent(f.url)}&name=${encodeURIComponent(f.label)}&ext=${encodeURIComponent(f.ext)}`}
+              className="kd-file"
+            >
               <span className="kd-ext">{f.ext.slice(0, 4)}</span>
-              <span><b>{f.label}</b><small>Ouvrir dans un nouvel onglet</small></span>
+              <span><b>{f.label}</b><small>Voir la pièce</small></span>
               <ArrowUpRight width={16} height={16} />
-            </a>
+            </Link>
           ))}
         </div>
       )}
-      <a href={`/api/dossiers/${dossierId}/zip`} className="kd-zip">
+      <DownloadButton url={`/api/dossiers/${dossierId}/zip`} filename={`dossier-klaris-${dossierId.slice(0, 8)}.zip`} className="kd-zip">
         <Package width={16} height={16} />
         <span>Tout télécharger en .zip<small style={{ display: "block", fontWeight: 600, color: "#8C7FC0" }}>Fiche, pièces et attestation</small></span>
-      </a>
+      </DownloadButton>
     </div>
   );
 }

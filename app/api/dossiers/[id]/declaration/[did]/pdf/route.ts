@@ -7,6 +7,7 @@ import { sql } from "@/lib/db";
 import { getScope, findScopedDossier } from "@/lib/scope";
 import { buildDeclarationDraft } from "@/lib/declaration";
 import { renderHtmlPdf } from "@/lib/pdf-renderer";
+import { wantsHtmlView, htmlViewResponse } from "@/lib/doc-view";
 import { buildDeclarationHtml } from "@/app/pdf-render/declaration-template";
 import { logAudit } from "@/lib/audit";
 
@@ -93,6 +94,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   });
 
   try {
+    if (wantsHtmlView(req)) return htmlViewResponse(html);
     const buffer = await renderHtmlPdf(html);
 
     await logAudit({

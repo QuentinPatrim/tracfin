@@ -1,0 +1,31 @@
+/* components/dashboard/docs/docs.css — Visionneuse de documents (/dashboard/document) */
+.dv { max-width: 1000px; margin: 0 auto; padding: 22px 28px 64px; font-family: var(--font-sans-face), system-ui, sans-serif; color: #0B1435; }
+.dv-top { display: flex; align-items: center; gap: 12px; }
+.dv-back { flex: none; width: 44px; height: 44px; border-radius: 999px; border: 0; display: grid; place-items: center; background: #fff; color: #0B1435; box-shadow: 0 0 0 1px rgba(11,20,53,0.08); cursor: pointer; transition: transform .2s; }
+.dv-back:active { transform: scale(0.95); }
+.dv-id { flex: 1; min-width: 0; }
+.dv-id b { display: block; font-size: 19px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dv-id small { font-size: 12.5px; font-weight: 600; color: #8189A8; }
+.dv-dl { flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px; border: 0; font: inherit; font-size: 14px; font-weight: 800; color: #fff; background: #2F5BFF; box-shadow: 0 12px 24px -14px rgba(47,91,255,0.9); cursor: pointer; white-space: nowrap; }
+.dv-dl:disabled { opacity: 0.7; cursor: progress; }
+.dv-stage { margin-top: 18px; border-radius: 26px; background: #E8EBF4; overflow: hidden; min-height: 60vh; }
+.dv-html { position: relative; overflow: hidden; }
+.dv-html iframe { display: block; border: 0; transform-origin: 0 0; background: transparent; transition: opacity .3s ease; }
+.dv-load { position: absolute; inset: 0; display: flex; align-items: flex-start; justify-content: center; gap: 10px; padding-top: 22vh; font-size: 14px; font-weight: 650; color: #5B6487; }
+.dv-pdf { position: relative; min-height: 60vh; padding: 14px; }
+.dv-pdf .dv-load { position: absolute; }
+.dv-pages { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.dv-page { display: block; max-width: 100%; height: auto; background: #fff; border-radius: 6px; box-shadow: 0 18px 40px -24px rgba(11,20,53,0.45); }
+.dv-img { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.dv-msg { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 60px 24px; text-align: center; color: #5B6487; }
+.dv-msg p { margin: 0; max-width: 40ch; line-height: 1.55; }
+.dv-spin { animation: dv-spin .8s linear infinite; }
+@keyframes dv-spin { to { transform: rotate(360deg); } }
+@media (max-width: 900px) {
+  .dv { padding: 14px 12px 32px; }
+  .dv-id b { font-size: 16.5px; }
+  .dv-dl { padding: 0 14px; }
+  .dv-stage { margin-top: 14px; border-radius: 20px; }
+  .dv-pdf { padding: 8px; }
+}
+@media (max-width: 360px) { .dv-dl span { display: none; } .dv-dl { width: 44px; padding: 0; justify-content: center; } }

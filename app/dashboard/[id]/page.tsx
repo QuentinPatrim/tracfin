@@ -326,6 +326,7 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
                 clientName={dossier.nom_prenom}
                 partie={summary.partie}
                 mode="full"
+                contact={{ email: kyc.email_contact, lieuBien: kyc.lieu_bien }}
               />
             </section>
           )}

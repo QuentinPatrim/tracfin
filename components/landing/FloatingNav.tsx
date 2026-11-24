@@ -134,9 +134,12 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
                   href="/dashboard"
                   className="kl-btn kl-btn--sm kl-btn--primary ml-1.5"
                 >
-                  Tableau de bord
+                  <span className="hidden sm:inline">Tableau de bord</span>
+                  <span className="sm:hidden">Mon espace</span>
                 </Link>
-                <UserButton />
+                {/* Sur téléphone, l'avatar ferait déborder la barre (et Safari dézoomerait
+                    toute la page) : le compte reste accessible depuis l'app. */}
+                <span className="hidden sm:flex"><UserButton /></span>
               </>
             )}
 

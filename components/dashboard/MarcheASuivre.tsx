@@ -6,7 +6,11 @@
 
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useOrganization, useUser } from "@clerk/nextjs";
+import MailComposer from "./mail/MailComposer";
+import type { MailCtx, MailId } from "./mail/templates";
+import DownloadButton from "./docs/DownloadButton";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -22,7 +26,12 @@ interface Props {
   /** Rôle du client dans la transaction (defaut acquéreur pour legacy). */
   partie?: "vendeur" | "acquereur";
   mode?: "compact" | "full";
+  /** Coordonnées utiles aux e-mails préparés (e-mail du client, lieu du bien). */
+  contact?: { email?: string | null; lieuBien?: string | null };
 }
+
+/** Contexte des e-mails préparés (client, bien, signature de l'agent). */
+const MailCtxC = createContext<MailCtx | null>(null);
 
 /* ════════════════════════════════════════════════════════════════════
    DÉFINITION DES ÉTAPES PAR NIVEAU (UI-first, actions Klaris-natives)
@@ -30,6 +39,9 @@ interface Props {
 
 type ActionKind =
   | { kind: "mailto"; subject: string; body: string; cta: string }
+  | { kind: "mail"; mail: MailId; cta: string }
+  | { kind: "download"; href: string; filename: string; cta: string }
+  | { kind: "decision"; okLabel: string; refuseLabel: string }
   | { kind: "link"; href: string; cta: string; external?: boolean }
   | { kind: "note"; placeholder: string; cta: string }
   | { kind: "done"; cta: string }
@@ -69,16 +81,9 @@ function buildWizard(
   partie: "vendeur" | "acquereur" = "acquereur",
 ): Wizard {
   const safeName = clientName || "votre client";
-  const ref = `Klaris · Dossier ${dossierId.slice(0, 8).toUpperCase()}`;
   const isVendeur = partie === "vendeur";
   // Wording adapté selon que le client est vendeur (justifier origine du bien)
   // ou acquéreur (justifier origine des fonds + montage).
-  const justifOrigineLine = isVendeur
-    ? "• Un justificatif détaillé de l'origine du bien vendu (acte d'achat initial, attestation notariée, donation, succession…)"
-    : "• Un justificatif détaillé de l'origine des fonds (relevé bancaire 3 derniers mois, acte de vente, attestation héritage…)";
-  const justifOrigineShort = isVendeur
-    ? "Justificatif détaillé de l'origine du bien vendu"
-    : "Justificatif détaillé de l'origine des fonds";
   const noteOrigine = isVendeur
     ? "Ex : Le client a fourni l'acte d'achat initial du bien (notaire Maître X, 2014). Origine confirmée. Aucun lien avec pays à risque. Décision : poursuite de la relation sous surveillance renforcée."
     : "Ex : Le client a fourni les relevés bancaires demandés. Origine des fonds confirmée par notaire. Aucun lien avec pays à risque. Décision : poursuite de la relation sous surveillance renforcée.";
@@ -113,24 +118,8 @@ function buildWizard(
         steps: [
           {
             title: "Demander les pièces complémentaires au client",
-            subtitle: "Un email pré-rempli s'ouvre dans votre boite mail. Vérifiez les pièces demandées et envoyez-le.",
-            action: {
-              kind: "mailto",
-              subject: `[${ref}] Documents complémentaires demandés`,
-              body:
-`Bonjour,
-
-Dans le cadre de nos obligations légales de Lutte contre le Blanchiment et le Financement du Terrorisme (LCB-FT — art. L.561-10 du Code monétaire et financier), nous avons besoin de pièces complémentaires pour finaliser votre dossier.
-
-Merci de nous transmettre :
-${justifOrigineLine}
-• Un justificatif d'activité professionnelle ou source de revenus (avis d'imposition récent, bulletins de salaire)
-• Si applicable : une déclaration sur l'honneur précisant votre fonction et durée d'exercice
-
-Cordialement,
-`,
-              cta: "Ouvrir l'email pré-rempli",
-            },
+            subtitle: "Klaris prépare l'e-mail : cochez les pièces à demander, puis envoyez-le depuis votre messagerie, Gmail ou Outlook.",
+            action: { kind: "mail", mail: "pieces", cta: "Préparer l'e-mail au client" },
           },
           {
             title: "Renseigner votre analyse du risque",
@@ -143,28 +132,13 @@ Cordialement,
           },
           {
             title: "Faire valider par votre correspondant LCB-FT",
-            subtitle: "L'accord écrit du correspondant LCB-FT est obligatoire. Un email pré-rempli s'ouvre — ajustez le destinataire et envoyez.",
-            action: {
-              kind: "mailto",
-              subject: `[${ref}] Demande de validation — Vigilance renforcée`,
-              body:
-`Bonjour,
-
-Je sollicite ton avis sur le dossier ${safeName} qui présente un niveau de vigilance renforcée (CMF L.561-10 et L.561-10-1).
-
-Tu trouveras en pièce jointe l'attestation Klaris (téléchargeable depuis le dashboard) ainsi que mon analyse du risque.
-
-Merci de me confirmer ton accord ou tes recommandations.
-
-Cordialement,
-`,
-              cta: "Envoyer la demande de validation",
-            },
+            subtitle: "Son accord écrit est obligatoire. Klaris prépare la demande : ajoutez son adresse et envoyez.",
+            action: { kind: "mail", mail: "validation", cta: "Préparer la demande de validation" },
           },
           {
             title: "Confirmer l'ouverture (ou le refus) de la relation",
-            subtitle: "Une fois l'accord obtenu, marquez le dossier comme traité. Il restera consultable à tout moment.",
-            action: { kind: "done", cta: "Confirmer ma décision" },
+            subtitle: "Une fois l'accord obtenu, indiquez votre décision. Si vous refusez, Klaris prépare l'e-mail au client, sans en donner la raison.",
+            action: { kind: "decision", okLabel: "J'ouvre la relation", refuseLabel: "Je refuse la relation" },
           },
         ],
       };
@@ -182,41 +156,12 @@ Cordialement,
             subtitle: isVendeur
               ? "L'art. L.561-10-2 vous impose de vous renseigner sur l'origine du bien, l'objet et la destination de l'opération avant de poursuivre. Vous pouvez (mais n'êtes pas obligé) de suspendre temporairement la transaction. La suspension n'est obligatoire qu'en cas de soupçon avéré."
               : "L'art. L.561-10-2 vous impose de vous renseigner sur l'origine des fonds, l'objet et la destination de l'opération avant de poursuivre. Vous pouvez (mais n'êtes pas obligé) de suspendre temporairement la transaction. La suspension n'est obligatoire qu'en cas de soupçon avéré.",
-            action: {
-              kind: "mailto",
-              subject: `[${ref}] Informations complémentaires demandées`,
-              body:
-`Bonjour,
-
-Dans le cadre de nos obligations réglementaires (LCB-FT), nous avons besoin de compléments avant de finaliser le traitement de votre dossier.
-
-Merci de nous transmettre :
-• ${justifOrigineShort}
-• Justification écrite de l'objet et de la destination de l'opération
-• Tout document pouvant éclairer le contexte (acte notarié, contrat de vente antérieur, attestation comptable…)
-
-Cordialement,
-`,
-              cta: "Envoyer la demande d'informations",
-            },
+            action: { kind: "mail", mail: "infos", cta: "Préparer l'e-mail au client" },
           },
           {
             title: "Convoquer le correspondant LCB-FT",
-            subtitle: "Réunion obligatoire avec compte-rendu écrit pour formaliser la décision. Un email pré-rempli s'ouvre.",
-            action: {
-              kind: "mailto",
-              subject: `[${ref}] Délibération — Examen renforcé requis`,
-              body:
-`Bonjour,
-
-Le dossier ${safeName} déclenche un niveau « Examen renforcé » (CMF L.561-10-2). J'ai sollicité des compléments auprès du client.
-
-Peux-tu me confirmer un créneau dans les 24h pour une réunion de délibération ? L'attestation Klaris détaillée est téléchargeable depuis le dashboard.
-
-Cordialement,
-`,
-              cta: "Envoyer la convocation",
-            },
+            subtitle: "Réunion obligatoire avec compte-rendu écrit pour formaliser la décision. Klaris prépare l'invitation.",
+            action: { kind: "mail", mail: "convocation", cta: "Préparer l'invitation" },
           },
           {
             title: "Documenter la délibération",
@@ -262,37 +207,25 @@ Cordialement,
         steps: [
           {
             title: "Refuser la relation d'affaires (sans en révéler la raison)",
-            subtitle: "Ne dites JAMAIS au client que vous le déclarez à TRACFIN — c'est interdit (L.561-18) et puni de 22 500 € d'amende (L.574-1). Invoquez une raison commerciale neutre.",
-            action: {
-              kind: "mailto",
-              subject: `[${ref}] Décision concernant votre dossier`,
-              body:
-`Bonjour,
-
-Après examen approfondi, nous ne sommes pas en mesure de donner suite à votre demande.
-
-Nous vous remercions pour l'intérêt que vous nous avez témoigné.
-
-Cordialement,
-`,
-              cta: "Envoyer le refus au client",
-            },
+            subtitle: "Ne dites jamais au client que vous le déclarez à Tracfin : c'est interdit (L.561-18) et puni de 22 500 € d'amende (L.574-1). Klaris prépare un e-mail neutre.",
+            action: { kind: "mail", mail: "refus", cta: "Préparer l'e-mail au client" },
           },
           {
-            title: "Télécharger le brouillon de déclaration TRACFIN",
-            subtitle: "Klaris génère un PDF avec toutes les données du dossier prêtes à copier-coller dans ERMES (identité, opération, motifs).",
+            title: "Préparer le brouillon de déclaration",
+            subtitle: "Plus bas, dans « Déclaration de soupçon » : Klaris pré-remplit les faits à partir du dossier. Relisez-les, puis voyez ou téléchargez le brouillon à reporter dans ERMES.",
             action: {
               kind: "link",
-              href: `/api/dossiers/${dossierId}/pdf`,
-              cta: "Télécharger le brouillon (PDF)",
+              href: "#declaration",
+              cta: "Aller au brouillon de déclaration",
             },
           },
           {
             title: "Aussi : télécharger les pièces (ZIP) pour les joindre",
             subtitle: "ERMES vous demandera de joindre les pièces justificatives. Le ZIP contient tout, prêt à l'upload.",
             action: {
-              kind: "link",
+              kind: "download",
               href: `/api/dossiers/${dossierId}/zip`,
+              filename: `dossier-klaris-${dossierId.slice(0, 8)}.zip`,
               cta: "Télécharger les pièces (ZIP)",
             },
           },
@@ -450,7 +383,17 @@ const NIVEAU_LABEL: Record<Niveau, string> = {
    COMPOSANT PRINCIPAL
    ════════════════════════════════════════════════════════════════════ */
 
-export default function MarcheASuivre({ niveau, dossierId, clientName, partie = "acquereur", mode = "compact" }: Props) {
+export default function MarcheASuivre({ niveau, dossierId, clientName, partie = "acquereur", mode = "compact", contact }: Props) {
+  const { user } = useUser();
+  const { organization } = useOrganization();
+  const mailCtx = useMemo<MailCtx>(() => ({
+    clientName: clientName || "Madame, Monsieur",
+    partie,
+    email: contact?.email ?? null,
+    lieuBien: contact?.lieuBien ?? null,
+    agent: user?.fullName ?? null,
+    agency: organization?.name ?? null,
+  }), [clientName, partie, contact?.email, contact?.lieuBien, user?.fullName, organization?.name]);
   const wizard = useMemo(
     () => buildWizard(niveau, clientName, dossierId, partie),
     [niveau, clientName, dossierId, partie],
@@ -510,6 +453,7 @@ export default function MarcheASuivre({ niveau, dossierId, clientName, partie = 
 
   // ─── Mode full (page détail) ──────────────────────────────────────
   return (
+    <MailCtxC.Provider value={mailCtx}>
     <FullView
       wizard={wizard}
       c={c}
@@ -522,6 +466,7 @@ export default function MarcheASuivre({ niveau, dossierId, clientName, partie = 
       clientName={clientName}
       dossierId={dossierId}
     />
+    </MailCtxC.Provider>
   );
 }
 
@@ -897,6 +842,34 @@ function StepAction({
     );
   }
 
+  if (a.kind === "mail" || a.kind === "decision") {
+    return <MailStep a={a} c={c} onDone={onDone} />;
+  }
+
+  if (a.kind === "download") {
+    return (
+      <div className="flex flex-wrap items-center gap-2">
+        <DownloadButton
+          url={a.href}
+          filename={a.filename}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-[13.5px] font-semibold text-white transition-transform hover:-translate-y-0.5"
+          style={{ background: `linear-gradient(135deg, ${c.accent}, ${c.fg})`, boxShadow: `0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 18px ${c.bgSoft}` }}
+        >
+          <Package width={14} height={14} />
+          {a.cta}
+        </DownloadButton>
+        <button
+          type="button"
+          onClick={onDone}
+          className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-full text-[12.5px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300 transition"
+        >
+          <Check width={13} height={13} />
+          C&apos;est fait
+        </button>
+      </div>
+    );
+  }
+
   if (a.kind === "mailto") {
     const mailto = `mailto:?subject=${encodeURIComponent(a.subject)}&body=${encodeURIComponent(a.body)}`;
     return (
@@ -1136,6 +1109,61 @@ function DoneView({
         <RotateCw width={11} height={11} />
         Revenir à la dernière étape pour la modifier
       </button>
+    </div>
+  );
+}
+
+
+/* ─── E-mail préparé (et décision ouvrir / refuser) ───────────────── */
+
+function MailStep({
+  a, c, onDone,
+}: {
+  a: Extract<ActionKind, { kind: "mail" } | { kind: "decision" }>;
+  c: ReturnType<typeof tones>;
+  onDone: () => void;
+}) {
+  const ctx = useContext(MailCtxC);
+  const [open, setOpen] = useState(false);
+  const mail: MailId = a.kind === "mail" ? a.mail : "refus";
+  const btn = "inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-[13.5px] font-semibold transition-transform hover:-translate-y-0.5";
+  const solid = { background: `linear-gradient(135deg, ${c.accent}, ${c.fg})`, color: "#fff", boxShadow: `0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 18px ${c.bgSoft}` };
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {a.kind === "mail" ? (
+        <>
+          <button type="button" onClick={() => setOpen(true)} className={btn} style={solid}>
+            <Mail width={14} height={14} />
+            {a.cta}
+          </button>
+          <button
+            type="button"
+            onClick={onDone}
+            className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-full text-[12.5px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:border-slate-300 transition"
+          >
+            <Check width={13} height={13} />
+            Déjà envoyé
+          </button>
+        </>
+      ) : (
+        <>
+          <button type="button" onClick={onDone} className={btn} style={solid}>
+            <Check width={14} height={14} />
+            {a.okLabel}
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className={`${btn} border`}
+            style={{ background: "#fff", color: "#A3241F", borderColor: "rgba(197,48,44,0.35)" }}
+          >
+            <Mail width={14} height={14} />
+            {a.refuseLabel}
+          </button>
+        </>
+      )}
+      {open && ctx && <MailComposer id={mail} ctx={ctx} onClose={() => setOpen(false)} onSent={onDone} />}
     </div>
   );
 }

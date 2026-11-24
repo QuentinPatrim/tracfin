@@ -68,6 +68,8 @@ const isPublicRoute = createRouteMatcher([
   "/api/cron/(.*)",
   // Rendu HTML interne pour Puppeteer (protégé par PDF_RENDER_SECRET dans la route)
   "/pdf-render/(.*)",
+  // Moteur d'aperçu PDF (pdf.js) : fichier statique, sans donnée.
+  "/pdfjs/(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

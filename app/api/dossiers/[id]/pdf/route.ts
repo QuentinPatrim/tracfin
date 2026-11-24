@@ -5,6 +5,7 @@ import { computeScore } from "@/lib/tracfin";
 import { rowToForm } from "@/lib/dossier";
 import { getOrCreateAttestation } from "@/lib/attestation";
 import { renderHtmlPdf } from "@/lib/pdf-renderer";
+import { wantsHtmlView, htmlViewResponse } from "@/lib/doc-view";
 import { buildAttestationHtml } from "@/app/pdf-render/attestation-template";
 import { logAudit } from "@/lib/audit";
 import { getScope, findScopedDossier } from "@/lib/scope";
@@ -50,6 +51,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       hash: snapshot.content_hash,
       generatedAt: snapshot.generated_at,
     });
+    if (wantsHtmlView(req)) return htmlViewResponse(html);
     const buffer = await renderHtmlPdf(html);
 
     await logAudit({

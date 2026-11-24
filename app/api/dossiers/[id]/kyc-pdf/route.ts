@@ -6,6 +6,7 @@ import { sql } from "@/lib/db";
 import { kycRowToKycForm, type KycResponseRowFull } from "@/lib/dossier";
 import { initialKycForm } from "@/lib/kyc";
 import { renderHtmlPdf } from "@/lib/pdf-renderer";
+import { wantsHtmlView, htmlViewResponse } from "@/lib/doc-view";
 import { buildKycHtml } from "@/app/pdf-render/kyc-template";
 import { getScope, findScopedDossier } from "@/lib/scope";
 
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const scope = await getScope();
   if (!scope) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -83,6 +84,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       .digest("hex");
 
     const html = buildKycHtml({ form, dossierId: id, hash, generatedAt, signedAt, partie });
+    if (wantsHtmlView(req)) return htmlViewResponse(html);
     const buffer = await renderHtmlPdf(html);
 
     return new NextResponse(buffer as unknown as BodyInit, {

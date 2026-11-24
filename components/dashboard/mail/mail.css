@@ -1,0 +1,51 @@
+/* components/dashboard/mail/mail.css — Fenêtre de rédaction d'e-mail (MailComposer) */
+.mc { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: 20px; font-family: var(--font-sans-face), system-ui, sans-serif; color: #0B1435; }
+.mc-veil { position: absolute; inset: 0; border: 0; background: rgba(11,20,53,0.42); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); cursor: default; animation: mc-fade .2s ease both; }
+.mc-box { position: relative; width: min(680px, 100%); max-height: min(860px, calc(100dvh - 40px)); display: flex; flex-direction: column; border-radius: 30px; background: #fff; box-shadow: 0 40px 90px -30px rgba(11,20,53,0.6); overflow: hidden; animation: mc-in .35s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes mc-fade { from { opacity: 0; } }
+@keyframes mc-in { from { opacity: 0; transform: translateY(18px) scale(0.98); } }
+.mc-head { display: flex; align-items: center; gap: 12px; padding: 18px 20px 14px; border-bottom: 1px solid rgba(11,20,53,0.07); }
+.mc-ico { flex: none; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: #EAEFFF; color: #1F45E0; }
+.mc-head div { flex: 1; min-width: 0; }
+.mc-head b { display: block; font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+.mc-head small { font-size: 12.5px; color: #8189A8; font-weight: 600; }
+.mc-x { flex: none; width: 38px; height: 38px; border-radius: 999px; border: 0; display: grid; place-items: center; background: #F5F7FF; color: #2A3459; cursor: pointer; }
+.mc-scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.mc-scroll > * { flex-shrink: 0; }
+.mc-warn { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 16px; background: #FFF1EE; color: #A3241F; font-size: 13px; line-height: 1.5; font-weight: 600; }
+.mc-warn svg { flex: none; margin-top: 1px; }
+.mc-field { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 14px; border-radius: 16px; background: #F5F7FF; }
+.mc-field span { flex: none; width: 44px; font-size: 13px; font-weight: 700; color: #8189A8; }
+.mc-field input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; font: inherit; font-size: 15px; color: #0B1435; }
+.mc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px 0 8px; border-radius: 999px; border: 0; font: inherit; font-size: 13.5px; font-weight: 650; color: #2A3459; background: #fff; box-shadow: inset 0 0 0 1.5px rgba(11,20,53,0.12); cursor: pointer; text-align: left; }
+.mc-chip i { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 2px #D5DBEB; color: #fff; }
+.mc-chip[data-on] { background: #EEF2FF; box-shadow: inset 0 0 0 1.5px rgba(47,91,255,0.5); color: #1F45E0; }
+.mc-chip[data-on] i { background: #2F5BFF; box-shadow: none; }
+.mc-radio { flex: 1 1 100%; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.mc-radio small { font-size: 12.5px; font-weight: 700; color: #8189A8; }
+.mc-radio > div { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: #F5F7FF; flex-wrap: wrap; }
+.mc-radio button { height: 32px; padding: 0 12px; border-radius: 999px; border: 0; font: inherit; font-size: 13px; font-weight: 700; color: #5B6487; background: transparent; cursor: pointer; }
+.mc-radio button[data-on] { background: #0B1435; color: #fff; }
+.mc-body { position: relative; }
+.mc-body textarea { width: 100%; box-sizing: border-box; min-height: 240px; padding: 14px; border-radius: 18px; border: 0; outline: 0; resize: vertical; background: #F5F7FF; font: inherit; font-size: 14.5px; line-height: 1.55; color: #0B1435; }
+.mc-body textarea:focus { box-shadow: inset 0 0 0 2px rgba(47,91,255,0.35); }
+.mc-reset { margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; font: inherit; font-size: 12.5px; font-weight: 700; color: #1F45E0; cursor: pointer; }
+.mc-foot { padding: 12px 20px calc(16px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(11,20,53,0.07); display: flex; flex-direction: column; gap: 10px; }
+.mc-send { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc-pri, .mc-sec, .mc-done { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 46px; padding: 0 16px; border-radius: 999px; border: 0; font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; transition: transform .2s, background-color .15s; }
+.mc-pri { flex: 1 1 180px; color: #fff; background: #2F5BFF; box-shadow: 0 12px 24px -14px rgba(47,91,255,0.9); }
+.mc-sec { color: #0B1435; background: #F5F7FF; }
+.mc-sec:hover { background: #EAEFFF; }
+.mc-pri:active, .mc-sec:active, .mc-done:active { transform: scale(0.97); }
+.mc-done { color: #0F7A4F; background: #EAF7F1; }
+.mc-done[data-ready] { color: #fff; background: #16A06A; box-shadow: 0 12px 24px -14px rgba(22,160,106,0.9); }
+@media (max-width: 640px) {
+  .mc { padding: 0; align-items: end; }
+  .mc-box { width: 100%; max-height: 94dvh; border-radius: 28px 28px 0 0; animation: mc-up .4s cubic-bezier(0.22,1,0.36,1) both; }
+  @keyframes mc-up { from { transform: translateY(40px); opacity: 0; } }
+  .mc-head, .mc-scroll { padding-left: 16px; padding-right: 16px; }
+  .mc-foot { padding-left: 12px; padding-right: 12px; }
+  .mc-body textarea { min-height: 200px; font-size: 15px; }
+  .mc-sec { padding: 0 13px; }
+}

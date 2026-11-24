@@ -7,6 +7,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { ArrowDown, Check, FileDown } from "lucide-react";
 import type { Niveau } from "@/lib/tracfin";
 import { nextAction, STAGE_STEPS, type NextAction } from "../dossierStage";
@@ -62,7 +63,7 @@ export default function DossierProgress({ id, name, partie, niveau, receivedLabe
         </div>
         {a.stage === "verifier" && <a href="#analyse" className="kd-btn kd-btn--pri">Aller à l&apos;analyse<ArrowDown width={16} height={16} /></a>}
         {a.stage === "suite" && <a href="#suite" className="kd-btn kd-btn--pri">Voir la suite à donner<ArrowDown width={16} height={16} /></a>}
-        {a.stage === "fait" && <a href={`/api/dossiers/${id}/pdf`} download className="kd-btn kd-btn--pri"><FileDown width={16} height={16} />Attestation PDF</a>}
+        {a.stage === "fait" && <Link href={`/dashboard/document?d=attestation&id=${id}`} className="kd-btn kd-btn--pri"><FileDown width={16} height={16} />Voir l&apos;attestation</Link>}
       </div>
     </section>
   );

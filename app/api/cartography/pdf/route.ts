@@ -8,6 +8,7 @@ import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { getScope } from "@/lib/scope";
 import { computeCartography } from "@/lib/cartography";
 import { renderHtmlPdf } from "@/lib/pdf-renderer";
+import { wantsHtmlView, htmlViewResponse } from "@/lib/doc-view";
 import { buildCartographyHtml } from "@/app/pdf-render/cartography-template";
 import { logAudit } from "@/lib/audit";
 
@@ -58,6 +59,7 @@ export async function GET(req: Request) {
   const html = buildCartographyHtml({ carto, generatedAt, hash, emetteur, scopeLabel });
 
   try {
+    if (wantsHtmlView(req)) return htmlViewResponse(html);
     const buffer = await renderHtmlPdf(html);
 
     await logAudit({

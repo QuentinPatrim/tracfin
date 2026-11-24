@@ -114,18 +114,8 @@ export default function TracfinForm({ initialData, dossierId, screeningEnabled =
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      // Puis télécharge le PDF
-      const res = await fetch(`/api/dossiers/${dossierId}/pdf`);
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `dossier-tracfin-${dossierId.slice(0, 8)}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      // Puis ouvre l'attestation dans la visionneuse (on la voit avant de la télécharger)
+      router.push(`/dashboard/document?d=attestation&id=${dossierId}`);
     } catch {
       alert("Erreur lors de la génération du PDF");
     } finally {
@@ -183,7 +173,7 @@ export default function TracfinForm({ initialData, dossierId, screeningEnabled =
         <span className="kd-grow" />
         {step === 2 && dossierId && (
           <button type="button" className="kd-btn" onClick={exportPdf} disabled={exporting}>
-            <FileDown width={16} height={16} />{exporting ? "Génération…" : "PDF"}
+            <FileDown width={16} height={16} />{exporting ? "Ouverture…" : "Attestation"}
           </button>
         )}
         {step < 2 ? (

@@ -20,6 +20,7 @@
     "jszip": "^3.10.1",
     "lucide-react": "latest",
     "next": "latest",
+    "pdfjs-dist": "^4.10.38",
     "puppeteer-core": "^24.43.1",
     "react": "latest",
     "react-dom": "latest",

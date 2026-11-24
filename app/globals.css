@@ -339,6 +339,8 @@ body {
   /* ── Barre de navigation : une pilule flottante ── */
   .kl-nav { position: fixed; inset: 0.75rem 0 auto 0; z-index: 50; color: var(--lp-text); pointer-events: none; }
   .kl-nav > * { pointer-events: auto; }
+  .kl-nav__bar { min-width: 0; }
+  .kl-nav__bar > a:first-of-type { min-width: 0; }
   .kl-nav__bar {
     border-radius: 999px; padding: 0 0.45rem 0 1.1rem;
     background: rgba(255,255,255,0.72);
@@ -542,3 +544,9 @@ body {
   .kl-guide:hover .kl-guide__bar { width: 2.8rem; }
   .kl-guide:hover .kl-guide__t { color: var(--ct, #1F45E0); }
 }
+
+/* Filet de sécurité : rien ne doit élargir la page au-delà de l'écran (sur iPhone,
+   un seul élément trop large fait dézoomer toute la page). « clip » ne casse pas
+   position: sticky, contrairement à « hidden ». */
+html, body { overflow-x: clip; }
+@media (max-width: 359px) { .kl-nav .kl-wordmark { display: none; } }

@@ -8,6 +8,7 @@
 import Link from "next/link";
 import { ArrowLeft, Building2, User, Inbox, Archive, FileDown, Package } from "lucide-react";
 import type { Niveau } from "@/lib/tracfin";
+import DownloadButton from "../docs/DownloadButton";
 
 const LEVEL: Record<Niveau, { label: string; fg: string; bg: string; dot: string }> = {
   vigilance_standard: { label: "Vigilance standard", fg: "#0F7A4F", bg: "#E6F6EF", dot: "#16A06A" },
@@ -70,8 +71,8 @@ export default function DossierHeader({ id, name, morale, vendeur, niveau, recei
               <i aria-hidden />{lv.label}
             </span>
           )}
-          <a href={`/api/dossiers/${id}/zip`} className="kd-btn"><Package width={16} height={16} />Dossier .zip</a>
-          {niveau && <a href={`/api/dossiers/${id}/pdf`} download className="kd-btn kd-btn--pri"><FileDown width={16} height={16} />Attestation PDF</a>}
+          <DownloadButton url={`/api/dossiers/${id}/zip`} filename={`dossier-klaris-${id.slice(0, 8)}.zip`} className="kd-btn"><Package width={16} height={16} />Dossier .zip</DownloadButton>
+          {niveau && <Link href={`/dashboard/document?d=attestation&id=${id}`} className="kd-btn kd-btn--pri"><FileDown width={16} height={16} />Attestation</Link>}
         </div>
       </div>
 

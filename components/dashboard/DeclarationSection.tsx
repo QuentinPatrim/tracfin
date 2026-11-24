@@ -11,6 +11,8 @@
 
 "use client";
 
+import { downloadFile } from "./docs/download";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FileWarning, FileDown, CheckCircle2, AlertTriangle, Loader2, X } from "lucide-react";
 
@@ -240,15 +242,7 @@ function DeclarationCard({
     setDownloadingPdf(true);
     setLocalError(null);
     try {
-      const res = await fetch(`/api/dossiers/${dossierId}/declaration/${declaration.id}/pdf`);
-      if (!res.ok) throw new Error("Échec de l'export PDF");
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `declaration-soupcon-${dossierId.slice(0, 8)}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
+      await downloadFile(`/api/dossiers/${dossierId}/declaration/${declaration.id}/pdf`, `declaration-soupcon-${dossierId.slice(0, 8)}.pdf`);
 
       // Si la DS était en draft, on la marque "submitted"
       if (declaration.statut === "draft") {
@@ -415,6 +409,12 @@ function DeclarationCard({
           </button>
         )}
 
+        <Link
+          href={`/dashboard/document?d=declaration&id=${dossierId}&did=${declaration.id}`}
+          style={{ padding: "8px 14px", borderRadius: 8, background: "white", color: "#0B1435", border: "1px solid rgba(11,20,53,0.12)", fontSize: 12.5, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none" }}
+        >
+          Voir le brouillon
+        </Link>
         {(declaration.statut === "draft" || declaration.statut === "submitted") && (
           <button
             type="button"
