@@ -50,7 +50,14 @@ capté** : un geste fait défiler la page, rien d'autre.
   (`components/landing/HeroMark.tsx`). Le logo reste un logo : barres pleines, sans
   texte dedans. Un filet relie chaque barre à une étiquette en petit (01 Identifier le
   client… 05 Justifier au contrôle), qui mène à la section correspondante. Sur
-  téléphone, le K passe sous les boutons, en version compacte. Sous les boutons, la
+  téléphone, le K passe sous les boutons, en version compacte. Survol (ordinateur) :
+  toute la ligne réagit (barre, filet, texte) ; la barre avance et s'entoure d'un halo,
+  le texte prend sa couleur, les autres lignes s'effacent, et un aperçu de
+  l'obligation (petite vue du produit, une phrase, « Voir comment ») remplace la
+  légende sous le K.
+- **Grands écrans** : la colonne du site passe à 84rem (≥ 1500 px) puis 90rem
+  (≥ 1800 px), et la taille de base du site public à 17 puis 18 px ; le K grandit
+  avec (--u 4,3 puis 4,8 px). Sous les boutons, la
   pastille « Conçu par un négociateur immobilier en activité ». Dessous, `HeroStage.tsx` : le tableau de bord posé en perspective
   se redresse au défilement, le téléphone du client remonte en parallaxe.
 - **Entrées** : montée avec léger flou (`.kl-enter`), ressort sur les survols

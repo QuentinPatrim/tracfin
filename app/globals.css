@@ -276,6 +276,9 @@ body {
   /* ── Mise en page ── */
   .kl-wrap { width: 100%; max-width: 78rem; margin-inline: auto; padding-inline: 1.25rem; }
   @media (min-width: 640px) { .kl-wrap { padding-inline: 2rem; } }
+  /* Grands écrans : la colonne s'élargit et tout grandit un peu (le site public est en rem). */
+  @media (min-width: 1500px) { .kl-wrap { max-width: 84rem; } }
+  @media (min-width: 1800px) { .kl-wrap { max-width: 90rem; padding-inline: 2.5rem; } }
   .kl-section { padding-block: clamp(4.5rem, 2.5rem + 6vw, 8.5rem); }
   .kl-section--white { background: var(--kl-mist); }
   .klaris-public section[id] { scroll-margin-top: 5.5rem; }
@@ -495,3 +498,8 @@ body {
 .kl-menu-app b { font-weight: 800; letter-spacing: -0.02em; }
 .kl-menu-app small { font-size: 0.8rem; color: #5B6487; }
 .kl-menu-app > svg { color: #1F45E0; }
+
+/* Grands écrans, site public seulement (là où la barre de navigation du site est présente) :
+   tout ce qui est en rem grandit légèrement, pour remplir l'écran sans étirer les lignes. */
+@media (min-width: 1500px) { html:has(.kl-nav) { font-size: 17px; } }
+@media (min-width: 1800px) { html:has(.kl-nav) { font-size: 18px; } }
