@@ -134,7 +134,7 @@ export default function LandingPage() {
         <section id="vigilance" className="kl-section kl-section--white">
           <div className="kl-wrap">
             <div className="fx-head max-w-[48rem]" data-fx="">
-              <p className="kl-kicker">L&apos;échelle de vigilance</p>
+              <p className="kl-kicker" style={{ "--kc": "#5468FF" } as React.CSSProperties}>L&apos;échelle de vigilance</p>
               <h2 className="kl-display kl-h2 mt-5">
                 Chaque dossier reçoit un niveau, <em>lisible comme une étiquette énergie.</em>
               </h2>
@@ -153,7 +153,7 @@ export default function LandingPage() {
         <section id="features" className="kl-section">
           <div className="kl-wrap">
             <div className="fx-head max-w-[46rem]" data-fx="">
-              <p className="kl-kicker">Vos obligations</p>
+              <p className="kl-kicker kl-kicker--k">Vos obligations</p>
               <h2 className="kl-display kl-h2 mt-5">
                 Ce que la loi vous demande, <em>et ce que Klaris prend en charge.</em>
               </h2>
@@ -168,9 +168,9 @@ export default function LandingPage() {
                 </tr>
               </thead>
               <tbody>
-                {OBLIGATIONS.map((o) => (
-                  <tr key={o.title} id={`obligation-${o.id}`}>
-                    <td>{o.title}</td>
+                {OBLIGATIONS.map((o, i) => (
+                  <tr key={o.title} id={`obligation-${o.id}`} className="kl-ob" style={{ "--c": K_BARS[i].c, "--ct": K_BARS[i].ct } as React.CSSProperties}>
+                    <td><span className="kl-ob__mark" aria-hidden="true"><i /><b>{String(i + 1).padStart(2, "0")}</b></span>{o.title}</td>
                     <td>{o.text}</td>
                     <td><LegalRef code={o.ref} /></td>
                   </tr>
@@ -341,6 +341,12 @@ export default function LandingPage() {
 
 /* Ce que la loi demande → ce que fait Klaris → le texte. Une ligne par obligation
    réelle ; pas de fonctionnalité « gadget » dans ce tableau. */
+/* Les cinq couleurs des barres du K, dans l'ordre des obligations (cf. HeroMark). */
+const K_BARS = [
+  { c: "#2F5BFF", ct: "#1F45E0" }, { c: "#5468FF", ct: "#3F50E6" }, { c: "#9A6BEB", ct: "#7B4FD6" },
+  { c: "#EC6A93", ct: "#D2457A" }, { c: "#FF6A4D", ct: "#E5502F" },
+];
+
 const OBLIGATIONS = [
   {
     id: "identifier",

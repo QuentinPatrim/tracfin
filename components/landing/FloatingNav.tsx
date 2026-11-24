@@ -6,7 +6,7 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Play, Menu, X, ArrowRight } from "lucide-react";
 import { useClerk, useAuth, UserButton } from "@clerk/nextjs";
 import InstallApp from "@/components/pwa/InstallApp";
@@ -15,6 +15,8 @@ import KlarisLogo from "@/components/ui/KlarisLogo";
 // Démo guidée chargée à la demande (film 3D + sa feuille de style) : exclue du
 // bundle initial de chaque page publique, tirée seulement à l'ouverture.
 const DemoModal = dynamic(() => import("./DemoModal"), { ssr: false });
+
+const K_COLORS = ["#2F5BFF", "#5468FF", "#9A6BEB", "#EC6A93", "#FF6A4D"];
 
 const NAV_LINKS = [
   { href: "/#how", label: "Fonctionnement" },
@@ -34,11 +36,15 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
   // Sur l'accueil, la barre repose sur le champ d'encre du haut de page : elle garde
   // son texte clair tant que cette section (marquée data-nav-field) passe dessous.
   const [overField, setOverField] = useState(over === "field");
+  // Fil de lecture : cinq segments aux couleurs des barres du K, remplis au défilement.
+  const progRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const field = over === "field" ? document.querySelector<HTMLElement>("[data-nav-field]") : null;
     const onScroll = () => {
       setScrolled(window.scrollY > 12);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progRef.current?.style.setProperty("--p", String(max > 0 ? Math.min(1, window.scrollY / max) : 0));
       if (field) setOverField(field.getBoundingClientRect().bottom > 64);
     };
     onScroll();
@@ -80,7 +86,10 @@ export default function FloatingNav({ over = "paper" }: { over?: "paper" | "fiel
 
       <header className="kl-nav" data-solid={!scrolled ? "false" : onField ? "field" : "true"} data-over={over}>
         <div className="kl-wrap">
-        <div className="kl-nav__bar flex items-center justify-between gap-3 h-[3.6rem]">
+        <div className="kl-nav__bar relative flex items-center justify-between gap-3 h-[3.6rem]">
+          <span ref={progRef} className="kl-nav__prog" aria-hidden="true">
+            {K_COLORS.map((c, i) => <i key={c} style={{ "--i": i, "--c": c } as React.CSSProperties} />)}
+          </span>
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label="Klaris, accueil">
             <KlarisLogo size={36} animated />
             <span className="kl-wordmark">Klaris</span>

@@ -55,6 +55,13 @@ capté** : un geste fait défiler la page, rien d'autre.
   le texte prend sa couleur, les autres lignes s'effacent, et un aperçu de
   l'obligation (petite vue du produit, une phrase, « Voir comment ») remplace la
   légende sous le K.
+- **Fil rouge du K dans tout le site** : les cinq couleurs des barres désignent les
+  cinq obligations, partout dans le même ordre (#2F5BFF, #5468FF, #9A6BEB, #EC6A93,
+  #FF6A4D). Tableau des obligations : chaque ligne porte sa barre et son numéro ;
+  au survol, elle se teinte de sa couleur. Pastille des titres de section = une
+  barre du K (`--kc` : bleu pour « Comment ça marche », bleu 2 pour la vigilance,
+  mini-K pour « Vos obligations » avec `.kl-kicker--k`). Fil de lecture : cinq
+  segments sous la barre de navigation, remplis au défilement.
 - **Grands écrans** : la colonne du site passe à 84rem (≥ 1500 px) puis 90rem
   (≥ 1800 px), et la taille de base du site public à 17 puis 18 px ; le K grandit
   avec (--u 4,3 puis 4,8 px). Sous les boutons, la

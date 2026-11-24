@@ -74,7 +74,7 @@ export default function ProductStory() {
     <section ref={rootRef} id="how" className="ps kl-section">
       <div className="kl-wrap">
         <div className="fx-head max-w-[44rem]" data-fx="">
-          <p className="kl-kicker">Comment ça marche</p>
+          <p className="kl-kicker" style={{ "--kc": "#2F5BFF" } as React.CSSProperties}>Comment ça marche</p>
           <h2 className="kl-display kl-h2 mt-5">
             Quatre étapes, <em>un dossier complet.</em>
           </h2>
