@@ -16,11 +16,10 @@ import KpiRow from "./KpiRow";
 import DocumentsList from "./DocumentsList";
 import OnboardingGuide from "./OnboardingGuide";
 import GuidedTour, { type TourStep } from "./GuidedTour";
-import ClientJourneyFrame from "./ClientJourneyFrame";
 import { DEMO_DOSSIERS, DEMO_COUNTS, DEMO_FILES, DEMO_DEFAULT_SELECTED } from "./demoData";
 import DashboardFooter from "./DashboardFooter";
 import { EmptyState } from "./primitives";
-import { FolderPlus, BookOpen } from "lucide-react";
+import { FolderPlus, BookOpen, Lock } from "lucide-react";
 import MarcheASuivre, { isMarcheTerminee } from "./MarcheASuivre";
 import { NIVEAU_CFG, type Niveau, type StatutKey, V1_TO_NIVEAU } from "@/lib/tracfin";
 import type { DossierFile } from "@/lib/dossier-files";
@@ -94,16 +93,22 @@ function initials(name: string): string {
 // premier dossier. Chaque plan porte une couleur du K, dans l'ordre.
 const KC = ["#0B1435", "#2F5BFF", "#5468FF", "#9A6BEB", "#EC6A93", "#FF6A4D"];
 
-/** Le vrai formulaire client qui défile seul, écran par écran. */
-function ClientJourneyLoop() {
-  const SEQ = [1, 3, 4, 5, 6];
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % SEQ.length), 1800);
-    return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return <ClientJourneyFrame step={SEQ[i]} />;
+/** La fiche du client, dessinée à plat : les rubriques se cochent une à une, en boucle.
+ *  (Pas de téléphone ni d'iframe réduite : rendu net à toutes les tailles.) */
+function ClientFormScene() {
+  const parts = ["Identité", "Pièce d'identité", "Situation (PPE)", "Origine des fonds", "Pièces justificatives", "Signature et envoi"];
+  return (
+    <div className="gt-cf" aria-hidden>
+      <div className="gt-cf-top"><Lock width={11} height={11} className="gt-cf-lock" />klaris-app.fr/kyc/…<em>sans compte</em></div>
+      <b className="gt-cf-t">Fiche client · Camille Rousseau</b>
+      <ul>
+        {parts.map((p, i) => (
+          <li key={p} style={{ ["--i" as string]: i }}><i />{p}</li>
+        ))}
+      </ul>
+      <span className="gt-cf-done">Fiche envoyée, pièces chiffrées</span>
+    </div>
+  );
 }
 
 const TOUR_STEPS: TourStep[] = [
@@ -138,7 +143,7 @@ const TOUR_STEPS: TourStep[] = [
     bodyMobile: "Touchez un dossier : sa fiche s'ouvre en bas de l'écran, avec le niveau, la marche à suivre, les pièces et les exports (attestation PDF, archive .zip).",
   },
   {
-    scene: <ClientJourneyLoop />,
+    scene: <ClientFormScene />,
     color: KC[4],
     eyebrow: "Côté client",
     title: "Ce que voit votre client",

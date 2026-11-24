@@ -136,7 +136,9 @@ capté** : un geste fait défiler la page, rien d'autre.
   autour de la cible, carte blanche ; la pastille « Données d'exemple » remplace
   l'ancien bandeau. Sur téléphone la carte se pose en bas comme une feuille, la
   cible remonte en haut, et un plan peut avoir sa cible et son texte propres
-  (`selectorMobile`, `bodyMobile`).
+  (`selectorMobile`, `bodyMobile`). Le plan « côté client » montre la fiche dessinée
+  à plat en HTML (rubriques cochées une à une) : pas de téléphone ni de page réduite
+  dans une iframe, floue et coupée.
 
 ## App installable (téléphone)
 

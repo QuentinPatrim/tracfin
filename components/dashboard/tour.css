@@ -67,3 +67,35 @@
 @media (prefers-reduced-motion: reduce) {
   .gt-card, .gt-body, .gt-veil, .gt-spot { animation: none; transition: none; }
 }
+
+/* Scène « côté client » : la fiche dessinée à plat (boucle de 7 s). */
+.gt-scene:has(.gt-cf) { padding: 16px; max-height: none; }
+.gt-cf { width: 100%; box-sizing: border-box; padding: 14px 16px 16px; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px rgba(11,20,53,0.06), 0 16px 32px -22px rgba(11,20,53,0.5); text-align: left; }
+.gt-cf-top { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 999px; background: #F5F7FF;
+  font-family: var(--font-jetbrains-mono), monospace; font-size: 11px; color: #5B6487; }
+.gt-cf-lock { flex: none; color: #16A06A; }
+.gt-cf-top em { margin-left: auto; font-family: var(--font-sans-face), sans-serif; font-style: normal; font-size: 11px; font-weight: 700; color: #1F45E0; }
+.gt-cf-t { display: block; margin: 12px 0 6px; font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+.gt-cf ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.gt-cf li { display: flex; align-items: center; gap: 10px; height: 28px; font-size: 13px; font-weight: 650; color: #98A0BD;
+  animation: gt-cf-txt 7s steps(1) infinite; animation-delay: calc(0.4s + var(--i) * 0.55s); }
+.gt-cf li i { flex: none; width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 2px #D5DBEB; position: relative;
+  animation: gt-cf-tick 7s cubic-bezier(.34,1.56,.64,1) infinite; animation-delay: calc(0.4s + var(--i) * 0.55s); }
+.gt-cf li i::after { content: ""; position: absolute; left: 6px; top: 3.5px; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); opacity: 0;
+  animation: gt-cf-chk 7s steps(1) infinite; animation-delay: calc(0.4s + var(--i) * 0.55s); }
+.gt-cf-done { display: inline-flex; align-items: center; height: 30px; margin-top: 10px; padding: 0 12px; border-radius: 999px; background: #16A06A; color: #fff; font-size: 12px; font-weight: 800;
+  opacity: 0; animation: gt-cf-done 7s ease infinite; }
+@keyframes gt-cf-tick { 0% { background: transparent; box-shadow: inset 0 0 0 2px #D5DBEB; transform: scale(1); } 4% { background: #16A06A; box-shadow: none; transform: scale(1.2); } 7%, 72% { background: #16A06A; box-shadow: none; transform: scale(1); } 80%, 100% { background: transparent; box-shadow: inset 0 0 0 2px #D5DBEB; } }
+@keyframes gt-cf-chk { 0% { opacity: 0; } 3% { opacity: 1; } 78% { opacity: 0; } }
+@keyframes gt-cf-txt { 0% { color: #98A0BD; } 3% { color: #0B1435; } 78% { color: #98A0BD; } }
+@keyframes gt-cf-done { 0%, 56% { opacity: 0; transform: translateY(6px); } 62%, 74% { opacity: 1; transform: none; } 82%, 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .gt-cf li, .gt-cf li i, .gt-cf li i::after, .gt-cf-done { animation: none; }
+  .gt-cf li { color: #0B1435; } .gt-cf li i { background: #16A06A; box-shadow: none; } .gt-cf li i::after, .gt-cf-done { opacity: 1; }
+}
+.gt[data-narrow] .gt-scene:has(.gt-cf) { max-height: none; padding: 10px; margin-bottom: 12px; }
+.gt[data-narrow] .gt-cf { padding: 10px 12px 12px; }
+.gt[data-narrow] .gt-cf ul { grid-template-columns: 1fr 1fr; column-gap: 8px; }
+.gt[data-narrow] .gt-cf li { font-size: 12px; gap: 7px; height: 26px; white-space: nowrap; }
+.gt[data-narrow] .gt-cf-t { font-size: 14px; margin: 10px 0 4px; }
+.gt[data-narrow] .gt-cf-done { height: 26px; margin-top: 8px; font-size: 11.5px; }
