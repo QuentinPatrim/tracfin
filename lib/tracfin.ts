@@ -22,7 +22,7 @@ export const NIVEAU_CFG: Record<Niveau, {
   action: string;
 }> = {
   vigilance_standard: {
-    label: "Vigilance standard — Conforme",
+    label: "Vigilance standard",
     ref: "CMF L561-5 à L561-8",
     color: "#3DBE8B",
     bg: "rgba(61,190,139,0.08)",
@@ -182,7 +182,7 @@ export const RISK_LABELS: Record<string, string> = {
 };
 
 export const RISK_CFG: Record<Risk, { color: string; bg: string; border: string; glow: string; label: string }> = {
-  green: { color: "#3DBE8B", bg: "rgba(61,190,139,0.1)", border: "rgba(61,190,139,0.3)", glow: "rgba(61,190,139,0.35)", label: "Conforme" },
+  green: { color: "#3DBE8B", bg: "rgba(61,190,139,0.1)", border: "rgba(61,190,139,0.3)", glow: "rgba(61,190,139,0.35)", label: "Sans alerte" },
   orange: { color: "#F0924D", bg: "rgba(251,146,60,0.1)", border: "rgba(251,146,60,0.3)", glow: "rgba(251,146,60,0.35)", label: "Vigilance" },
   red: { color: "#E8807B", bg: "rgba(232,128,123,0.1)", border: "rgba(232,128,123,0.3)", glow: "rgba(232,128,123,0.35)", label: "Critique" },
 };

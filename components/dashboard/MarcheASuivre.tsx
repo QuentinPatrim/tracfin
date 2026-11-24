@@ -92,7 +92,7 @@ function buildWizard(
         tone: "ok",
         icon: CheckCircle2,
         headline: "Aucune action particulière",
-        intro: `Le dossier de ${safeName} est conforme. Vous pouvez continuer normalement.`,
+        intro: `Le dossier de ${safeName} relève de la vigilance standard. Vous pouvez continuer normalement.`,
         cmfRef: "CMF L.561-5 à L.561-8",
         steps: [
           {
@@ -695,7 +695,7 @@ function FullView({
             </h2>
             <p className="text-[13.5px] mt-1.5 leading-relaxed" style={{ color: c.fg, opacity: 0.85 }}>
               {allDone
-                ? "Le dossier est traité conformément à vos obligations LCB-FT. Toutes les preuves sont conservées par Klaris."
+                ? "Toutes les actions de la marche à suivre sont faites. Klaris conserve les preuves cinq ans."
                 : wizard.intro}
             </p>
             <div className="mt-3 flex items-center gap-2 text-[11.5px] font-semibold" style={{ color: c.fg, opacity: 0.75 }}>

@@ -113,115 +113,23 @@ function optLabel<T extends { value: string; label: string }>(
 }
 
 export default function KycClientSummary({ data }: Props) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const isMorale = data.typeClient === "morale";
   const isVendeur = data.partie === "vendeur";
-  const roleLabel = isVendeur ? "Vendeur" : "Acquéreur";
 
   return (
-    <div
-      style={{
-        maxWidth: 768,
-        margin: "16px auto 0",
-        padding: "0 24px",
-      }}
-    >
-      <div
-        style={{
-          borderRadius: 14,
-          background: "white",
-          border: "1px solid rgba(47,91,255,0.18)",
-          boxShadow: "0 6px 18px rgba(11,20,53,0.12)",
-          overflow: "hidden",
-        }}
-      >
-        {/* Header cliquable */}
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            width: "100%",
-            padding: "14px 18px",
-            background: "transparent",
-            border: 0,
-            cursor: "pointer",
-            textAlign: "left",
-          }}
-        >
-          <div
-            style={{
-              width: 32, height: 32, borderRadius: 9,
-              background: "linear-gradient(135deg, rgba(47,91,255,0.14), rgba(47,91,255,0.10))",
-              border: "1px solid rgba(47,91,255,0.30)",
-              display: "grid", placeItems: "center",
-              color: "#1F45E0",
-              flexShrink: 0,
-            }}
-          >
-            {isMorale ? <Building2 width={16} height={16} /> : <UserCheck width={16} height={16} />}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#0B1435" }}>
-              Données déclarées par le client
-              <span
-                style={{
-                  marginLeft: 8,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: "2px 7px",
-                  borderRadius: 999,
-                  background: isVendeur ? "rgba(47,91,255,0.10)" : "rgba(47,91,255,0.10)",
-                  color: isVendeur ? "#1F45E0" : "#1F45E0",
-                  border: `1px solid ${isVendeur ? "rgba(47,91,255,0.30)" : "rgba(47,91,255,0.30)"}`,
-                }}
-              >
-                {roleLabel}
-              </span>
-              <span
-                style={{
-                  marginLeft: 6,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  padding: "2px 7px",
-                  borderRadius: 999,
-                  background: "rgba(11,20,53,0.04)",
-                  color: "#5B6487",
-                  border: "1px solid rgba(11,20,53,0.10)",
-                }}
-              >
-                {isMorale ? "Personne morale" : "Personne physique"}
-              </span>
-            </div>
-            <div style={{ fontSize: 11.5, color: "#98A0BD", marginTop: 3 }}>
-              Source : fiche KYC signée le {fmtDate(data.consentementRgpdAt ?? data.submittedAt)} · lecture seule
-            </div>
-          </div>
-          <ChevronDown
-            width={16}
-            height={16}
-            style={{
-              color: "#98A0BD",
-              transform: open ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 0.2s",
-              flexShrink: 0,
-            }}
-          />
+    <div className="kd-card">
+        <button type="button" className="kd-kyc-h" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+          <span>{isMorale ? <Building2 width={18} height={18} /> : <UserCheck width={18} height={18} />}</span>
+          <span>
+            <b>Ce que le client a déclaré</b>
+            <small>Fiche signée le {fmtDate(data.consentementRgpdAt ?? data.submittedAt)} · lecture seule</small>
+          </span>
+          <ChevronDown width={18} height={18} className="kd-chev" />
         </button>
 
         {open && (
-          <div
-            style={{
-              borderTop: "1px solid rgba(47,91,255,0.10)",
-              padding: 18,
-              background: "rgba(246,245,250,0.6)",
-              display: "flex",
-              flexDirection: "column",
-              gap: 14,
-            }}
-          >
+          <div className="kd-kyc-b">
             {/* Identité */}
             <SummaryBlock
               icon={isMorale ? <Building2 width={13} height={13} /> : <UserCheck width={13} height={13} />}
@@ -385,7 +293,6 @@ export default function KycClientSummary({ data }: Props) {
             />
           </div>
         )}
-      </div>
     </div>
   );
 }

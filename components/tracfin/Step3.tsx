@@ -13,14 +13,14 @@ interface Props {
 
 // ─── Palette light contrastée pour Step3 (lisible sur fond blanc) ──
 const RISK_LIGHT: Record<Risk, { color: string; bg: string; border: string; label: string }> = {
-  green:  { color: "#0F7A4F", bg: "rgba(30,158,106,0.10)", border: "rgba(30,158,106,0.35)", label: "Conforme" },
+  green:  { color: "#0F7A4F", bg: "rgba(30,158,106,0.10)", border: "rgba(30,158,106,0.35)", label: "Sans alerte" },
   orange: { color: "#8F5A00", bg: "rgba(227,160,8,0.10)", border: "rgba(227,160,8,0.35)", label: "Vigilance" },
   red:    { color: "#A3241F", bg: "rgba(197,48,44,0.10)", border: "rgba(197,48,44,0.35)", label: "Critique" },
 };
 
 interface StatusLight { color: string; bg: string; border: string; title: string; sub: string; }
 const STATUS_LIGHT: Record<StatutKey, StatusLight> = {
-  valid:    { color: "#0F7A4F", bg: "rgba(30,158,106,0.08)", border: "rgba(30,158,106,0.30)", title: "Vigilance standard — Conforme", sub: "Traiter normalement. Archivage 5 ans (L561-12)." },
+  valid:    { color: "#0F7A4F", bg: "rgba(30,158,106,0.08)", border: "rgba(30,158,106,0.30)", title: "Vigilance standard", sub: "Traiter normalement. Archivage 5 ans (L561-12)." },
   vigilance:{ color: "#8F5A00", bg: "rgba(227,160,8,0.08)", border: "rgba(227,160,8,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
   stop:     { color: "#8F5A00", bg: "rgba(227,160,8,0.08)", border: "rgba(227,160,8,0.30)", title: "Vigilance renforcée requise", sub: "Justificatifs additionnels + validation correspondant LCB-FT." },
   critical: { color: "#A3241F", bg: "rgba(197,48,44,0.08)", border: "rgba(197,48,44,0.30)", title: "Examen renforcé", sub: "Suspension immédiate de la transaction. Délibération formalisée." },
@@ -40,7 +40,7 @@ export default function Step3({ form, set, score }: Props) {
         style={{ background: cfg.bg, borderColor: cfg.border, boxShadow: `0 1px 0 rgba(255,255,255,0.8) inset, 0 8px 24px rgba(11,20,53,0.06)` }}
       >
         <div className="text-[11.5px] mb-2 font-bold" style={{ color: cfg.color }}>
-          Verdict de conformité
+          Niveau de vigilance
         </div>
         <div className="text-3xl font-extrabold tracking-tight mb-2" style={{ color: cfg.color }}>
           {cfg.title}

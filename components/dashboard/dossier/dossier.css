@@ -1,0 +1,153 @@
+/* components/dashboard/dossier/dossier.css — Fiche dossier (/dashboard/[id])
+ *
+ * Un en-tête (client, niveau, actions), puis deux colonnes sur grand écran :
+ * à gauche ce qu'il faut faire (suite à donner, analyse), à droite ce qu'on a
+ * (pièces reçues, données déclarées). Une seule colonne sous 1180 px.
+ * Les titres de section portent la barre du K de l'obligation concernée (--kc).
+ */
+
+.kd { --kd-ink: #0B1435; --kd-mute: #5B6487; --kd-soft: #98A0BD; --kd-line: rgba(11,20,53,0.07);
+  max-width: 1280px; margin: 0 auto; padding: 26px 36px 72px; color: var(--kd-ink);
+  font-family: var(--font-sans-face), system-ui, sans-serif; }
+
+/* ─── En-tête ─── */
+.kd-back { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px 0 10px; border-radius: 999px;
+  font-size: 13px; font-weight: 650; color: var(--kd-mute); background: #fff; box-shadow: 0 0 0 1px var(--kd-line);
+  text-decoration: none; transition: color .15s, box-shadow .15s, transform .2s; }
+.kd-back:hover { color: #1F45E0; box-shadow: 0 0 0 1px rgba(47,91,255,0.3); }
+.kd-back:active { transform: scale(0.97); }
+
+.kd-head { margin-top: 18px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.kd-av { flex: none; width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center;
+  font-size: 22px; font-weight: 800; letter-spacing: -0.03em; color: #1F45E0; background: #EAEFFF; }
+.kd-id { flex: 1 1 220px; min-width: 0; }
+.kd-name { margin: 0; font-size: clamp(1.6rem, 1.1rem + 1.4vw, 2.2rem); font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; overflow-wrap: anywhere; }
+.kd-meta { margin-top: 9px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.kd-chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px;
+  font-size: 12.5px; font-weight: 650; color: #2A3459; background: #fff; box-shadow: 0 0 0 1px var(--kd-line); white-space: nowrap; }
+.kd-chip svg { color: var(--kd-soft); }
+.kd-chip--arch { color: #7A4CD9; background: #F4EFFE; box-shadow: none; }
+
+.kd-side { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+.kd-level { display: inline-flex; align-items: center; gap: 9px; height: 44px; padding: 0 18px 0 14px; border-radius: 999px;
+  font-size: 14px; font-weight: 800; letter-spacing: -0.01em; color: var(--lv-fg); background: var(--lv-bg); white-space: nowrap; }
+.kd-level i { width: 10px; height: 10px; border-radius: 50%; background: var(--lv-dot); box-shadow: 0 0 0 4px color-mix(in srgb, var(--lv-dot) 22%, transparent); }
+.kd-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px; border: 0;
+  font: inherit; font-size: 14px; font-weight: 750; color: var(--kd-ink); background: #fff; box-shadow: 0 0 0 1px var(--kd-line), 0 6px 16px -12px rgba(11,20,53,0.4);
+  text-decoration: none; cursor: pointer; white-space: nowrap; transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .15s, background-color .15s; }
+.kd-btn:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(47,91,255,0.28), 0 10px 22px -14px rgba(47,91,255,0.6); }
+.kd-btn:active { transform: scale(0.97); }
+.kd-btn--pri { color: #fff; background: #2F5BFF; box-shadow: 0 12px 24px -14px rgba(47,91,255,0.9); }
+.kd-btn--pri:hover { background: #1F45E0; box-shadow: 0 14px 28px -14px rgba(47,91,255,0.95); }
+
+/* Sommaire de la fiche */
+.kd-nav { margin-top: 22px; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.kd-nav::-webkit-scrollbar { display: none; }
+.kd-nav a { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 12px; border-radius: 999px; flex: none;
+  font-size: 13px; font-weight: 700; color: #2A3459; text-decoration: none; background: rgba(255,255,255,0.6); box-shadow: 0 0 0 1px var(--kd-line);
+  transition: background-color .15s, color .15s; }
+.kd-nav a:hover { background: #fff; color: var(--kd-ink); }
+.kd-nav a i { width: 16px; height: 7px; border-radius: 999px; background: var(--kc, #0B1435); }
+
+/* ─── Grille ─── */
+.kd-grid { margin-top: 26px; display: grid; grid-template-columns: minmax(0, 1fr) 372px; gap: 26px; align-items: start; }
+.kd-main, .kd-aside { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+.kd-sec { scroll-margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
+.kd-h { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 13px; font-weight: 800; letter-spacing: 0.01em; color: #2A3459; }
+.kd-h i { width: 22px; height: 9px; border-radius: 999px; background: var(--kc, #0B1435); }
+.kd-h small { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--kd-soft); }
+
+.kd-card { background: #fff; border-radius: 26px; box-shadow: 0 0 0 1px var(--kd-line), 0 24px 48px -36px rgba(11,20,53,0.35); overflow: hidden; }
+
+/* Les blocs historiques (validation, déclaration, signature, marche à suivre)
+ * gardent leur contenu ; on leur donne le même cadre que le reste. */
+.kd-main > .kd-sec > section,
+.kd-main > .kd-sec > div > section { margin-top: 0 !important; border-radius: 24px !important; padding: 22px !important; }
+.kd-main .rounded-2xl { border-radius: 26px; }
+
+/* ─── Pièces reçues ─── */
+.kd-files { padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+.kd-file { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 16px; color: var(--kd-ink); text-decoration: none;
+  transition: background-color .15s; }
+.kd-file:hover { background: #F5F7FF; }
+.kd-file b { display: block; font-size: 14px; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kd-file small { font-size: 12px; color: var(--kd-soft); font-weight: 600; }
+.kd-file > span:nth-child(2) { flex: 1; min-width: 0; }
+.kd-ext { flex: none; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: #7A4CD9; background: #F4EFFE; }
+.kd-file svg { flex: none; color: var(--kd-soft); transition: transform .2s, color .15s; }
+.kd-file:hover svg { color: #7A4CD9; transform: translateX(2px); }
+.kd-empty { padding: 22px; text-align: center; font-size: 13.5px; color: var(--kd-soft); }
+.kd-zip { display: flex; align-items: center; gap: 10px; margin: 0 8px 8px; padding: 12px 14px; border-radius: 18px; background: #F7F4FE;
+  font-size: 13px; font-weight: 650; color: #5B4A9E; text-decoration: none; transition: background-color .15s; }
+.kd-zip:hover { background: #EFE8FD; }
+.kd-zip span { flex: 1; }
+
+/* ─── Données déclarées ─── */
+.kd-kyc-h { display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px 18px; border: 0; background: transparent; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.kd-kyc-h > span:first-child { flex: none; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; color: #1F45E0; background: #EAEFFF; }
+.kd-kyc-h b { display: block; font-size: 14.5px; font-weight: 750; letter-spacing: -0.01em; }
+.kd-kyc-h small { font-size: 12px; color: var(--kd-soft); font-weight: 600; }
+.kd-kyc-h > span:nth-child(2) { flex: 1; min-width: 0; }
+.kd-kyc-h svg.kd-chev { color: var(--kd-soft); transition: transform .2s; }
+.kd-kyc-h[aria-expanded="true"] svg.kd-chev { transform: rotate(180deg); }
+.kd-kyc-b { border-top: 1px solid var(--kd-line); padding: 14px; background: #FAFBFF; display: flex; flex-direction: column; gap: 12px; }
+.kd-kyc-b > div { border-radius: 18px !important; }
+
+/* ─── Analyse de risque (TracfinForm intégré) ─── */
+.kd-form { position: relative; overflow: visible; }
+.kd-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 18px 18px 0; }
+.kd-step { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 16px; border: 0; background: transparent; font: inherit;
+  color: var(--kd-soft); text-align: left; cursor: default; min-width: 0; }
+.kd-step > span { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 12.5px; font-weight: 800;
+  background: #EEF1F8; color: var(--kd-soft); transition: background-color .2s, color .2s; }
+.kd-step b { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kd-step[data-on] { background: #F5F7FF; color: var(--kd-ink); }
+.kd-step[data-on] > span { background: #2F5BFF; color: #fff; }
+.kd-step[data-done] { color: #2A3459; cursor: pointer; }
+.kd-step[data-done] > span { background: #16A06A; color: #fff; }
+.kd-step[data-done]:hover { background: #F5F7FF; }
+.kd-step-bar { grid-column: 1 / -1; height: 4px; border-radius: 4px; background: #EEF1F8; overflow: hidden; margin: 4px 4px 0; }
+.kd-step-bar span { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #2F5BFF, #5468FF); transition: width .5s cubic-bezier(.22,1,.36,1); }
+.kd-form-in { padding: 22px 26px 8px; }
+.kd-form-t { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.035em; }
+.kd-form-s { margin: 6px 0 20px; font-size: 14px; line-height: 1.55; color: var(--kd-mute); }
+.kd-form-foot { position: sticky; bottom: 16px; z-index: 5; margin: 8px 12px 12px; padding: 10px; border-radius: 999px; display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: 0 0 0 1px var(--kd-line), 0 18px 40px -20px rgba(11,20,53,0.45); }
+.kd-form-foot .kd-btn { height: 46px; }
+.kd-form-foot .kd-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.kd-form-foot .kd-grow { flex: 1; }
+.kd-dots { display: flex; gap: 5px; align-items: center; }
+.kd-dots i { height: 5px; width: 5px; border-radius: 5px; background: #DDE2EE; transition: width .3s, background-color .3s; }
+.kd-dots i[data-on] { width: 20px; background: var(--kd-ink); }
+.kd-dots i[data-done] { background: rgba(47,91,255,0.5); }
+
+/* ─── Responsive ─── */
+@media (max-width: 1180px) {
+  .kd-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+  .kd { padding: 18px 16px 40px; }
+  .kd-head { gap: 14px; align-items: flex-start; }
+  .kd-id { flex-basis: 0; }
+  .kd-sec { scroll-margin-top: 92px; }
+  .kd-av { width: 52px; height: 52px; border-radius: 17px; font-size: 18px; }
+  .kd-side { justify-content: flex-start; width: 100%; }
+  .kd-level { flex: 1 1 100%; justify-content: center; }
+  .kd-side .kd-btn { flex: 1 1 0; padding: 0 12px; font-size: 13.5px; }
+  .kd-grid { gap: 22px; margin-top: 20px; }
+  .kd-main, .kd-aside { gap: 22px; }
+  .kd-steps { padding: 12px 12px 0; gap: 4px; }
+  .kd-step { flex-direction: column; gap: 6px; padding: 8px 4px; text-align: center; }
+  .kd-step b { font-size: 11.5px; white-space: normal; }
+  .kd-form-in { padding: 18px 16px 4px; }
+  .kd-form-t { font-size: 20px; }
+  .kd-form-foot { bottom: calc(96px + env(safe-area-inset-bottom)); margin: 8px 8px 8px; }
+  .kd-form-foot .kd-btn { padding: 0 14px; font-size: 13.5px; }
+  .kd-dots { display: none; }
+  .kd-main > .kd-sec > section, .kd-main > .kd-sec > div > section { padding: 16px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kd-btn, .kd-back, .kd-file svg, .kd-step-bar span { transition: none; }
+}

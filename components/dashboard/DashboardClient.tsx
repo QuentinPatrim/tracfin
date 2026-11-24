@@ -69,7 +69,7 @@ function niveauBadge(d: DossierItem): { tone: "success" | "warn" | "danger" | "c
   if (d.kyc_status !== "received") return { tone: "pending", label: "En attente du KYC" };
   const n = resolveNiveau(d);
   if (!n) return { tone: "pending", label: "À analyser" };
-  if (n === "vigilance_standard") return { tone: "success", label: "Conforme" };
+  if (n === "vigilance_standard") return { tone: "success", label: "Vigilance standard" };
   if (n === "vigilance_renforcee") return { tone: "warn", label: "Vigilance renforcée" };
   if (n === "examen_renforce") return { tone: "danger", label: "Examen renforcé" };
   return { tone: "critical", label: "Interdiction" };
@@ -88,90 +88,69 @@ function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// ─── Visite guidée cinématique ──────────────────────────────────────────
-// ACTE 1 : le tableau de bord, rempli de dossiers fictifs (mode démonstration),
-//          parcouru en spotlight.
-// ACTE 2 : le parcours client (ce que voit le client qui remplit le KYC), via
-//          une maquette téléphone.
+// ─── Visite guidée ──────────────────────────────────────────────────────
+// Six plans courts sur le tableau de bord rempli de dossiers fictifs (mode
+// démonstration) : bienvenue, indicateurs, dossiers, détail, parcours client,
+// premier dossier. Chaque plan porte une couleur du K, dans l'ordre.
+const KC = ["#0B1435", "#2F5BFF", "#5468FF", "#9A6BEB", "#EC6A93", "#FF6A4D"];
+
+/** Le vrai formulaire client qui défile seul, écran par écran. */
+function ClientJourneyLoop() {
+  const SEQ = [1, 3, 4, 5, 6];
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI((v) => (v + 1) % SEQ.length), 1800);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return <ClientJourneyFrame step={SEQ[i]} />;
+}
+
 const TOUR_STEPS: TourStep[] = [
   {
+    color: KC[0],
     eyebrow: "Bienvenue",
-    title: "Découvrez Klaris en situation",
-    body: "Le temps de cette visite, on a rempli votre tableau de bord avec des dossiers d'exemple (fictifs) pour vous montrer l'app comme si vous l'utilisiez déjà. Vous pouvez passer à tout moment.",
-  },
-  {
-    selector: ".k-side-nav",
-    eyebrow: "Navigation",
-    title: "Vos onglets, en bref",
-    body: "Dossiers — vos clients et leur suivi KYC. Cartographie — la synthèse des risques de votre portefeuille. Intégrations — votre CRM. Abonnement & Tarifs — votre formule. (Survolez un onglet pour un rappel.)",
-    important: "Cartographie est le document que la DGCCRF demande en premier lors d'un contrôle. Pensez à l'exporter régulièrement.",
+    title: "Klaris en une minute",
+    body: "Pour cette visite, votre tableau de bord est rempli de dossiers d'exemple. Ils disparaissent à la fin. Vous pouvez passer à tout moment.",
   },
   {
     selector: ".kpi-row",
+    color: KC[1],
     eyebrow: "Vue d'ensemble",
-    title: "Vos indicateurs en un coup d'œil",
-    body: "Total, Conformes, Vigilance, Critique : le pouls de votre portefeuille, mis à jour en temps réel. Ici, 2 dossiers conformes, 1 en vigilance, 2 critiques.",
-    important: "La colonne Critique regroupe examen renforcé et interdiction. Ces dossiers appellent une déclaration de soupçon à TRACFIN, à faire avant l'exécution de l'opération ou sans délai si elle a déjà été réalisée.",
+    title: "Où en est votre portefeuille",
+    body: "Le nombre de dossiers à chaque niveau de vigilance, mis à jour à chaque fiche reçue.",
+    important: "Critique regroupe examen renforcé et interdiction : ces dossiers appellent une déclaration à Tracfin, avant l'opération ou sans délai si elle a déjà eu lieu.",
   },
   {
     selector: ".list-card",
+    color: KC[2],
     eyebrow: "Vos dossiers",
-    title: "Chaque dossier, son niveau de vigilance",
-    body: "Le niveau est calculé automatiquement (algorithme Klaris v2, art. L.561-1 et s.). Voyez Nadia Benali en examen renforcé, Holding Varteg en interdiction, et Julien Mercier encore en attente de son KYC. Cliquez un dossier pour l'ouvrir.",
-    important: "Les dossiers critiques apparaissent aussi en haut, en rouge : ils demandent une action immédiate.",
+    title: "Chaque client, son niveau de vigilance",
+    body: "Klaris calcule le niveau dès que la fiche du client arrive. Ici, Nadia Benali est en examen renforcé et Julien Mercier n'a pas encore rempli sa fiche.",
   },
   {
     selector: ".preview",
-    eyebrow: "Le détail d'un dossier",
-    title: "Tout est réuni à droite",
-    body: "Verdict, pièces justificatives transmises par le client, et les exports : attestation PDF, fiche KYC, et le dossier complet en ZIP — prêts pour un contrôle.",
-    important: "L'attestation horodatée (et signée) documente vos diligences. Générez-la pour chaque dossier traité.",
+    selectorMobile: ".list-card",
+    color: KC[3],
+    eyebrow: "Le détail",
+    title: "Tout le dossier au même endroit",
+    body: "À droite : le niveau, la marche à suivre, les pièces reçues et les exports (attestation PDF, archive .zip), prêts pour un contrôle.",
+    bodyMobile: "Touchez un dossier : sa fiche s'ouvre en bas de l'écran, avec le niveau, la marche à suivre, les pièces et les exports (attestation PDF, archive .zip).",
+  },
+  {
+    scene: <ClientJourneyLoop />,
+    color: KC[4],
+    eyebrow: "Côté client",
+    title: "Ce que voit votre client",
+    body: "Il reçoit un lien par e-mail ou WhatsApp et remplit sa fiche sur son téléphone, sans compte : identité, situation, origine des fonds, pièces, signature.",
+    important: "L'origine des fonds est le point le plus regardé en contrôle : demandez des justificatifs probants.",
   },
   {
     selector: '[data-tour="new-dossier"]',
-    eyebrow: "Créer un dossier",
-    title: "Pour démarrer un vrai client",
-    body: "« Nouveau dossier » lance un client : personne physique ou morale, vendeur ou acquéreur. Klaris pré-configure le KYC adapté et génère le lien sécurisé.",
-    important: "Le rôle vendeur / acquéreur conditionne les contrôles exigés (origine des fonds, paiement…). Vérifiez-le dès la création.",
-  },
-  // ─── ACTE 2 : le parcours client (le VRAI formulaire, en démo) ─────
-  {
-    scene: <ClientJourneyFrame step={1} />,
-    eyebrow: "Côté client · 1/5",
-    title: "Ce que voit votre client",
-    body: "Vous lui envoyez un lien sécurisé (e-mail ou WhatsApp). Il l'ouvre sur son téléphone, sans créer de compte. Voici l'écran réel — il renseigne d'abord son identité.",
-  },
-  {
-    scene: <ClientJourneyFrame step={3} />,
-    eyebrow: "Côté client · 2/5",
-    title: "Sa situation : PPE & résidence fiscale",
-    body: "Le client indique s'il est une personne politiquement exposée (ou un proche), et son pays de résidence fiscale.",
-    important: "Une PPE déclenche automatiquement une vigilance renforcée dans le scoring.",
-  },
-  {
-    scene: <ClientJourneyFrame step={4} />,
-    eyebrow: "Côté client · 3/5",
-    title: "L'origine des fonds",
-    body: "Provenance de l'argent, montant de l'opération, mode de paiement — le cœur de l'analyse LCB-FT.",
-    important: "L'origine des fonds est le point le plus scruté en contrôle. Exigez des justificatifs probants.",
-  },
-  {
-    scene: <ClientJourneyFrame step={5} />,
-    eyebrow: "Côté client · 4/5",
-    title: "Ses justificatifs",
-    body: "Pièce d'identité, justificatif de domicile, origine des fonds… déposés en photo depuis le téléphone, chiffrés à l'arrivée.",
-    important: "Vérifiez que la pièce d'identité est en cours de validité et lisible.",
-  },
-  {
-    scene: <ClientJourneyFrame step={6} />,
-    eyebrow: "Côté client · 5/5",
-    title: "Il valide et envoie",
-    body: "Récapitulatif, consentement RGPD, envoi. Dès cet instant, le dossier revient dans VOTRE tableau de bord — déjà analysé et scoré automatiquement.",
-  },
-  {
-    eyebrow: "À vous de jouer",
-    title: "Créez votre premier vrai dossier",
-    body: "Vous avez tout vu. Trois réflexes à garder : conservation 5 ans, vigilance constante, et déclaration à TRACFIN avant l'opération pour les cas critiques. Les dossiers d'exemple vont disparaître — place à vos vrais clients.",
+    color: KC[5],
+    eyebrow: "À vous",
+    title: "Créez votre premier dossier",
+    body: "Choisissez le type de client et son rôle (vendeur ou acquéreur) : Klaris prépare la bonne fiche et le lien à envoyer. Pensez aussi à la cartographie des risques, dans le menu : c'est souvent le premier document demandé en contrôle.",
   },
 ];
 
@@ -301,7 +280,7 @@ export default function DashboardClient({
     { id: "attente",   label: "En attente", count: dossiers.filter((d) => d.kyc_status !== "received").length },
     { id: "vigilance", label: "Vigilance",  count: counts.vigilance },
     { id: "critique",  label: "Critique",   count: counts.critique },
-    { id: "conforme",  label: "Conformes",  count: counts.conformes },
+    { id: "conforme",  label: "Standard",  count: counts.conformes },
   ];
 
   const newHref = canCreate ? "/dashboard/nouveau" : "/tarifs";
@@ -512,25 +491,10 @@ export default function DashboardClient({
         onComplete={() => setGuideOpen(false)}
       />
 
-      {/* ─── Bannière "Mode démonstration" (au-dessus du voile du tuto) ─── */}
-      {demoMode && (
-        <div
-          style={{
-            position: "fixed", top: 10, left: "50%", transform: "translateX(-50%)",
-            zIndex: 9999, pointerEvents: "none",
-            background: "#0B1435", color: "white",
-            fontSize: 12, fontWeight: 600,
-            padding: "7px 14px", borderRadius: 8,
-            boxShadow: "0 12px 28px -10px rgba(11,20,53,0.6)",
-          }}
-        >
-          Mode démonstration · données fictives
-        </div>
-      )}
-
-      {/* ─── Visite guidée cinématique (1ʳᵉ visite + relance manuelle) ─── */}
+      {/* ─── Visite guidée (1ʳᵉ visite + relance manuelle) ─── */}
       <GuidedTour
         steps={TOUR_STEPS}
+        badge="Données d'exemple"
         autoStart={showGuide}
         onStart={() => {
           setDemoMode(true);

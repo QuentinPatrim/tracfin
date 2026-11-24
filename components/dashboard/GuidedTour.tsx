@@ -5,15 +5,18 @@
 // navigation Précédent / Suivant / Passer. Conçu pour être :
 //   - robuste : si la cible n'existe pas (ex. dashboard vide), la carte se
 //     centre au lieu de planter ;
-//   - premium : spotlight à halo violet, carte arrondie, points de progression ;
+//   - sobre : voile encre, anneau blanc autour de la cible, carte blanche ; la
+//     progression reprend les couleurs du K (une couleur par étape, `color`) ;
+//   - téléphone : la carte se pose en bas de l'écran, comme une feuille ;
 //   - non bloquant : relançable via l'événement `klaris:start-tour`.
 
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft, ArrowRight, X, Sparkles, ShieldAlert, Check, Play, Pause } from "lucide-react";
+import { ArrowLeft, ArrowRight, X, ShieldAlert, Check, Play, Pause } from "lucide-react";
 import { computeCardLayout, type CardLayout } from "@/lib/tourPlacement";
+import "./tour.css";
 
 export interface TourStep {
   /** Sélecteur CSS de l'élément à mettre en lumière. Absent → carte centrée. */
@@ -22,6 +25,12 @@ export interface TourStep {
   eyebrow: string;
   title: string;
   body: React.ReactNode;
+  /** Cible sur téléphone, si elle diffère (ex. l'aperçu y est une feuille fermée). */
+  selectorMobile?: string;
+  /** Variante du texte sur téléphone (mise en page différente). */
+  bodyMobile?: React.ReactNode;
+  /** Couleur de l'étape (barre du K). */
+  color?: string;
   /** Encart "à vérifier" mis en avant (point LCB-FT important). */
   important?: React.ReactNode;
   /** Contenu visuel (ex: maquette du parcours client) affiché dans une carte
@@ -39,11 +48,15 @@ interface Props {
   onFinish?: () => void;
   /** Nom de l'événement window pour relancer le tour manuellement. */
   restartEventName?: string;
+  /** Pastille affichée dans la carte (ex. « Données d'exemple »). */
+  badge?: string;
 }
 
-const PAD = 8; // marge du spotlight autour de la cible (px)
-const CARD_W = 372;
-const CARD_W_SCENE = 430; // carte plus large pour les scènes (maquette client)
+const PAD = 8;
+const isNarrow = () => typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches;
+const targetOf = (s: TourStep | undefined) => (s && isNarrow() && s.selectorMobile) || s?.selector; // marge du spotlight autour de la cible (px)
+const CARD_W = 392;
+const CARD_W_SCENE = 420; // carte plus large pour les scènes (maquette client)
 const GAP = 14; // espace entre la cible et la carte
 
 // Petite flèche blanche pointant vers la cible, selon l'arête de la carte.
@@ -68,6 +81,7 @@ export default function GuidedTour({
   onStart,
   onFinish,
   restartEventName = "klaris:start-tour",
+  badge,
 }: Props) {
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(false);
@@ -80,6 +94,15 @@ export default function GuidedTour({
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
+  // Téléphone : la carte se pose en bas (feuille), le placement autour de la cible ne sert pas.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const on = () => setNarrow(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
 
   // Durée d'affichage d'un plan en lecture auto (les scènes durent plus longtemps).
   const stepDurationMs = (steps[index]?.scene ? 9000 : 6500);
@@ -106,10 +129,17 @@ export default function GuidedTour({
   const locate = useCallback(() => {
     if (!active || !step) return;
     // Étape "scène" (maquette) → carte centrée, pas de spotlight.
-    if (step.scene || !step.selector) { setRect(null); return; }
-    const el = document.querySelector(step.selector) as HTMLElement | null;
+    const sel = targetOf(step);
+    if (step.scene || !sel) { setRect(null); return; }
+    const el = document.querySelector(sel) as HTMLElement | null;
     if (!el) { setRect(null); return; }
-    el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    if (isNarrow()) {
+      // Téléphone : la carte occupe le bas de l'écran, on remonte la cible en haut.
+      const r = el.getBoundingClientRect();
+      window.scrollTo({ top: Math.max(0, window.scrollY + r.top - 112), behavior: "smooth" });
+    } else {
+      el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    }
     // Laisse le scroll se faire avant de mesurer.
     setTimeout(() => setRect(el.getBoundingClientRect()), 320);
   }, [active, step]);
@@ -123,8 +153,9 @@ export default function GuidedTour({
     const onMove = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        if (step?.selector) {
-          const el = document.querySelector(step.selector) as HTMLElement | null;
+        const sel = targetOf(step);
+        if (sel) {
+          const el = document.querySelector(sel) as HTMLElement | null;
           setRect(el ? el.getBoundingClientRect() : null);
         }
       });
@@ -196,220 +227,81 @@ export default function GuidedTour({
   const isLast = index === steps.length - 1;
 
   const overlay = (
-    <div style={{ position: "fixed", inset: 0, zIndex: 9998, fontFamily: "var(--font-sans-face), system-ui, sans-serif" }}>
+    <div className="gt" data-narrow={narrow ? "" : undefined}>
       {/* Couche capture-clics : empêche d'interagir avec l'app derrière. */}
-      <div
-        style={{ position: "absolute", inset: 0 }}
-        onClick={(e) => e.stopPropagation()}
-      />
+      <div className="gt-block" onClick={(e) => e.stopPropagation()} />
 
-      {/* Spotlight (cible présente) ou voile plein (cible absente) */}
+      {/* Anneau autour de la cible, ou voile plein si pas de cible */}
       {rect ? (
         <div
           aria-hidden
-          style={{
-            position: "fixed",
-            top: rect.top - PAD,
-            left: rect.left - PAD,
-            width: rect.width + PAD * 2,
-            height: rect.height + PAD * 2,
-            borderRadius: 14,
-            boxShadow:
-              "0 0 0 9999px rgba(12,10,36,0.74), 0 0 0 2px rgba(169,157,251,0.95), 0 0 28px 6px rgba(169,157,251,0.45)",
-            transition: "all 280ms cubic-bezier(0.4,0,0.2,1)",
-            pointerEvents: "none",
-          }}
+          className="gt-spot"
+          style={{ top: rect.top - PAD, left: rect.left - PAD, width: rect.width + PAD * 2, height: rect.height + PAD * 2 }}
         />
       ) : (
-        <div aria-hidden style={{ position: "fixed", inset: 0, background: "rgba(12,10,36,0.74)" }} />
+        <div aria-hidden className="gt-veil" />
       )}
 
-      {/* Carte explicative */}
       <div
         ref={cardRef}
         role="dialog"
         aria-modal="true"
-        style={{
-          position: "fixed",
+        aria-label={step.title}
+        className="gt-card"
+        data-scene={step.scene ? "" : undefined}
+        style={narrow ? undefined : {
           top: cardPos.top,
           left: cardPos.left,
           width: cardPos.width,
-          maxWidth: "calc(100vw - 32px)",
           maxHeight: cardPos.maxHeight > 120 ? cardPos.maxHeight : "calc(100vh - 32px)",
-          overflowY: "auto",
-          background: "#ffffff",
-          borderRadius: 18,
-          border: "1px solid rgba(47,91,255,0.16)",
-          boxShadow: "0 24px 70px -16px rgba(11,20,53,0.40), 0 0 0 1px rgba(255,255,255,0.6) inset",
-          padding: 20,
-          // Glissement fluide entre les plans (effet "film") + apparition.
-          transition: "top 420ms cubic-bezier(0.16,1,0.3,1), left 420ms cubic-bezier(0.16,1,0.3,1)",
-          animation: "klaris-tour-in 260ms cubic-bezier(0.16,1,0.3,1)",
         }}
       >
-        {/* Flèche connectrice vers la cible (4 directions, façon bulle Apple) */}
-        {cardPos.arrowEdge && (
-          <div aria-hidden style={arrowStyle(cardPos.arrowEdge, cardPos.arrowOffset)} />
-        )}
+        {!narrow && cardPos.arrowEdge && <div aria-hidden style={arrowStyle(cardPos.arrowEdge, cardPos.arrowOffset)} />}
 
-        {/* Barre de temps (lecture auto) */}
-        {playing && (
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, borderRadius: "18px 18px 0 0", overflow: "hidden", background: "rgba(47,91,255,0.08)" }}>
-            <div
-              key={`${index}-${playing}`}
-              style={{
-                height: "100%",
-                background: "#0B1435",
-                animation: `klaris-tour-time ${stepDurationMs}ms linear forwards`,
-              }}
-            />
-          </div>
-        )}
-
-        {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div
-              style={{
-                width: 34, height: 34, borderRadius: 10, display: "grid", placeItems: "center",
-                background: "#2F5BFF", color: "white",
-                boxShadow: "0 4px 12px rgba(11,20,53,0.12)",
-              }}
-            >
-              <Sparkles size={16} />
-            </div>
-            <div>
-              <div style={{ fontSize: 9.5, fontWeight: 700, color: "#A8BAFF" }}>
-                Visite guidée
-              </div>
-              <div style={{ fontSize: 10.5, color: "#98A0BD", fontWeight: 600 }}>
-                Étape {index + 1} / {steps.length}
-              </div>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={finish}
-            aria-label="Fermer la visite"
-            style={{ background: "transparent", border: 0, color: "#D3DAEE", cursor: "pointer", padding: 4, borderRadius: 6, lineHeight: 0 }}
-          >
-            <X size={16} />
-          </button>
+        <div className="gt-top">
+          <span className="gt-k" aria-hidden><i /><i /><i /><i /><i /></span>
+          <b>Visite guidée</b>
+          {badge && <span className="gt-badge">{badge}</span>}
+          <button type="button" className="gt-x" onClick={finish} aria-label="Fermer la visite"><X size={16} /></button>
         </div>
 
-        {/* Scène visuelle (ex: maquette du parcours client) */}
-        {step.scene && (
-          <div style={{ marginBottom: 16, display: "flex", justifyContent: "center" }}>
-            {step.scene}
-          </div>
-        )}
-
-        {/* Eyebrow + titre + corps */}
-        <div style={{ fontSize: 10.5, fontWeight: 700, color: "#1F45E0", marginBottom: 5 }}>
-          {step.eyebrow}
-        </div>
-        <h3 style={{ fontSize: 17, fontWeight: 700, color: "#0B1435", margin: "0 0 8px", lineHeight: 1.25 }}>
-          {step.title}
-        </h3>
-        <div style={{ fontSize: 13, color: "#47507A", lineHeight: 1.55 }}>
-          {step.body}
-        </div>
-
-        {/* Encart "à vérifier" (point LCB-FT important) */}
-        {step.important && (
-          <div
-            style={{
-              marginTop: 12, padding: "10px 12px", borderRadius: 10,
-              background: "rgba(227,160,8,0.08)", border: "1px solid rgba(227,160,8,0.30)",
-              display: "flex", gap: 8, alignItems: "flex-start",
-            }}
-          >
-            <ShieldAlert size={15} style={{ color: "#8F5A00", flexShrink: 0, marginTop: 1 }} />
-            <div style={{ fontSize: 12, color: "#7A4C00", lineHeight: 1.5 }}>
-              <strong>À vérifier — </strong>{step.important}
-            </div>
-          </div>
-        )}
-
-        {/* Points de progression */}
-        <div style={{ display: "flex", gap: 5, marginTop: 16, marginBottom: 14 }}>
-          {steps.map((_, i) => (
-            <span
-              key={i}
-              style={{
-                height: 5, flex: i === index ? 2.2 : 1, borderRadius: 999,
-                background: i === index
-                  ? "#0B1435"
-                  : i < index ? "rgba(47,91,255,0.35)" : "rgba(11,20,53,0.10)",
-                transition: "all 240ms ease",
-              }}
-            />
+        <div className="gt-segs" aria-hidden>
+          {steps.map((s, i) => (
+            <span key={i} style={{ ["--c" as string]: s.color ?? "#2F5BFF" }} data-state={i < index ? "done" : i === index ? "run" : undefined}>
+              {i === index && (
+                <span key={`${index}-${playing}`} style={{ animation: playing ? `gt-fill ${stepDurationMs}ms linear forwards` : "none", transform: playing ? undefined : "scaleX(1)" }} />
+              )}
+            </span>
           ))}
         </div>
 
-        {/* Boutons */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <button
-              type="button"
-              onClick={() => setPlaying((p) => !p)}
-              aria-label={playing ? "Mettre en pause" : "Lecture"}
-              title={playing ? "Pause" : "Lecture"}
-              style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center",
-                width: 30, height: 30, borderRadius: 8, background: "rgba(47,91,255,0.08)",
-                border: "1px solid rgba(47,91,255,0.20)", color: "#1F45E0", cursor: "pointer",
-              }}
-            >
-              {playing ? <Pause size={13} /> : <Play size={13} />}
-            </button>
-            <button
-              type="button"
-              onClick={finish}
-              style={{ background: "transparent", border: 0, color: "#98A0BD", fontSize: 12.5, fontWeight: 500, cursor: "pointer", padding: "6px 8px" }}
-            >
-              Passer
-            </button>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {index > 0 && (
-              <button
-                type="button"
-                onClick={prev}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 5, padding: "8px 13px", borderRadius: 9,
-                  background: "white", border: "1px solid #E2E8F7", color: "#47507A", fontSize: 12.5, fontWeight: 600, cursor: "pointer",
-                }}
-              >
-                <ArrowLeft size={13} /> Précédent
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={next}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 15px", borderRadius: 9,
-                background: "#2F5BFF", color: "white", border: 0,
-                fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-                boxShadow: "0 4px 14px rgba(11,20,53,0.12)",
-              }}
-            >
-              {isLast ? <>Terminer <Check size={14} /></> : <>Suivant <ArrowRight size={14} /></>}
-            </button>
-          </div>
+        <div key={index} className="gt-body">
+          {step.scene && <div className="gt-scene">{step.scene}</div>}
+          <div className="gt-eye" style={{ ["--c" as string]: step.color ?? "#2F5BFF" }}><i />{step.eyebrow}</div>
+          <h3 className="gt-t">{step.title}</h3>
+          <div className="gt-p">{narrow && step.bodyMobile ? step.bodyMobile : step.body}</div>
+          {step.important && (
+            <div className="gt-imp">
+              <ShieldAlert size={16} />
+              <div>{step.important}</div>
+            </div>
+          )}
+        </div>
+
+        <div className="gt-ctl">
+          <button type="button" className="gt-btn" onClick={() => setPlaying((p) => !p)} aria-label={playing ? "Mettre en pause" : "Lecture"}>
+            {playing ? <Pause size={15} /> : <Play size={15} />}
+          </button>
+          <button type="button" className="gt-skip" onClick={finish}>Passer</button>
+          <span className="gt-n">{index + 1} / {steps.length}</span>
+          {index > 0 && (
+            <button type="button" className="gt-btn" onClick={prev} aria-label="Étape précédente"><ArrowLeft size={16} /></button>
+          )}
+          <button type="button" className="gt-next" onClick={next}>
+            {isLast ? <>Terminer <Check size={16} /></> : <>Suivant <ArrowRight size={16} /></>}
+          </button>
         </div>
       </div>
-
-      <style>{`
-        @keyframes klaris-tour-in {
-          from { opacity: 0; transform: translateY(8px) scale(0.98); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes klaris-tour-time {
-          from { width: 0%; }
-          to   { width: 100%; }
-        }
-      `}</style>
     </div>
   );
 

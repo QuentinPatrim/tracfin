@@ -36,7 +36,7 @@ function niveauVariant(niveau: ScoreResult["niveau"]): "ok" | "warn" | "critical
 
 function verdictTitleFor(niveau: ScoreResult["niveau"]): string {
   return {
-    vigilance_standard: "Dossier conforme",
+    vigilance_standard: "Vigilance standard",
     vigilance_renforcee: "Vigilance renforcée",
     examen_renforce: "Examen renforcé",
     interdiction: "Interdiction de traiter",
@@ -115,7 +115,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
       name: d.name,
       sub,
       badgeCls: r === "green" ? "ok" : r === "orange" ? "warn" : "crit",
-      badgeLabel: r === "green" ? "Conforme" : r === "orange" ? "Vigilance" : "Critique",
+      badgeLabel: r === "green" ? "Sans alerte" : r === "orange" ? "Vigilance" : "Critique",
     });
   }
   // Gates et signaux additionnels
@@ -235,7 +235,7 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
 
   <div class="title-row">
     <div>
-      <h1 class="doc-title">Attestation de Conformité<br/>LCB-FT</h1>
+      <h1 class="doc-title">Attestation de diligences<br/>LCB-FT</h1>
       <div class="doc-sub">Évaluation des risques de blanchiment de capitaux et de financement du terrorisme — analyse algorithmique documentée sur ${rows.length} critères (CMF L.561-1 et suivants). Client analysé en qualité de <b>${escapeHtml(roleLabel.toLowerCase())}</b>.</div>
     </div>
     <div class="stamp"><span class="pulse"></span>Généré par Klaris</div>
@@ -243,13 +243,13 @@ export function buildAttestationHtml(opts: BuildAttestationOpts): string {
 
   <section class="verdict ${variant}">
     <div class="glow"></div>
-    <div class="vlabel"><span class="ic"></span>Verdict de conformité · Niveau ${niveauNum} / 4</div>
+    <div class="vlabel"><span class="ic"></span>Niveau de vigilance · ${niveauNum} / 4</div>
     <h2>${escapeHtml(verdictTitle)}</h2>
     <p class="lead">${escapeHtml(cfg.action)}</p>
 
     <!-- Compteurs factuels des signaux levés (remplace le score arbitraire) -->
     <div class="signal-row">
-      <div class="signal ok"><span class="d"></span><b>${conformes}</b> critère${conformes > 1 ? "s" : ""} conforme${conformes > 1 ? "s" : ""}</div>
+      <div class="signal ok"><span class="d"></span><b>${conformes}</b> critère${conformes > 1 ? "s" : ""} sans alerte</div>
       ${vigilances > 0 ? `<div class="signal warn"><span class="d"></span><b>${vigilances}</b> en vigilance</div>` : ""}
       ${critiques > 0 ? `<div class="signal crit"><span class="d"></span><b>${critiques}</b> critique${critiques > 1 ? "s" : ""}</div>` : ""}
     </div>

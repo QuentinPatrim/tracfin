@@ -9,6 +9,7 @@ import {
   ArrowLeft, Copy, Check, Mail, MessageCircle, Clock, Eye, Trash2, RefreshCw, Inbox,
 } from "lucide-react";
 import { useOrigin } from "@/lib/use-origin";
+import "@/components/dashboard/dossier/dossier.css";
 
 interface Props {
   dossierId: string;
@@ -76,23 +77,16 @@ export default function WaitingView({
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#F5F7FF", color: "#0B1435", fontFamily: "var(--font-sans-face), system-ui, sans-serif" }}>
 
-      <header className="relative z-10 border-b border-[rgba(11,20,53,0.07)] backdrop-blur-xl bg-white/70">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2 text-slate-700 hover:text-slate-900 transition text-sm font-medium">
-            <ArrowLeft className="w-4 h-4" />
-            Retour au dashboard
-          </Link>
-          <button
-            onClick={refreshStatus}
-            className="flex items-center gap-2 text-slate-700 hover:text-slate-900 transition text-sm font-medium"
-          >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
-            Actualiser
-          </button>
-        </div>
-      </header>
+      <div className="relative z-10 w-full max-w-2xl mx-auto px-6 pt-6 flex items-center justify-between gap-3">
+        <Link href="/dashboard" className="kd-back">
+          <ArrowLeft width={15} height={15} /> Dossiers
+        </Link>
+        <button type="button" onClick={refreshStatus} className="kd-back" style={{ border: 0, cursor: "pointer", font: "inherit", fontSize: 13, fontWeight: 650 }}>
+          <RefreshCw width={14} height={14} className={refreshing ? "animate-spin" : ""} /> Actualiser
+        </button>
+      </div>
 
-      <main className="relative z-10 flex-1 flex items-center justify-center p-6 py-16">
+      <main className="relative z-10 flex-1 flex items-start justify-center px-6 pt-10 pb-16">
         <div className="w-full max-w-2xl">
           {/* Icône principale animée */}
           <div className="flex justify-center mb-8">

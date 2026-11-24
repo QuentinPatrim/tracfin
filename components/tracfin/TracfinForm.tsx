@@ -4,8 +4,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, FileDown, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, FileDown } from "lucide-react";
 import { computeScore, initialForm, type DossierForm } from "@/lib/tracfin";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
@@ -14,12 +13,13 @@ import Step3 from "./Step3";
 interface Props {
   initialData?: Partial<DossierForm>;
   dossierId?: string;
+  /** Conservé pour compatibilité : le badge « fiche reçue » est dans l'en-tête de la fiche. */
   hasKyc?: boolean;
   /** Criblage sanctions automatique activé (clé OpenSanctions présente). */
   screeningEnabled?: boolean;
 }
 
-export default function TracfinForm({ initialData, dossierId, hasKyc = false, screeningEnabled = false }: Props) {
+export default function TracfinForm({ initialData, dossierId, screeningEnabled = false }: Props) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [anim, setAnim] = useState(false);
@@ -39,7 +39,8 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
     setTimeout(() => {
       setStep((s) => s + dir);
       setAnim(false);
-      if (scrollRef.current) scrollRef.current.scrollTop = 0;
+      const top = scrollRef.current?.getBoundingClientRect().top;
+      if (top !== undefined && top < 0) scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 180);
   };
 
@@ -62,11 +63,12 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
     (isVendeur || (form.origineFonds && form.montageFinancier && form.modePaiement && form.coherencePrix))
   );
 
-  const titles = ["Identification du Client", "Analyse des Risques", "Récapitulatif & Validation"];
+  const titles = ["Identification du client", "Analyse des risques", "Niveau de vigilance et attestation"];
+  const short = ["Identification", "Analyse", "Niveau et attestation"];
   const subs = [
     "Renseignez les informations d'identité et collectez les pièces justificatives.",
     "Évaluez chaque facteur de risque selon les critères réglementaires LCB-FT.",
-    "Consultez le verdict de conformité et finalisez l'attestation.",
+    "Vérifiez le niveau de vigilance retenu et finalisez l'attestation.",
   ];
 
   const submit = async () => {
@@ -121,210 +123,74 @@ export default function TracfinForm({ initialData, dossierId, hasKyc = false, sc
     }
   };
 
-  const statusGradients: Record<string, string> = {
-    valid: "linear-gradient(135deg,#42B486,#0F7A4F)",
-    vigilance: "linear-gradient(135deg,#F0924D,#DD6B20)",
-    stop: "linear-gradient(135deg,#F0924D,#DD6B20)",
-    critical: "linear-gradient(135deg,#E8807B,#C23630)",
+  const statusBg: Record<string, string> = {
+    valid: "#16A06A",
+    vigilance: "#DD6B20",
+    stop: "#DD6B20",
+    critical: "#C23630",
   };
-  const statusGlows: Record<string, string> = {
-    valid: "rgba(61,190,139,0.35)",
-    vigilance: "rgba(251,146,60,0.35)",
-    stop: "rgba(251,146,60,0.35)",
-    critical: "rgba(232,128,123,0.35)",
-  };
+  const canGo = (i: number) => i < step;
 
   return (
-    <div
-      className="min-h-screen flex flex-col relative"
-      style={{ background: "#F5F7FF", fontFamily: "var(--font-sans-face), system-ui, sans-serif", color: "#0B1435" }}
-    >
-
-      <header
-        className="relative z-10 backdrop-blur-xl"
-        style={{
-          borderBottom: "1px solid rgba(47,91,255,0.10)",
-          background: "rgba(255,255,255,0.85)",
-        }}
-      >
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 transition text-sm font-medium"
-            style={{ color: "#5B6487" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#1F45E0")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#5B6487")}
+    <div ref={scrollRef} className="kd-card kd-form" style={{ scrollMarginTop: 24 }}>
+      {/* Étapes */}
+      <div className="kd-steps">
+        {[0, 1, 2].map((i) => (
+          <button
+            key={i}
+            type="button"
+            className="kd-step"
+            data-on={i === step ? "" : undefined}
+            data-done={i < step ? "" : undefined}
+            onClick={() => canGo(i) && nav(i - step)}
+            aria-current={i === step ? "step" : undefined}
           >
-            <ArrowLeft className="w-4 h-4" />
-            Retour au dashboard
-          </Link>
-          <div className="flex items-center gap-3">
-            {hasKyc && (
-              <div
-                className="px-2.5 py-1 rounded-full text-[11.5px] font-bold flex items-center gap-1.5 border"
-                style={{
-                  background: "rgba(30,158,106,0.08)",
-                  borderColor: "rgba(30,158,106,0.30)",
-                  color: "#0F7A4F",
-                }}
-              >
-                <Mail className="w-3 h-3" />
-                KYC reçu — données pré-remplies
-              </div>
-            )}
-            <div
-              className="text-[11.5px]"
-              style={{ color: "#98A0BD" }}
-            >
-              {dossierId ? "Édition" : "Nouveau dossier"}
-            </div>
-          </div>
-        </div>
-      </header>
+            <span>{i < step ? <Check width={14} height={14} strokeWidth={3} /> : i + 1}</span>
+            <b>{short[i]}</b>
+          </button>
+        ))}
+        <div className="kd-step-bar"><span style={{ width: `${((step + 1) / 3) * 100}%` }} /></div>
+      </div>
 
-      {/* Stepper */}
-      <div className="relative z-10 px-6 pt-8">
-        <div className="max-w-3xl mx-auto flex items-center gap-3">
-          {[0, 1, 2].map((i) => {
-            const active = i <= step;
-            return (
-              <div key={i} className="flex-1 flex items-center gap-3">
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all border"
-                  style={{
-                    background: active ? "#0B1435" : "white",
-                    borderColor: active ? "rgba(47,91,255,0.45)" : "rgba(11,20,53,0.12)",
-                    color: active ? "white" : "#98A0BD",
-                    boxShadow: active ? "0 4px 14px rgba(47,91,255,0.30)" : "none",
-                  }}
-                >
-                  {i + 1}
-                </div>
-                {i < 2 && (
-                  <div className="flex-1 h-px relative" style={{ background: "rgba(11,20,53,0.08)" }}>
-                    <div
-                      className="absolute inset-y-0 left-0 transition-all duration-500"
-                      style={{
-                        width: i < step ? "100%" : "0%",
-                        background: "#2F5BFF",
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
+      <div className="kd-form-in">
+        <h3 className="kd-form-t">{titles[step]}</h3>
+        <p className="kd-form-s">{subs[step]}</p>
+        <div className="transition-all duration-200" style={{ opacity: anim ? 0 : 1, transform: anim ? "translateY(8px)" : "translateY(0)" }}>
+          {step === 0 && <Step1 form={form} set={set} />}
+          {step === 1 && <Step2 form={form} set={set} dossierId={dossierId} screeningEnabled={screeningEnabled} />}
+          {step === 2 && <Step3 form={form} set={set} score={score} />}
         </div>
       </div>
 
-      <div ref={scrollRef} className="relative z-10 flex-1 overflow-y-auto px-4 py-8 pb-32">
-        <div className="max-w-3xl mx-auto">
-          <div className="mb-7">
-            <h1
-              className="text-[26px] font-bold tracking-tight mb-2"
-              style={{
-                color: "#0B1435",
-              }}
-            >
-              {titles[step]}
-            </h1>
-            <p className="text-sm leading-relaxed" style={{ color: "#5B6487" }}>
-              {subs[step]}
-            </p>
-          </div>
-
-          <div className="transition-all duration-200" style={{ opacity: anim ? 0 : 1, transform: anim ? "translateY(8px)" : "translateY(0)" }}>
-            {step === 0 && <Step1 form={form} set={set} />}
-            {step === 1 && <Step2 form={form} set={set} dossierId={dossierId} screeningEnabled={screeningEnabled} />}
-            {step === 2 && <Step3 form={form} set={set} score={score} />}
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="fixed bottom-0 left-0 right-0 z-20 backdrop-blur-2xl"
-        style={{
-          borderTop: "1px solid rgba(47,91,255,0.10)",
-          background: "rgba(255,255,255,0.92)",
-        }}
-      >
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+      <div className="kd-form-foot">
+        <button type="button" className="kd-btn" onClick={() => nav(-1)} disabled={step === 0} aria-label="Étape précédente">
+          <ArrowLeft width={16} height={16} /><span className="max-sm:hidden">Précédent</span>
+        </button>
+        <span className="kd-grow" />
+        <span className="kd-dots" aria-hidden>
+          {[0, 1, 2].map((i) => <i key={i} data-on={i === step ? "" : undefined} data-done={i < step ? "" : undefined} />)}
+        </span>
+        <span className="kd-grow" />
+        {step === 2 && dossierId && (
+          <button type="button" className="kd-btn" onClick={exportPdf} disabled={exporting}>
+            <FileDown width={16} height={16} />{exporting ? "Génération…" : "PDF"}
+          </button>
+        )}
+        {step < 2 ? (
+          <button type="button" className="kd-btn kd-btn--pri" onClick={() => nav(1)} disabled={step === 0 ? !canNext0 : !canNext1}>
+            Suivant<ArrowRight width={16} height={16} />
+          </button>
+        ) : (
           <button
             type="button"
-            onClick={() => nav(-1)}
-            disabled={step === 0}
-            className="px-5 py-[10px] rounded-[10px] text-sm font-medium transition-all border disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{
-              background: "white",
-              borderColor: "rgba(11,20,53,0.12)",
-              color: step === 0 ? "#98A0BD" : "#47507A",
-            }}
+            className="kd-btn kd-btn--pri"
+            onClick={submit}
+            disabled={saving}
+            style={{ background: statusBg[score.statutKey], boxShadow: "none" }}
           >
-            Précédent
+            {saving ? "Enregistrement…" : dossierId ? "Enregistrer" : "Valider le dossier"}
           </button>
-
-          <div className="flex gap-1.5 items-center">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="h-1 rounded-full transition-all duration-300"
-                style={{
-                  width: i === step ? 22 : 5,
-                  background: i === step
-                    ? "#0B1435"
-                    : i < step ? "rgba(47,91,255,0.45)" : "rgba(11,20,53,0.10)",
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="flex gap-2">
-            {step === 2 && dossierId && (
-              <button
-                type="button"
-                onClick={exportPdf}
-                disabled={exporting}
-                className="px-4 py-2.5 rounded-full text-sm font-semibold transition-all flex items-center gap-2 disabled:opacity-50 border"
-                style={{
-                  background: "rgba(47,91,255,0.08)",
-                  borderColor: "rgba(47,91,255,0.25)",
-                  color: "#1F45E0",
-                }}
-              >
-                <FileDown className="w-4 h-4" />
-                {exporting ? "Génération..." : "Exporter PDF"}
-              </button>
-            )}
-
-            {step < 2 ? (
-              <button
-                type="button"
-                onClick={() => nav(1)}
-                disabled={step === 0 ? !canNext0 : !canNext1}
-                className="px-6 py-2.5 rounded-[10px] text-white text-sm font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{
-                  background: "#2F5BFF",
-                  boxShadow: "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 20px rgba(11,20,53,0.12)",
-                }}
-              >
-                Suivant
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={submit}
-                disabled={saving}
-                className="px-6 py-2.5 rounded-full text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-wait"
-                style={{
-                  background: statusGradients[score.statutKey],
-                  boxShadow: `0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 20px ${statusGlows[score.statutKey]}`,
-                }}
-              >
-                {saving ? "Enregistrement..." : dossierId ? "Mettre à jour" : "Valider le Dossier"}
-              </button>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

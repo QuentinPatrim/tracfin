@@ -15,6 +15,8 @@ import SignatureSection from "@/components/dashboard/SignatureSection";
 import ValidationSection from "@/components/dashboard/ValidationSection";
 import { FEATURES } from "@/lib/features";
 import KycClientSummary, { type KycSummaryData } from "@/components/dashboard/KycClientSummary";
+import DossierHeader, { K } from "@/components/dashboard/dossier/DossierHeader";
+import "@/components/dashboard/dossier/dossier.css";
 import type { BeneficiaireEffectif } from "@/lib/kyc";
 
 function toDateInput(val: unknown): string {
@@ -289,36 +291,65 @@ export default async function EditDossierPage({ params }: { params: Promise<{ id
     submittedAt: kyc.submitted_at,
   };
 
-  return (
-    <div style={{ background: "#F5F7FF", minHeight: "100vh" }}>
-      <DossierPieces dossierId={id} files={files} />
-      <KycClientSummary data={summary} />
-      {niveauEffectif && (
-        <div style={{ maxWidth: 768, margin: "24px auto 0", padding: "0 24px" }}>
-          <MarcheASuivre
-            niveau={niveauEffectif}
-            dossierId={id}
-            clientName={dossier.nom_prenom}
-            partie={dossier.partie === "vendeur" ? "vendeur" : "acquereur"}
-            mode="full"
-          />
-          <ValidationSection
-            dossierId={id}
-            niveau={niveauEffectif}
-            isArchived={!!dossier.archived_at}
-          />
-          <DeclarationSection
-            dossierId={id}
-            niveau={niveauEffectif}
-            isArchived={!!dossier.archived_at}
-          />
-        </div>
-      )}
+  const archived = !!dossier.archived_at;
+  const declare = niveauEffectif === "examen_renforce" || niveauEffectif === "interdiction";
 
-      <div style={{ maxWidth: 768, margin: "0 auto", padding: "0 24px" }}>
-        <SignatureSection dossierId={id} isArchived={!!dossier.archived_at} enabled={FEATURES.signature} />
+  return (
+    <div className="kd">
+      <DossierHeader
+        id={id}
+        name={dossier.nom_prenom}
+        morale={summary.typeClient === "morale"}
+        vendeur={summary.partie === "vendeur"}
+        niveau={niveauEffectif}
+        receivedAt={kyc.submitted_at}
+        archived={archived}
+        filesCount={files.length}
+      />
+
+      <div className="kd-grid">
+        <div className="kd-main">
+          {niveauEffectif && (
+            <section id="suite" className="kd-sec">
+              <MarcheASuivre
+                niveau={niveauEffectif}
+                dossierId={id}
+                clientName={dossier.nom_prenom}
+                partie={summary.partie}
+                mode="full"
+              />
+            </section>
+          )}
+          {niveauEffectif && (
+            <div className="kd-sec" style={{ display: "contents" }}>
+              <ValidationSection dossierId={id} niveau={niveauEffectif} isArchived={archived} />
+            </div>
+          )}
+          {declare && niveauEffectif && (
+            <section id="declaration" className="kd-sec">
+              <DeclarationSection dossierId={id} niveau={niveauEffectif} isArchived={archived} />
+            </section>
+          )}
+          <section id="analyse" className="kd-sec">
+            <h2 className="kd-h"><i style={{ background: K.evaluer }} />Analyse de risque<small>Pré-remplie avec la fiche du client</small></h2>
+            <TracfinForm initialData={rowToForm(dossier, kyc)} dossierId={id} hasKyc screeningEnabled={FEATURES.screening} />
+          </section>
+          <div className="kd-sec" style={{ display: "contents" }}>
+            <SignatureSection dossierId={id} isArchived={archived} enabled={FEATURES.signature} />
+          </div>
+        </div>
+
+        <aside className="kd-aside">
+          <section id="pieces" className="kd-sec">
+            <h2 className="kd-h"><i style={{ background: K.conserver }} />Pièces reçues<small>{files.length} fichier{files.length > 1 ? "s" : ""}</small></h2>
+            <DossierPieces dossierId={id} files={files} />
+          </section>
+          <section id="client" className="kd-sec">
+            <h2 className="kd-h"><i style={{ background: K.identifier }} />Données du client</h2>
+            <KycClientSummary data={summary} />
+          </section>
+        </aside>
       </div>
-      <TracfinForm initialData={rowToForm(dossier, kyc)} dossierId={id} hasKyc screeningEnabled={FEATURES.screening} />
     </div>
   );
 }

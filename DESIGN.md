@@ -108,13 +108,35 @@ capté** : un geste fait défiler la page, rien d'autre.
   conservés ; `.btn-grad` est un bouton cobalt en pilule).
 - **Indicateurs** : quatre cartes, la première en dégradé de marque.
 - **Aperçu d'un dossier** : l'étiquette de vigilance compacte (`VigilanceMini`). Sur
-  téléphone, les indicateurs deviennent un bandeau compact défilant pour que la liste
-  arrive tout de suite ; l'aperçu s'ouvre en feuille glissante depuis le bas au toucher d'un dossier
+  téléphone, les indicateurs passent en grille 2 × 2 compacte (sans défilement de
+  côté) ; l'aperçu s'ouvre en feuille glissante depuis le bas au toucher d'un dossier
   (poignée, croix, voile, Échap) ; les onglets s'effacent derrière.
 - **Cartes et pilules** : la pilule est réservée aux boutons, badges et champs d'une
   ligne. Une carte qui contient plusieurs lignes prend un rayon de 20 à 28 px.
 - **Niveaux dans l'application** : vert (standard), ambre (renforcée), orange (examen
   renforcé), rouge plein (interdiction).
+- **Grands écrans** (≥ 1700 px) : le contenu du tableau de bord se centre, 1600 px
+  au plus.
+- **Fiche dossier** (`app/dashboard/[id]/page.tsx`, styles `.kd-*` de
+  `components/dashboard/dossier/dossier.css`) : un en-tête (`DossierHeader.tsx` :
+  initiales, nom, type, rôle, date de la fiche, niveau, « Dossier .zip » et
+  « Attestation PDF ») puis un sommaire en pilules. Deux colonnes au-dessus de
+  1180 px : à gauche ce qu'il faut faire (suite à donner, validation, déclaration,
+  analyse de risque), à droite ce qu'on a (pièces reçues, données déclarées). Une
+  seule colonne en dessous. Les titres de section portent la barre du K de
+  l'obligation : identifier (données du client), évaluer (analyse), conserver
+  (pièces), déclarer (déclaration). L'analyse (`TracfinForm`) est une carte avec
+  ses trois étapes cliquables vers l'arrière et une barre d'actions collante en
+  pilule (au-dessus des onglets sur téléphone).
+- **Page d'attente** (`app/dashboard/[id]/wait`) : dans le cadre de l'app, même
+  bouton « ← Dossiers » que la fiche.
+- **Visite guidée** (`components/dashboard/GuidedTour.tsx`, `tour.css`) : six plans
+  (bienvenue, indicateurs, dossiers, détail, côté client, premier dossier), une
+  couleur du K par plan dans la barre de progression. Voile encre, anneau blanc
+  autour de la cible, carte blanche ; la pastille « Données d'exemple » remplace
+  l'ancien bandeau. Sur téléphone la carte se pose en bas comme une feuille, la
+  cible remonte en haut, et un plan peut avoir sa cible et son texte propres
+  (`selectorMobile`, `bodyMobile`).
 
 ## App installable (téléphone)
 
@@ -140,6 +162,9 @@ page inchangés. La police reste Inter.
 
 - Klaris **aide** à être conforme. Jamais « conformité garantie », « certifié »,
   « opposable ».
+- Un dossier n'est jamais dit « conforme » : on dit « vigilance standard » (niveau)
+  et, pour un critère, « sans alerte ». Le PDF s'intitule « Attestation de diligences
+  LCB-FT ».
 - Aucun chiffre sans source officielle vérifiée.
 - Chaque article de loi cité est un lien vers Légifrance :
   `components/landing/LegalRef.tsx`, table `lib/legal-refs.ts`.

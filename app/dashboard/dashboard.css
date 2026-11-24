@@ -511,9 +511,9 @@ button.k-side-link { width: 100%; border: 0; background: none; font: inherit; te
   .list-h .seg { flex: 1; min-width: 0; }
 }
 @media (max-width: 640px) {
-  .kpi-row { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -10px; padding: 2px 10px 6px; }
-  .kpi-row::-webkit-scrollbar { display: none; }
-  .kpi { flex: none; min-width: 138px; padding: 11px 14px 12px; border-radius: 18px; scroll-snap-align: start; }
+  /* 2 × 2 : les quatre chiffres restent lisibles sans défiler de côté. */
+  .kpi-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .kpi { min-width: 0; padding: 12px 14px 13px; border-radius: 20px; }
   .kpi-label { font-size: 11.5px; gap: 6px; white-space: nowrap; }
   .kpi-value { font-size: 26px; margin-top: 6px; }
   .kpi-delta { display: none; }
@@ -523,3 +523,8 @@ button.k-side-link { width: 100%; border: 0; background: none; font: inherit; te
   .alerts-list > * { flex: none; }
 }
 @media (max-width: 900px), (pointer: coarse) { .topbar-v2-tools .search kbd { display: none; } }
+
+/* Grands écrans : le contenu se centre et s'élargit au lieu de laisser une bande vide à droite. */
+@media (min-width: 1700px) {
+  .screen, .topbar-v2-row2 { margin-inline: auto; max-width: 1600px; }
+}

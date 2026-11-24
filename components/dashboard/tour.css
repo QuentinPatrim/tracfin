@@ -1,0 +1,69 @@
+/* components/dashboard/tour.css — Visite guidée de l'app (GuidedTour)
+ * Voile encre, anneau blanc autour de la cible, carte blanche arrondie.
+ * La progression reprend les couleurs du K : une couleur par étape (--c). */
+
+.gt { position: fixed; inset: 0; z-index: 10050; font-family: var(--font-sans-face), system-ui, sans-serif; color: #0B1435; }
+.gt-block { position: absolute; inset: 0; }
+.gt-veil { position: fixed; inset: 0; background: rgba(11,20,53,0.58); animation: gt-fade 240ms ease both; }
+.gt-spot { position: fixed; border-radius: 22px; pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(11,20,53,0.58), 0 0 0 3px #fff, 0 0 0 8px rgba(47,91,255,0.35);
+  transition: top 380ms cubic-bezier(0.22,1,0.36,1), left 380ms cubic-bezier(0.22,1,0.36,1), width 380ms cubic-bezier(0.22,1,0.36,1), height 380ms cubic-bezier(0.22,1,0.36,1); }
+@keyframes gt-fade { from { opacity: 0; } }
+
+.gt-card { position: fixed; max-width: calc(100vw - 32px); overflow-y: auto; overscroll-behavior: contain;
+  padding: 18px 20px 16px; border-radius: 28px; background: #fff;
+  box-shadow: 0 0 0 1px rgba(11,20,53,0.06), 0 40px 80px -30px rgba(11,20,53,0.6);
+  transition: top 420ms cubic-bezier(0.16,1,0.3,1), left 420ms cubic-bezier(0.16,1,0.3,1);
+  animation: gt-in 300ms cubic-bezier(0.16,1,0.3,1) both; }
+@keyframes gt-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
+
+.gt-top { display: flex; align-items: center; gap: 9px; }
+.gt-top b { font-size: 13px; font-weight: 750; color: #2A3459; }
+.gt-k { display: inline-flex; flex-direction: column; gap: 1.5px; padding: 6px 7px; border-radius: 10px; background: #F5F7FF; }
+.gt-k i { display: block; height: 3px; border-radius: 3px; }
+.gt-k i:nth-child(1) { width: 11px; margin-left: 4px; background: #2F5BFF; }
+.gt-k i:nth-child(2) { width: 11px; margin-left: 2px; background: #5468FF; }
+.gt-k i:nth-child(3) { width: 11px; background: #9A6BEB; }
+.gt-k i:nth-child(4) { width: 11px; margin-left: 2px; background: #EC6A93; }
+.gt-k i:nth-child(5) { width: 11px; margin-left: 4px; background: #FF6A4D; }
+.gt-badge { height: 24px; display: inline-flex; align-items: center; padding: 0 10px; border-radius: 999px; background: #FFF4DC; color: #8F5A00; font-size: 11.5px; font-weight: 750; }
+.gt-x { margin-left: auto; width: 32px; height: 32px; border-radius: 999px; border: 0; display: grid; place-items: center; background: #F5F7FF; color: #5B6487; cursor: pointer; transition: background-color .15s, transform .25s cubic-bezier(.34,1.56,.64,1); }
+.gt-x:hover { background: #EAEFFF; transform: rotate(90deg); }
+
+.gt-segs { display: flex; gap: 5px; margin: 14px 0 4px; }
+.gt-segs > span { position: relative; flex: 1; height: 5px; border-radius: 5px; background: #EEF1F8; overflow: hidden; }
+.gt-segs > span[data-state="done"] { background: var(--c); }
+.gt-segs > span > span { position: absolute; inset: 0; border-radius: 5px; background: var(--c); transform-origin: left center; transform: scaleX(0); }
+@keyframes gt-fill { to { transform: scaleX(1); } }
+
+.gt-body { padding-top: 12px; animation: gt-swap 380ms cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes gt-swap { from { opacity: 0; transform: translateY(8px); } }
+.gt-scene { display: flex; justify-content: center; margin: 2px 0 16px; padding: 16px 0 0; border-radius: 22px; background: linear-gradient(180deg, #EEF2FF, #F7F4FE); overflow: hidden; max-height: 300px; }
+.gt-eye { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 750; color: #2A3459; }
+.gt-eye i { width: 20px; height: 8px; border-radius: 999px; background: var(--c); }
+.gt-t { margin: 8px 0 0; font-size: 21px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.15; text-wrap: balance; }
+.gt-p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: #47507A; text-wrap: pretty; }
+.gt-imp { margin-top: 12px; display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 18px; background: #FFF8E6; color: #7A4C00; font-size: 13px; line-height: 1.5; }
+.gt-imp svg { flex: none; margin-top: 1px; color: #B37400; }
+
+.gt-ctl { margin-top: 16px; display: flex; align-items: center; gap: 6px; }
+.gt-btn { width: 42px; height: 42px; border-radius: 999px; border: 0; display: grid; place-items: center; background: #F5F7FF; color: #2A3459; cursor: pointer; transition: background-color .15s, transform .2s; }
+.gt-btn:hover { background: #EAEFFF; }
+.gt-btn:active, .gt-next:active { transform: scale(0.96); }
+.gt-skip { border: 0; background: transparent; padding: 0 8px; height: 42px; font: inherit; font-size: 13.5px; font-weight: 650; color: #98A0BD; cursor: pointer; }
+.gt-skip:hover { color: #47507A; }
+.gt-n { margin-left: auto; margin-right: 4px; font-family: var(--font-jetbrains-mono), monospace; font-size: 12px; color: #98A0BD; }
+.gt-next { height: 42px; padding: 0 18px; border-radius: 999px; border: 0; display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 14px; font-weight: 800;
+  color: #fff; background: #2F5BFF; box-shadow: 0 12px 24px -14px rgba(47,91,255,0.9); cursor: pointer; transition: background-color .15s, transform .2s; }
+.gt-next:hover { background: #1F45E0; }
+
+/* Téléphone : la carte devient une feuille posée en bas */
+.gt[data-narrow] .gt-card { left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); top: auto; width: auto; max-width: none; max-height: 72vh; border-radius: 30px; padding: 16px 18px 14px;
+  animation: gt-up 380ms cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes gt-up { from { opacity: 0; transform: translateY(40px); } }
+.gt[data-narrow] .gt-t { font-size: 19px; }
+.gt[data-narrow] .gt-scene { max-height: 230px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gt-card, .gt-body, .gt-veil, .gt-spot { animation: none; transition: none; }
+}
