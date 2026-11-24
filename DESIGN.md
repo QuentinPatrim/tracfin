@@ -62,6 +62,9 @@ capté** : un geste fait défiler la page, rien d'autre.
   barre du K (`--kc` : bleu pour « Comment ça marche », bleu 2 pour la vigilance,
   mini-K pour « Vos obligations » avec `.kl-kicker--k`). Fil de lecture : cinq
   segments sous la barre de navigation, remplis au défilement.
+  Guides : carte avec la barre de l'obligation traitée (champ `ob` dans
+  app/guides/page.tsx), dégradé de la marque si le guide n'en traite pas une seule.
+  PDF : la bande du haut de chaque page est faite des cinq barres du K.
 - **Grands écrans** : la colonne du site passe à 84rem (≥ 1500 px) puis 90rem
   (≥ 1800 px), et la taille de base du site public à 17 puis 18 px ; le K grandit
   avec (--u 4,3 puis 4,8 px). Sous les boutons, la

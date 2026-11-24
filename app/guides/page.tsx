@@ -2,7 +2,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, ScrollText } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { H1, Lede, Eyebrow } from "@/components/landing/primitives";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://klaris-app.fr";
@@ -20,8 +20,16 @@ export const metadata: Metadata = {
   },
 };
 
+/* Les guides prennent la couleur de la barre du K de l'obligation qu'ils traitent
+   (0 identifier · 1 évaluer · 2 conserver · 3 déclarer · 4 justifier). Un guide qui
+   ne relève pas d'une seule obligation (ex. la formation) garde le dégradé. */
+const K_BARS = ["#2F5BFF", "#5468FF", "#9A6BEB", "#EC6A93", "#FF6A4D"];
+const K_TEXT = ["#1F45E0", "#3F50E6", "#7B4FD6", "#D2457A", "#E5502F"];
+
 interface GuideMeta {
   href: string;
+  /** Obligation traitée (index de la barre du K), si le guide en traite une seule. */
+  ob?: 0 | 1 | 2 | 3 | 4;
   tag: string;
   title: string;
   excerpt: string;
@@ -54,28 +62,16 @@ export default function GuidesHub() {
           <Link
             key={g.href}
             href={g.href}
-            className="group rounded-2xl p-5 sm:p-6 border transition-transform hover:-translate-y-0.5"
-            style={{ background: "var(--lp-card-bg)", borderColor: "var(--lp-card-border)", boxShadow: "var(--lp-card-shadow)" }}
+            className="kl-guide group"
+            style={(g.ob === undefined ? {} : { "--c": K_BARS[g.ob], "--ct": K_TEXT[g.ob] }) as React.CSSProperties}
           >
-            <div className="flex items-center gap-2 mb-3">
-              <span
-                className="w-8 h-8 rounded-lg grid place-items-center shrink-0"
-                style={{ background: "var(--lp-icon-bg)", border: "1px solid var(--lp-icon-border)", color: "var(--lp-icon-color)" }}
-              >
-                <ScrollText width={15} height={15} />
-              </span>
-              <span
-                className="text-[10px] uppercase tracking-widest font-semibold px-2 py-0.5 rounded"
-                style={{ background: "var(--lp-surface-2)", border: "1px solid var(--lp-border-2)", color: "var(--lp-text-3)" }}
-              >
-                {g.tag}
-              </span>
+            <div className="flex items-center gap-2.5 mb-4">
+              <span className="kl-guide__bar" aria-hidden="true" />
+              <span className="kl-guide__tag">{g.tag}</span>
             </div>
-            <div className="text-[16px] sm:text-[17px] font-semibold leading-snug" style={{ color: "var(--lp-text)" }}>
-              {g.title}
-            </div>
-            <p className="mt-2 text-[13px] leading-relaxed" style={{ color: "var(--lp-text-3)" }}>{g.excerpt}</p>
-            <div className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold" style={{ color: "var(--lp-accent-text)" }}>
+            <div className="kl-guide__t">{g.title}</div>
+            <p className="kl-guide__p">{g.excerpt}</p>
+            <div className="kl-guide__go">
               Lire le guide
               <ArrowRight width={14} height={14} className="transition-transform group-hover:translate-x-0.5" />
             </div>

@@ -44,9 +44,15 @@ html,body{margin:0;padding:0;background:#fff;font-family:'Inter',system-ui,sans-
 
 /* Empêche les éléments d'être coupés entre 2 pages */
 .crit, .tx-card, .doc, .validation, .decl, .field, .verdict, .reco { page-break-inside: avoid; break-inside: avoid; }
+/* Haut de page : les cinq barres du K (une couleur par obligation LCB-FT). */
 .page::before{
   content:""; position:absolute; top:0; left:0; right:0; height:6px;
-  background: var(--grad);
+  background: linear-gradient(90deg,
+    #2F5BFF 0 calc(20% - 2px), #fff calc(20% - 2px) 20%,
+    #5468FF 20% calc(40% - 2px), #fff calc(40% - 2px) 40%,
+    #9A6BEB 40% calc(60% - 2px), #fff calc(60% - 2px) 60%,
+    #EC6A93 60% calc(80% - 2px), #fff calc(80% - 2px) 80%,
+    #FF6A4D 80% 100%);
 }
 .page::after{
   content:""; position:absolute; right:-120px; top:-120px; width:340px; height:340px; border-radius:50%;
