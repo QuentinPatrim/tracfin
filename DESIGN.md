@@ -213,3 +213,11 @@ page inchangés. La police reste Inter.
 Rien ne doit dépasser la largeur de l'écran : sur iPhone, un seul élément trop large
 fait dézoomer toute la page. `html, body { overflow-x: clip }` sert de filet ; la
 barre du site connecté affiche « Mon espace » sans avatar sur téléphone.
+
+## Carte de partage (aperçu des liens)
+
+`app/opengraph-image.tsx` : fond clair, Plus Jakarta Sans 800 (`app/_og/*.woff`,
+chargées par l'image), titre du site et le K avec ses cinq obligations. Titre partagé :
+« Klaris · Chaque client identifié, chaque dossier prêt ». Les messageries gardent
+l'ancien aperçu en cache un moment : pour tester, partager une adresse jamais
+envoyée (ex. `klaris-app.fr/?v=2`).

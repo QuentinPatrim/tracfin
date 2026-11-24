@@ -25,7 +25,7 @@ const SITE_DESC =
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'Klaris — Conformité LCB-FT pour agences immobilières',
+  title: 'Klaris · LCB-FT pour les agences immobilières',
   description: SITE_DESC,
   applicationName: 'Klaris',
   // Installée sur l'écran d'accueil (voir app/manifest.ts) : plein écran sur iPhone.
@@ -48,12 +48,12 @@ export const metadata: Metadata = {
     locale: 'fr_FR',
     url: SITE_URL,
     siteName: 'Klaris',
-    title: 'Klaris — Conformité LCB-FT, sans stress',
+    title: 'Klaris · Chaque client identifié, chaque dossier prêt',
     description: SITE_DESC,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Klaris — Conformité LCB-FT, sans stress',
+    title: 'Klaris · Chaque client identifié, chaque dossier prêt',
     description: SITE_DESC,
   },
 }

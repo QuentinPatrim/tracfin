@@ -263,7 +263,7 @@ export function buildCartographyHtml(params: BuildParams): string {
   </div>
 
   <footer class="footer">
-    <div>Klaris — Conformité LCB-FT pour les professionnels assujettis (CMF Art. L.561-2).</div>
+    <div>Klaris — Outil LCB-FT pour les professionnels assujettis (CMF art. L.561-2).</div>
     <div class="hash">SHA-256 ${shortHash(hash)}</div>
   </footer>
 
